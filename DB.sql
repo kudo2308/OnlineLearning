@@ -1,5 +1,9 @@
---create database 
-create database SWP_OLS_ver1
+-- Create Database
+CREATE DATABASE SWP_OLS_ver1;
+GO
+-- Use the created database
+USE SWP_OLS_ver1;
+GO
 
 -- Create Role table
 CREATE TABLE Role (
