@@ -4,10 +4,12 @@
 }
 
 
-* { padding-inline-start: 0; }
+* {
+    padding-inline-start: 0;
+}
 
 #cart,
-#bell {
+#bell, #my-course, .avt {
     padding: 0 15px;
 }
 
@@ -18,11 +20,13 @@
 }
 
 nav {
+    height: 30px;
     overflow: hidden;
     border-bottom: 1px solid #ddd;
 }
 
 nav a {
+
     position: relative;
     top: 50%;
     float: left;
@@ -42,18 +46,66 @@ a:visited {
 }
 
 .right {
-    float: right;
+    width: 30%;
+    display: flex;
+    justify-content: end;
+    align-items: center
 }
 
-#nav {
-    max-width: 1300px;
-    margin: auto;
+.right a{
+    text-decoration: none;
 }
 
-.clearfix::after {
-    content: "";
-    clear: both;
-    display: table;
+.avt{
+    width: 65px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.image-container img {
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.menu {
+    transform: translateX(-20%);
+    position: absolute;
+    top: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    list-style: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 150px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.menu li {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.menu li:last-child {
+    border-bottom: none;
+}
+
+.menu li:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Hiển thị menu khi hover vào ảnh hoặc menu */
+.image-container:hover .menu,
+.menu:hover {
+    opacity: 1;
+    visibility: visible;
 }
 
 .material-symbols-outlined {
@@ -67,7 +119,8 @@ a:visited {
 /* header */
 header {
     display: block;
-    max-width: 1300px;
+    max-width: 90%;
+    width: 100%;
     margin: auto;
     display: flex;
     height: 100px;
@@ -78,6 +131,11 @@ header {
 
 #search * {
     display: inline-block;
+}
+
+#my-course{
+    color: black;
+    font-weight: bold;
 }
 
 #search {
@@ -109,23 +167,6 @@ header {
 
 .magnification-glass {
     margin: 0 15px;
-}
-
-#button-search {
-    font-size: 1.2em;
-    width: 15%;
-    height: 60%;
-    border: none;
-    background-color: dodgerblue;
-    color: white;
-    float: left;
-    margin: auto;
-    border-radius: 25px;
-}
-
-#button-search:hover {
-    cursor: pointer;
-    background-color: rgb(20, 110, 201);
 }
 
 #search input::placeholder {

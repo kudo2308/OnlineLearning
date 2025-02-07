@@ -3,27 +3,9 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <title>Online Lerning</title>
+
 <nav>
-    <div id="nav" class="clearfix">
-        <div>
-            <!-- Default sign in or register if no account in session -->
-            <a href="${pageContext.request.contextPath}/login">Sign in or Register</a>
 
-
-            <a href="#">Helps and Contact</a>
-        </div>
-        <div class="right">
-            <a id="dropdown-myebuy" href="${pageContext.request.contextPath}/account">My Course</a>
-            <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-                <span class="material-icons md-18">notifications_none</span>
-            </a>
-            <a href="${pageContext.request.contextPath}/cart" id="cart">
-                <span class="material-icons md-18">
-                    shopping_cart
-                </span>
-            </a>
-        </div>
-    </div>
 </nav>
 <header class="logo-body">
     <div id="logo">
@@ -49,5 +31,24 @@
 
             </div>
     </select>
-    <button type="submit" id="button-search">Search</button>
+    <div class="right">
+        <a id="my-course" href="${pageContext.request.contextPath}/account">My Course</a>
+        <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            <span class="material-icons md-18">notifications_none</span>
+        </a>
+        <a href="${pageContext.request.contextPath}/cart" id="cart">
+            <span class="material-icons md-18">
+                shopping_cart
+            </span>
+        </a>
+        <div class="image-container">
+            <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+            <ul class="menu">
+                <li>My learning</li>
+                <li>My cart</li>
+                <li>My account</li>
+                <li>Logout</li>
+            </ul>
+        </div>
+    </div>
 </header>
