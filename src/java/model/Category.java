@@ -10,6 +10,14 @@ public class Category {
     
     public Category() {
     }
+
+    public Category(int categoryID, String name, String description, Timestamp createdAt) {
+        this.categoryID = categoryID;
+        this.name = name;
+        this.description = description;
+        this.createdAt = createdAt;
+    }
+    
     
     public int getCategoryID() {
         return categoryID;
