@@ -53,7 +53,7 @@
             <div id="loading-icon-bx"></div>
 
             <!-- Header Top ==== -->
-            <jsp:include page="../common/header.jsp"/>
+            <jsp:include page="/common/header.jsp"/>
             <!-- header END ==== -->
 
             <!-- Content -->
@@ -129,39 +129,50 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-12">
                                     <div class="row">
-                                        <c:forEach items="${courses}" var="course">
+                                        <c:forEach items="${courseList}" var="course">
                                             <div class="col-md-6 col-lg-4 col-sm-6 m-b30">
                                                 <div class="cours-bx">
                                                     <div class="action-box">
-                                                        <img src="<c:url value='/public/assets/images/courses/${course.image}'/>" alt="">
-                                                        <a href="<c:url value='/course/detail/${course.id}'/>" class="btn">Read More</a>
+                                                        <img src="${course.imageUrl}" alt="">
+                                                        <a href="<c:url value='/coursedetails?id=${course.courseID}'/>" class="btn">Read More</a>
                                                     </div>
                                                     <div class="info-bx text-center">
-                                                        <h5><a href="<c:url value='/course/detail/${course.id}'/>">${course.title}</a></h5>
-                                                        <span>${course.category}</span>
+                                                        <h5><a href="<c:url value='/coursedetails?id=${course.courseID}'/>">${course.title}</a></h5>
+                                                        <span>${course.category.name}</span>
                                                     </div>
                                                     <div class="cours-more-info">
                                                         <div class="review">
-                                                            <span>${course.reviewCount} Review</span>
-                                                            <ul class="cours-star">
-                                                                <c:forEach begin="1" end="${course.rating}" var="i">
-                                                                    <li class="active"><i class="fa fa-star"></i></li>
-                                                                    </c:forEach>
-                                                                    <c:forEach begin="${course.rating + 1}" end="5" var="i">
-                                                                    <li><i class="fa fa-star"></i></li>
-                                                                    </c:forEach>
-                                                            </ul>
+                                                            <span>Expert</span>
+                                                            <h6>${course.expert.fullName}</h6>
                                                         </div>
                                                         <div class="price">
-                                                            <c:if test="${course.originalPrice > course.price}">
-                                                                <del>$${course.originalPrice}</del>
-                                                            </c:if>
-                                                            <h5>$${course.price}</h5>
+                                                            <h5>$${course.pricePackageID}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </c:forEach>
+                                        
+                                        <!-- Pagination -->
+                                        <div class="col-lg-12 m-b20">
+                                            <div class="pagination-bx rounded-sm gray clearfix">
+                                                <ul class="pagination">
+                                                    <c:if test="${currentPage > 1}">
+                                                        <li class="previous"><a href="<c:url value='/course?page=${currentPage-1}'/>"><i class="ti-arrow-left"></i> Prev</a></li>
+                                                    </c:if>
+                                                    
+                                                    <c:forEach begin="1" end="${totalPages}" var="i">
+                                                        <li class="${currentPage == i ? 'active' : ''}">
+                                                            <a href="<c:url value='/course?page=${i}'/>">${i}</a>
+                                                        </li>
+                                                    </c:forEach>
+                                                    
+                                                    <c:if test="${currentPage < totalPages}">
+                                                        <li class="next"><a href="<c:url value='/course?page=${currentPage+1}'/>">Next <i class="ti-arrow-right"></i></a></li>
+                                                    </c:if>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

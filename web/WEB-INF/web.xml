@@ -4,8 +4,16 @@
         <servlet-name>CourseServlet</servlet-name>
         <servlet-class>controller.CourseServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CourseDetailServlet</servlet-name>
+        <servlet-class>controller.CourseDetailServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseServlet</servlet-name>
-        <url-pattern>/OurCourse</url-pattern>
+        <url-pattern>/course</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CourseDetailServlet</servlet-name>
+        <url-pattern>/coursedetails</url-pattern>
     </servlet-mapping>
 </web-app>
