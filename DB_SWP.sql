@@ -1,4 +1,5 @@
 --create database
+
 create database SWP_ver2
 GO
 --use database
@@ -38,8 +39,7 @@ CREATE TABLE Course (
     Title NVARCHAR(255) NOT NULL,
     Description NTEXT,
     ExpertID INT,  -- ID of the instructor/expert
-    Price DECIMAL(10,2) DEFAULT 0.00,
-    PricePackageID INT,
+    Price Float DEFAULT 0.00,
     CategoryID INT,
     ImageUrl NVARCHAR(255),
     TotalLesson INT DEFAULT 0,
