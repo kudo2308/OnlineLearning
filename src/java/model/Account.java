@@ -26,6 +26,13 @@ public class Account {
     
     public Account() {
     }
+
+    public Account(int userID, String fullName, int roleID) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.roleID = roleID;
+    }
+    
     
     public int getUserID() {
         return userID;
@@ -106,4 +113,11 @@ public class Account {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" + "userID=" + userID + ", fullName=" + fullName + ", username=" + username + ", password=" + password + ", email=" + email + ", roleID=" + roleID + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", role=" + role + '}';
+    }
+    
+    
 }
