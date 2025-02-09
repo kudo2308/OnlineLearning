@@ -60,23 +60,24 @@
                 </span>
                 <h1>Courses</h1>
                 <ul id="wow">
-                    <c:if test="${not empty products}">
-                        <c:forEach var="product" items="${products}">
+                    <c:if test="${not empty courses}">
+                        <c:forEach var="course" items="${courses}">
                             <li>
                                 <img
                                     class="image-product"
-                                    src="${not empty product.image ? pageContext.request.contextPath.concat(product.image) : pageContext.request.contextPath.concat('/img/default-product.jpg')}"
-                                    alt="${product.name}">
+                                    src="${pageContext.request.contextPath}/assets/images/courses/pic1.jpg"  alt="${course.title}">
                                 <p>
-                                    <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/product?id=${product.id}">
-                                        ${product.name}
+                                    <a style="color: black; text-decoration: none" href="#">
+                                        ${course.title}
                                     </a> 
-                                    <span class="right">${product.price}$</span>
+                                    <p class="des-course">${course.description}$</p>
+                                    <span>${course.price}$</span>
+                                    
                                 </p>
                             </li>
                         </c:forEach>
                     </c:if>
-                    <c:if test="${empty products}">
+                    <c:if test="${empty courses}">
                         <li>Hiện chưa có sản phẩm mới.</li>
                         </c:if>
                 </ul>

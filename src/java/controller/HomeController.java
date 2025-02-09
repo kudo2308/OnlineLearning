@@ -31,10 +31,10 @@ public class HomeController extends HttpServlet {
         CourseDAO courseDAO = new CourseDAO(); 
         
         List<Category> categories = categoryDAO.getAll();
-        List<Course> courses = courseDAO.getAllCourses(0, 0);
+        List<Course> courses = courseDAO.getAllCourses(0, 1);
         
         request.setAttribute("categories", categories);
-        request.setAttribute("course", courses);
+        request.setAttribute("courses", courses);
 
         request.getRequestDispatcher("public/home.jsp").forward(request, response);
         request.getRequestDispatcher("common/header.jsp").forward(request, response);
@@ -42,9 +42,9 @@ public class HomeController extends HttpServlet {
 
     public static void main(String[] args) {
         CourseDAO courseDAO = new CourseDAO(); 
-        List<Course> courses = courseDAO.getAllCourses(0, 0);
+        List<Course> courses = courseDAO.getAllCourses(0, 1);
         for (Course course : courses) {
-            System.out.println(course.getTitle());
+            System.out.println(course.getTitle() + course.getPrice());
         }
     }
     }

@@ -21,7 +21,7 @@ import model.Category;
 import model.Feedback;
 
 public class CourseDAO extends DBContext {
-    
+
     public List<Course> getAllCourses(int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
@@ -56,7 +56,7 @@ public class CourseDAO extends DBContext {
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
-                course.setPricePackageID(rs.getInt("Price"));
+                course.setPrice(rs.getDouble("Price"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -64,15 +64,15 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
-                
+
                 courseList.add(course);
             }
         } catch (SQLException ex) {
@@ -80,64 +80,7 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-    
-    public List<Course> getAllCourses() {
-        List<Course> courseList = new ArrayList<>();
-        String sql = """
-                    SELECT c.[CourseID]
-                          ,c.[Title]
-                          ,c.[Description]
-                          ,c.[Price]
-                          ,c.[ExpertID]
-                          ,c.[CategoryID]
-                          ,c.[ImageUrl]
-                          ,c.[TotalLesson]
-                          ,c.[Status]
-                          ,c.[CreatedAt]
-                          ,c.[UpdatedAt]
-                          ,a.FullName as ExpertName
-                          ,cat.Name as CategoryName
-                    FROM [dbo].[Course] c
-                    JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
-                    JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[Status] = 1
-                    ORDER BY c.[CourseID]
-                    OFFSET ? ROWS
-                    FETCH NEXT ? ROWS ONLY;
-                    """;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                Course course = new Course();
-                course.setCourseID(rs.getInt("CourseID"));
-                course.setTitle(rs.getString("Title"));
-                course.setDescription(rs.getString("Description"));
-                course.setPricePackageID(rs.getInt("Price"));
-                course.setExpertID(rs.getInt("ExpertID"));
-                course.setCategoryID(rs.getInt("CategoryID"));
-                course.setImageUrl(rs.getString("ImageUrl"));
-                course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
-                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
-                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
-                Account expert = new Account();
-                expert.setFullName(rs.getString("ExpertName"));
-                course.setExpert(expert);
-                
-                Category category = new Category();
-                category.setName(rs.getString("CategoryName"));
-                course.setCategory(category);
-                
-                courseList.add(course);
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-        return courseList;
-    }
-   
+
     public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
@@ -181,15 +124,15 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
-                
+
                 courseList.add(course);
             }
         } catch (SQLException ex) {
@@ -197,7 +140,7 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-    
+
     public Course getCourseById(int courseId) {
         String sql = """
                     SELECT c.[CourseID]
@@ -235,15 +178,15 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
-                
+
                 return course;
             }
         } catch (SQLException ex) {
@@ -251,7 +194,7 @@ public class CourseDAO extends DBContext {
         }
         return null;
     }
-    
+
     public int getTotalCourses() {
         String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [Status] = 1";
         try {
@@ -265,7 +208,7 @@ public class CourseDAO extends DBContext {
         }
         return 0;
     }
-    
+
     public int getTotalCoursesByCategory(int categoryId) {
         String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [CategoryID] = ? AND [Status] = 1";
         try {
@@ -280,7 +223,7 @@ public class CourseDAO extends DBContext {
         }
         return 0;
     }
-    
+
     public List<Course> searchCourses(String keyword, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
@@ -325,15 +268,15 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
-                
+
                 courseList.add(course);
             }
         } catch (SQLException ex) {
@@ -341,7 +284,7 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-    
+
     public List<Course> getRecentCourses(int limit) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
@@ -381,15 +324,15 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
-                
+
                 courseList.add(course);
             }
         } catch (SQLException ex) {
@@ -397,7 +340,7 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-    
+
     public List<Course> getCoursesByExpert(int expertId, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
@@ -441,15 +384,15 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
-                
+
                 courseList.add(course);
             }
         } catch (SQLException ex) {
@@ -457,7 +400,7 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-    
+
     public double getAverageRating(int courseId) {
         String sql = """
                     SELECT AVG(CAST(Rating AS FLOAT)) as AvgRating
@@ -476,7 +419,7 @@ public class CourseDAO extends DBContext {
         }
         return 0.0;
     }
-    
+
     public List<Feedback> getCourseFeedback(int courseId) {
         List<Feedback> feedbackList = new ArrayList<>();
         String sql = """
@@ -507,17 +450,25 @@ public class CourseDAO extends DBContext {
                 feedback.setRating(rs.getInt("Rating"));
                 feedback.setStatus(rs.getBoolean("Status"));
                 feedback.setCreatedAt(rs.getTimestamp("CreatedAt"));
-                
+
                 Account user = new Account();
                 user.setFullName(rs.getString("FullName"));
                 user.setUsername(rs.getString("Username"));
                 feedback.setUser(user);
-                
+
                 feedbackList.add(feedback);
             }
         } catch (SQLException ex) {
             System.out.println(ex);
         }
         return feedbackList;
+    }
+
+    public static void main(String[] args) {
+        CourseDAO courseDAO = new CourseDAO();
+        List<Course> courses = courseDAO.getAllCourses(0, 1);
+        for (Course course : courses) {
+            System.out.println(course.getTitle());
+        }
     }
 }

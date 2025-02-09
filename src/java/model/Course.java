@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 public class Course {
     private int courseID;
     private String title;
+    private double price;
     private String description;
     private int expertID;
     private int pricePackageID;
@@ -36,6 +37,14 @@ public class Course {
     
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
     
     public String getDescription() {
