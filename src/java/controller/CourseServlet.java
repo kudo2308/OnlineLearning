@@ -5,17 +5,21 @@
 
 package controller;
 
+import DAO.CourseDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Course;
 
 /**
  *
  * @author dohie
  */
+@WebServlet(name = "CourseServlet", urlPatterns = {"/course"})
 public class CourseServlet extends HttpServlet {
    
     /** 
@@ -28,19 +32,39 @@ public class CourseServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CourseServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CourseServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    } 
+        
+//        try {
+            CourseDAO courseDAO = new CourseDAO();
+            
+            // Lấy tham số phân trang từ request
+            String pageStr = request.getParameter("page");
+            int page = 1;
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+            }
+            int recordsPerPage = 9; // Số khóa học trên mỗi trang
+            int offset = (page - 1) * recordsPerPage;
+            
+            // Lấy danh sách khóa học cho trang hiện tại
+            List<Course> courseList = courseDAO.getAllCourses(offset, recordsPerPage);
+            
+            // Tính tổng số trang
+            int totalCourses = courseDAO.getTotalCourses();
+            int totalPages = (int) Math.ceil((double) totalCourses / recordsPerPage);
+            
+            // Set các thuộc tính vào request
+            request.setAttribute("courseList", courseList);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            
+            // Forward đến trang OurCourse.jsp
+            request.getRequestDispatcher("views/course/OurCourse.jsp").forward(request, response);
+    }
+//       } catch (Exception e) {
+//            System.out.println("Error in CourseServlet: " + e.getMessage());
+//            request.getRequestDispatcher("/common/error.jsp").forward(request, response);
+//        }
+//    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -75,7 +99,7 @@ public class CourseServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Course Servlet";
     }// </editor-fold>
 
 }
