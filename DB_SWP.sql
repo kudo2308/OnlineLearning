@@ -38,6 +38,7 @@ CREATE TABLE Course (
     Title NVARCHAR(255) NOT NULL,
     Description NTEXT,
     ExpertID INT,  -- ID of the instructor/expert
+    Price DECIMAL(10,2) DEFAULT 0.00,
     PricePackageID INT,
     CategoryID INT,
     ImageUrl NVARCHAR(255),
@@ -165,10 +166,11 @@ INSERT INTO Account (FullName, Username, Password, Email, RoleID, Status) VALUES
 ('Jane Student', 'student1', 'student123', 'student1@onlinelearning.com', 3, 1);
 
 -- Insert sample course
-INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson) VALUES
+INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price) VALUES
 ('Java Programming Fundamentals', 
  'Learn the basics of Java programming language including syntax, OOP concepts, and practical applications',
  (SELECT UserID FROM Account WHERE Username = 'expert1'),
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
  '/images/courses/java-fundamentals.jpg',
- 10);
+ 10,
+ 120);
