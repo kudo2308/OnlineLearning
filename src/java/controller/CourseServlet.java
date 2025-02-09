@@ -33,7 +33,7 @@ public class CourseServlet extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-//        try {
+        try {
             CourseDAO courseDAO = new CourseDAO();
             
             // Lấy tham số phân trang từ request
@@ -59,12 +59,12 @@ public class CourseServlet extends HttpServlet {
             
             // Forward đến trang OurCourse.jsp
             request.getRequestDispatcher("views/course/OurCourse.jsp").forward(request, response);
-    }
-//       } catch (Exception e) {
-//            System.out.println("Error in CourseServlet: " + e.getMessage());
-//            request.getRequestDispatcher("/common/error.jsp").forward(request, response);
-//        }
-//    } 
+    
+       } catch (Exception e) {
+            System.out.println("Error in CourseServlet: " + e.getMessage());
+            request.getRequestDispatcher("/public/404.jsp").forward(request, response);
+        }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
