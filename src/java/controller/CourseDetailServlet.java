@@ -16,7 +16,7 @@ public class CourseDetailServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-//        try {
+        try {
             // Lấy courseId từ parameter
             String courseIdStr = request.getParameter("id");
             if (courseIdStr == null || courseIdStr.trim().isEmpty()) {
@@ -44,12 +44,12 @@ public class CourseDetailServlet extends HttpServlet {
             
             // Forward to course detail page
             request.getRequestDispatcher("views/course/CourseDetail.jsp").forward(request, response);
-        }       
-//        } catch (Exception e) {
-//            System.out.println("Error in CourseDetailServlet: " + e.getMessage());
-//            request.getRequestDispatcher("common/error.jsp").forward(request, response);
-//        }
-//    }
+              
+        } catch (Exception e) {
+            System.out.println("Error in CourseDetailServlet: " + e.getMessage());
+            request.getRequestDispatcher("public/404.jsp").forward(request, response);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
