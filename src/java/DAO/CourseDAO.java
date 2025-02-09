@@ -81,6 +81,63 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
     
+    public List<Course> getAllCourses() {
+        List<Course> courseList = new ArrayList<>();
+        String sql = """
+                    SELECT c.[CourseID]
+                          ,c.[Title]
+                          ,c.[Description]
+                          ,c.[Price]
+                          ,c.[ExpertID]
+                          ,c.[CategoryID]
+                          ,c.[ImageUrl]
+                          ,c.[TotalLesson]
+                          ,c.[Status]
+                          ,c.[CreatedAt]
+                          ,c.[UpdatedAt]
+                          ,a.FullName as ExpertName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Course] c
+                    JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
+                    JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
+                    WHERE c.[Status] = 1
+                    ORDER BY c.[CourseID]
+                    OFFSET ? ROWS
+                    FETCH NEXT ? ROWS ONLY;
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setPricePackageID(rs.getInt("Price"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getBoolean("Status"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                Account expert = new Account();
+                expert.setFullName(rs.getString("ExpertName"));
+                course.setExpert(expert);
+                
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                course.setCategory(category);
+                
+                courseList.add(course);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return courseList;
+    }
+   
     public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
