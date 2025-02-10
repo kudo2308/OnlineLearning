@@ -146,7 +146,7 @@
                                                             <h6>${course.expert.fullName}</h6>
                                                         </div>
                                                         <div class="price">
-                                                            <h5>$${course.pricePackageID}</h5>
+                                                            <h5>$${course.price}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
