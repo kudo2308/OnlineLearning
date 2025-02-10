@@ -1,8 +1,4 @@
-/*
-  Student ID   : HE187382
-  Student name : Nguyen Minh Cuong
-  Due date     :  
- */
+
 package controller;
 
 import DAO.CategoryDAO;
@@ -17,10 +13,6 @@ import java.util.List;
 import model.Category;
 import model.Course;
 
-/**
- *
- * @author Minh Cuong
- */
 @WebServlet(name = "HomeController", urlPatterns = {"/home"})
 public class HomeController extends HttpServlet {
 
