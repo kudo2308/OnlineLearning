@@ -30,7 +30,7 @@ public class HomeController extends HttpServlet {
         CategoryDAO categoryDAO = new CategoryDAO();
         CourseDAO courseDAO = new CourseDAO(); 
         
-        List<Category> categories = categoryDAO.getAll();
+        List<Category> categories = categoryDAO.findALl();
         List<Course> courses = courseDAO.getAllCourses(0, 1);
         
         request.setAttribute("categories", categories);
@@ -44,7 +44,7 @@ public class HomeController extends HttpServlet {
         CourseDAO courseDAO = new CourseDAO(); 
         List<Course> courses = courseDAO.getAllCourses(0, 1);
         for (Course course : courses) {
-            System.out.println(course.getTitle() + course.getPrice());
+            System.out.println(course.getTitle() + course.getPricePackageID());
         }
     }
     }

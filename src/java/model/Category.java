@@ -11,6 +11,11 @@ public class Category {
     public Category() {
     }
 
+    public Category(int categoryID, String name) {
+        this.categoryID = categoryID;
+        this.name = name;
+    }
+
     public Category(int categoryID, String name, String description, Timestamp createdAt) {
         this.categoryID = categoryID;
         this.name = name;
@@ -50,4 +55,11 @@ public class Category {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" + "categoryID=" + categoryID + ", name=" + name + ", description=" + description + ", createdAt=" + createdAt + '}';
+    }
+    
+    
 }

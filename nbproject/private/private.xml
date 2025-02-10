@@ -3,12 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/PRJ301/OnlineLearning/src/java/model/Course.java</file>
             <file>file:/D:/PRJ301/OnlineLearning/src/java/DAO/CourseDAO.java</file>
-            <file>file:/D:/PRJ301/OnlineLearning/web/assets/css/homestyle.css</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/CourseServlet.java</file>
             <file>file:/D:/PRJ301/OnlineLearning/web/assets/css/base.css</file>
-            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/HomeController.java</file>
-            <file>file:/D:/PRJ301/OnlineLearning/web/public/home.jsp</file>
+            <file>file:/D:/PRJ301/OnlineLearning/web/assets/css/homestyle.css</file>
+            <file>file:/D:/PRJ301/OnlineLearning/web/views/user/BlogClassic.jsp</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/CourseDetailServlet.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/DAO/CategoryDAO.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/web/common/header.jsp</file>
+            <file>file:/D:/PRJ301/OnlineLearning/web/views/user/BlogDetail.jsp</file>
         </group>
     </open-files>
 </project-private>

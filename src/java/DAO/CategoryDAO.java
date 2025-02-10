@@ -1,44 +1,64 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package DAO;
 
+import DBContext.DBContext;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import model.Category;
-import DBContext.DBContext;
-import java.security.Timestamp;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 
 public class CategoryDAO extends DBContext {
 
-    public List<Category> getAll() {
-        List<Category> listFound = new ArrayList<>();
-        String sql = "Select *\n"
-                + "From Category";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+    private PreparedStatement ps;
+    private ResultSet rs;
+    private List<Category> categories;
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int id = rs.getInt("CategoryID");
-                String name = rs.getString("Name");
-                String des = rs.getString("Description");
-                 java.sql.Timestamp date = rs.getTimestamp("CreatedAt");
-                Category categories = new Category(id, name, des, date);
-
-                listFound.add(categories);
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        return listFound;
+    public CategoryDAO() {
+        categories = new ArrayList<>();
     }
     
     public static void main(String[] args) {
-        CategoryDAO categoryDAO = new CategoryDAO();
-        List<Category> categories = categoryDAO.getAll();
-        for (Category category : categories) {
-            System.out.println(category.getName() + category.getDescription() + category.getCreatedAt());
+        CategoryDAO courseDAO = new CategoryDAO();
+
+        List<Category> l = courseDAO.findALl();
+
+        for (Category course : l) {
+            System.out.println(course);
         }
+
+    }
+
+    public List<Category> findALl() {
+        String sql = "select * from Category";
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int categoryId = rs.getInt("CategoryID");
+                String name = rs.getString("Name");
+                String description = rs.getString("Description");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+
+                Category category = new Category(categoryId, name, description, createdAt);
+
+                categories.add(category);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return categories;
     }
 }
