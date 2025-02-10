@@ -18,6 +18,7 @@ public class CourseMapper {
         course.setDescription(createCourseRequest.getDescription());
         course.setCategoryID(createCourseRequest.getCategoryID());
         course.setTotalLesson(createCourseRequest.getTotalLesson());      
+        course.setStatus(true);
         return course;
         
     }
