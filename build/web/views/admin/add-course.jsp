@@ -158,7 +158,7 @@
                                         <div class="col-sm-2"></div>
                                         <div class="col-sm-7">
                                             <button type="submit" class="btn btn-primary">Add Course</button>
-                                            <a type="reset" href="course" class="btn btn-secondary">Back</a>
+                                            <a type="reset" href="courses" class="btn btn-secondary">Back</a>
                                         </div>
                                     </div>
                                 </form>

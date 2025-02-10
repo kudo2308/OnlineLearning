@@ -24,6 +24,24 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.lombok.jar-1}</file>
+<<<<<<< HEAD
+=======
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.classmate-1.7.0.jar-1}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.hibernate-validator-9.0.0.Beta3.jar-1}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jakarta.validation-api-3.1.0.jar-1}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jboss-logging-3.6.0.Final.jar}</file>
+>>>>>>> 84a05177d9face72ac2c9d5c5221fd1edb99d122
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
