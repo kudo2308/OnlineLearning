@@ -19,16 +19,12 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-<<<<<<< HEAD
-                    <file>${file.reference.lombok.jar-1}</file>
-=======
                     <file>${file.reference.lombok.jar-2}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.jboss-logging-3.6.0.Final.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
->>>>>>> f1976cebf52d53041b453be063405ca0efe1bdf4
                 </library>
                 <library dirs="200">
                     <file>${file.reference.classmate-1.7.0.jar-1}</file>
@@ -42,17 +38,6 @@
                     <file>${file.reference.jakarta.validation-api-3.1.0.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-<<<<<<< HEAD
-                <library dirs="200">
-                    <file>${file.reference.jboss-logging-3.6.0.Final.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jakarta.servlet.jsp.jstl-2.0.0.jar-1}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-=======
->>>>>>> f1976cebf52d53041b453be063405ca0efe1bdf4
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>
