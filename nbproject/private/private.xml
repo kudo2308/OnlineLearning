@@ -2,14 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-            <file>file:/D:/kỳ%205_SE/SWP/SWP_OLSver1/src/java/controller/CourseController.java</file>
-            <file>file:/D:/kỳ%205_SE/SWP/SWP_OLSver1/src/java/controller/CourseDetailServlet.java</file>
-            <file>file:/D:/kỳ%205_SE/SWP/SWP_OLSver1/src/java/controller/CourseServlet.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/model/Course.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/DAO/CourseDAO.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/CourseServlet.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/AddCourse.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/CourseController.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/HomeController.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/controller/CourseDetailServlet.java</file>
+            <file>file:/D:/PRJ301/OnlineLearning/web/assets/css/404.css</file>
+            <file>file:/D:/PRJ301/OnlineLearning/web/public/home.jsp</file>
+            <file>file:/D:/PRJ301/OnlineLearning/src/java/model/PageControl.java</file>
         </group>
->>>>>>> 9fb4c3d88380a291a8a5e62135c842b170d325b0
     </open-files>
 </project-private>
