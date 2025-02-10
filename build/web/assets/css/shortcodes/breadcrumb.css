@@ -1,7 +1,8 @@
 .breadcrumb-row {
+    border-top: 1px solid #e5e5e5;
     background: #fff;
     padding: 15px 0;
-	border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 .breadcrumb-row ul {
     margin: 0;
@@ -10,12 +11,12 @@
     padding: 0;
     margin-right: 3px;
     color: #000;
-	display: inline-block;
+    display: inline-block;
 }
 .breadcrumb-row ul li:after {
     content: "\f105";
     margin-left: 7px;
-	font-family: fontawesome;
+    font-family: fontawesome;
 }
 .breadcrumb-row ul li:last-child {
     color: #000;

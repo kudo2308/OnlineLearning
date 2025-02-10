@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DBContext;
 
-/**
- *
- * @author dohie
- */
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -26,5 +18,10 @@ public class DBContext {
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println(ex);
         }
+    }
+
+    // Phương thức này sẽ trả về kết nối cơ sở dữ liệu
+    public Connection getConnection() {
+        return connection;
     }
 }

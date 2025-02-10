@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 public class Course {
     private int courseID;
     private String title;
-    private double price;
     private String description;
     private int expertID;
     private int pricePackageID;
@@ -22,6 +21,24 @@ public class Course {
     
     public Course() {
     }
+
+    public Course(int courseID, String title, String description, int expertID, int pricePackageID, int categoryID, String imageUrl, int totalLesson, boolean status, Timestamp createdAt, Timestamp updatedAt, Account expert, Category category) {
+        this.courseID = courseID;
+        this.title = title;
+        this.description = description;
+        this.expertID = expertID;
+        this.pricePackageID = pricePackageID;
+        this.categoryID = categoryID;
+        this.imageUrl = imageUrl;
+        this.totalLesson = totalLesson;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.expert = expert;
+        this.category = category;
+    }
+    
+    
     
     public int getCourseID() {
         return courseID;
@@ -37,14 +54,6 @@ public class Course {
     
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
     
     public String getDescription() {
@@ -134,4 +143,11 @@ public class Course {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    @Override
+    public String toString() {
+        return "Course{" + "courseID=" + courseID + ", title=" + title + ", description=" + description + ", expertID=" + expertID + ", pricePackageID=" + pricePackageID + ", categoryID=" + categoryID + ", imageUrl=" + imageUrl + ", totalLesson=" + totalLesson + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", expert=" + expert + ", category=" + category + '}';
+    }
+    
+    
 }

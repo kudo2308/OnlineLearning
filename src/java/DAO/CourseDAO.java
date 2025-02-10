@@ -9,10 +9,8 @@ package DAO;
  * @author dohie
  */
 import DBContext.DBContext;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static constant.Constant.RECORD_PER_PAGE;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Course;
@@ -20,7 +18,117 @@ import model.Account;
 import model.Category;
 import model.Feedback;
 
-public class CourseDAO extends DBContext {
+public class CourseDAO extends DBContext{
+
+    private PreparedStatement ps;
+    private ResultSet rs;
+    private List<Course> courses;
+
+    public CourseDAO() {
+        courses = new ArrayList<>();
+    }
+
+    public static void main(String[] args) {
+        CourseDAO courseDAO = new CourseDAO();
+
+        int a = courseDAO.findTotalRecord();
+        
+        System.out.println(a);
+
+    }
+
+    public int findTotalRecord() {
+        String sql = "select count(c.CourseID) from Course c";
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return -1;
+    }
+
+    public List<Course> findByPage(int page) {
+
+        String sql = "select * from Course co\n"
+                + "join Account a\n"
+                + "on co.ExpertID = a.UserID\n"
+                + "join Category ca\n"
+                + "on co.CategoryID = ca.CategoryID\n"
+                + "Order by co.CourseID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, (page - 1) * RECORD_PER_PAGE);
+            ps.setInt(2, RECORD_PER_PAGE);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int courseId = rs.getInt("CourseID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String imageUrl = rs.getString("ImageUrl");
+                int totalLesson = rs.getInt("TotalLesson");
+                boolean status = rs.getBoolean("Status");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                Timestamp ureatedAt = rs.getTimestamp("UpdatedAt");
+
+                int userId = rs.getInt("UserID");
+                String fullName = rs.getString("FullName");
+                int roleId = rs.getInt("RoleID");
+
+                int categoryId = rs.getInt("CategoryID");
+                String categoryName = rs.getString("Name");
+
+                Account expert = new Account(userId, fullName, roleId);
+
+                Category category = new Category(categoryId, categoryName);
+
+                Course course = new Course(courseId, title, description, userId, 0,
+                        categoryId, imageUrl, totalLesson, status, createdAt, ureatedAt, expert, category);
+
+                courses.add(course);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return courses;
+    }
+
+    public boolean AddCourse(Course course) {
+        String sql = "INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            ps.setString(1, course.getTitle());
+            ps.setString(2, course.getDescription());
+            ps.setInt(3, course.getExpertID());
+            ps.setInt(4, course.getCategoryID());
+            ps.setString(5, course.getImageUrl());
+            ps.setInt(6, course.getTotalLesson());
+            ps.setBoolean(7, course.isStatus());
+
+            int rowsInserted = ps.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 
     public List<Course> getAllCourses(int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
@@ -56,7 +164,7 @@ public class CourseDAO extends DBContext {
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
-                course.setPrice(rs.getDouble("Price"));
+                course.setPricePackageID(rs.getInt("Price"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -464,11 +572,129 @@ public class CourseDAO extends DBContext {
         return feedbackList;
     }
 
-    public static void main(String[] args) {
-        CourseDAO courseDAO = new CourseDAO();
-        List<Course> courses = courseDAO.getAllCourses(0, 1);
-        for (Course course : courses) {
-            System.out.println(course.getTitle());
+    public List<Course> findByPageFilterCategoryAndStatus(int page, int categoryIdRequest, String statusRequest) {
+
+        String sql = categoryIdRequest == 0 ? "select * from Course co\n"
+                + "join Account a\n"
+                + "on co.ExpertID = a.UserID\n"
+                + "join Category ca\n"
+                + "on co.CategoryID = ca.CategoryID\n"
+                + "where co.[Status] like ? \n"
+                + "Order by co.CourseID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY" : "select * from Course co\n"
+                + "join Account a\n"
+                + "on co.ExpertID = a.UserID\n"
+                + "join Category ca\n"
+                + "on co.CategoryID = ca.CategoryID\n"
+                + "where co.[Status] like ? and co.CategoryID = ?\n"
+                + "Order by co.CourseID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            if (categoryIdRequest == 0) {
+                ps.setString(1, "%" + statusRequest + "%");
+                ps.setInt(2, (page - 1) * RECORD_PER_PAGE);
+                ps.setInt(3, RECORD_PER_PAGE);
+            } else {
+                ps.setString(1, "%" + statusRequest + "%");
+                ps.setInt(2, categoryIdRequest);
+
+                ps.setInt(3, (page - 1) * RECORD_PER_PAGE);
+                ps.setInt(4, RECORD_PER_PAGE);
+            }
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int courseId = rs.getInt("CourseID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String imageUrl = rs.getString("ImageUrl");
+                int totalLesson = rs.getInt("TotalLesson");
+                boolean status = rs.getBoolean("Status");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                Timestamp ureatedAt = rs.getTimestamp("UpdatedAt");
+
+                int userId = rs.getInt("UserID");
+                String fullName = rs.getString("FullName");
+                int roleId = rs.getInt("RoleID");
+
+                int categoryId = rs.getInt("CategoryID");
+                String categoryName = rs.getString("Name");
+
+                Account expert = new Account(userId, fullName, roleId);
+
+                Category category = new Category(categoryId, categoryName);
+
+                Course course = new Course(courseId, title, description, userId, 0,
+                        categoryId, imageUrl, totalLesson, status, createdAt, ureatedAt, expert, category);
+
+                courses.add(course);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
         }
+        return courses;
+    }
+
+    public List<Course> searchCourseByName(int page, String nameRequest) {
+
+        String sql = "select * from Course co\n"
+                + "join Account a\n"
+                + "on co.ExpertID = a.UserID\n"
+                + "join Category ca\n"
+                + "on co.CategoryID = ca.CategoryID\n"
+                + "where co.Title like ? \n"
+                + "Order by co.CourseID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            ps.setString(1, "%" + nameRequest + "%");
+            ps.setInt(2, (page - 1) * RECORD_PER_PAGE);
+            ps.setInt(3, RECORD_PER_PAGE);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int courseId = rs.getInt("CourseID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String imageUrl = rs.getString("ImageUrl");
+                int totalLesson = rs.getInt("TotalLesson");
+                boolean status = rs.getBoolean("Status");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                Timestamp ureatedAt = rs.getTimestamp("UpdatedAt");
+
+                int userId = rs.getInt("UserID");
+                String fullName = rs.getString("FullName");
+                int roleId = rs.getInt("RoleID");
+
+                int categoryId = rs.getInt("CategoryID");
+                String categoryName = rs.getString("Name");
+
+                Account expert = new Account(userId, fullName, roleId);
+
+                Category category = new Category(categoryId, categoryName);
+
+                Course course = new Course(courseId, title, description, userId, 0,
+                        categoryId, imageUrl, totalLesson, status, createdAt, ureatedAt, expert, category);
+
+                courses.add(course);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return courses;
     }
 }
