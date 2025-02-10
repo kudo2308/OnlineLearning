@@ -12,6 +12,10 @@
         <servlet-name>CourseController</servlet-name>
         <servlet-class>controller.CourseController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddCourse</servlet-name>
+        <servlet-class>controller.AddCourse</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseServlet</servlet-name>
         <url-pattern>/course</url-pattern>
@@ -23,5 +27,9 @@
     <servlet-mapping>
         <servlet-name>CourseController</servlet-name>
         <url-pattern>/courses</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddCourse</servlet-name>
+        <url-pattern>/addCourse</url-pattern>
     </servlet-mapping>
 </web-app>
