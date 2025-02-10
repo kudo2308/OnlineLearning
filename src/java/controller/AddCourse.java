@@ -12,10 +12,13 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import java.util.List;
+import java.util.Set;
 import model.Category;
 //gioi han kich thuoc tep
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
@@ -44,10 +47,17 @@ public class AddCourse extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        int totalLesson = Integer.parseInt(request.getParameter("totalLesson"));
+        Part filePart = request.getPart("image");
 
+        CategoryDAO categoryDAO = new CategoryDAO();
+        List<Category> categories = categoryDAO.findALl();
+        request.setAttribute("categories", categories);
+     
     }
-
-   
     @Override
     public String getServletInfo() {
         return "Short description";
