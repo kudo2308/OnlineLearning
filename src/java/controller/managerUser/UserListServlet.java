@@ -68,9 +68,9 @@ public class UserListServlet extends HttpServlet {
                 System.out.println("Invalid page number: " + e.getMessage());
             }
         }
-        List<User> userList = dao.pagingAccount(page, 3);
+        List<User> userList = dao.pagingAccount(page, 6);
         int totalUsers = dao.getTotalUsers();
-        int totalPages = (int) Math.ceil((double) totalUsers / 3);
+        int totalPages = (int) Math.ceil((double) totalUsers / 6);
 
         request.setAttribute("listUser", userList);
         request.setAttribute("currentPage", page);

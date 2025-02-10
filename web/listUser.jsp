@@ -263,7 +263,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="courses.html" class="ttr-material-button">
+                            <a href="UserList" class="ttr-material-button">
                                 <span class="ttr-icon"><i class="ti-list"></i></span>
                                 <span class="ttr-label">User List</span>
                             </a>
@@ -429,7 +429,7 @@
 
                 <a href="addUser.jsp" class="add-btn">➕ Add New User</a>
                 <div class="search-box">
-                    <form method="post" action="UserListServlet">
+                    <form method="post" action="UserList">
                         <input type="text" name="searchValue" placeholder="Search by name..." value="${param.searchValue}">
                         <button type="submit">🔍 Search</button>
                     </form>
@@ -513,148 +513,7 @@
                     </c:if>
                 </div>
             </div>
-            <style>
-                h1 {
-                    font-size: 24px;
-                    color: #333;
-                    margin-bottom: 20px;
-                }
-
-                
-                .add-btn {
-                    display: inline-block;
-                    padding: 10px 15px;
-                    background-color: #28a745;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    text-decoration: none;
-                    font-size: 16px;
-                    transition: background 0.3s;
-                    margin-bottom: 15px;
-                }
-                .search-box {
-                    margin-bottom: 15px;
-                    text-align: center;
-                }
-
-                .search-box input {
-                    padding: 8px;
-                    width: 250px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    font-size: 14px;
-                }
-
-                .search-box button {
-                    padding: 8px 12px;
-                    background-color: #007bff;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 14px;
-                }
-
-                .search-box button:hover {
-                    background-color: #0056b3;
-                }
-
-                .add-btn:hover {
-                    background-color: #218838;
-                }
-
-               
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    background: white;
-                    margin-top: 20px;
-                }
-
-                th, td {
-                    padding: 12px;
-                    border: 1px solid #ddd;
-                    text-align: center;
-                }
-
-                th {
-                    background-color: #007bff;
-                    color: white;
-                }
-
-                tr:nth-child(even) {
-                    background-color: #f9f9f9;
-                }
-
-                tr:hover {
-                    background-color: #f1f1f1;
-                }
-
-               
-                .action-buttons {
-                    display: flex;
-                    justify-content: center;
-                    gap: 10px;
-                }
-
-                .edit-btn, .block-btn, .unblock-btn, .delete-btn{
-                    padding: 6px 12px;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    font-size: 14px;
-                    transition: 0.3s;
-                }
-
-                .edit-btn {
-                    background-color: #007bff;
-                    color: white;
-                }
-
-                .edit-btn:hover {
-                    background-color: #0056b3;
-                }
-
-                .block-btn {
-                    background-color: #dc3545;
-                    color: white;
-                }
-
-                .block-btn:hover {
-                    background-color: orange;
-                }
-
-                .unblock-btn {
-                    background-color: #28a745;
-                    color: white;
-                }
-
-                .unblock-btn:hover {
-                    background-color: #218838;
-                }
-                .delete-btn:hover{
-                    background-color: #dc3545;
-                    color: white;
-                }
-                .pagination {
-                    text-align: center;
-                    margin-top: 20px;
-                }
-                .pagination a {
-                    display: inline-block;
-                    padding: 8px 12px;
-                    margin: 0 5px;
-                    text-decoration: none;
-                    background-color: #007bff;
-                    color: white;
-                    border-radius: 5px;
-                }
-                .pagination a.active {
-                    background-color: #0056b3;
-                }
-
-            </style>
+            
 
 
         </main>
