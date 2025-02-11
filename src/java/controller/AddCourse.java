@@ -5,6 +5,7 @@
 package controller;
 
 import DAO.CategoryDAO;
+import DTOs.CreateCourseRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import model.Category;
 //gioi han kich thuoc tep
-
+    
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 50)
@@ -59,12 +60,20 @@ public class AddCourse extends HttpServlet {
         CategoryDAO categoryDAO = new CategoryDAO();
         List<Category> categories = categoryDAO.findALl();
         request.setAttribute("categories", categories);
-
+     CreateCourseRequest courseRequest = new CreateCourseRequest(title, description, categoryId, totalLesson);
+     Set<ConstraintViolation<CreateCourseRequest>> violations = validator.validate(courseRequest);
+     if (!violations.isEmpty()) {
+            request.setAttribute("courseRequest", courseRequest);
+            request.setAttribute("violations", violations);
+            request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+            return;
+        }
+     
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    
 }
