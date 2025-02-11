@@ -5,6 +5,7 @@
 package controller;
 
 import DAO.CategoryDAO;
+import DAO.CourseDAO;
 import DTOs.CreateCourseRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,9 +19,15 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
+import mapper.CourseMapper;
 import model.Category;
+import model.Course;
 //gioi han kich thuoc tep
     
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
@@ -68,6 +75,22 @@ public class AddCourse extends HttpServlet {
             request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
             return;
         }
+       String fileName = extractFileName(filePart);
+        String imagePath = saveFile(filePart, fileName);
+        Course course = CourseMapper.mapCreateCoursetoCourse(courseRequest);
+        course.setImageUrl(imagePath);
+        course.setStatus(true);
+        course.setExpertID(2);
+
+        CourseDAO courseDAO = new CourseDAO();
+        if (courseDAO.AddCourse(course)) {
+            request.setAttribute("courseRequest", courseRequest);
+            request.setAttribute("msg", "Add successfully!");
+            request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("error.jsp");
+        }
+
      
     }
 
@@ -75,5 +98,42 @@ public class AddCourse extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
+      private String extractFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        for (String s : items) {
+            if (s.trim().startsWith("filename")) {
+                return s.substring(s.indexOf("=") + 2, s.length() - 1);
+            }
+        }
+        return "";
+    }
+
+    private String saveFile(Part filePart, String fileName) throws IOException {
+        if (fileName == null || fileName.isEmpty()) {
+            return null;
+        }
+
+        // Xác định thư mục upload
+        String uploadFolder = getServletContext().getRealPath("") + "../../web/" + UPLOAD_DIR;
+        File folder = new File(uploadFolder);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        // Đường dẫn đầy đủ trên server
+        File file = new File(uploadFolder, fileName);
+
+        // Lưu file
+        try (InputStream fileContent = filePart.getInputStream(); OutputStream out = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fileContent.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        }
+
+        // Trả về đường dẫn tương đối
+        return UPLOAD_DIR + "/" + fileName;
+    }
 }
