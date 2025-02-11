@@ -68,7 +68,7 @@ public class Register extends HttpServlet {
                 HttpSession session = request.getSession();
                 Account newUser = d.check(user); // Lấy thông tin user vừa tạo
                 session.setAttribute("account", newUser);
-                response.sendRedirect("home.jsp");
+                response.sendRedirect("home");
             } else {
                 // Nếu tạo tài khoản thất bại, thông báo lỗi
                 request.setAttribute("errorregister", "Tạo tài khoản thất bại");
