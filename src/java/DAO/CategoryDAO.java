@@ -32,7 +32,7 @@ public class CategoryDAO extends DBContext {
 
         for (Category course : l) {
             System.out.println(course);
-        }
+        }   
 
     }
 
