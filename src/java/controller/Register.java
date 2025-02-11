@@ -28,15 +28,14 @@ public class Register extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
         String fullname = request.getParameter("fullname");
-        String address = request.getParameter("address");
-
+  
         // Kiểm tra nếu có trường nào bị bỏ trống
         if (user == null || user.isEmpty()
                 || pass == null || pass.isEmpty()
                 || email == null || email.isEmpty()
                 || phone == null || phone.isEmpty()
                 || fullname == null || fullname.isEmpty()
-                || address == null || address.isEmpty()) {
+                ) {
             request.setAttribute("errorregister", "Tất cả các trường đều bắt buộc");
             request.getRequestDispatcher("dk.jsp").forward(request, response);
             return;
@@ -61,7 +60,7 @@ public class Register extends HttpServlet {
 
         if (tk == null) {
             // Nếu tài khoản chưa tồn tại, tạo người dùng mới
-            boolean userCreated = d.createAccount(user, pass, fullname, phone, address, email);
+            boolean userCreated = d.createAccount(user, pass, fullname, phone, email);
 
             if (userCreated) {
                 // Nếu tạo thành công, đăng nhập và chuyển hướng tới home.jsp

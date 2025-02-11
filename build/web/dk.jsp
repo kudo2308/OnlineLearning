@@ -38,10 +38,7 @@
                     <input type="password" placeholder="Password" name="pass" id="pass">
                     <i class='bx bxs-lock-alt'></i>
                 </div>
-                <div class="input-box">
-                    <input type="text" placeholder="Address" name="address"  value="${param.address}" id="address">
-                    <i class='bx bxs-home'></i>
-                </div>
+               
 
                 <div class="input-box">
                     <input type="text" placeholder="Phone" name="phone" value="${param.phone}" id="phone" >

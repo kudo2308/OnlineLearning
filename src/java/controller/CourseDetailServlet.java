@@ -40,7 +40,7 @@ public class CourseDetailServlet extends HttpServlet {
             int offset = 0;
             
             request.setAttribute("course", course);
-            request.setAttribute("relatedCourses", courseDAO.getCoursesByCategory(categoryId, offset, recordsPerPage));
+            request.setAttribute("relatedCourses", courseDAO.getCoursesByExpert(categoryId, offset, recordsPerPage));
             
             // Forward to course detail page
             request.getRequestDispatcher("views/course/CourseDetail.jsp").forward(request, response);

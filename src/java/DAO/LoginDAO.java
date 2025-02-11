@@ -8,7 +8,7 @@ import model.Account;
 
 public class LoginDAO extends DBContext {
 
-    public boolean createAccount(String user, String pass, String fullname, String phone, String address, String email) {
+    public boolean createAccount(String user, String pass, String fullname, String phone,String email) {
         String sql = "INSERT INTO [dbo].[Account] ([Username], [Password], [FullName], [Email], [RoleID], [Status], [CreatedAt], [UpdatedAt]) "
                    + "VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
         try {
