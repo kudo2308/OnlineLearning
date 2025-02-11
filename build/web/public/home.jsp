@@ -65,7 +65,7 @@
                             <li>
                                 <img
                                     class="image-product"
-                                    src="${pageContext.request.contextPath}/assets/images/courses/pic1.jpg"  alt="${course.title}">
+                                    src="${pageContext.request.contextPath}${course.imageUrl}"  alt="${course.title}">
                                 <p>
                                     <a style="color: black; text-decoration: none" href="#">
                                         ${course.title}
@@ -77,9 +77,9 @@
                             </li>
                         </c:forEach>
                     </c:if>
-                    <c:if test="${empty courses}">
-                        <li>Hiện chưa có sản phẩm mới.</li>
-                        </c:if>
+                            <c:if test="${empty courses}">
+                                <li>Hiện chưa có sản phẩm mới.</li>
+                            </c:if>
                 </ul>
             </div>
 
