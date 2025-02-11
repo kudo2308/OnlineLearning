@@ -35,7 +35,7 @@
 
     <div class="right">
         <a id="my-course" href="${pageContext.request.contextPath}/Blog">Blog</a>
-        <a id="my-course" href="${pageContext.request.contextPath}/account">My Course</a>
+        <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
         <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
             <span class="material-icons md-18">notifications_none</span>
         </a>
