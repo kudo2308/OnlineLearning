@@ -1,14 +1,9 @@
- /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
 import DTOs.CreateCourseRequest;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -28,8 +23,7 @@ import java.util.Set;
 import mapper.CourseMapper;
 import model.Category;
 import model.Course;
-//gioi han kich thuoc tep
-    
+
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 50)
@@ -48,9 +42,7 @@ public class AddCourse extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
-
         List<Category> categories = categoryDAO.findALl();
-
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
     }
@@ -67,48 +59,51 @@ public class AddCourse extends HttpServlet {
         CategoryDAO categoryDAO = new CategoryDAO();
         List<Category> categories = categoryDAO.findALl();
         request.setAttribute("categories", categories);
-     CreateCourseRequest courseRequest = new CreateCourseRequest(title, description, categoryId, totalLesson);
-     Set<ConstraintViolation<CreateCourseRequest>> violations = validator.validate(courseRequest);
-     if (!violations.isEmpty()) {
+
+        CreateCourseRequest courseRequest = new CreateCourseRequest(title, description, categoryId, totalLesson);
+        Set<ConstraintViolation<CreateCourseRequest>> violations = validator.validate(courseRequest);
+
+        if (!violations.isEmpty()) {
             request.setAttribute("courseRequest", courseRequest);
             request.setAttribute("violations", violations);
             request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
             return;
         }
-       String fileName = extractFileName(filePart);
+
+        String fileName = extractFileName(filePart);
         String imagePath = saveFile(filePart, fileName);
+
+        if (imagePath == null) { // Handle image upload failure
+            request.setAttribute("courseRequest", courseRequest);
+            request.setAttribute("error", "Image upload failed!"); // Or a more specific message
+            request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+            return;
+        }
+
         Course course = CourseMapper.mapCreateCoursetoCourse(courseRequest);
         course.setImageUrl(imagePath);
         course.setStatus(true);
-        course.setExpertID(2);
-<<<<<<< HEAD
-=======
+        course.setExpertID(2); //  Make sure ExpertID is appropriate.  Hardcoding is usually bad.
 
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
         CourseDAO courseDAO = new CourseDAO();
         if (courseDAO.AddCourse(course)) {
-            request.setAttribute("courseRequest", courseRequest);
+            request.setAttribute("courseRequest", new CreateCourseRequest()); // Clear the form
             request.setAttribute("msg", "Add successfully!");
             request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
         } else {
-            response.sendRedirect("error.jsp");
+            // More robust error handling.  Log the error!
+            request.setAttribute("courseRequest", courseRequest); // Repopulate the form
+            request.setAttribute("error", "Add course failed. Please try again.");
+            request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
         }
-
-<<<<<<< HEAD
-=======
-     
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-<<<<<<< HEAD
-     private String extractFileName(Part part) {
-=======
-      private String extractFileName(Part part) {
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
+
+    private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] items = contentDisp.split(";");
         for (String s : items) {
@@ -118,46 +113,32 @@ public class AddCourse extends HttpServlet {
         }
         return "";
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
     private String saveFile(Part filePart, String fileName) throws IOException {
-        if (fileName == null || fileName.isEmpty()) {
-            return null;
+        if (fileName == null || fileName.isEmpty() || filePart == null || filePart.getSize() == 0) {
+            return null; // Or handle the error differently
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
-        // Xác định thư mục upload
         String uploadFolder = getServletContext().getRealPath("") + "../../web/" + UPLOAD_DIR;
         File folder = new File(uploadFolder);
         if (!folder.exists()) {
             folder.mkdirs();
         }
-<<<<<<< HEAD
-        // Đường dẫn đầy đủ trên server
-        File file = new File(uploadFolder, fileName);
-=======
 
-        // Đường dẫn đầy đủ trên server
         File file = new File(uploadFolder, fileName);
 
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
-        // Lưu file
-        try (InputStream fileContent = filePart.getInputStream(); OutputStream out = new FileOutputStream(file)) {
+        try (InputStream fileContent = filePart.getInputStream();
+             OutputStream out = new FileOutputStream(file)) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = fileContent.read(buffer)) != -1) {
                 out.write(buffer, 0, bytesRead);
             }
+        } catch (IOException e) {
+            e.printStackTrace(); // Log the exception!
+            return null; // Indicate failure
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
-        // Trả về đường dẫn tương đối
         return UPLOAD_DIR + "/" + fileName;
     }
 }
