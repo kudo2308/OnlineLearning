@@ -6,6 +6,17 @@
 
 <nav>
     <!-- Your navigation bar code -->
+    <c:choose>
+        <c:when test="${not empty sessionScope.account}">
+            <!-- Display Hello, account.name if account exists in session -->
+            <a href="${pageContext.request.contextPath}/account">Hello, ${sessionScope.account.fullName}</a>
+            <a href="${pageContext.request.contextPath}/logout">Sign out</a>
+        </c:when>
+        <c:otherwise>
+            <!-- Default sign in or register if no account in session -->
+            <a href="${pageContext.request.contextPath}/login">Sign in or Register</a>
+        </c:otherwise>
+    </c:choose>
 </nav>
 
 <header class="logo-body">
@@ -22,23 +33,20 @@
     </form>
 
     <!-- Category dropdown form -->
-   <div class="categories-container">
-    <form id="categories-dropdown" action="courses" method="get">
-        <select class="select-category" name="category" onchange="this.form.submit()">
-            <option value="">All categories</option>
-            <c:forEach var="category" items="${categories}">
-                <option value="${category.categoryID}">${category.name}</option>
-            </c:forEach>
-        </select>
-    </form>
-</div>
+    <select id="categories-dropdown" onchange="this.form.submit())">
+        <option href="${pageContext.request.contextPath}/products">All categories</option>
+        <div class="material-icons md-18">
+            arrow_drop_down
+            <div class="dropdown-content">
+                <c:forEach var="category" items="${categories}">
+                    <option href="${pageContext.request.contextPath}/products?category=1">${category.name}</option>
+                </c:forEach>
+
+            </div>
+    </select>
 
     <div class="right">
-<<<<<<< HEAD
         <a id="my-course" href="${pageContext.request.contextPath}/blog">Blog</a>
-=======
-        <a id="my-course" href="${pageContext.request.contextPath}/Blog">Blog</a>
->>>>>>> ff559f16fb7d91e4c2e6f372889e35eb2dd026bf
         <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
         <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
             <span class="material-icons md-18">notifications_none</span>
