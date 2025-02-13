@@ -8,9 +8,9 @@ import model.Account;
 
 public class LoginDAO extends DBContext {
 
-    public boolean createAccount(String user, String pass, String fullname, String phone,String email) {
+    public boolean createAccount(String user, String pass, String fullname, String phone, String email) {
         String sql = "INSERT INTO [dbo].[Account] ([Username], [Password], [FullName], [Email], [RoleID], [Status], [CreatedAt], [UpdatedAt]) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+                + "VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, user);
@@ -28,29 +28,18 @@ public class LoginDAO extends DBContext {
         return false;
     }
 
-    public Account check(String user) {
-        String sql = "SELECT * FROM [Account] WHERE Username = ?";
+    public boolean check(String email) {
+        boolean exist = false;
+        String sql = "SELECT Email FROM [Account] WHERE Email = ?";
         try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, user);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Account account = new Account();
-                account.setUserID(rs.getInt("UserID"));
-                account.setUsername(rs.getString("Username"));
-                account.setPassword(rs.getString("Password"));
-                account.setFullName(rs.getString("FullName"));
-                account.setEmail(rs.getString("Email"));
-                account.setRoleID(rs.getInt("RoleID"));
-                account.setStatus(rs.getBoolean("Status"));
-                account.setCreatedAt(rs.getTimestamp("CreatedAt"));
-                account.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                return account;
-            }
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setString(1, email);
+            ResultSet rs = pre.executeQuery();
+            exist = rs.next();
         } catch (SQLException e) {
-             e.getMessage();
+            e.getMessage();
         }
-        return null;
+        return exist;
     }
 
     public Account check(String user, String pass) {

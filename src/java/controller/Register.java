@@ -1,14 +1,17 @@
 package controller;
 
 import DAO.LoginDAO;
+import config.EmailSender;
+import config.OTP;
+import config.Security;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.Account;
+import java.net.URLEncoder;
 
 @WebServlet(name = "Register", urlPatterns = {"/register"})
 public class Register extends HttpServlet {
@@ -16,67 +19,75 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("dk.jsp");
+        response.sendRedirect("register.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String user = request.getParameter("user");
-        String pass = request.getParameter("pass");
         String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
         String fullname = request.getParameter("fullname");
-  
+        String pass = request.getParameter("pass");
         // Kiểm tra nếu có trường nào bị bỏ trống
-        if (user == null || user.isEmpty()
-                || pass == null || pass.isEmpty()
-                || email == null || email.isEmpty()
-                || phone == null || phone.isEmpty()
-                || fullname == null || fullname.isEmpty()
-                ) {
-            request.setAttribute("errorregister", "Tất cả các trường đều bắt buộc");
-            request.getRequestDispatcher("dk.jsp").forward(request, response);
+        if (pass == null || pass.isEmpty() || email == null || email.isEmpty() || fullname == null || fullname.isEmpty()) {
+            request.setAttribute("errorregister", "All fields is required");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
         }
-
+         request.setAttribute("fullname", fullname);
         // Kiểm tra định dạng email hợp lệ
         if (!email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            request.setAttribute("errorregister", "Định dạng email không hợp lệ");
-            request.getRequestDispatcher("dk.jsp").forward(request, response);
+            request.setAttribute("errorregister", "Invalid email format");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
         }
-
-        // Kiểm tra số điện thoại hợp lệ (giả sử 10 chữ số)
-        if (!phone.matches("^[0-9]{10}$")) {
-            request.setAttribute("errorregister", "Số điện thoại phải là 10 chữ số");
-            request.getRequestDispatcher("dk.jsp").forward(request, response);
+        request.setAttribute("email", email);
+        //Kiểm tra định dạng của passwword
+        if (pass.length() < 8) {
+            request.setAttribute("errorregister", "Password must be at least 8 character ");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
         }
-
-        LoginDAO d = new LoginDAO();
-        Account tk = d.check(user); 
-
-        if (tk == null) {
-            // Nếu tài khoản chưa tồn tại, tạo người dùng mới
-            boolean userCreated = d.createAccount(user, pass, fullname, phone, email);
-
-            if (userCreated) {
-                // Nếu tạo thành công, đăng nhập và chuyển hướng tới home.jsp
-                HttpSession session = request.getSession();
-                Account newUser = d.check(user); // Lấy thông tin user vừa tạo
-                session.setAttribute("account", newUser);
-                response.sendRedirect("home");
-            } else {
-                // Nếu tạo tài khoản thất bại, thông báo lỗi
-                request.setAttribute("errorregister", "Tạo tài khoản thất bại");
-                request.getRequestDispatcher("dk.jsp").forward(request, response);
-            }
+        if (pass.matches(".*[A-Z].*")) {
+            request.setAttribute("errorregister", "Password must be contain an uppercase letter");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+        if (pass.matches(".*\\d.*")) {
+            request.setAttribute("errorregister", "Password must be has number");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+        if (pass.matches(".*[@#$%^&+=!].*")) {
+            request.setAttribute("errorregister", "Password must be has a special character");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+        //Hash Email    
+        String emailHash = Security.encode(email);
+        String passHash = Security.encode(pass);
+        //kiểm tra đã đăng kí chưa
+        LoginDAO dao = new LoginDAO();
+        boolean checkUser = dao.check(email);
+        if (checkUser) {
+            response.sendRedirect("login");
         } else {
-            // Nếu người dùng đã tồn tại, thông báo lỗi
-            request.setAttribute("errorregister", "Tài khoản đã tồn tại");
-            request.getRequestDispatcher("dk.jsp").forward(request, response);
+            //Tạo session và lưu sessionId pending và tạo otp , attempt
+            OTP otp = new OTP();
+            int otpValue = otp.createOTP(emailHash);
+            if (otpValue == -1) {
+                request.setAttribute("errorregister", "Error create OTP");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+            }
+            String sessionId = otp.createSessionId(email, passHash, fullname);
+            //Gửi otp Email
+            EmailSender.sendOTP(email, fullname, otpValue);
+            // Gửi SessionId lên Cookie
+            Cookie sessionCoookie = new Cookie("Session_ID_Pending", sessionId);
+            sessionCoookie.setMaxAge(30 * 60);
+            sessionCoookie.setHttpOnly(true);
+            response.addCookie(sessionCoookie);
         }
     }
 
