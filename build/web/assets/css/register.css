@@ -9,23 +9,40 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);
+      min-height: 100vh;
 }
+/* Đặt video full màn hình */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.video-background video {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
+/* Đảm bảo nội dung nằm trên video */
 .content {
     position: relative;
     z-index: 1;
-    color: #f1f1f1;
+    color: #fff;
     text-align: center;
     padding: 20px;
 }
 
 .wrapper{
-    width: 510px;  /* Reduce width */
+    width: 350px;  /* Reduce width */
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, .5);
+    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(9px);
-    color: #f1f1f1;
+    color: #fff;
     border-radius: 12px;
     padding: 20px 30px;  /* Reduce padding */
 }
@@ -38,31 +55,25 @@ body{
 .wrapper .input-box{
     position: relative;
     width: 100%;
-    height: 59px;  /* Reduce input height */
+    height: 40px;  /* Reduce input height */
     margin: 20px 0;  /* Reduce margins */
 }
-.wrapper .input-option{
-    position: relative;
-    width: 100%;
-    height: 40px;  /* Reduce input height */
-    margin: 20px 0 0 0;  /* Reduce margins */
-}
+
 .input-box input{
     width: 100%;
     height: 100%;
     background: transparent;
+    border: none;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, .8);
+    border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
-    font-size: 16px;
-    color: #f1f1f1;
-    padding: 20px 45px 20px 20px;
+    font-size: 14px;  /* Adjust font size */
+    color: #fff;
+    padding: 15px 35px 15px 15px;  /* Adjust padding */
 }
-.input-option input{
-    margin-right: 3%;
-}
+
 .input-box input::placeholder{
-    color: #f1f1f1;
+    color: #fff;
 }
 
 .input-box i{
@@ -81,12 +92,12 @@ body{
 }
 
 .remember-forgot label input{
-    accent-color: #f1f1f1;
+    accent-color: #fff;
     margin-right: 3px;
 }
 
 .remember-forgot a{
-    color: #f1f1f1;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -95,17 +106,17 @@ body{
 }
 
 .wrapper .btn{
-    width: 60%;
-    height: 50px;  /* Reduce button height */
+    width: 100%;
+    height: 40px;  /* Reduce button height */
     background: #fff;
     border: none;
     outline: none;
     border-radius: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
-    font-size: 15px;  /* Adjust font size */
+    font-size: 14px;  /* Adjust font size */
     color: #333;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .wrapper .btn:hover{
@@ -119,7 +130,7 @@ body{
 }
 
 .register-link p a{
-    color: #f1f1f1;
+    color: #fff;
     text-decoration: none;
     font-weight: 600;
 }
@@ -138,56 +149,9 @@ body{
     left: 0;
     right: 0;
     background-color: rgba(208, 22, 39, 0.8);
-    color: #f1f1f1;
+    color: white;
     padding: 10px;  /* Reduce padding */
     text-align: center;
     font-size: 12px;  /* Adjust font size */
     border-radius: 40px;
-}
-
-hr{
-    margin: 7% 0 7% ;
-}
-
-.google-btn-container {
-    display: flex;
-    justify-content: center;
-}
-
-#customBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    color: #444;
-    height: 50px;
-    border-radius: 25px;
-    border: thin solid #888;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    font-weight: bold;
-/*    font-family: 'Roboto', sans-serif;*/
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-#customBtn:hover {
-    background: #f1f1f1;
-    transform: scale(1.05);
-}
-
-#customBtn .icon {
-    background: url('../images/google-logo-6278331_960_720.png') center center no-repeat;
-    background-size: contain;
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-#customBtn .buttonText {
-    display: inline-block;
-}
-a {
-    text-decoration: none;
-    width: 60%;
 }
