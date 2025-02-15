@@ -9,7 +9,7 @@
 }
 
 #cart,
-#bell, #my-course, .avt {
+#bell, #my-course, .avt .login .register{
     padding: 0 15px;
 }
 
@@ -56,8 +56,40 @@ a:visited {
     text-decoration: none;
 }
 
+.auth-buttons {
+    display: flex;
+    align-items: center;
+}
+.auth-buttons a {
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    margin-left: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.auth-buttons .login {
+    border: 2px solid #7f56d9;
+    color: #7f56d9;
+    background-color: transparent;
+}
+.auth-buttons .signup {
+    border: 2px solid #7f56d9;
+    color: white;
+    background-color: #7f56d9;
+}
+.auth-buttons a:hover {
+    background-color: #6c3fb1;
+    color: white;
+    border-color: #6c3fb1;
+}
+
 .avt{
-    width: 65px;
+    width: 45px;
 }
 
 .image-container {
@@ -73,18 +105,20 @@ a:visited {
 }
 
 .menu {
-    transform: translateX(-20%);
+    transform: translateX(-35%);
     position: absolute;
-    top: 20px;
-    background: rgba(0, 0, 0, 0.8);
+    top: 25px;
+    background: whitesmoke;
+    border: 1px solid #CCCCCC;
     color: white;
     list-style: none;
     padding: 10px;
     border-radius: 5px;
-    width: 150px;
+    width: 180px;
     text-align: center;
     opacity: 0;
     visibility: hidden;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ */
 }
 
 .menu li {
@@ -98,10 +132,11 @@ a:visited {
 }
 
 .menu li:hover {
-    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    background-color: #949393;
 }
 
-/* Hiển thị menu khi hover vào ảnh hoặc menu */
+/* Hiá»ƒn thá»‹ menu khi hover vÃ o áº£nh hoáº·c menu */
 .image-container:hover .menu,
 .menu:hover {
     opacity: 1;

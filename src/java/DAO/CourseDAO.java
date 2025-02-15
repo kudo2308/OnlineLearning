@@ -18,7 +18,7 @@ import model.Account;
 import model.Category;
 import model.Feedback;
 
-public class CourseDAO extends DBContext{
+public class CourseDAO extends DBContext {
 
     private PreparedStatement ps;
     private ResultSet rs;
@@ -32,7 +32,7 @@ public class CourseDAO extends DBContext{
         CourseDAO courseDAO = new CourseDAO();
 
         int a = courseDAO.findTotalRecord();
-        
+
         System.out.println(a);
 
     }
@@ -164,7 +164,7 @@ public class CourseDAO extends DBContext{
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
-                course.setPricePackageID(rs.getInt("Price"));
+                course.setPrice(rs.getInt("Price"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -617,9 +617,24 @@ public class CourseDAO extends DBContext{
                 courses.add(course);
 
             }
+
         } catch (SQLException e) {
             System.out.println(e);
         }
         return courses;
+    }
+
+    public int countSearchCourses(String keyword) {
+        String query = "SELECT COUNT(*) FROM Course WHERE title LIKE ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, "%" + keyword + "%");
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
