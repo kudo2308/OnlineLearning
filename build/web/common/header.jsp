@@ -6,17 +6,7 @@
 
 <nav>
     <!-- Your navigation bar code -->
-    <c:choose>
-        <c:when test="${not empty sessionScope.account}">
-            <!-- Display Hello, account.name if account exists in session -->
-            <a href="${pageContext.request.contextPath}/account">Hello, ${sessionScope.account.fullName}</a>
-            <a href="${pageContext.request.contextPath}/logout">Sign out</a>
-        </c:when>
-        <c:otherwise>
-            <!-- Default sign in or register if no account in session -->
-            <a href="${pageContext.request.contextPath}/login">Sign in or Register</a>
-        </c:otherwise>
-    </c:choose>
+
 </nav>
 
 <header class="logo-body">
@@ -34,7 +24,7 @@
 
     <!-- Category dropdown form -->
     <select id="categories-dropdown" onchange="this.form.submit())">
-        <option href="${pageContext.request.contextPath}/products">All categories</option>
+        <option href="${pageContext.request.contextPath}/courses">All categories</option>
         <div class="material-icons md-18">
             arrow_drop_down
             <div class="dropdown-content">
@@ -46,22 +36,36 @@
     </select>
 
     <div class="right">
-        <a id="my-course" href="${pageContext.request.contextPath}/blog">Blog</a>
+        <a id="my-course" href="${pageContext.request.contextPath}/Blog">Blog</a>
         <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
-        <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-            <span class="material-icons md-18">notifications_none</span>
-        </a>
-        <a href="${pageContext.request.contextPath}/cart" id="cart">
-            <span class="material-icons md-18">shopping_cart</span>
-        </a>
-        <div class="image-container">
-            <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
-            <ul class="menu">
-                <li>My learning</li>
-                <li>My cart</li>
-                <li>My account</li>
-                <li>Logout</li>
-            </ul>
-        </div>
+
+
+        <c:choose>
+            <c:when test="${not empty sessionScope.account}">
+                <!-- Display Hello, account.name if account exists in session -->
+                <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                    <span class="material-icons md-18">notifications_none</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/cart" id="cart">
+                    <span class="material-icons md-18">shopping_cart</span>
+                </a>
+                <div class="image-container">
+                    <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                    <ul class="menu">
+                        <li><a href="${pageContext.request.contextPath}/account">Hello, ${sessionScope.account.fullName}</a></li>
+                        <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
+                    </ul>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <!-- Default sign in or register if no account in session -->
+                <div class="auth-buttons">
+                    <a class="login" href="${pageContext.request.contextPath}/login">Log in</a>
+                    <a class="signup" href="${pageContext.request.contextPath}/register">Sign up</a>
+                </div>
+
+            </c:otherwise>
+        </c:choose>
     </div>
+</div>
 </header>
