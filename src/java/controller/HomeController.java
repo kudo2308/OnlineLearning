@@ -36,7 +36,7 @@ public class HomeController extends HttpServlet {
         CourseDAO courseDAO = new CourseDAO(); 
         List<Course> courses = courseDAO.getAllCourses(0, 9);
         for (Course course : courses) {
-            System.out.println(course.getTitle() + course.getExpert());
+            System.out.println(course.getTitle() + course.getPrice());
         }
     }
     }

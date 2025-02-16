@@ -3,7 +3,7 @@
 create database SWP_ver2
 GO
 --use database
-use database SWP_ver2
+use SWP_ver2
 GO
 -- Role table
 CREATE TABLE Role (
@@ -22,6 +22,8 @@ CREATE TABLE Account (
     Address NVARCHAR(100) Null,
     GenderID INT, 
     RoleID INT,
+    SubScriptionType VARCHAR(20) DEFAULT 'free' CHECK (SubScriptionType IN ('free', 'plus', 'pro')),
+    SubScriptionExpiry DATETIME NULL,
     Status BIT DEFAULT 1,
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE(),
@@ -59,7 +61,7 @@ CREATE TABLE Registration (
     UserID INT,
     CourseID INT,
     Price DECIMAL(10,2),
-    Status NVARCHAR(20) DEFAULT 'pending', -- pending, active, completed, cancelled
+    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'active', 'completed', 'cancelled')),
     Progress INT DEFAULT 0,
     ValidFrom DATETIME DEFAULT GETDATE(),
     ValidTo DATETIME,
