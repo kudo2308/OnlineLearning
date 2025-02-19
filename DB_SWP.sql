@@ -119,7 +119,28 @@ CREATE TABLE Question (
     UpdatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (QuizID) REFERENCES Quiz(QuizID)
 );
+-- Packages table
+CREATE TABLE Packages (
+    PackageID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NTEXT,
+    Duration INT, -- Duration in days
+    Price DECIMAL(10,2) NOT NULL,
+    DiscountPercent DECIMAL(5,2) DEFAULT 0.00,
+    Status BIT DEFAULT 1,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
 
+-- Package_Course table (for mapping courses to packages)
+CREATE TABLE Package_Course (
+    PackageID INT,
+    CourseID INT,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (PackageID, CourseID),
+    FOREIGN KEY (PackageID) REFERENCES Packages(PackageID),
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
 -- Feedback table
 CREATE TABLE Feedback (
     FeedbackID INT IDENTITY(1,1) PRIMARY KEY,
