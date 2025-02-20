@@ -42,7 +42,7 @@ public class AddCourse extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
-        List<Category> categories = categoryDAO.findALl();
+        List<Category> categories = categoryDAO.findAll();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
     }
@@ -57,7 +57,7 @@ public class AddCourse extends HttpServlet {
         Part filePart = request.getPart("image");
 
         CategoryDAO categoryDAO = new CategoryDAO();
-        List<Category> categories = categoryDAO.findALl();
+        List<Category> categories = categoryDAO.findAll();
         request.setAttribute("categories", categories);
 
         CreateCourseRequest courseRequest = new CreateCourseRequest(title, description, categoryId, totalLesson);

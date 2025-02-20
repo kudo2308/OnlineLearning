@@ -30,7 +30,7 @@ public class CourseController extends HttpServlet {
         PageControl pageControl = new PageControl();
         CategoryDAO categoryDAO = new CategoryDAO();
 
-        List<Category> categories = categoryDAO.findALl();
+        List<Category> categories = categoryDAO.findAll();
         List<Course> courses = pagination(request, pageControl);
 
         request.setAttribute("pageControl", pageControl);
