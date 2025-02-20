@@ -68,8 +68,8 @@ public class ViewLesson extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if (session.getAttribute("adminaccount") == null) {
-            response.sendRedirect("adminlogin.jsp");
+        if (session.getAttribute("accoount") == null) {
+            response.sendRedirect("register.jsp");
             return;
         }
         try {
@@ -102,7 +102,7 @@ public class ViewLesson extends HttpServlet {
             }
 
         } catch (Exception e) {
-            response.sendRedirect("admin-course-manage");
+            response.sendRedirect("courses");
         }
     }
 
