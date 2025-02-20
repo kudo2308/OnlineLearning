@@ -226,16 +226,20 @@ INSERT INTO Category (Name, Description) VALUES
 ('Security', 'Cybersecurity and ethical hacking');
 
 -- Insert a sample admin account (password: admin123)
-INSERT INTO Account (FullName, Username, Password, Email, RoleID, Status) VALUES
-('System Admin', 'admin', 'admin123', 'admin@onlinelearning.com', 1, 1);
+INSERT INTO Account (FullName, Username, Password, Email, RoleID, DOB, Status) 
+VALUES
+('System Admin', 'admin', 'admin123', 'admin@onlinelearning.com', 1, '1990-01-01', 1);
 
 -- Insert a sample expert account (password: expert123)
-INSERT INTO Account (FullName, Username, Password, Email, RoleID, Status) VALUES
-('John Expert', 'expert1', 'expert123', 'expert1@onlinelearning.com', 2, 1);
+INSERT INTO Account (FullName, Username, Password, Email, RoleID, DOB, Status) 
+VALUES
+('John Expert', 'expert1', 'expert123', 'expert1@onlinelearning.com', 2, '1985-05-12', 1);
 
 -- Insert a sample student account (password: student123)
-INSERT INTO Account (FullName, Username, Password, Email, RoleID, Status) VALUES
-('Jane Student', 'student1', 'student123', 'student1@onlinelearning.com', 3, 1);
+INSERT INTO Account (FullName, Username, Password, Email, RoleID, DOB, Status) 
+VALUES
+('Jane Student', 'student1', 'student123', 'student1@onlinelearning.com', 3, '1995-11-23', 1);
+
 
 -- Insert sample course
 INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price) VALUES
