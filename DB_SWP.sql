@@ -79,8 +79,6 @@ CREATE TABLE Lesson (
     Title NVARCHAR(255) NOT NULL,
     Content NTEXT,
     LessonType NVARCHAR(50), -- video, document, quiz
-    VideoUrl NVARCHAR(255),
-    DocumentUrl NVARCHAR(255),
     Duration INT, -- in minutes
     OrderNumber INT,
     CourseID INT,
@@ -89,7 +87,26 @@ CREATE TABLE Lesson (
     UpdatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
 );
-
+--video table
+create table video
+(
+    id        INT IDENTITY PRIMARY KEY,
+    lessons   int references lessons (id) unique,
+    videoName nvarchar(255),
+    videoLink nvarchar(max),
+);
+create table Docs
+(
+    id        INT IDENTITY PRIMARY KEY,
+    lessons   int references lessons (id) unique,
+    [content] nvarchar(max)
+);
+create table [File]
+(
+    id        INT IDENTITY PRIMARY KEY,
+    lessons   int references lessons (id) unique,
+    file_name nvarchar(500)
+);
 -- Quiz table
 CREATE TABLE Quiz (
     QuizID INT IDENTITY(1,1) PRIMARY KEY,
