@@ -4,205 +4,175 @@
     Author     : dohie
 --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<c:set var="language" value="${not empty sessionScope.language ? sessionScope.language : ''}" scope="session" />
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" />
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
-        <!-- META ============================================= -->
+        <title>Courses</title>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="keywords" content="" />
-        <meta name="author" content="" />
-        <meta name="robots" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- DESCRIPTION -->
-        <meta name="description" content="EduChamp : Education HTML Template" />
 
-        <!-- OG -->
-        <meta property="og:title" content="EduChamp : Education HTML Template" />
-        <meta property="og:description" content="EduChamp : Education HTML Template" />
-        <meta property="og:image" content="" />
-        <meta name="format-detection" content="telephone=no">
+        <link href="https://fonts.googleapis.com/css?family=Muli:300,400,700,900" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/style_2.css">
 
-        <!-- FAVICONS ICON ============================================= -->
-        <link rel="icon" href="<c:url value='/assets/images/favicon.ico'/>" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="<c:url value='/assets/images/favicon.png'/>" />
+        <link rel="stylesheet" href="/assets/vendors/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/css/jquery-ui.css">
+        <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
 
-        <!-- PAGE TITLE HERE ============================================= -->
-        <title>Our Courses | EduChamp</title>
+        <link rel="stylesheet" href="/assets/css/jquery.fancybox.min.css">
 
-        <!-- MOBILE SPECIFIC ============================================= -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/assets/css/bootstrap-datepicker.css">
 
-        <!-- All PLUGINS CSS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/assets.css'/>">
+        <link rel="stylesheet" href="/assets/css/flaticon.css">
 
-        <!-- TYPOGRAPHY ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/typography.css'/>">
+        <link rel="stylesheet" href="/assets/css/aos.css">
+        <link href="/assets/css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
 
-        <!-- SHORTCODES ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/shortcodes/shortcodes.css'/>">
+        <link rel="stylesheet" href="/assets/css/style_2.css">
 
-        <!-- STYLESHEETS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/style.css'/>">
-        <link class="skin" rel="stylesheet" type="text/css" href="<c:url value='/assets/css/color/color-1.css'/>">
+        <link rel="stylesheet" href="/assets/css/course.css">
+
+        <link rel="stylesheet" href="/assets/css/themify-icons.css">
     </head>
-    <body id="bg">
-        <div class="page-wraper">
-            <div id="loading-icon-bx"></div>
 
-            <!-- Header Top ==== -->
-            <jsp:include page="/common/header.jsp"/>
-            <!-- header END ==== -->
+    <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
-            <!-- Content -->
-            <div class="page-content bg-white">
-                <!-- inner page banner -->
-                <div class="page-banner ovbl-dark" style="background-image:url(<c:url value='/assets/images/banner/banner3.jpg'/>);">
-                    <div class="container">
-                        <div class="page-banner-entry">
-                            <h1 class="text-white">Our Courses</h1>
+        <div class="site-wrap">
+
+            <%@include file="header.jsp" %>
+
+            <div class="site-section ftco-subscribe-1 site-blocks-cover pb-4" >
+                <div class="container">
+                    <div class="row align-items-end">
+                        <div class="col-lg-7">
+                            <h2 class="mb-0"><fmt:message key="header.course" /></h2>
                         </div>
                     </div>
                 </div>
-                <!-- Breadcrumb row -->
-                <div class="breadcrumb-row">
-                    <div class="container">
-                        <ul class="list-inline">
-                            <li><a href="<c:url value='/home'/>">Home</a></li>
-                            <li>Our Courses</li>
-                        </ul>
+            </div>
+
+
+            <div class="custom-breadcrumns border-bottom">
+                <div class="container">
+                    <a href="home"><fmt:message key="header.Home" /></a>
+                    <span class="mx-3 icon-keyboard_arrow_right"></span>
+                    <span class="current"><fmt:message key="header.course" /></span>
+                </div>
+                <div class="ml-auto" style="margin-bottom: 20px; text-align: right;">
+                    <div class="social-wrap" style="position: relative; right: 10px;">
+                        <a href="#" class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle text-black"><span
+                                class="icon-menu h3"></span></a>
                     </div>
                 </div>
-                <!-- Breadcrumb row END -->
-                <!-- inner page banner END -->
-                <div class="content-block">
-                    <!-- About Us -->
-                    <div class="section-area section-sp1">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
-                                    <div class="widget courses-search-bx placeani">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <label>Search Courses</label>
-                                                <input name="dzName" type="text" required class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="widget widget_archive">
-                                        <h5 class="widget-title style-1">All Courses</h5>
-                                        <ul>
-                                            <li class="active"><a href="#">General</a></li>
-                                            <li><a href="#">IT & Software</a></li>
-                                            <li><a href="#">Photography</a></li>
-                                            <li><a href="#">Programming Language</a></li>
-                                            <li><a href="#">Technology</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="widget">
-                                        <a href="#"><img src="<c:url value='/assets/images/adv/adv.jpg'/>" alt=""/></a>
-                                    </div>
-                                    <div class="widget recent-posts-entry widget-courses">
-                                        <h5 class="widget-title style-1">Recent Courses</h5>
-                                        <div class="widget-post-bx">
-                                            <div class="widget-post clearfix">
-                                                <div class="ttr-post-media"> <img src="<c:url value='/assets/images/blog/recent-blog/pic1.jpg'/>" width="200" height="143" alt=""> </div>
-                                                <div class="ttr-post-info">
-                                                    <div class="ttr-post-header">
-                                                        <h6 class="post-title"><a href="#">Introduction EduChamp</a></h6>
-                                                    </div>
-                                                    <div class="ttr-post-meta">
-                                                        <ul>
-                                                            <li class="price">
-                                                                <del>$190</del>
-                                                                <h5>$120</h5>
-                                                            </li>
-                                                            <li class="review">03 Review</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+            </div>
+
+            <div class="site-section">
+
+                <div class="container">
+                    <div class="row" >
+                        <div class="col-lg-3 d-lg-block d-none course-category">
+                            <div class="category">
+                                <div style="background-color: #51be78; color: white; padding: 5px;">
+                                    <fmt:message key="course.Category" />
                                 </div>
-                                <div class="col-lg-9 col-md-8 col-sm-12">
-                                    <div class="row">
-                                        <c:forEach items="${courseList}" var="course">
-                                            <div class="col-md-6 col-lg-4 col-sm-6 m-b30">
-                                                <div class="cours-bx">
-                                                    <div class="action-box">
-                                                        <img src="${course.imageUrl}" alt="">
-                                                        <a href="<c:url value='/course-details?id=${course.courseID}'/>" class="btn">Read More</a>
+                                <ul>
+                                    <a href="/assets/vendors/listcoursebycategory/top-course"><li><fmt:message key="course.top" /></li></a>
+                                    <a href="/assets/vendors/listcoursebycategory/fee-course"><li><fmt:message key="course.fee" /></li></a>
+                                    <a href="/assets/vendors/listcoursebycategory/free-course"><li><fmt:message key="course.free" /></li></a>
+                                </ul>
+                            </div>
+
+                            <div class="course-group">
+                                <div style="background-color: #51be78; color: white; padding: 5px; margin-top: 100px;">
+                                    <fmt:message key="course.CoursesCategories" />
+                                </div>
+                                <ul>
+                                    <c:forEach items="${listallcategory}" var="lac">
+                                        <c:if test="${language=='vi_VN'}">
+                                            <a href="/assets/vendors/listcoursebycategory/${lac.slug}"><li>${lac.name_vn}</li></a> 
+                                                </c:if>
+                                                <c:if test="${language!='vi_VN'}">
+                                            <a href="/assets/vendors/listcoursebycategory/${lac.slug}"><li>${lac.name}</li></a>
+                                                </c:if>
+
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-md-12">
+                            <div class="container">
+                                <div class="row">
+
+                                    <c:forEach items="${listcourse}" var="lc">
+                                        <div class="col-xl-4 col-lg-6 mb-4">
+                                            <div class="course-1-item">
+                                                <figure class="thumnail">
+                                                    <a href="course-single.jsp"><img src="${lc.course.image}" alt="Image" class="img-fluid"></a>
+                                                    <div class="price">
+                                                        <fmt:formatNumber value = "${lc.course.price}"/>
                                                     </div>
-                                                    <div class="info-bx text-center">
-                                                        <h5><a href="<c:url value='/course-details?id=${course.courseID}'/>">${course.title}</a></h5>
-                                                        <span>${course.category.name}</span>
+                                                    <div class="category">
+                                                        <h3>${lc.category.name}</h3>
                                                     </div>
-                                                    <div class="cours-more-info">
-                                                        <div class="review">
-                                                            <span>Expert</span>
-                                                            <h6>${course.expert.fullName}</h6>
-                                                        </div>
-                                                        <div class="price">
-                                                            <h5>$${course.price}</h5>
-                                                        </div>
-                                                    </div>
+                                                </figure>
+                                                <div class="course-1-content pb-4">
+                                                    <h2 style="height: 60px; overflow: hidden">${lc.course.name}</h2>
+                                                    <p class="desc mb-4" style="height: 180px; overflow: hidden;">${lc.course.description}</p>
+                                                    <p><a href="/SWP391_Group3/course/${lc.course.slug}" class="btn btn-primary rounded-0 px-4"><fmt:message key="button.Details" /></a></p>
                                                 </div>
                                             </div>
-                                        </c:forEach>
-                                        
-                                        <!-- Pagination -->
-                                        <div class="col-lg-12 m-b20">
-                                            <div class="pagination-bx rounded-sm gray clearfix">
-                                                <ul class="pagination">
-                                                    <c:if test="${currentPage > 1}">
-                                                        <li class="previous"><a href="<c:url value='/course?page=${currentPage-1}'/>"><i class="ti-arrow-left"></i> Prev</a></li>
-                                                    </c:if>
-                                                    
-                                                    <c:forEach begin="1" end="${totalPages}" var="i">
-                                                        <li class="${currentPage == i ? 'active' : ''}">
-                                                            <a href="<c:url value='/course?page=${i}'/>">${i}</a>
-                                                        </li>
-                                                    </c:forEach>
-                                                    
-                                                    <c:if test="${currentPage < totalPages}">
-                                                        <li class="next"><a href="<c:url value='/course?page=${currentPage+1}'/>">Next <i class="ti-arrow-right"></i></a></li>
-                                                    </c:if>
-                                                </ul>
-                                            </div>
                                         </div>
-                                    </div>
+                                    </c:forEach>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Content END-->
 
-            <!-- Footer ==== -->
-            <jsp:include page="/common/footer.jsp"/>
-            <!-- Footer END ==== -->
+            <%@include file="footer.jsp" %>
 
-            <button class="back-to-top fa fa-chevron-up"></button>
+
+
         </div>
-        <!-- External JavaScripts -->
-        <script src="<c:url value='/assets/js/jquery.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap/js/popper.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap/js/bootstrap.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap-select/bootstrap-select.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/magnific-popup/magnific-popup.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/counter/waypoints-min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/counter/counterup.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/imagesloaded/imagesloaded.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/masonry/masonry.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/masonry/filter.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/owl-carousel/owl.carousel.js'/>"></script>
-        <script src="<c:url value='/assets/js/functions.js'/>"></script>
-        <script src="<c:url value='/assets/js/contact.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/switcher/switcher.js'/>"></script>
+        <!-- .site-wrap -->
+
+        <!-- loader -->
+        <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                    stroke="#51be78" />
+            </svg></div>
+
+        <script src="/assets/vendors/js/jquery-3.3.1.min.js"></script>
+        <script src="/assets/vendors/js/jquery-migrate-3.0.1.min.js"></script>
+        <script src="/assets/vendors/js/jquery-ui.js"></script>
+        <script src="/assets/vendors/js/popper.min.js"></script>
+        <script src="/assets/vendors/js/bootstrap.min.js"></script>
+        <script src="/assets/vendors/js/owl.carousel.min.js"></script>
+        <script src="/assets/vendors/js/jquery.stellar.min.js"></script>
+        <script src="/assets/vendors/js/jquery.countdown.min.js"></script>
+        <script src="/assets/vendors/js/bootstrap-datepicker.min.js"></script>
+        <script src="/assets/vendors/js/jquery.easing.1.3.js"></script>
+        <script src="/assets/vendors/js/aos.js"></script>
+        <script src="/assets/vendors/js/jquery.fancybox.min.js"></script>
+        <script src="/assets/vendors/js/jquery.sticky.js"></script>
+        <script src="/assets/vendors/js/jquery.mb.YTPlayer.min.js"></script>
+
+
+        <script src="/assets/js/main.js"></script>
+
     </body>
+
 </html>

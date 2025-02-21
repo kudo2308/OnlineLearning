@@ -50,9 +50,9 @@ public class CourseServlet extends HttpServlet {
             request.setAttribute("listallcategory", listallcategory);
 
             
-            request.getRequestDispatcher("courses.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/course/OurCourse.jsp").forward(request, response);
         } catch (Exception e) {
-            response.sendRedirect("errorpage.jsp");
+            response.sendRedirect("public/404.jsp");
 
         }
     }

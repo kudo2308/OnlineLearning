@@ -41,7 +41,7 @@
         <url-pattern>/ViewLesson</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ListCourseServlet</servlet-name>
+        <servlet-name>CourseServlet</servlet-name>
         <url-pattern>/course</url-pattern>
     </servlet-mapping>
 </web-app>
