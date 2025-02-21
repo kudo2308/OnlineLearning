@@ -4,200 +4,291 @@
     Author     : dohie
 --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="entity.Course"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="language" value="${not empty sessionScope.language ? sessionScope.language : ''}" scope="session" />
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" />
+
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
-        <!-- META ============================================= -->
+        <title>${course.name}</title>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="keywords" content="" />
-        <meta name="author" content="" />
-        <meta name="robots" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- DESCRIPTION -->
-        <meta name="description" content="EduChamp : Education HTML Template" />
-
-        <!-- OG -->
-        <meta property="og:title" content="EduChamp : Education HTML Template" />
-        <meta property="og:description" content="EduChamp : Education HTML Template" />
-        <meta property="og:image" content="" />
-        <meta name="format-detection" content="telephone=no">
-
-        <!-- FAVICONS ICON ============================================= -->
-        <link rel="icon" href="<c:url value='/assets/images/favicon.ico'/>" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="<c:url value='/assets/images/favicon.png'/>" />
-
-        <!-- PAGE TITLE HERE ============================================= -->
-        <title>${course.title} | EduChamp</title>
-
-        <!-- MOBILE SPECIFIC ============================================= -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <!-- All PLUGINS CSS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/assets.css'/>">
-
-        <!-- TYPOGRAPHY ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/typography.css'/>">
-
-        <!-- SHORTCODES ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/shortcodes/shortcodes.css'/>">
-
-        <!-- STYLESHEETS ============================================= -->
-        <link rel="stylesheet" type="text/css" href="<c:url value='/assets/css/style.css'/>">
-        <link class="skin" rel="stylesheet" type="text/css" href="<c:url value='/assets/css/color/color-1.css'/>">
+        <%@include file="/common/header.jsp" %>
     </head>
-    <body id="bg">
-        <div class="page-wraper">
-            <div id="loading-icon-bx"></div>
 
-            <!-- Header Top ==== -->
-            <jsp:include page="/common/header.jsp"/>
-            <!-- header END ==== -->
+    <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
-            <!-- Content -->
-            <div class="page-content bg-white">
-                <!-- inner page banner -->
-                <div class="page-banner ovbl-dark" style="background-image:url(<c:url value='/assets/images/banner/banner2.jpg'/>);">
-                    <div class="container">
-                        <div class="page-banner-entry">
-                            <h1 class="text-white">${course.title}</h1>
-                        </div>
-                    </div>
+        <div class="site-wrap">
+
+            <%@include file="/common/header.jsp" %>
+
+            <div class="site-section ftco-subscribe-1 site-blocks-cover pb-4">
+            </div> 
+
+
+            <div class="custom-breadcrumns border-bottom">
+                <div class="container">
+                    <a href="${pageContext.request.contextPath}/home"><fmt:message key="header.Home" /></a>
+                    <span class="mx-3 icon-keyboard_arrow_right"></span>
+                    <a href="${pageContext.request.contextPath}/course"><fmt:message key="header.course" /></a>
+                    <span class="mx-3 icon-keyboard_arrow_right"></span>
+                    <span class="current">${category.name}</span>
                 </div>
-                <!-- Breadcrumb row -->
-                <div class="breadcrumb-row">
-                    <div class="container">
-                        <ul class="list-inline">
-                            <li><a href="<c:url value='/home'/>">Home</a></li>
-                            <li><a href="<c:url value='/course'/>">Courses</a></li>
-                            <li>${course.title}</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Breadcrumb row END -->
+            </div>
 
-                <!-- inner page banner END -->
-                <div class="content-block">
-                    <!-- About Us -->
-                    <div class="section-area section-sp1">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-7 col-sm-12">
-                                    <div class="courses-post">
-                                        <div class="ttr-post-media media-effect">
-                                            <img src="${course.imageUrl}" alt="">
-                                        </div>
-                                        <div class="ttr-post-info m-b30">
-                                            <div class="ttr-post-title">
-                                                <h2 class="post-title">${course.title}</h2>
-                                            </div>
-                                            <div class="ttr-post-text">
-                                                <p>${course.description}</p>
-                                            </div>
-                                        </div>
+            <div class="site-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h3 class="text-black mb-2">
+                                <span>${course.name}</span>
+                            </h3>
+                            <br/>
+                            <p>
+                                <img src="${course.image}" alt="${course.name}" class="img-fluid" style="width: 500px">
+                            </p>
+                            <div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h3 id="course_lesson" class="section-title-underline mb-4" style="cursor: pointer">
+                                            <span><fmt:message key="button.CourseLesson" /></a></span>
+                                        </h3>
                                     </div>
-                                    <div class="courese-overview" id="overview">
-                                        <div class="row">
-                                            <div class="col-md-12 col-lg-12">
-                                                <h4 class="m-b5">Course Overview</h4>
-                                                <ul class="course-features">
-                                                    <li><i class="ti-book"></i> <span class="label">Lessons</span> <span class="value">${course.totalLesson}</span></li>
-                                                    <li><i class="ti-user"></i> <span class="label">Expert</span> <span class="value">${course.expert.fullName}</span></li>
-                                                    <li><i class="ti-time"></i> <span class="label">Duration</span> <span class="value">60 hours</span></li>
-                                                    <li><i class="ti-tag"></i> <span class="label">Category</span> <span class="value">${course.category.name}</span></li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                    <div class="col-6">
+                                        <h3 id="course_review" class="mb-4 " style="cursor: pointer">
+                                            <span><fmt:message key="button.CourseReview" /></a></span>
+                                        </h3>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-5 col-sm-12">
-                                    <div class="bg-primary text-white contact-info-bx m-b30">
-                                        <h2 class="m-b10 title-head">Course <span>Information</span></h2>
-                                        <p>Contact us to get more information about this course.</p>
-                                        <div class="widget widget_getintuch">
-                                            <ul>
-                                                <li><i class="ti-location-pin"></i>FPT University</li>
-                                                <li><i class="ti-mobile"></i>0936751968 (24/7 Support Line)</li>
-                                                <li><i class="ti-email"></i>info@yourdomain.com</li>
-                                            </ul>
-                                        </div>
-                                        <h5 class="m-t0 m-b20">Follow Us</h5>
-                                        <ul class="list-inline contact-social-bx">
-                                            <li><a href="#" class="btn outline radius-xl"><i class="fa fa-facebook"></i></a></li>
-                                            <li><a href="#" class="btn outline radius-xl"><i class="fa fa-twitter"></i></a></li>
-                                            <li><a href="#" class="btn outline radius-xl"><i class="fa fa-linkedin"></i></a></li>
-                                            <li><a href="#" class="btn outline radius-xl"><i class="fa fa-google-plus"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Related Courses -->
-                    <div class="section-area section-sp2">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="heading-bx left">
-                                        <h2 class="title-head">Related <span>Courses</span></h2>
-                                        <p>Here are some other courses you might be interested in.</p>
-                                    </div>
-                                    <div class="row">
-                                        <c:forEach items="${relatedCourses}" var="relatedCourse">
-                                            <div class="col-md-6 col-lg-4 col-sm-6 m-b30">
-                                                <div class="cours-bx">
-                                                    <div class="action-box">
-                                                        <img src="${relatedCourse.imageUrl}" alt="">
-                                                        <a href="<c:url value='/course-details?id=${relatedCourse.courseID}'/>" class="btn">Read More</a>
+                                <div style="overflow-y: scroll; max-height: 400px">
+                                    <div id="course_lesson_div">
+                                        <div class="accordion" id="accordionExample">
+                                            <c:forEach items="${lession}" var="i">
+                                                <div class="card">
+                                                    <div class="card-header" id="heading${i.id}">
+                                                        <h2 class="mb-0">
+                                                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${i.id}" aria-expanded="true" aria-controls="collapse${i.id}">
+                                                                ${i.title}
+                                                            </button>
+                                                        </h2>
                                                     </div>
-                                                    <div class="info-bx text-center">
-                                                        <h5><a href="<c:url value='/course-details?id=${relatedCourse.courseID}'/>">${relatedCourse.title}</a></h5>
-                                                        <span>${relatedCourse.category.name}</span>
-                                                    </div>
-                                                    <div class="cours-more-info">
-                                                        <div class="review">
-                                                            <span>Expert</span>
-                                                            <h6>${relatedCourse.expert.fullName}</h6>
-                                                        </div>
-                                                        <div class="price">
-                                                            <h5>$${relatedCourse.pricePackageID}</h5>
+
+                                                    <div id="collapse${i.id}" class="collapse" aria-labelledby="heading${i.id}" data-parent="#accordionExample">
+                                                        <div class="card-body">
+                                                            ${i.description}
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </c:forEach>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                    <!--commemt-->
+                                    <div class=" col-md-12 disable_section" id="course_review_div">
+                                        <div id="aaa">
+                                            <c:forEach items="${courseReviews}" var="cr">
+                                                <div class="acc media g-mb-30 media-comment">
+                                                    <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Image Description">
+                                                    <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                                                        <div class="row">
+                                                            <div class="col-6"><div class="g-mb-15">
+                                                                    <h6 class="h6 g-color-gray-dark-v1 mb-0 text-black">${mapUser.get(cr.userId).name}</h6>
+                                                                    <c:forEach begin="1" end="${cr.rating}">
+                                                                        <i class="fa-sharp fa-solid fa-star fa-2xs" style="color: #51be78;"></i>
+                                                                    </c:forEach>
+                                                                </div></div>
+                                                            <div class="col-6"><div class="g-mb-15" style="text-align: right">
+                                                                    <span class="g-color-gray-dark-v4 g-font-size-12" >${cr.createdAt}</span>
+                                                                </div></div>
+                                                        </div>
+
+
+                                                        <p>${cr.reviewText}</p>
+
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+
+                                        <div class="mt-3 text-center" >
+                                            <button class="btn btn-sm btn-primary" onclick="loadMore()">Load More...</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-5 ml-auto">
+                            <h2 class="section-title-underline mb-4">
+                                <span><fmt:message key="course.courseDetails" /></span>
+                            </h2>
+                            <h3><i class="fa-solid fa-money-check-dollar" style="color: #51be78;"></i>
+                                <strong class="text-black"><fmt:message key="course.price" /> </strong>
+                                <span class="text-black"><fmt:formatNumber value="${course.price}"/> VNĐ </span>
+                            </h3>
+
+
+                            <p class="mt-5">
+                                <strong class="text-black" style="display: inline"> 
+                                    <i class="fa-regular fa-user" style="color: #51be78; display: inline"></i>  <fmt:message key="header.Instructor" />
+                                </strong>${instructor.name}</p>
+
+                            <p><strong class="text-black">
+                                    <i class="fa-sharp fa-solid fa-layer-group" style="color: #51be78;"></i> <fmt:message key="course.Level" /> 
+                                </strong> ${level.name}</p>
+
+                            <p><strong class="text-black">
+                                    <i class="fa-sharp fa-solid fa-user-plus" style="color: #51be78;"></i> <fmt:message key="course.Enroll" /> 
+                                </strong> ${enroll}</p>
+
+                            <p><strong class="text-black d-block"><fmt:message key="course.Description" /></strong> ${course.description}</p>
+                            <p><strong class="text-black d-block"><fmt:message key="course.Objective" /></strong>${course.objectives}</p>
+                            <p>
+
+                            <form action="${pageContext.request.contextPath}/courseenroll" method="post">
+                                <input type="hidden" value="${requestScope.course.id}" name="courseid">
+                                <input type="hidden" value="${requestScope.course.price}" name="price">
+
+                                <c:choose>
+                                    <c:when test="${sessionScope.account == null}">
+                                        <a href="${pageContext.request.contextPath}/login" class="btn btn-primary rounded-0 btn-lg px-5">Enroll</a>
+                                    </c:when>
+                                    <c:when test="${requestScope.isEnroll == false}">
+                                        <c:if test="${sessionScope.account.amount < requestScope.course.price}">
+                                            <a href="#" class="btn btn-primary rounded-0 btn-lg px-5" onclick="message()">Enroll</a>
+                                        </c:if>
+                                        <c:if test="${sessionScope.account.amount >= requestScope.course.price}">
+                                            <input type="submit" class="btn btn-primary rounded-0 btn-lg px-5" value="Enroll">
+                                        </c:if>
+                                    </c:when>
+                                    <c:when test="${requestScope.isEnroll == true}">
+                                        <a href="${pageContext.request.contextPath}/learn/${course.slug}" class="btn btn-primary rounded-0 btn-lg px-5"><fmt:message key="course.Learn" /></a>
+                                    </c:when>
+                                </c:choose>
+                            </form>
+                            
+
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Content END-->
 
-            <!-- Footer ==== -->
-            <jsp:include page="/common/footer.jsp"/>
-            <!-- Footer END ==== -->
+            <!--related courses-->
+            <div class="site-section">
+                <div class="container">
+                    <div class="row mb-5 justify-content-center text-center">
+                        <div class="col-lg-6 mb-5">
+                            <h2 class="section-title-underline mb-3">
+                                <span><fmt:message key="course.RelatedCourses" /></span>
+                            </h2>
+                        </div>
+                    </div>
 
-            <button class="back-to-top fa fa-chevron-up"></button>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="owl-slide-3 owl-carousel">
+                                <c:forEach items="${listcourse}" var="lc">
+                                    <div class="course-1-item">
+                                        <figure class="thumnail">
+                                            <a href="${pageContext.request.contextPath}/course/${lc.slug}"><img src="${lc.image}" alt="Image" class="img-fluid" style="max-height: 180px"></a>
+                                            <div class="price"><fmt:formatNumber value = "${lc.price}"/></div>
+                                            <div class="category">
+                                                <h3>${mapcategory.get(lc.category).name}</h3>
+                                            </div>
+                                        </figure>
+                                        <div class="course-1-content pb-2">
+                                            <h2 style="height: 60px">${lc.name}</h2>
+                                            <p class="desc mb-4" style="height: 180px; overflow: hidden">${lc.description}</p>
+                                            <p><a href="${pageContext.request.contextPath}/course/${lc.slug}" class="btn btn-primary rounded-0 px-4"><fmt:message key="button.Details" /></a></p>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <%@include file="/common/footer.jsp" %>
+
         </div>
-        <!-- External JavaScripts -->
-        <script src="<c:url value='/assets/js/jquery.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap/js/popper.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap/js/bootstrap.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap-select/bootstrap-select.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/magnific-popup/magnific-popup.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/counter/waypoints-min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/counter/counterup.min.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/imagesloaded/imagesloaded.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/masonry/masonry.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/masonry/filter.js'/>"></script>
-        <script src="<c:url value='/assets/vendors/owl-carousel/owl.carousel.js'/>"></script>
-        <script src="<c:url value='/assets/js/functions.js'/>"></script>
-        <script src="<c:url value='/assets/js/contact.js'/>"></script>
+        <!-- .site-wrap -->
+
+        <!-- loader -->
+        <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#51be78"/></svg></div>
+
+        <script src="${pageContext.request.contextPath}/js/jquery-3.3.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery-migrate-3.0.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
+        <script src="${pageContext.request.contextPath}/js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/owl.carousel.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery.stellar.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery.countdown.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/bootstrap-datepicker.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery.easing.1.3.js"></script>
+        <script src="${pageContext.request.contextPath}/js/aos.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery.fancybox.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery.sticky.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery.mb.YTPlayer.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/main.js"></script>
+        <script>const course_lesson = document.getElementById('course_lesson');
+                                                const course_review = document.getElementById('course_review');
+                                                const course_lesson_div = document.getElementById('course_lesson_div');
+                                                const course_review_div = document.getElementById('course_review_div');
+                                                course_lesson.addEventListener('click', () => {
+                                                    course_lesson.classList.add('section-title-underline');
+                                                    course_review.classList.remove('section-title-underline');
+                                                    course_lesson_div.classList.remove('disable_section');
+                                                    course_review_div.classList.add('disable_section');
+                                                });
+                                                course_review.addEventListener('click', () => {
+                                                    course_lesson.classList.remove('section-title-underline');
+                                                    course_review.classList.add('section-title-underline');
+                                                    course_lesson_div.classList.add('disable_section');
+                                                    course_review_div.classList.remove('disable_section');
+                                                });
+                                                const message = () => {
+                                                    if (confirm("Your account has insufficient funds!\n Please deposit money into your account") === true) {
+                                                        window.location = "${pageContext.request.contextPath}/transaction";
+                                                    }
+                                                };
+                                                const login = () => {
+                                                    if (confirm("Please log on to the system") === true) {
+                                                        window.location = "${pageContext.request.contextPath}/login.jsp";
+                                                    }
+                                                };
+        </script>
+        <script>function loadMore() {
+                var a = ${course.id};
+                console.log(a);
+                var amount = document.getElementsByClassName("acc").length;
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/loadMoreComment",
+                    type: "get", //send it through get method
+                    data: {
+                        exits: amount,
+                        courseid: a
+                    },
+                    success: function (response) {
+                        var row = document.getElementById("aaa");
+                        row.innerHTML += response;
+                    },
+                    error: function (xhr) {
+                        //Do Something to handle error
+                    }
+                });
+            }</script>
     </body>
+
 </html>

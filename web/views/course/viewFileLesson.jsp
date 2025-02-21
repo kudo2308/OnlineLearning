@@ -22,18 +22,18 @@
         <title>${docs.content}</title>
 
         <!-- Custom fonts for this template -->
-        <link href="assets/vendors/fontawesome/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="${pageContext.request.contextPath}/assets/vendors/fontawesome/css/all.min.css" rel="stylesheet" type="text/css">
         <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
 
         <!-- Custom styles for this template -->
-        <link href="css/sb-admin-2.min.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/sb-admin-2.min.css" rel="stylesheet">
 
         <!-- Custom styles for this page -->
-        <link href="assets/vendors/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-        <link href="assets/css/mobiscroll.javascript.min.css" rel="stylesheet" />
-        <script src="assets/js/mobiscroll.javascript.min.js"></script>
+        <link href="${pageContext.request.contextPath}/assets/vendors/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/assets/css/mobiscroll.javascript.min.css" rel="stylesheet" />
+        <script src="${pageContext.request.contextPath}/assets/js/mobiscroll.javascript.min.js"></script>
         <script src="https://kit.fontawesome.com/81e4fcabce.js" crossorigin="anonymous"></script>
         <script
             src="https://cdn.tiny.cloud/1/fb0gncsdhd40naw93pa7w44slm5a5dctuxn1ekv2kuyto7vy/tinymce/6/tinymce.min.js"
@@ -51,7 +51,7 @@
         <div id="wrapper">
 
             <!-- Sidebar -->
-            <%@include file="adminSidebar.jsp" %>
+            <%@include file="/common/adminSidebar.jsp" %>
             <!-- End of Sidebar -->
 
             <!-- Content Wrapper -->
@@ -61,24 +61,24 @@
                 <div id="content">
 
                     <!-- Topbar -->
-                    <%@include file="topBar.jsp" %>
+                    <%@include file="/common/topBar.jsp" %>
                     <!-- End of Topbar -->
 
                     <!-- Begin Page Content -->
                     <div class="container-fluid">
-                        <h1 class="mb-2 text-gray-900 pb-2 font-weight-bold">${lesson.title}</h1>
-                        <h5 class="mb-2 text-gray-900 pb-4">${lesson.description}</h5>
-                        <hr />
-                        <!-- Page Heading -->
-                        <a href="${file.file_name}" download>Download File</a>
-
-                        <hr /> <embed src="${file.file_name}" type="application/pdf" width="100%"
-                                      height="600px" />
-
-                        <br />
-                        <a href="addLesson?id=${courseId}" class="btn btn-primary" title="Back">
-                            Back
-                        </a>
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">${docs.content}</h6>
+                            </div>
+                            <div class="card-body">
+                                <a href="${pageContext.request.contextPath}/download?id=${docs.id}" class="btn btn-primary" title="Download">
+                                    Download
+                                </a>
+                                <a href="${pageContext.request.contextPath}/addLesson?id=${courseId}" class="btn btn-primary" title="Back">
+                                    Back
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.container-fluid -->
 
@@ -107,8 +107,8 @@
         </a>
 
         <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -117,32 +117,31 @@
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current
-                        session.</div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="adminlogout">Logout</a>
+                        <a class="btn btn-primary" href="${pageContext.request.contextPath}/adminlogout">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Bootstrap core JavaScript-->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
 
         <!-- Core plugin JavaScript-->
-        <script src="assets/vendors/js/jquery.easing.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.easing.min.js"></script>
 
         <!-- Custom scripts for all pages-->
-        <script src="assets/js/sb-admin-2.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/js/sb-admin-2.min.js"></script>
 
         <!-- Page level plugins -->
-        <script src="assets/vendors/datatables/jquery.dataTables.min.js"></script>
-        <script src="assets/vendors/datatables/dataTables.bootstrap4.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/datatables/jquery.dataTables.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/datatables/dataTables.bootstrap4.min.js"></script>
 
         <!-- Page level custom scripts -->
-        <script src="assets/js/demo/datatables-demo.js"></script>
-
+        <script src="${pageContext.request.contextPath}/assets/js/demo/datatables-demo.js"></script>
 
     </body>
 

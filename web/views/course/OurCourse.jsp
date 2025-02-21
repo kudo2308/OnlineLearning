@@ -4,11 +4,9 @@
     Author     : dohie
 --%>
 
-
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <c:set var="language" value="${not empty sessionScope.language ? sessionScope.language : ''}" scope="session" />
 <fmt:setLocale value="${language}" />
 <fmt:setBundle basename="text" />
@@ -22,35 +20,25 @@
 
 
         <link href="https://fonts.googleapis.com/css?family=Muli:300,400,700,900" rel="stylesheet">
-        <link rel="stylesheet" href="/assets/css/style_2.css">
-
-        <link rel="stylesheet" href="/assets/vendors/bootstrap/bootstrap.min.css">
-        <link rel="stylesheet" href="/assets/css/jquery-ui.css">
-        <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
-        <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
-        <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
-
-        <link rel="stylesheet" href="/assets/css/jquery.fancybox.min.css">
-
-        <link rel="stylesheet" href="/assets/css/bootstrap-datepicker.css">
-
-        <link rel="stylesheet" href="/assets/css/flaticon.css">
-
-        <link rel="stylesheet" href="/assets/css/aos.css">
-        <link href="/assets/css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
-
-        <link rel="stylesheet" href="/assets/css/style_2.css">
-
-        <link rel="stylesheet" href="/assets/css/course.css">
-
-        <link rel="stylesheet" href="/assets/css/themify-icons.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendors/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jquery-ui.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jquery.fancybox.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/flaticon.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/aos.css">
+        <link href="${pageContext.request.contextPath}/assets/css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style_2.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/course.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/themify-icons.css">
     </head>
 
     <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
         <div class="site-wrap">
 
-            <%@include file="header.jsp" %>
+            <%@include file="/common/header.jsp" %>
 
             <div class="site-section ftco-subscribe-1 site-blocks-cover pb-4" >
                 <div class="container">
@@ -65,7 +53,7 @@
 
             <div class="custom-breadcrumns border-bottom">
                 <div class="container">
-                    <a href="home"><fmt:message key="header.Home" /></a>
+                    <a href="${pageContext.request.contextPath}/home"><fmt:message key="header.Home" /></a>
                     <span class="mx-3 icon-keyboard_arrow_right"></span>
                     <span class="current"><fmt:message key="header.course" /></span>
                 </div>
@@ -87,9 +75,9 @@
                                     <fmt:message key="course.Category" />
                                 </div>
                                 <ul>
-                                    <a href="/assets/vendors/listcoursebycategory/top-course"><li><fmt:message key="course.top" /></li></a>
-                                    <a href="/assets/vendors/listcoursebycategory/fee-course"><li><fmt:message key="course.fee" /></li></a>
-                                    <a href="/assets/vendors/listcoursebycategory/free-course"><li><fmt:message key="course.free" /></li></a>
+                                    <a href="${pageContext.request.contextPath}/course/category/top-course"><li><fmt:message key="course.top" /></li></a>
+                                    <a href="${pageContext.request.contextPath}/course/category/fee-course"><li><fmt:message key="course.fee" /></li></a>
+                                    <a href="${pageContext.request.contextPath}/course/category/free-course"><li><fmt:message key="course.free" /></li></a>
                                 </ul>
                             </div>
 
@@ -100,10 +88,10 @@
                                 <ul>
                                     <c:forEach items="${listallcategory}" var="lac">
                                         <c:if test="${language=='vi_VN'}">
-                                            <a href="/assets/vendors/listcoursebycategory/${lac.slug}"><li>${lac.name_vn}</li></a> 
+                                            <a href="${pageContext.request.contextPath}/course/category/${lac.slug}"><li>${lac.name_vn}</li></a> 
                                                 </c:if>
                                                 <c:if test="${language!='vi_VN'}">
-                                            <a href="/assets/vendors/listcoursebycategory/${lac.slug}"><li>${lac.name}</li></a>
+                                            <a href="${pageContext.request.contextPath}/course/category/${lac.slug}"><li>${lac.name}</li></a>
                                                 </c:if>
 
                                     </c:forEach>
@@ -118,9 +106,9 @@
                                         <div class="col-xl-4 col-lg-6 mb-4">
                                             <div class="course-1-item">
                                                 <figure class="thumnail">
-                                                    <a href="course-single.jsp"><img src="${lc.course.image}" alt="Image" class="img-fluid"></a>
+                                                    <a href="${pageContext.request.contextPath}/course/${lc.course.slug}"><img src="${lc.course.image}" alt="Image" class="img-fluid"></a>
                                                     <div class="price">
-                                                        <fmt:formatNumber value = "${lc.course.price}"/>
+                                                        <fmt:formatNumber value="${lc.course.price}" type="currency" currencySymbol="₫"/>
                                                     </div>
                                                     <div class="category">
                                                         <h3>${lc.category.name}</h3>
@@ -129,7 +117,7 @@
                                                 <div class="course-1-content pb-4">
                                                     <h2 style="height: 60px; overflow: hidden">${lc.course.name}</h2>
                                                     <p class="desc mb-4" style="height: 180px; overflow: hidden;">${lc.course.description}</p>
-                                                    <p><a href="/SWP391_Group3/course/${lc.course.slug}" class="btn btn-primary rounded-0 px-4"><fmt:message key="button.Details" /></a></p>
+                                                    <p><a href="${pageContext.request.contextPath}/course/${lc.course.slug}" class="btn btn-primary rounded-0 px-4"><fmt:message key="button.Details" /></a></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -141,7 +129,7 @@
                 </div>
             </div>
 
-            <%@include file="footer.jsp" %>
+            <%@include file="/common/footer.jsp" %>
 
 
 
@@ -155,23 +143,23 @@
                     stroke="#51be78" />
             </svg></div>
 
-        <script src="/assets/vendors/js/jquery-3.3.1.min.js"></script>
-        <script src="/assets/vendors/js/jquery-migrate-3.0.1.min.js"></script>
-        <script src="/assets/vendors/js/jquery-ui.js"></script>
-        <script src="/assets/vendors/js/popper.min.js"></script>
-        <script src="/assets/vendors/js/bootstrap.min.js"></script>
-        <script src="/assets/vendors/js/owl.carousel.min.js"></script>
-        <script src="/assets/vendors/js/jquery.stellar.min.js"></script>
-        <script src="/assets/vendors/js/jquery.countdown.min.js"></script>
-        <script src="/assets/vendors/js/bootstrap-datepicker.min.js"></script>
-        <script src="/assets/vendors/js/jquery.easing.1.3.js"></script>
-        <script src="/assets/vendors/js/aos.js"></script>
-        <script src="/assets/vendors/js/jquery.fancybox.min.js"></script>
-        <script src="/assets/vendors/js/jquery.sticky.js"></script>
-        <script src="/assets/vendors/js/jquery.mb.YTPlayer.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery-3.3.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery-migrate-3.0.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery-ui.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/owl.carousel.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.stellar.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.countdown.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/bootstrap-datepicker.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.easing.1.3.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/aos.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.fancybox.min.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.sticky.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/vendors/js/jquery.mb.YTPlayer.min.js"></script>
 
 
-        <script src="/assets/js/main.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
     </body>
 
