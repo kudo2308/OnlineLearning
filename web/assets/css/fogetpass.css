@@ -9,67 +9,48 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);
 }
-/* Đặt video full màn hình */
-.video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1;
-}
-
-.video-background video {
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-}
-
 /* Đảm bảo nội dung nằm trên video */
 .content {
     position: relative;
     z-index: 1;
-    color: #fff;
+    color: #f1f1f1;
     text-align: center;
     padding: 20px;
 }
 
 .wrapper{
-    width: 420px;
+    width: 530px;
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(9px);
-    color: #fff;
+    color: #f1f1f1;
     border-radius: 12px;
-    padding: 30px 40px;
+    padding: 20px 30px;
 }
 .wrapper h1{
-    font-size: 36px;
-    text-align: center;
+    font-size: 23px;
 }
 .wrapper .input-box{
     position: relative;
     width: 100%;
     height: 50px;
-
-    margin: 30px 0;
+    margin: 0 0 30 0;
 }
 .input-box input{
     width: 100%;
     height: 100%;
     background: transparent;
-    border: none;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid rgba(255, 255, 255,0.8);
     border-radius: 40px;
     font-size: 16px;
-    color: #fff;
+    color: #f1f1f1;
     padding: 20px 45px 20px 20px;
 }
 .input-box input::placeholder{
-    color: #fff;
+    color: #f1f1f1;
 }
 .input-box i{
     position: absolute;
@@ -83,15 +64,15 @@ body{
     display: flex;
     justify-content: space-between;
     font-size: 14.5px;
-    margin: -15px 0 15px;
+    margin: 0 0 20px;
 }
 .remember-forgot label input{
-    accent-color: #fff;
+    accent-color: #f1f1f1;
     margin-right: 3px;
 
 }
 .remember-forgot a{
-    color: #fff;
+    color: #f1f1f1;
     text-decoration: none;
 
 }
@@ -99,7 +80,7 @@ body{
     text-decoration: underline;
 }
 .wrapper .btn{
-    width: 100%;
+    padding: 13px;
     height: 45px;
     background: #fff;
     border: none;
@@ -116,12 +97,15 @@ body{
 }
 .wrapper .register-link{
     font-size: 14.5px;
-    text-align: center;
     margin: 20px 0 15px;
 
 }
+.verify{
+    display: flex;
+    justify-content: space-between;
+}
 .register-link p a{
-    color: #fff;
+    color: #f1f1f1;
     text-decoration: none;
     font-weight: 600;
 }
@@ -143,4 +127,36 @@ body{
     text-align: center;
     font-size: 14px;
     border-radius: 40px;
+} 
+.error-message-susses{
+    width: 67%;
+    z-index: 1000;
+    margin: auto;
+    display: none;
+    position: fixed;
+    top: -111px;
+    left: 0;
+    right: 0;
+    background-color: #00CC00;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 40px;
+}
+
+hr{
+    margin: 4% 0 4%;
+}
+a{
+    color: beige;
+}
+h2{
+    margin-top: 20px;
+    font-size: 19px;
+}
+p{
+    font-size: 15px;
+    font-weight: 100;
+    font-style: italic;
 }

@@ -1,123 +1,166 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.sql.Timestamp;
 
-/**
- *
- * @author dohie
- */
 public class Account {
     private int userID;
     private String fullName;
-    private String username;
     private String password;
     private String email;
-    private int roleID;
+    private String phone;
+    private String image;
+    private String address;
+    private String genderID;
+    private Timestamp dob;
+    private Role role;
+    private String subScriptionType;
+    private Timestamp subScriptionExpiry;
     private boolean status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    
-    // Navigation property
-    private Role role;
-    
+
+   
+    // Constructors
     public Account() {
     }
 
-    public Account(int userID, String fullName, int roleID) {
+    public Account(int userID, String fullName, String password, String email, String phone, String image, String address, String genderID, Timestamp dob, Role role, String subScriptionType, Timestamp subScriptionExpiry, boolean status, Timestamp createdAt, Timestamp updatedAt) {
         this.userID = userID;
         this.fullName = fullName;
-        this.roleID = roleID;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.image = image;
+        this.address = address;
+        this.genderID = genderID;
+        this.dob = dob;
+        this.role = role;
+        this.subScriptionType = subScriptionType;
+        this.subScriptionExpiry = subScriptionExpiry;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
-    
-    
+
     public int getUserID() {
         return userID;
     }
-    
+
     public void setUserID(int userID) {
         this.userID = userID;
     }
-    
+
     public String getFullName() {
         return fullName;
     }
-    
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
+
     public String getPassword() {
         return password;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public String getEmail() {
         return email;
     }
-    
+
     public void setEmail(String email) {
         this.email = email;
     }
-    
-    public int getRoleID() {
-        return roleID;
+
+    public String getPhone() {
+        return phone;
     }
-    
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
-    
-    public boolean isStatus() {
-        return status;
+
+    public String getImage() {
+        return image;
     }
-    
-    public void setStatus(boolean status) {
-        this.status = status;
+
+    public void setImage(String image) {
+        this.image = image;
     }
-    
-    public Timestamp getCreatedAt() {
-        return createdAt;
+
+    public String getAddress() {
+        return address;
     }
-    
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+
+    public void setAddress(String address) {
+        this.address = address;
     }
-    
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
+
+    public String getGenderID() {
+        return genderID;
     }
-    
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+
+    public void setGenderID(String genderID) {
+        this.genderID = genderID;
     }
-    
+
+    public Timestamp getDob() {
+        return dob;
+    }
+
+    public void setDob(Timestamp dob) {
+        this.dob = dob;
+    }
+
     public Role getRole() {
         return role;
     }
-    
+
     public void setRole(Role role) {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "Account{" + "userID=" + userID + ", fullName=" + fullName + ", username=" + username + ", password=" + password + ", email=" + email + ", roleID=" + roleID + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", role=" + role + '}';
+    public String getSubScriptionType() {
+        return subScriptionType;
     }
-    
+
+    public void setSubScriptionType(String subScriptionType) {
+        this.subScriptionType = subScriptionType;
+    }
+
+    public Timestamp getSubScriptionExpiry() {
+        return subScriptionExpiry;
+    }
+
+    public void setSubScriptionExpiry(Timestamp subScriptionExpiry) {
+        this.subScriptionExpiry = subScriptionExpiry;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     
 }

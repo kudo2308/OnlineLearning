@@ -9,9 +9,10 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);
 }
 /* Đặt video full màn hình */
-.video-background {
+/*.video-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -25,13 +26,13 @@ body{
     width: 100vw;
     height: 100vh;
     object-fit: cover;
-}
+}*/
 
 /* Đảm bảo nội dung nằm trên video */
 .content {
     position: relative;
     z-index: 1;
-    color: #fff;
+    color: #f1f1f1;
     text-align: center;
     padding: 20px;
 }
@@ -39,37 +40,34 @@ body{
 .wrapper{
     width: 420px;
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(9px);
-    color: #fff;
+    color: #f1f1f1;
     border-radius: 12px;
-    padding: 30px 40px;
+    padding: 20px 30px;
 }
 .wrapper h1{
-    font-size: 36px;
-    text-align: center;
+    font-size: 23px;
 }
 .wrapper .input-box{
     position: relative;
     width: 100%;
     height: 50px;
-
     margin: 30px 0;
 }
 .input-box input{
     width: 100%;
     height: 100%;
     background: transparent;
-    border: none;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid rgba(255, 255, 255,0.8);
     border-radius: 40px;
     font-size: 16px;
-    color: #fff;
+    color: #f1f1f1;
     padding: 20px 45px 20px 20px;
 }
 .input-box input::placeholder{
-    color: #fff;
+    color: #f1f1f1;
 }
 .input-box i{
     position: absolute;
@@ -83,15 +81,15 @@ body{
     display: flex;
     justify-content: space-between;
     font-size: 14.5px;
-    margin: -15px 0 15px;
+    margin: 0 0 20px;
 }
 .remember-forgot label input{
-    accent-color: #fff;
+    accent-color: #f1f1f1;
     margin-right: 3px;
 
 }
 .remember-forgot a{
-    color: #fff;
+    color: #f1f1f1;
     text-decoration: none;
 
 }
@@ -99,7 +97,7 @@ body{
     text-decoration: underline;
 }
 .wrapper .btn{
-    width: 100%;
+    width: 25%;
     height: 45px;
     background: #fff;
     border: none;
@@ -116,12 +114,15 @@ body{
 }
 .wrapper .register-link{
     font-size: 14.5px;
-    text-align: center;
     margin: 20px 0 15px;
 
 }
+.verify{
+    display: flex;
+    justify-content: space-between;
+}
 .register-link p a{
-    color: #fff;
+    color: #f1f1f1;
     text-decoration: none;
     font-weight: 600;
 }
@@ -143,4 +144,91 @@ body{
     text-align: center;
     font-size: 14px;
     border-radius: 40px;
+} 
+.error-message-susses{
+    width: 67%;
+    z-index: 1000;
+    margin: auto;
+    display: none;
+    position: fixed;
+    top: -111px;
+    left: 0;
+    right: 0;
+    background-color: #00CC00;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 40px;
+}
+
+hr{
+    margin: 1% 0 7% ;
+}
+
+h2{
+    font-size: 16px;
+}
+p{
+    font-size: 15px;
+    font-weight: 100;
+    font-style: italic;
+}
+.google-btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+#customBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: #444;
+    height: 50px;
+    border-radius: 25px;
+    border: thin solid #888;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+#customBtn:hover {
+    background: #f1f1f1;
+    transform: scale(1.05);
+}
+
+#customBtn .icon {
+    background: url('../images/google-logo-6278331_960_720.png') center center no-repeat;
+    background-size: contain;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+#customBtn .buttonText {
+    display: inline-block;
+}
+.g_link {
+    text-decoration: none;
+    width: 60%;
+}
+
+.otp-form-group{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5% 0;
+}
+.otp-inputbar{
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 16px;
+    color: #333;
 }
