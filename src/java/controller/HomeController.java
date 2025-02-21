@@ -22,7 +22,7 @@ public class HomeController extends HttpServlet {
         CategoryDAO categoryDAO = new CategoryDAO();
         CourseDAO courseDAO = new CourseDAO(); 
         
-        List<Category> categories = categoryDAO.findALl();
+        List<Category> categories = categoryDAO.findAll();
         List<Course> courses = courseDAO.getAllCourses(0, 9);
         
         request.setAttribute("categories", categories);

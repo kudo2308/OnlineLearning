@@ -1,20 +1,18 @@
 package model;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 public class Lesson {
     private int lessonID;
     private String title;
     private String content;
     private String lessonType;
-    private String videoUrl;
-    private String documentUrl;
     private int duration;
     private int orderNumber;
     private int courseID;
     private boolean status;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
     
     // Navigation property
     private Course course;
@@ -53,22 +51,7 @@ public class Lesson {
     public void setLessonType(String lessonType) {
         this.lessonType = lessonType;
     }
-    
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-    
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-    
-    public String getDocumentUrl() {
-        return documentUrl;
-    }
-    
-    public void setDocumentUrl(String documentUrl) {
-        this.documentUrl = documentUrl;
-    }
+   
     
     public int getDuration() {
         return duration;
@@ -102,19 +85,19 @@ public class Lesson {
         this.status = status;
     }
     
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
     
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
     
-    public Timestamp getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
     
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
     

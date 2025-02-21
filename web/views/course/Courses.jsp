@@ -8,13 +8,14 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<c:set var="language" value="${not empty sessionScope.language ? sessionScope.language : ''}" scope="session" />
+<fmt:setLocale value="${language}" />
+<fmt:setBundle basename="text" />
 <!DOCTYPE html>
 <html lang="en">
 
-
     <head>
-
-        <!-- META ============================================= -->
+        <title>Our Course</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="keywords" content="" />
@@ -59,13 +60,14 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/style.css">
         <link class="skin" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/color/color-1.css">
 
+        <%@include file="/common/header.jsp" %>
     </head>
-    <body id="bg">
-        <div class="page-wraper">
 
+    <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
+        <div class="site-wrap">
 
-            <!-- Navigation Menu END ==== -->
+            <%@include file="/common/header.jsp" %>
 
             <!-- header END ==== -->
             <!-- Content -->
@@ -327,4 +329,3 @@
     </body>
 
 </html>
-
