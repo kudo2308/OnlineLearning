@@ -87,26 +87,28 @@ CREATE TABLE Lesson (
     UpdatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
 );
---video table
-create table video
-(
+-- Video table
+CREATE TABLE Video (
     id        INT IDENTITY PRIMARY KEY,
-    lessons   int references lessons (id) unique,
-    videoName nvarchar(255),
-    videoLink nvarchar(max),
+    lessons   INT REFERENCES Lesson(LessonID) UNIQUE,  
+    videoName NVARCHAR(255),
+    videoLink NVARCHAR(MAX)
 );
-create table Docs
-(
+
+-- Docs table
+CREATE TABLE Docs (
     id        INT IDENTITY PRIMARY KEY,
-    lessons   int references lessons (id) unique,
-    [content] nvarchar(max)
+    lessons   INT REFERENCES Lesson(LessonID) UNIQUE,  
+    [content] NVARCHAR(MAX)
 );
-create table [File]
-(
+
+-- File table
+CREATE TABLE [File] (
     id        INT IDENTITY PRIMARY KEY,
-    lessons   int references lessons (id) unique,
-    file_name nvarchar(500)
+    lessons   INT REFERENCES Lesson(LessonID) UNIQUE, 
+    file_name NVARCHAR(500)
 );
+
 -- Quiz table
 CREATE TABLE Quiz (
     QuizID INT IDENTITY(1,1) PRIMARY KEY,
@@ -394,135 +396,50 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  22,
  220);
 -- Insert lessons for courses
-INSERT INTO Lesson (Title, Content, LessonType, VideoUrl, DocumentUrl, Duration, OrderNumber, CourseID, Status) 
-VALUES
-('Introduction to Java Programming', 
- 'In this lesson, we will cover the basic syntax of Java, including variables, data types, and control structures. By the end of this lesson, you will be able to write simple Java programs.',
- 'video', 
- '/videos/java-intro.mp4', 
- NULL, 
- 45, 
- 1, 
- (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'),
- 1),
+-- Insert additional lessons
+INSERT INTO Lesson (Title, Content, LessonType, Duration, OrderNumber, CourseID, Status, CreatedAt) 
+VALUES 
+    ('Advanced Java: Multithreading and Concurrency', 'Learn about multithreading and concurrent programming in Java.', 'video', 60, 4, 
+     (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 1, GETDATE()),
 
-('Object-Oriented Programming in Java', 
- 'This lesson introduces the concept of Object-Oriented Programming (OOP). We will discuss classes, objects, inheritance, and polymorphism. OOP is a core concept in Java programming.',
- 'video', 
- '/videos/java-oop.mp4', 
- NULL, 
- 50, 
- 2, 
- (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'),
- 1),
+    ('React State Management', 'Understand how to manage state effectively in React applications.', 'video', 50, 3, 
+     (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 1, GETDATE()),
 
-('Mastering Java Collections', 
- 'In this lesson, we will dive into the Java Collections Framework, including lists, sets, and maps. You will learn how to use these collections to store and manipulate data efficiently.',
- 'video', 
- '/videos/java-collections.mp4', 
- NULL, 
- 60, 
- 3, 
- (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'),
- 1),
+    ('Advanced SQL Queries', 'Master advanced SQL concepts like joins, indexing, and stored procedures.', 'document', 45, 3, 
+     (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'), 1, GETDATE()),
 
-('Introduction to HTML and CSS', 
- 'This lesson will teach you the fundamentals of web development, focusing on HTML and CSS. You will learn how to structure a webpage with HTML and style it using CSS.',
- 'video', 
- '/videos/html-css-intro.mp4', 
- NULL, 
- 40, 
- 1, 
- (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'),
- 1),
+    ('Networking Security Best Practices', 'Explore best practices for securing computer networks.', 'video', 50, 3, 
+     (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'), 1, GETDATE()),
 
-('JavaScript Basics', 
- 'In this lesson, we will explore the fundamentals of JavaScript, including variables, functions, and loops. JavaScript is a key language for front-end development.',
- 'video', 
- '/videos/javascript-basics.mp4', 
- NULL, 
- 50, 
- 2, 
- (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'),
- 1),
+    ('Cloud Deployment Strategies', 'Learn different approaches to deploying applications on cloud platforms.', 'document', 50, 4, 
+     (SELECT CourseID FROM Course WHERE Title = 'Building Scalable Web Applications'), 1, GETDATE()),
 
-('Building Your First React App', 
- 'This lesson teaches you how to create your first React application. You will learn about React components, JSX, and how to manage state in a React app.',
- 'video', 
- '/videos/react-first-app.mp4', 
- NULL, 
- 55, 
- 3, 
- (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'),
- 1),
+    ('Machine Learning with Python', 'Introduction to supervised and unsupervised machine learning models.', 'video', 70, 4, 
+     (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 1, GETDATE());
 
-('SQL Basics', 
- 'In this lesson, you will learn the basics of SQL, including SELECT, INSERT, UPDATE, and DELETE queries. SQL is essential for interacting with relational databases.',
- 'document', 
- NULL, 
- '/documents/sql-basics.pdf', 
- 30, 
- 1, 
- (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'),
- 1),
+-- Insert additional video lessons
+INSERT INTO Video (lessons, videoName, videoLink) 
+VALUES 
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Advanced Java: Multithreading and Concurrency'), 'Java Multithreading', '/videos/java-multithreading.mp4'),
 
-('Database Normalization', 
- 'This lesson covers the concept of database normalization, which helps to eliminate redundancy and improve the efficiency of a database design.',
- 'document', 
- NULL, 
- '/documents/database-normalization.pdf', 
- 45, 
- 2, 
- (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'),
- 1),
+    ((SELECT LessonID FROM Lesson WHERE Title = 'React State Management'), 'React State Management', '/videos/react-state.mp4'),
 
-('Networking Essentials', 
- 'This lesson will introduce the fundamentals of networking, including the OSI model, IP addressing, and subnetting. Networking is crucial for understanding how devices communicate over a network.',
- 'video', 
- '/videos/networking-essentials.mp4', 
- NULL, 
- 50, 
- 1, 
- (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'),
- 1),
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Networking Security Best Practices'), 'Network Security Guide', '/videos/network-security.mp4'),
 
-('Routing and Switching Concepts', 
- 'In this lesson, you will learn about routing and switching protocols, including RIP, OSPF, and VLANs. This knowledge is essential for configuring and managing networks.',
- 'video', 
- '/videos/routing-switching.mp4', 
- NULL, 
- 55, 
- 2, 
- (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'),
- 1),
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Machine Learning with Python'), 'Machine Learning Intro', '/videos/ml-intro.mp4');
 
-('Introduction to Mobile Development with Flutter', 
- 'This lesson introduces Flutter, a popular framework for mobile app development. You will learn how to build a simple mobile application using Flutter.',
- 'video', 
- '/videos/flutter-intro.mp4', 
- NULL, 
- 45, 
- 1, 
- (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'),
- 1),
+-- Insert additional document lessons
+INSERT INTO Docs (lessons, [content]) 
+VALUES 
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Advanced SQL Queries'), 'This document covers JOINs, indexing, stored procedures, and other advanced SQL techniques.'),
 
-('Flutter Widgets and Layouts', 
- 'This lesson covers Flutter widgets and layouts. You will learn how to use various widgets to build responsive mobile applications.',
- 'video', 
- '/videos/flutter-widgets.mp4', 
- NULL, 
- 50, 
- 2, 
- (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'),
- 1),
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Cloud Deployment Strategies'), 'Exploring cloud deployment strategies including serverless computing, containers, and microservices.');
 
-('Data Cleaning with Pandas', 
- 'In this lesson, you will learn how to clean and preprocess data using the Pandas library in Python. Data cleaning is a crucial step before performing any analysis.',
- 'document', 
- NULL, 
- '/documents/data-cleaning-pandas.pdf', 
- 40, 
- 1, 
- (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'),
- 1);
+-- Insert additional file lessons
+INSERT INTO [File] (lessons, file_name) 
+VALUES 
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Advanced SQL Queries'), 'advanced_sql_queries.pdf'),
+
+    ((SELECT LessonID FROM Lesson WHERE Title = 'Cloud Deployment Strategies'), 'cloud_deployment_strategies.pdf');
+
 
