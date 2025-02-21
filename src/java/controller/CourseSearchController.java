@@ -28,7 +28,7 @@ public class CourseSearchController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         int page = 1;
         int recordsPerPage = 9;
 
@@ -43,8 +43,8 @@ public class CourseSearchController extends HttpServlet {
         double minPrice = (minPriceString != null && !minPriceString.isEmpty()) ? Double.parseDouble(minPriceString) : 0;
         double maxPrice = (maxPriceString != null && !maxPriceString.isEmpty()) ? Double.parseDouble(maxPriceString) : Double.MAX_VALUE;
 
-        // Lọc theo danh mục
-        String[] categoryIds = request.getParameterValues("category");
+        // Lọc theo nhiều danh mục
+        String[] categoryIds = request.getParameterValues("categoryId");
         
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
@@ -57,10 +57,10 @@ public class CourseSearchController extends HttpServlet {
         CourseDAO courseDAO = new CourseDAO();
         CategoryDAO categoryDAO = new CategoryDAO();
 
-        List<Category> categories = categoryDAO.findALl();
+        List<Category> categories = categoryDAO.findAll();
         List<Course> courses = courseDAO.getAllCourses(0, Integer.MAX_VALUE); // Lấy tất cả khóa học
 
-        // Lọc theo danh mục
+        // Lọc theo nhiều danh mục
         if (categoryIds != null && categoryIds.length > 0) {
             List<Integer> selectedCategories = Arrays.stream(categoryIds)
                     .map(Integer::parseInt)
@@ -99,8 +99,8 @@ public class CourseSearchController extends HttpServlet {
         request.setAttribute("currentPage", page);
         request.setAttribute("searchKeyword", keyword);
         request.setAttribute("selectedCategories", categoryIds); // Giữ các danh mục được chọn
-        request.setAttribute("minPrice", minPrice);
-        request.setAttribute("maxPrice", maxPrice);
+        request.setAttribute("minPrice", minPrice); // Truyền minPrice
+        request.setAttribute("maxPrice", maxPrice); // Truyền maxPrice
 
         request.getRequestDispatcher("/views/course/Courses.jsp").forward(request, response);
     }

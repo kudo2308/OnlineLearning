@@ -21,22 +21,27 @@ public class CategoryDAO extends DBContext {
 
     public List<Category> findAll() {
         List<Category> categories = new ArrayList<>();
-        String sql = "SELECT * FROM categories";
+        String sql = "select * from Category";
 
-        try {
+        try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
+
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Category category = new Category();
-                category.setCategoryID(rs.getInt("category_id"));
-                category.setName(rs.getString("name"));
-                category.setDescription(rs.getString("description"));
-                category.setCreatedAt(rs.getTimestamp("created_at"));
+
+                int categoryId = rs.getInt("CategoryID");
+                String name = rs.getString("Name");
+                String description = rs.getString("Description");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+
+                Category category = new Category(categoryId, name, description, createdAt);
+
                 categories.add(category);
+
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
         return categories;
     }

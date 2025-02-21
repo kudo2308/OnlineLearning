@@ -8,14 +8,13 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<c:set var="language" value="${not empty sessionScope.language ? sessionScope.language : ''}" scope="session" />
-<fmt:setLocale value="${language}" />
-<fmt:setBundle basename="text" />
 <!DOCTYPE html>
 <html lang="en">
 
+
     <head>
-        <title>Our Course</title>
+
+        <!-- META ============================================= -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="keywords" content="" />
@@ -60,14 +59,13 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/style.css">
         <link class="skin" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/color/color-1.css">
 
-        <%@include file="/common/header.jsp" %>
     </head>
+    <body id="bg">
+        <div class="page-wraper">
 
-    <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
-        <div class="site-wrap">
 
-            <%@include file="/common/header.jsp" %>
+            <!-- Navigation Menu END ==== -->
 
             <!-- header END ==== -->
             <!-- Content -->
@@ -108,23 +106,24 @@
                                         </div>
                                     </div>
                                     <div class="widget widget_archive">
-                                        <form id="category-filter" action="CourseSearch" method="get">
-                                            <h5 class="widget-title style-1">ALL COURSES</h5>
+                                        <form action="CourseSearch" method="get">
+                                            <h5>Filter by Category</h5>
                                             <c:forEach var="category" items="${categories}">
-                                                <div class="cate-list">
-                                                    <li>
-                                                        <input type="checkbox" name="category" value="${category.categoryID}" 
-                                                               id="cat-${category.categoryID}"
-                                                               <c:if test="${selectedCategories != null && fn:contains(fn:join(selectedCategories, ','), category.categoryID)}">checked</c:if>>
-                                                        <label for="cat-${category.categoryID}">${category.name}</label>
-                                                    </li>
+                                                <div class="category-checkbox">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        name="categoryId" 
+                                                        value="${category.categoryID}" 
+                                                        id="cat-${category.categoryID}"
+                                                        <c:if test="${selectedCategories != null && fn:contains(fn:join(selectedCategories, ','), category.categoryID)}">checked</c:if>>
+                                                    <label for="cat-${category.categoryID}">${category.name}</label>
                                                 </div>
                                             </c:forEach>
                                             <button class="sub-but" type="submit">Apply Filter</button>
                                             <hr>
+                                            <!-- Lọc theo giá -->
                                             <h5 class="widget-title style-1">Price</h5>
-                                            <div class="cate-list">
-                                                <div class="price-range">
+                                            <div class="price-range">
                                                     <input type="number" name="minPrice" placeholder="Min Price" class="range-control min-ui" value="${minPrice != 0 ? minPrice : ''}">
                                                     <input type="number" name="maxPrice" placeholder="Max Price" class="range-control max-ui" value="${maxPrice != Double.MAX_VALUE ? maxPrice : ''}">
                                                     <button class="sub-but" type="submit"><span class="material-symbols-outlined">
@@ -132,8 +131,6 @@
                                                         </span></button>
 
                                                 </div>
-                                            </div>
-
                                         </form>
 
                                     </div>
@@ -329,3 +326,4 @@
     </body>
 
 </html>
+

@@ -21,7 +21,7 @@
                 <a href="#">Explore (New!)</a>
             <c:if test="${not empty categories}">
                 <c:forEach var="category" items="${categories}">
-                    <a href="#">${category.name}</a>
+                    <a href="${pageContext.request.contextPath}/CourseSearch?categoryId=${category.categoryID}">${category.name}</a>
                 </c:forEach>
             </c:if>
         </div>
