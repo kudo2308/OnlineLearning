@@ -8,7 +8,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-      min-height: 100vh;
+    min-height: 100vh;
 }
 /* Đặt video full màn hình */
 .video-background {
@@ -143,4 +143,4 @@ body{
     text-align: center;
     font-size: 14px;
     border-radius: 40px;
-} 
+}

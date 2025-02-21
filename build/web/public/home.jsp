@@ -57,7 +57,10 @@
                     onclick="scrollb('wow', 'right')">
                     arrow_forward
                 </span>
-                <h1>Courses</h1>
+                <div class="view-more">
+                    <h1>Courses</h1>
+                    <a href="${pageContext.request.contextPath}/CourseSearch" class="btn-see-more">See More</a>
+                </div>
                 <ul id="wow">
                     <c:if test="${not empty courses}">
                         <c:forEach var="course" items="${courses}">
@@ -69,16 +72,16 @@
                                     <a style="color: black; text-decoration: none" href="#">
                                         ${course.title}
                                     </a> 
-                                    <p class="des-course">${course.description}$</p>
-                                    <span>${course.price}$</span>
-                                    
+                                <p class="des-course">${course.description}$</p>
+                                <span>${course.price}$</span>
+
                                 </p>
                             </li>
                         </c:forEach>
                     </c:if>
-                            <c:if test="${empty courses}">
-                                <li>Hiện chưa có sản phẩm mới.</li>
-                            </c:if>
+                    <c:if test="${empty courses}">
+                        <li>Hiện chưa có sản phẩm mới.</li>
+                        </c:if>
                 </ul>
             </div>
 
