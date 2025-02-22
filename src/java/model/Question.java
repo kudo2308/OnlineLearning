@@ -21,6 +21,7 @@ public class Question {
     private int questionID;
     private String content;
     private int pointPerQuestion;
+    private int CorrectAnswer;
     private int quizID;
     private boolean status;
     private Timestamp createdAt;
