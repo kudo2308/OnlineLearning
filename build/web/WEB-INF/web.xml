@@ -24,6 +24,18 @@
         <servlet-name>ListCourseServlet</servlet-name>
         <servlet-class>controller.CourseServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddLesson</servlet-name>
+        <servlet-class>controller.lesson.AddLesson</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateLesson</servlet-name>
+        <servlet-class>controller.lesson.UpdateLesson</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewLessonForAd</servlet-name>
+        <servlet-class>controller.lesson.ViewLessonForAd</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseDetailServlet</servlet-name>
         <url-pattern>/coursedetails</url-pattern>
@@ -43,5 +55,17 @@
     <servlet-mapping>
         <servlet-name>CourseServlet</servlet-name>
         <url-pattern>/course</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddLesson</servlet-name>
+        <url-pattern>/addLesson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateLesson</servlet-name>
+        <url-pattern>/updateLesson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewLessonForAd</servlet-name>
+        <url-pattern>/viewLessonForAd</url-pattern>
     </servlet-mapping>
 </web-app>
