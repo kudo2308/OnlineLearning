@@ -19,7 +19,7 @@
         <title>Online Learning - Quiz</title>
     </head>
     <body>
-        <jsp:include page="/common/header.jsp" />
+        
         <div class="container">
             <!-- Left Navigation -->
             <div class="quiz-navigation">
