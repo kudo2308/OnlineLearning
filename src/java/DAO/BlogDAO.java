@@ -148,11 +148,110 @@ public class BlogDAO extends DBContext {
         }
         return 0; // Nếu có lỗi thì trả về 0
     }
-    
+
     public static void main(String[] args) {
         BlogDAO blogDAO = new BlogDAO();
 
         int blogs = blogDAO.getTotalBlogs();
         System.out.println(blogs);
     }
+
+    public List<Blog> getBlogByCategoryId(int categoryId) {
+        List<Blog> blogList = new ArrayList<>();
+        String sql = """
+                    SELECT b.[BlogID]
+                          ,b.[Title]
+                          ,b.[Content]
+                          ,b.[AuthorID]
+                          ,b.[CategoryID]
+                          ,b.[ImageUrl]
+                          ,b.[Status]
+                          ,b.[CreatedAt]
+                          ,b.[UpdatedAt]
+                          ,a.FullName as AuthorName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Blog] b
+                    JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
+                    JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
+                    WHERE cat.CategoryID = ?
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, categoryId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setBlogId(rs.getInt("BlogID"));
+                blog.setTitle(rs.getString("Title"));
+                blog.setContent(rs.getString("Content"));
+                blog.setAuthorId(rs.getInt("AuthorID"));
+                blog.setCategoryID(rs.getInt("CategoryID"));
+                blog.setImgUrl(rs.getString("ImageUrl"));
+                blog.setStatus(rs.getBoolean("Status"));
+                blog.setCreateAt(rs.getDate("CreatedAt"));
+                blog.setUpdateAt(rs.getDate("UpdatedAt"));
+
+                Account author = new Account();
+                author.setFullName(rs.getString("AuthorName"));
+                blog.setAuthor(author);
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                blog.setCategory(category);
+
+                blogList.add(blog);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return blogList;
+    }
+
+    public List<Blog> getBlogsByCategoryId(int categoryId, int offset, int limit) {
+        List<Blog> blogList = new ArrayList<>();
+        String sql = """
+                SELECT b.[BlogID], b.[Title], b.[Content], b.[AuthorID], b.[CategoryID],
+                       b.[ImageUrl], b.[Status], b.[CreatedAt], b.[UpdatedAt],
+                       a.FullName AS AuthorName, cat.Name AS CategoryName
+                FROM [dbo].[Blog] b
+                JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
+                JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
+                WHERE cat.CategoryID = ?
+                ORDER BY b.[CreatedAt] DESC
+                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+                """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, categoryId);
+            st.setInt(2, offset);
+            st.setInt(3, limit);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setBlogId(rs.getInt("BlogID"));
+                blog.setTitle(rs.getString("Title"));
+                blog.setContent(rs.getString("Content"));
+                blog.setAuthorId(rs.getInt("AuthorID"));
+                blog.setCategoryID(rs.getInt("CategoryID"));
+                blog.setImgUrl(rs.getString("ImageUrl"));
+                blog.setStatus(rs.getBoolean("Status"));
+                blog.setCreateAt(rs.getDate("CreatedAt"));
+                blog.setUpdateAt(rs.getDate("UpdatedAt"));
+
+                Account author = new Account();
+                author.setFullName(rs.getString("AuthorName"));
+                blog.setAuthor(author);
+
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                blog.setCategory(category);
+
+                blogList.add(blog);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return blogList;
+    }
+
 }
