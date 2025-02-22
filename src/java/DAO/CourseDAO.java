@@ -17,6 +17,7 @@ import model.Course;
 import model.Account;
 import model.Category;
 import model.Feedback;
+import model.Role;
 
 public class CourseDAO extends DBContext {
 
@@ -90,7 +91,10 @@ public class CourseDAO extends DBContext {
                 int categoryId = rs.getInt("CategoryID");
                 String categoryName = rs.getString("Name");
 
-                Account expert = new Account(userId, fullName, roleId);
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
 
                 Category category = new Category(categoryId, categoryName);
 
@@ -552,7 +556,10 @@ public class CourseDAO extends DBContext {
                 int categoryId = rs.getInt("CategoryID");
                 String categoryName = rs.getString("Name");
 
-                Account expert = new Account(userId, fullName, roleId);
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
 
                 Category category = new Category(categoryId, categoryName);
 
@@ -607,7 +614,10 @@ public class CourseDAO extends DBContext {
                 int categoryId = rs.getInt("CategoryID");
                 String categoryName = rs.getString("Name");
 
-                Account expert = new Account(userId, fullName, roleId);
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
 
                 Category category = new Category(categoryId, categoryName);
 

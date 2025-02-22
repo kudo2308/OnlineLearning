@@ -3,6 +3,7 @@ package model;
 import java.sql.Timestamp;
 
 public class Account {
+
     private int userID;
     private String fullName;
     private String password;
@@ -19,9 +20,14 @@ public class Account {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-   
     // Constructors
     public Account() {
+    }
+
+    public Account(int userID, String fullName, Role role) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.role = role;
     }
 
     public Account(int userID, String fullName, String password, String email, String phone, String image, String address, String genderID, Timestamp dob, Role role, String subScriptionType, Timestamp subScriptionExpiry, boolean status, Timestamp createdAt, Timestamp updatedAt) {
@@ -162,5 +168,4 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
-    
 }
