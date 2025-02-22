@@ -21,7 +21,7 @@ import model.Question;
  *
  * @author dohie
  */
-@WebServlet(name = "QuizController", urlPatterns = {"/quiz"})
+@WebServlet(name = "QuizController", urlPatterns = {"/Quiz"})
 public class QuizController extends HttpServlet {
    
     /** 

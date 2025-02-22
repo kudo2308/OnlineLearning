@@ -25,10 +25,12 @@
             <div class="quiz-navigation">
                 <input type="search" placeholder="Search..." class="search-input">
                 <ul>
-                    <li><span class="material-icons">quiz</span><a href="#">Quiz Lesson One</a></li>
-                    <li><span class="material-icons">quiz</span><a href="#">Quiz Lesson Two</a></li>
-                    <li><span class="material-icons">quiz</span><a href="#">Quiz Lesson Three</a></li>
-                    <li><span class="material-icons">quiz</span><a href="#">Final Test</a></li>
+                    <c:forEach items="${quizzes}" var="quiz">
+                        <li>
+                            <span class="material-icons">quiz</span>
+                            <a href="${pageContext.request.contextPath}/Test?action=take&id=${quiz.quizID}">${quiz.name}</a>
+                        </li>
+                    </c:forEach>
                 </ul>
             </div>
 
@@ -50,7 +52,7 @@
                                             <span><i class="material-icons">grade</i> Pass Rate: ${quiz.passRate}%</span>
                                         </div>
                                     </div>
-                                    <a href="${pageContext.request.contextPath}/quiz?action=view&id=${quiz.quizID}" class="start-quiz-btn">
+                                    <a href="${pageContext.request.contextPath}/Test?action=take&id=${quiz.quizID}" class="start-quiz-btn">
                                         START QUIZ <i class="material-icons">arrow_forward</i>
                                     </a>
                                 </div>
