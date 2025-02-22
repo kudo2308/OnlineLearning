@@ -25,12 +25,25 @@
         <servlet-class>controller.CourseServlet</servlet-class>
     </servlet>
     <servlet>
+<<<<<<< HEAD
+        <servlet-name>AddLesson</servlet-name>
+        <servlet-class>controller.lesson.AddLesson</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateLesson</servlet-name>
+        <servlet-class>controller.lesson.UpdateLesson</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewLessonForAd</servlet-name>
+        <servlet-class>controller.lesson.ViewLessonForAd</servlet-class>
+=======
         <servlet-name>WatchCourse</servlet-name>
         <servlet-class>controller.WatchCourse</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>QuizController</servlet-name>
         <servlet-class>controller.QuizController</servlet-class>
+>>>>>>> 68740c2e62230c5c3da9791b4b2775b87ddbdd71
     </servlet>
     <servlet>
         <servlet-name>Test</servlet-name>
@@ -57,12 +70,25 @@
         <url-pattern>/course</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+<<<<<<< HEAD
+        <servlet-name>AddLesson</servlet-name>
+        <url-pattern>/addLesson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateLesson</servlet-name>
+        <url-pattern>/updateLesson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewLessonForAd</servlet-name>
+        <url-pattern>/viewLessonForAd</url-pattern>
+=======
         <servlet-name>WatchCourse</servlet-name>
         <url-pattern>/learn/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>QuizController</servlet-name>
         <url-pattern>/Quiz</url-pattern>
+>>>>>>> 68740c2e62230c5c3da9791b4b2775b87ddbdd71
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TestController</servlet-name>
