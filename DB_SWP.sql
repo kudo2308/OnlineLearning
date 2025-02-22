@@ -128,9 +128,6 @@ CREATE TABLE Quiz (
 CREATE TABLE Question (
     QuestionID INT IDENTITY(1,1) PRIMARY KEY,
     Content NTEXT NOT NULL,
-    AnswerOptions NTEXT,  -- Store as JSON array of options
-    CorrectAnswer NTEXT,
-    Explanation NTEXT,
     PointPerQuestion INT DEFAULT 1,
     QuizID INT,
     Status BIT DEFAULT 1,
@@ -138,6 +135,16 @@ CREATE TABLE Question (
     UpdatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (QuizID) REFERENCES Quiz(QuizID)
 );
+
+CREATE TABLE Answer (
+    answerID INT IDENTITY(1,1) PRIMARY KEY,
+    content NVARCHAR(MAX) NOT NULL,
+    isCorrect BIT NOT NULL DEFAULT 0,
+    Explanation NTEXT,
+    questionID INT NOT NULL,
+    FOREIGN KEY (questionID) REFERENCES Question(questionID)
+);
+
 -- Packages table
 CREATE TABLE Packages (
     PackageID INT IDENTITY(1,1) PRIMARY KEY,
