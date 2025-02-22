@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.CourseDAO;
+import DAO.LessonDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,63 +9,55 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Course;
+import model.Lesson;
+import java.util.List;
 
-@WebServlet(name = "CourseDetailServlet", urlPatterns = {"/coursedetails"})
+@WebServlet(name = "CourseDetailServlet", urlPatterns = {"/course/*"})
 public class CourseDetailServlet extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
-        try {
-            // Lấy courseId từ parameter
-            String courseIdStr = request.getParameter("id");
-            if (courseIdStr == null || courseIdStr.trim().isEmpty()) {
-                throw new ServletException("Course ID is required");
-            }
-            
-            int courseId = Integer.parseInt(courseIdStr);
-            
-            // Lấy thông tin chi tiết khóa học
-            CourseDAO courseDAO = new CourseDAO();
-            Course course = courseDAO.getCourseById(courseId);
-            
-            if (course == null) {
-                throw new ServletException("Course not found");
-            }
-            
-            // Lấy các khóa học liên quan (cùng category)
-            int categoryId = course.getCategoryID();
-            int currentPage = 1;
-            int recordsPerPage = 3; // Số khóa học liên quan muốn hiển thị
-            int offset = 0;
-            
-            request.setAttribute("course", course);
-            request.setAttribute("relatedCourses", courseDAO.getCoursesByExpert(categoryId, offset, recordsPerPage));
-            
-            // Forward to course detail page
-            request.getRequestDispatcher("views/course/CourseDetail.jsp").forward(request, response);
-              
-        } catch (Exception e) {
-            System.out.println("Error in CourseDetailServlet: " + e.getMessage());
-            request.getRequestDispatcher("public/404.jsp").forward(request, response);
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.sendRedirect(request.getContextPath() + "/course");
+            return;
+        }
+
+        try {
+            // Extract courseId from path
+            String[] pathParts = pathInfo.split("/");
+            int courseId = Integer.parseInt(pathParts[1]);
+            int lessonId = Integer.parseInt(pathParts[2]);
+             
+            // Get course details
+            CourseDAO courseDAO = new CourseDAO();
+            Course course = courseDAO.getCourseById(courseId);
+
+            if (course == null) {
+                response.sendRedirect(request.getContextPath() + "/course");
+                return;
+            }
+
+            // Get lessons for this course
+            LessonDAO lessonDAO = new LessonDAO();
+            Lesson lesson = lessonDAO.findLessonById(lessonId);
+
+            // Set attributes for the JSP
+            request.setAttribute("course", course);
+            request.setAttribute("lessons", lesson);
+
+            // Forward to the course detail page
+            request.getRequestDispatcher("/views/course/CourseDetail.jsp").forward(request, response);
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            response.sendRedirect(request.getContextPath() + "/course");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    public String getServletInfo() {
-        return "Course Detail Servlet";
+        doGet(request, response);
     }
 }

@@ -24,6 +24,14 @@
         <servlet-name>ListCourseServlet</servlet-name>
         <servlet-class>controller.CourseServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>WatchCourse</servlet-name>
+        <servlet-class>controller.WatchCourse</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>QuizController</servlet-name>
+        <servlet-class>controller.QuizController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseDetailServlet</servlet-name>
         <url-pattern>/coursedetails</url-pattern>
@@ -43,5 +51,13 @@
     <servlet-mapping>
         <servlet-name>CourseServlet</servlet-name>
         <url-pattern>/course</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WatchCourse</servlet-name>
+        <url-pattern>/learn/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>QuizController</servlet-name>
+        <url-pattern>/Quiz</url-pattern>
     </servlet-mapping>
 </web-app>
