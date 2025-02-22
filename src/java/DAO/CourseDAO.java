@@ -554,7 +554,7 @@ public class CourseDAO extends DBContext {
 
                 Account user = new Account();
                 user.setFullName(rs.getString("FullName"));
-                user.setUsername(rs.getString("Username"));
+                
                 feedback.setUser(user);
 
                 feedbackList.add(feedback);

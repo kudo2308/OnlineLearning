@@ -14,7 +14,7 @@ import model.Category;
 import model.Course;
 import model.CourseWithCategory;
 
-@WebServlet(name = "CourseServlet", urlPatterns = {"/courses"})
+@WebServlet(name = "CourseServlet", urlPatterns = {"/course"})
 public class CourseServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

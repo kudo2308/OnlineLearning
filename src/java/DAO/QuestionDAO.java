@@ -1,37 +1,101 @@
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package DAO;
 
-import DBContext.DBContext;
-import static constant.Constant.RECORD_PER_PAGE;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Question;
+import DBContext.DBContext;
+import static constant.Constant.RECORD_PER_PAGE;
 import model.Course;
 import model.Lesson;
-import model.Question;
 import model.Quiz;
 
+/**
+ *
+ * @author dohie
+ */
 public class QuestionDAO {
-
-    private PreparedStatement ps;
+     private PreparedStatement ps;
     private ResultSet rs;
     private Connection connection;
-    private List<Question> listQuestion;
-
-    public QuestionDAO() {
+     private List<Question> listQuestion;
+     public QuestionDAO() {
         listQuestion = new ArrayList<>();
         if (connection == null) {
             connection = new DBContext().getConnection();
         }
     }
-
+    
+    public List<Question> getQuestionsByQuizId(int quizId) {
+        List<Question> list = new ArrayList<>();
+        String query = "SELECT * FROM Question WHERE quizID = ? AND status = 1";
+        try {
+            connection = new DBContext().getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, quizId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Question question = Question.builder()
+                    .questionID(rs.getInt("questionID"))
+                    .content(rs.getString("content"))
+                    .pointPerQuestion(rs.getInt("pointPerQuestion"))
+                    .quizID(rs.getInt("quizID"))
+                    .status(rs.getBoolean("status"))
+                    .createdAt(rs.getTimestamp("createdAt"))
+                    .updatedAt(rs.getTimestamp("updatedAt"))
+                    .build();
+                list.add(question);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
+            closeResources();
+        }
+        return list;
+    }
+    
+    public Question getQuestionById(int questionId) {
+        String query = "SELECT * FROM Question WHERE questionID = ? AND status = 1";
+        try {
+            connection = new DBContext().getConnection();
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, questionId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return Question.builder()
+                    .questionID(rs.getInt("questionID"))
+                    .content(rs.getString("content"))
+                    .pointPerQuestion(rs.getInt("pointPerQuestion"))
+                    .quizID(rs.getInt("quizID"))
+                    .status(rs.getBoolean("status"))
+                    .createdAt(rs.getTimestamp("createdAt"))
+                    .updatedAt(rs.getTimestamp("updatedAt"))
+                    .build();
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
+    
+    private void closeResources() {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (connection != null) connection.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
     public static void main(String[] args) {
         QuestionDAO questionDAO = new QuestionDAO();
         List<Question> q = questionDAO.filterQuestions("Java", "Giới thiệu về Java", "Cơ Bản", true, "Which", 1);

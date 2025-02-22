@@ -13,10 +13,7 @@ import java.sql.Timestamp;
 import model.Course;
 import model.Packages;
 
-/**
- *
- * @author TNO
- */
+
 public class LessonDAO extends DBContext {
 
     private PreparedStatement ps;
