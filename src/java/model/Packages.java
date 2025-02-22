@@ -1,6 +1,9 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package model;
 
-import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import java.sql.Timestamp;
 
 @ToString
 @Builder
@@ -16,19 +20,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Question {
+public class Packages {
 
-    private int questionID;
-    private String content;
-    private int pointPerQuestion;
-    private int quizID;
-    private boolean status;
+    private int packageID;
+    private String name;
+    private String description;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-
-    // Navigation property
-    private Quiz quiz;
+    private boolean isDelete;
     private Course course;
-    private Lesson lession;
 
 }

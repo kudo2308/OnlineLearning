@@ -76,7 +76,7 @@ public class ViewLesson extends HttpServlet {
             int courseId = Integer.parseInt(request.getParameter(COURSE_ID));
             int lessonId = Integer.parseInt(request.getParameter("lessonId"));
             LessonDAO ldao = new LessonDAO();
-            Lesson lesson = ldao.getLessonById(lessonId);
+            Lesson lesson = ldao.findLessonById(lessonId);
 
             if (request.getParameter("docs") != null) {
                 DocDAO docDAO = new DocDAO();

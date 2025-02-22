@@ -17,6 +17,7 @@ import model.Course;
 import model.Account;
 import model.Category;
 import model.Feedback;
+import model.Role;
 
 public class CourseDAO extends DBContext {
 
@@ -90,7 +91,60 @@ public class CourseDAO extends DBContext {
                 int categoryId = rs.getInt("CategoryID");
                 String categoryName = rs.getString("Name");
 
-                Account expert = new Account(userId, fullName, roleId);
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
+
+                Category category = new Category(categoryId, categoryName);
+
+                Course course = new Course(courseId, title, description, userId, 0,
+                        categoryId, imageUrl, totalLesson, status, createdAt, ureatedAt, expert, category);
+
+                courses.add(course);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return courses;
+    }
+     public List<Course> findAll() {
+
+        String sql = "select * from Course co\n"
+                + "join Account a\n"
+                + "on co.ExpertID = a.UserID\n"
+                + "join Category ca\n"
+                + "on co.CategoryID = ca.CategoryID\n"
+                + "Order by co.CourseID";
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int courseId = rs.getInt("CourseID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String imageUrl = rs.getString("ImageUrl");
+                int totalLesson = rs.getInt("TotalLesson");
+                boolean status = rs.getBoolean("Status");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                Timestamp ureatedAt = rs.getTimestamp("UpdatedAt");
+
+                int userId = rs.getInt("UserID");
+                String fullName = rs.getString("FullName");
+                int roleId = rs.getInt("RoleID");
+
+                int categoryId = rs.getInt("CategoryID");
+                String categoryName = rs.getString("Name");
+
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
 
                 Category category = new Category(categoryId, categoryName);
 
@@ -256,6 +310,20 @@ public class CourseDAO extends DBContext {
         }
         return null;
     }
+     public int getTotalCoursesByCategory(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [CategoryID] = ? AND [Status] = 1";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, categoryId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return 0;
+     }
 
     public List<Course> searchCourses(String keyword, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
@@ -552,7 +620,10 @@ public class CourseDAO extends DBContext {
                 int categoryId = rs.getInt("CategoryID");
                 String categoryName = rs.getString("Name");
 
-                Account expert = new Account(userId, fullName, roleId);
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
 
                 Category category = new Category(categoryId, categoryName);
 
@@ -607,7 +678,10 @@ public class CourseDAO extends DBContext {
                 int categoryId = rs.getInt("CategoryID");
                 String categoryName = rs.getString("Name");
 
-                Account expert = new Account(userId, fullName, roleId);
+                Role role = new Role();
+                role.setRoleID(roleId);
+
+                Account expert = new Account(userId, fullName, role);
 
                 Category category = new Category(categoryId, categoryName);
 
@@ -639,9 +713,8 @@ public class CourseDAO extends DBContext {
     }
 
     // Phương thức lấy các khóa học theo categoryId
-    public List<Course> getCoursesByCategory(int categoryId) {
+   public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
-
         String sql = """
                     SELECT c.[CourseID]
                           ,c.[Title]
@@ -659,18 +732,23 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE cat.CategoryID = ?
+                    WHERE c.[CategoryID] = ? AND c.[Status] = 1
+                    ORDER BY c.[CourseID]
+                    OFFSET ? ROWS
+                    FETCH NEXT ? ROWS ONLY;
                     """;
-        try (Connection connection = new DBContext().getConnection()) {
+        try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, categoryId);
+            st.setInt(2, offset);
+            st.setInt(3, recordsPerPage);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
-                course.setPrice(rs.getInt("Price"));
+                course.setPricePackageID(rs.getInt("Price"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -690,7 +768,7 @@ public class CourseDAO extends DBContext {
                 courseList.add(course);
             }
         } catch (SQLException ex) {
-            System.out.println("Error in getAllCourses: " + ex.getMessage());
+            System.out.println(ex);
         }
         return courseList;
     }

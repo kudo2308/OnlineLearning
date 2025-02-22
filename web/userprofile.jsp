@@ -15,6 +15,7 @@
         <title>Online Learning</title>
     </head>
     <jsp:include page="common/header.jsp"></jsp:include>
+     <hr>
         <body>
             <div class="container mt-5">
                 <div class="d-flex">

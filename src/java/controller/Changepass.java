@@ -26,10 +26,15 @@ public class Changepass extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("emai");
+        String email = request.getParameter("email");
         if (email != null) {
             String pass = request.getParameter("pass");
             String repass = request.getParameter("re-pass");
+            if (pass == null && repass == null) {
+                request.setAttribute("email", email);
+                request.getRequestDispatcher("changepass.jsp").forward(request, response);
+                return;
+            }
             if (pass == null || repass == null) {
                 request.setAttribute("errorchangepass","You must enter full field password and rel-password");
                 request.setAttribute("email", email);

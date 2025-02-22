@@ -27,11 +27,13 @@ public class VerifyOTP extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String forget = request.getParameter("forget");
-        if(!(forget.isEmpty() || forget == null)){
+
+        if (forget != null && !forget.isEmpty()) {
             request.setAttribute("forget", "true");
             request.getRequestDispatcher("verify-otp.jsp").forward(request, response);
             return;
         }
+
         response.sendRedirect("verify-otp.jsp");
     }
 
@@ -96,7 +98,7 @@ public class VerifyOTP extends HttpServlet {
             get.deleteAttempts(emailHash);
             get.deleteResend(emailHash);
             // xóa cookie tạo cookie mới là "SessionID_User"          
-            Cookie sessionCookie = new Cookie("Session_ID_Pending","");
+            Cookie sessionCookie = new Cookie("Session_ID_Pending", "");
             sessionCookie.setMaxAge(0);
             sessionCookie.setHttpOnly(true);
             response.addCookie(sessionCookie);
@@ -111,9 +113,8 @@ public class VerifyOTP extends HttpServlet {
                 get.createSesssionIdApprove(sessionId, userId, fullname, role, "free");
                 dao.createAccount(fullname, email, passHash, role);
                 json.sendJsonResponse(response, "redirect", "login?success=You register success", -1);
-            }
-            else{
-                json.sendJsonResponse(response, "redirect", "changepass?email="+email, -1);
+            } else {
+                json.sendJsonResponse(response, "redirect", "changepass?email=" + email, -1);
             }
         } else {
             json.sendJsonResponse(response, "error", "You enter otp not correct !", -1);
