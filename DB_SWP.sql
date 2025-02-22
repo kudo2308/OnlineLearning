@@ -140,7 +140,7 @@ CREATE TABLE Answer (
     answerID INT IDENTITY(1,1) PRIMARY KEY,
     content NVARCHAR(MAX) NOT NULL,
     isCorrect BIT NOT NULL DEFAULT 0,
-    Explanation NTEXT,
+    Explanation NVARCHAR(MAX) NOT NULL,
     questionID INT NOT NULL,
     FOREIGN KEY (questionID) REFERENCES Question(questionID)
 );
