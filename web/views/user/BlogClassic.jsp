@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <!DOCTYPE html>
 <html>
     <!DOCTYPE html>
@@ -34,6 +36,7 @@
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
+            <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/blogStyle.css" />
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
             <link
                 rel="stylesheet"
@@ -72,7 +75,7 @@
             <div class="container">
                 <ul class="list-inline">
                     <li><a href="${pageContext.request.contextPath}/home">Home</a></li>
-                <li>Blog Classic</li>
+                <li><a href="${pageContext.request.contextPath}/Blog?categoryId = 0">Blog list</a></li>
             </ul>
         </div>
     </div>
@@ -82,7 +85,31 @@
         <!-- Blog Grid ==== -->
         <div class="section-area section-sp1">
             <div class="container">
-                <div class="ttr-blog-grid-3 row" id="masonry">
+                <div class="widget courses-search-bx placeani">
+                    <div class="form-group filter-blog">
+                        <div class="filter-cate">
+                            <form id="filter-form" action="Blog" method="get">
+                                <select name="categoryId" class="form-control" onchange="document.getElementById('filter-form').submit();">
+                                    <option value="0" ${selectedCategory == 0 ? 'selected' : ''}>All Categories</option>
+                                    <c:forEach var="category" items="${categories}">
+                                        <option value="${category.categoryID}" ${selectedCategory == category.categoryID ? 'selected' : ''}>
+                                            ${category.name}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="filter-search">
+                            <form id="search-blog" action="Blog" method="get">
+                                <div class="input-group">
+                                    <input name="search" type="text" required class="form-control" placeholder="Search blogs">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-3 g-4" id="masonry">
+
                     <c:if test="${not empty blogs}">
                         <c:forEach var="blog" items="${blogs}">
                             <div class="post action-card col-lg-4 col-md-6 col-sm-12 col-xs-12 m-b40">
@@ -110,23 +137,33 @@
                         </c:if>
 
                     <!-- Phân trang -->
-                    <div class="pagination-bx rounded-sm gray clearfix">
-                        <ul class="pagination">
-                            <c:if test="${currentPage > 1}">
-                                <li class="previous"><a href="?page=${currentPage - 1}"><i class="ti-arrow-left"></i> Prev</a></li>
+                    <c:if test="${totalPages > 1}">
+                        <div class="pagination-bx rounded-sm gray clearfix">
+                            <ul class="pagination">
+                                <c:if test="${currentPage > 1}">
+                                    <li class="previous">
+                                        <a href="?page=${currentPage - 1}&categoryId=${selectedCategory}&search=${searchKeyword}">
+                                            <i class="ti-arrow-left"></i> Prev
+                                        </a>
+                                    </li>
                                 </c:if>
 
-                            <c:forEach var="i" begin="1" end="${totalPages}" varStatus="status">
-                                <li class="${currentPage == i ? 'active' : ''}">
-                                    <a href="?page=${i}">${i}</a>
-                                </li>
-                            </c:forEach>
+                                <c:forEach var="i" begin="1" end="${totalPages}">
+                                    <li class="${currentPage == i ? 'active' : ''}">
+                                        <a href="?page=${i}&categoryId=${selectedCategory}&search=${searchKeyword}">${i}</a>
+                                    </li>
+                                </c:forEach>
 
-                            <c:if test="${currentPage < totalPages}">
-                                <li class="next"><a href="?page=${currentPage + 1}">Next <i class="ti-arrow-right"></i></a></li>
-                                    </c:if>
-                        </ul>
-                    </div>
+                                <c:if test="${currentPage < totalPages}">
+                                    <li class="next">
+                                        <a href="?page=${currentPage + 1}&categoryId=${selectedCategory}&search=${searchKeyword}">
+                                            Next <i class="ti-arrow-right"></i>
+                                        </a>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </div>
+                    </c:if>
                     <!-- Pagination END ==== -->
                 </div>
             </div>
