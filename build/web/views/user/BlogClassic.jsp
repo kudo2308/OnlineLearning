@@ -123,7 +123,7 @@
                                             <li><a href="#"><i class="fa fa-user"></i>${blog.author.fullName}</a></li>
                                         </ul>
                                         <h5 class="post-title"><a href="blog-details.html">${blog.title}</a></h5>
-                                        <p>Knowing that, you’ve optimised your pages countless amount of times, written tons.</p>
+                                        <p class="truncate-text">${blog.content}</p>
                                         <div class="post-extra">
                                             <a href="#" class="btn-link">READ MORE</a>
                                         </div>
