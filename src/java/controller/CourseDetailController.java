@@ -13,7 +13,7 @@ import model.Lesson;
 import java.util.List;
 
 @WebServlet(name = "CourseDetailServlet", urlPatterns = {"/course/*"})
-public class CourseDetailServlet extends HttpServlet {
+public class CourseDetailController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
