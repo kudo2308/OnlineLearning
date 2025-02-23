@@ -110,6 +110,11 @@
                 color: white;
             }
             
+            .btn-review {
+                background-color: #FF9800;
+                color: white;
+            }
+            
             .btn:hover {
                 opacity: 0.9;
             }
@@ -175,6 +180,16 @@
             </div>
             
             <div class="navigation-buttons" style="text-align: center; margin-top: 30px;">
+                <a href="${pageContext.request.contextPath}/Review?action=review&id=${quiz.quizID}" class="btn btn-review" style="
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #FF9800;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin: 10px;">
+                    Review Answers
+                </a>
                 <a href="${pageContext.request.contextPath}/Test?action=take&id=${quiz.quizID}" class="btn btn-primary" style="
                     display: inline-block;
                     padding: 10px 20px;
