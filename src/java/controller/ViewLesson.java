@@ -102,7 +102,7 @@ public class ViewLesson extends HttpServlet {
             }
 
         } catch (Exception e) {
-            response.sendRedirect("courses");
+            response.sendRedirect("course");
         }
     }
 

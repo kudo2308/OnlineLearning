@@ -24,6 +24,39 @@
         <servlet-name>ListCourseServlet</servlet-name>
         <servlet-class>controller.CourseServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddLesson</servlet-name>
+        <servlet-class>controller.lesson.AddLesson</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateLesson</servlet-name>
+        <servlet-class>controller.lesson.UpdateLesson</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewLessonForAd</servlet-name>
+        <servlet-class>controller.lesson.ViewLessonForAd</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>WatchCourse</servlet-name>
+        <servlet-class>controller.WatchCourse</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>QuizController</servlet-name>
+        <servlet-class>controller.QuizController</servlet-class>
+    </servlet>
+    <!-- Servlet Mappings -->
+    <servlet>
+        <servlet-name>TestReviewController</servlet-name>
+        <servlet-class>controller.test.TestReviewController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddQuizController</servlet-name>
+        <servlet-class>controller.quiz.AddQuizController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddQuestionController</servlet-name>
+        <servlet-class>controller.question.AddQuestionController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseDetailServlet</servlet-name>
         <url-pattern>/coursedetails</url-pattern>
@@ -43,5 +76,37 @@
     <servlet-mapping>
         <servlet-name>CourseServlet</servlet-name>
         <url-pattern>/course</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddLesson</servlet-name>
+        <url-pattern>/addLesson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateLesson</servlet-name>
+        <url-pattern>/updateLesson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewLessonForAd</servlet-name>
+        <url-pattern>/viewLessonForAd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WatchCourse</servlet-name>
+        <url-pattern>/learn/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>QuizController</servlet-name>
+        <url-pattern>/Quiz</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestReviewController</servlet-name>
+        <url-pattern>/Review</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddQuizController</servlet-name>
+        <url-pattern>/AddQuiz</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddQuestionController</servlet-name>
+        <url-pattern>/AddQuestion</url-pattern>
     </servlet-mapping>
 </web-app>
