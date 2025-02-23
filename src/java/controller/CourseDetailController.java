@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Course;
 
-@WebServlet(name = "CourseDetailServlet", urlPatterns = {"/coursedetails"})
-public class CourseDetailServlet extends HttpServlet {
+@WebServlet(name = "CourseDetailController", urlPatterns = {"/coursedetails"})
+public class CourseDetailController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

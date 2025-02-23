@@ -73,7 +73,7 @@
                                         ${course.title}
                                     </a> 
                                 <p class="des-course">${course.description}$</p>
-                                <span>${course.price}$</span>
+                                <span>${course.price}đ</span>
 
                                 </p>
                             </li>
