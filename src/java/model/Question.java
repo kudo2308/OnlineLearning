@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,6 @@ public class Question {
     private int questionID;
     private String content;
     private int pointPerQuestion;
-    private int CorrectAnswer;
     private int quizID;
     private boolean status;
     private Timestamp createdAt;
@@ -31,5 +31,6 @@ public class Question {
     private Quiz quiz;
     private Course course;
     private Lesson lession;
+    private List<Answer> answers;
 
 }

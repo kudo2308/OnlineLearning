@@ -21,6 +21,7 @@ public class Quiz {
     private int quizID;
     private String name;
     private String description;
+    private int timeLimit;
     private int duration;
     private double passRate;
     private int totalQuestion;

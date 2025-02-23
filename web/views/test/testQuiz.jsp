@@ -39,7 +39,7 @@
                 <c:choose>
                     <c:when test="${empty quiz}">
                         <!-- Display list of quizzes -->
-                        <h2>Available Quizzes</h2>
+                        <h2>TEST LIST</h2>
                         <div class="quiz-list">
                             <c:forEach items="${quizzes}" var="quiz">
                                 <div class="quiz-item">

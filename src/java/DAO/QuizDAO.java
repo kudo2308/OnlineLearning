@@ -52,18 +52,19 @@ public class QuizDAO {
     }
     
     public Quiz getQuizById(int quizId) {
-        String query = "SELECT * FROM Quiz WHERE quizID = ? AND status = 1";
         try {
+            String sql = "SELECT * FROM Quiz WHERE quizID = ?";
             conn = new DBContext().getConnection();
-            ps = conn.prepareStatement(query);
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, quizId);
             rs = ps.executeQuery();
+            
             if (rs.next()) {
                 Quiz quiz = new Quiz();
                 quiz.setQuizID(rs.getInt("quizID"));
                 quiz.setName(rs.getString("name"));
                 quiz.setDescription(rs.getString("description"));
-                quiz.setDuration(rs.getInt("duration"));
+                quiz.setTimeLimit(rs.getInt("duration")); 
                 quiz.setPassRate(rs.getDouble("passRate"));
                 quiz.setTotalQuestion(rs.getInt("totalQuestion"));
                 quiz.setCourseID(rs.getInt("courseID"));
@@ -73,7 +74,7 @@ public class QuizDAO {
                 return quiz;
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error in getQuizById: " + e.getMessage());
         } finally {
             closeResources();
         }
