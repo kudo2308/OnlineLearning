@@ -215,11 +215,21 @@
                     <!-- Navigation -->
                     <div class="navigation-buttons">
                         <button type="button" class="nav-btn" onclick="prevQuestion()">Previous</button>
-                        <button type="submit" name="action" value="submit" class="nav-btn">Submit</button>
                         <button type="button" class="nav-btn" onclick="nextQuestion()">Next</button>
                     </div>
 
-                    
+                    <div class="submit-section" style="text-align: center; margin-top: 20px;">
+                        <button type="button" onclick="confirmSubmit()" class="btn btn-primary" style="
+                            padding: 10px 30px;
+                            font-size: 18px;
+                            background-color: #28a745;
+                            border: none;
+                            color: white;
+                            border-radius: 5px;
+                            cursor: pointer;">
+                            Submit Quiz
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -304,6 +314,25 @@
             // Lấy thời gian từ server và bắt đầu đếm ngược
             var timeLimit = ${quiz.timeLimit}; // Thời gian làm bài tính bằng phút
             startTimer(timeLimit * 60); // Chuyển đổi sang giây
+
+            function confirmSubmit() {
+                if (confirm("Bạn có chắc chắn muốn nộp bài không?\nLưu ý: Sau khi nộp bài, bạn sẽ không thể quay lại để sửa.")) {
+                    var form = document.getElementById('quizForm');
+                    form.action = "Test?action=submit";
+                    form.submit();
+                }
+            }
+
+            function submitOnTimeout() {
+                alert("Hết giờ làm bài!");
+                if (confirm("Thời gian làm bài đã hết. Bạn có muốn nộp bài không?")) {
+                    var form = document.getElementById('quizForm');
+                    form.action = "Test?action=submit";
+                    form.submit();
+                }
+            }
+
+            
         </script>
     </body>
 </html>
