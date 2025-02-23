@@ -46,3 +46,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     margin-bottom: 0px;
     
 }
+
+.info-bx{
+    min-height: 283px;
+}
+
+.post-title{
+    min-height: 72px;
+}
+
+.truncate-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Giới hạn hiển thị 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Hiển thị dấu "..." khi nội dung bị cắt */
+}

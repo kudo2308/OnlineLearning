@@ -90,4 +90,47 @@ public class QuizDAO {
             System.out.println(e);
         }
     }
+    
+    public boolean addQuiz(Quiz quiz) {
+        String sql = "INSERT INTO Quiz (name, description, duration, passRate, totalQuestion, courseID, status, createdAt, updatedAt) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, quiz.getName());
+            ps.setString(2, quiz.getDescription());
+            ps.setInt(3, quiz.getDuration());
+            ps.setDouble(4, quiz.getPassRate());
+            ps.setInt(5, quiz.getTotalQuestion());
+            ps.setInt(6, quiz.getCourseID());
+            ps.setBoolean(7, quiz.isStatus());
+            ps.setTimestamp(8, quiz.getCreatedAt());
+            ps.setTimestamp(9, quiz.getUpdatedAt());
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in addQuiz: " + e.getMessage());
+            return false;
+        } finally {
+            closeResources();
+        }
+    }
+    
+    public int getLatestQuizId() {
+        String sql = "SELECT TOP 1 quizID FROM Quiz ORDER BY quizID DESC";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("quizID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return 0;
+    }
 }

@@ -242,10 +242,10 @@ public class QuestionDAO {
         return listQuestion;
     }
 
-    public boolean addQuestion(Question question) {
-        String sql = "INSERT INTO [dbo].[Question] ([Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt], [CourseID], [LessonID]) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public int addQuestion(Question question) {
+        String sql = "INSERT INTO [dbo].[Question] ([Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (?, ?, ?, ?, ?, ?)";
         try {
-            ps = connection.prepareStatement(sql);
+            ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, question.getContent());
             ps.setInt(2, question.getPointPerQuestion());
@@ -253,16 +253,18 @@ public class QuestionDAO {
             ps.setBoolean(4, question.isStatus());
             ps.setTimestamp(5, question.getCreatedAt());
             ps.setTimestamp(6, question.getUpdatedAt());
-            ps.setInt(7, question.getCourse().getCourseID());
-            ps.setInt(8, question.getLession().getLessonID());
 
             int rowAff = ps.executeUpdate();
-
-            return rowAff > 0;
+            if (rowAff > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
-        return false;
+        return 0;
     }
 }

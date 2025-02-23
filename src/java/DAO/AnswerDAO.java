@@ -89,4 +89,30 @@ public class AnswerDAO {
         
         return answers;
     }
+    
+    public int addAnswer(Answer answer) {
+        String sql = "INSERT INTO Answer (content, isCorrect, explanation, questionID) VALUES (?, ?, ?, ?)";
+        int generatedId = 0;
+        
+        try (Connection conn = db.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setString(1, answer.getContent());
+            ps.setBoolean(2, answer.isCorrect());
+            ps.setString(3, answer.getExplanation());
+            ps.setInt(4, answer.getQuestionID());
+            
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error adding answer: " + e.getMessage());
+        }
+        
+        return generatedId;
+    }
 }

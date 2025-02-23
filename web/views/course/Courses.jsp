@@ -160,7 +160,7 @@
                                                             </ul>
                                                         </div>
                                                         <div class="price">
-                                                            <h5>${course.price}</h5>
+                                                            <h5>${course.price}đ</h5>
                                                         </div>
                                                     </div>
                                                 </div>

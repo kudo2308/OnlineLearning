@@ -41,6 +41,14 @@
         <servlet-name>TestReviewController</servlet-name>
         <servlet-class>controller.test.TestReviewController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddQuizController</servlet-name>
+        <servlet-class>controller.quiz.AddQuizController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddQuestionController</servlet-name>
+        <servlet-class>controller.question.AddQuestionController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseDetailServlet</servlet-name>
         <url-pattern>/coursedetails</url-pattern>
@@ -76,5 +84,13 @@
     <servlet-mapping>
         <servlet-name>TestReviewController</servlet-name>
         <url-pattern>/Review</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddQuizController</servlet-name>
+        <url-pattern>/AddQuiz</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddQuestionController</servlet-name>
+        <url-pattern>/AddQuestion</url-pattern>
     </servlet-mapping>
 </web-app>
