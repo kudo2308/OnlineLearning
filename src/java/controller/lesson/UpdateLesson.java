@@ -2,80 +2,113 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.lesson;
 
+import DAO.LessonDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.EOFException;
+import java.sql.Timestamp;
+import model.Lesson;
+import utils.ValidateInput;
+import utils.YouTubeDurationFetcher;
 
 /**
  *
  * @author PC
  */
+@WebServlet(name = "UpdateLesson", urlPatterns = {"/updateLesson"})
 public class UpdateLesson extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet UpdateLesson</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet UpdateLesson at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    } 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    } 
+            throws ServletException, IOException {
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int lessonId = Integer.parseInt(request.getParameter("lessonId"));
+            String title = request.getParameter("title");
+            String content = request.getParameter("content");
+            String lessonType = request.getParameter("lessonType");
+            String videoUrl = request.getParameter("videoUrl");
+            int packageId = Integer.parseInt(request.getParameter("packageId"));
+            String documentUrl = request.getParameter("documentUrl");
+            int orderNumber = Integer.parseInt(request.getParameter("orderNumber"));
+            boolean status = request.getParameter("status").equals("1");
+
+            if (!ValidateInput.isYouTubeLinkActive(videoUrl)) {
+                throw new Exception("Link youtube not active!");
+            }
+
+            LessonDAO lessonDAO = new LessonDAO();
+
+            Lesson lesson = lessonDAO.findLessonById(lessonId);
+            lesson.setTitle(title);
+            lesson.setContent(content);
+            lesson.setLessonType(lessonType);
+            lesson.setVideoUrl(convertToEmbedURL(videoUrl));
+            lesson.setDuration(YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl));
+            lesson.setDocumentUrl(documentUrl);
+            lesson.setOrderNumber(orderNumber);
+            lesson.setStatus(status);
+            lesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            lesson.getPackages().setPackageID(packageId);
+
+            if (lessonDAO.updateLesson(lesson)) {
+                response.sendRedirect("viewLessonForAdlessonId=" + lessonId);
+            } else {
+               throw new EOFException("Update lesson failed!");
+            }
+        } catch (Exception e) {
+            request.setAttribute("msg", e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
+    }
+
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
+
+    public static String convertToEmbedURL(String videoURL) {
+        try {
+            java.net.URL url = new java.net.URL(videoURL);
+            String host = url.getHost();
+            String path = url.getPath();
+            String query = url.getQuery();
+
+            if (host.contains("youtube.com") && query != null) {
+                // URL dạng dài: youtube.com/watch?v=...
+                String[] queryParams = query.split("&");
+                for (String param : queryParams) {
+                    if (param.startsWith("v=")) {
+                        String videoId = param.substring(2);
+                        return "https://www.youtube.com/embed/" + videoId;
+                    }
+                }
+            } else if (host.contains("youtu.be")) {
+                // URL dạng ngắn: youtu.be/...
+                String[] pathSegments = path.split("/");
+                if (pathSegments.length > 1) {
+                    String videoId = pathSegments[1];
+                    return "https://www.youtube.com/embed/" + videoId;
+                }
+            }
+
+            // Nếu không tìm thấy ID, trả về URL ban đầu
+            return videoURL;
+        } catch (java.net.MalformedURLException e) {
+            System.err.println("Lỗi chuyển đổi URL: " + e.getMessage());
+            return videoURL;
+        }
+    }
 
 }

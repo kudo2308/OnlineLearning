@@ -128,9 +128,6 @@ CREATE TABLE Quiz (
 CREATE TABLE Question (
     QuestionID INT IDENTITY(1,1) PRIMARY KEY,
     Content NTEXT NOT NULL,
-    AnswerOptions NTEXT,  -- Store as JSON array of options
-    CorrectAnswer NTEXT,
-    Explanation NTEXT,
     PointPerQuestion INT DEFAULT 1,
     QuizID INT,
     Status BIT DEFAULT 1,
@@ -138,6 +135,16 @@ CREATE TABLE Question (
     UpdatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (QuizID) REFERENCES Quiz(QuizID)
 );
+
+CREATE TABLE Answer (
+    answerID INT IDENTITY(1,1) PRIMARY KEY,
+    content NVARCHAR(MAX) NOT NULL,
+    isCorrect BIT NOT NULL DEFAULT 0,
+    Explanation NVARCHAR(MAX) NOT NULL,
+    questionID INT NOT NULL,
+    FOREIGN KEY (questionID) REFERENCES Question(questionID)
+);
+
 -- Packages table
 CREATE TABLE Packages (
     PackageID INT IDENTITY(1,1) PRIMARY KEY,
@@ -441,5 +448,78 @@ VALUES
     ((SELECT LessonID FROM Lesson WHERE Title = 'Advanced SQL Queries'), 'advanced_sql_queries.pdf'),
 
     ((SELECT LessonID FROM Lesson WHERE Title = 'Cloud Deployment Strategies'), 'cloud_deployment_strategies.pdf');
+
+-- Insert quizzes for courses
+INSERT INTO Quiz (Name, Description, Duration, PassRate, TotalQuestion, CourseID, Status, CreatedAt) 
+VALUES 
+    ('Java Basics Quiz', 'A quiz to test Java fundamentals.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 1, GETDATE()),
+    ('React Development Quiz', 'Test your knowledge on React development.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 1, GETDATE()),
+    ('SQL Proficiency Quiz', 'Assess your SQL and database management skills.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'), 1, GETDATE()),
+    ('Cybersecurity Basics Quiz', 'Evaluate your understanding of cybersecurity principles.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cybersecurity'), 1, GETDATE()),
+    ('Python Fundamentals Quiz', 'Test your knowledge on Python programming basics.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Python for Data Analysis'), 1, GETDATE()),
+    ('Machine Learning Quiz', 'Evaluate your understanding of machine learning concepts.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 1, GETDATE()),
+    ('Cloud Computing Quiz', 'Assess your knowledge on cloud computing principles.', 30, 70, 5, 
+     (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cloud Computing'), 1, GETDATE());
+
+-- Insert questions for each quiz
+INSERT INTO Question (Content, PointPerQuestion, QuizID, Status, CreatedAt) 
+VALUES 
+    ('What is the default value of an int variable in Java?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'Java Basics Quiz'), 1, GETDATE()),
+    ('Which React hook is used for managing state in a functional component?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'React Development Quiz'), 1, GETDATE()),
+    ('What SQL clause is used to filter records based on a condition?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'SQL Proficiency Quiz'), 1, GETDATE()),
+    ('What is the primary function of a firewall in cybersecurity?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'Cybersecurity Basics Quiz'), 1, GETDATE()),
+    ('Which keyword is used to define a function in Python?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'Python Fundamentals Quiz'), 1, GETDATE()),
+    ('What is supervised learning in machine learning?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'Machine Learning Quiz'), 1, GETDATE()),
+    ('What does IaaS stand for in cloud computing?', 1, 
+     (SELECT QuizID FROM Quiz WHERE Name = 'Cloud Computing Quiz'), 1, GETDATE());
+
+-- Insert answers for each question (4 options per question, one correct answer)
+INSERT INTO Answer (content, isCorrect, Explanation, questionID) 
+SELECT '0', 1, 'In Java, the default value of an int is 0.', QuestionID FROM Question WHERE CAST(Content AS NVARCHAR(MAX)) = 'What is the default value of an int variable in Java?'
+UNION ALL
+SELECT '1', 0, 'Incorrect, as Java does not assign 1 as a default value.', QuestionID FROM Question WHERE CAST(Content AS NVARCHAR(MAX)) = 'What is the default value of an int variable in Java?'
+UNION ALL
+SELECT 'null', 0, 'Incorrect, int is a primitive type and cannot be null.', QuestionID FROM Question WHERE CAST(Content AS NVARCHAR(MAX)) = 'What is the default value of an int variable in Java?'
+UNION ALL
+SELECT 'undefined', 0, 'Incorrect, Java does not use undefined like JavaScript.', QuestionID FROM Question WHERE CAST(Content AS NVARCHAR(MAX)) = 'What is the default value of an int variable in Java?';
+
+INSERT INTO Answer (content, isCorrect, Explanation, questionID) 
+VALUES 
+    ('useState', 1, 'useState is used for managing state in functional components.', 2),
+    ('useEffect', 0, 'useEffect is used for handling side effects.', 2),
+    ('useContext', 0, 'useContext is used for consuming context.', 2),
+    ('useReducer', 0, 'useReducer is used for complex state logic.', 2),
+    ('WHERE', 1, 'WHERE clause filters records based on a condition.', 3),
+    ('GROUP BY', 0, 'GROUP BY groups rows sharing a property.', 3),
+    ('ORDER BY', 0, 'ORDER BY sorts query results.', 3),
+    ('HAVING', 0, 'HAVING filters grouped results.', 3),
+    ('To block unauthorized access', 1, 'Firewalls prevent unauthorized access.', 4),
+    ('To scan for viruses', 0, 'Antivirus scans for viruses, not firewalls.', 4),
+    ('To encrypt data', 0, 'Encryption secures data, not firewalls.', 4),
+    ('To create backups', 0, 'Backups store copies, not firewalls.', 4),
+    ('def', 1, 'def is used to define a function in Python.', 5),
+    ('func', 0, 'func is not a valid Python keyword.', 5),
+    ('lambda', 0, 'lambda is used for anonymous functions.', 5),
+    ('define', 0, 'define is not a Python keyword.', 5),
+    ('Supervised learning uses labeled data', 1, 'Supervised learning is based on labeled training data.', 6),
+    ('Unsupervised learning uses labeled data', 0, 'Unsupervised learning does not use labeled data.', 6),
+    ('Supervised learning finds patterns without labels', 0, 'This describes unsupervised learning.', 6),
+    ('Reinforcement learning uses labels directly', 0, 'Reinforcement learning is reward-based.', 6),
+    ('Infrastructure as a Service', 1, 'IaaS stands for Infrastructure as a Service.', 7),
+    ('Internet as a Service', 0, 'Incorrect, IaaS relates to infrastructure.', 7),
+    ('Integration as a Service', 0, 'Incorrect, this is not a standard cloud model.', 7),
+    ('Information as a Service', 0, 'Incorrect, cloud computing does not use this term.', 7);
 
 
