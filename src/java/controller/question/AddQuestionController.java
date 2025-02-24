@@ -83,12 +83,17 @@ public class AddQuestionController extends HttpServlet {
                                 .questionID(questionID)
                                 .build();
                         answers.add(answer);
+                        System.out.println("Created answer object: " + answer.getContent());
                     }
                     
-                    // Add answers to database
+                    // Add all answers to database in one transaction
                     AnswerDAO answerDAO = new AnswerDAO();
-                    for (Answer answer : answers) {
-                        answerDAO.addAnswer(answer);
+                    boolean answersAdded = answerDAO.addAnswers(answers);
+                    
+                    if (!answersAdded) {
+                        request.setAttribute("error", "Failed to add answers for question. Please try again.");
+                        request.getRequestDispatcher("/views/test/AddQuestion.jsp").forward(request, response);
+                        return;
                     }
                     
                     // Update remaining questions count
@@ -104,10 +109,10 @@ public class AddQuestionController extends HttpServlet {
                     }
                     
                     // If no more questions needed or not tracking questions,
-                    // redirect back to quiz page
+                    // redirect back to testQuiz page through QuizController
                     session.removeAttribute("remainingQuestions");
                     session.removeAttribute("currentQuizId");
-                    response.sendRedirect(request.getContextPath() + "/Quiz?action=view&id=" + quizID);
+                    response.sendRedirect(request.getContextPath() + "/Quiz");
                 } else {
                     request.setAttribute("error", "Failed to add question");
                     request.getRequestDispatcher("/views/test/AddQuestion.jsp").forward(request, response);

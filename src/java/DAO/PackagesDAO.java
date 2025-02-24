@@ -53,7 +53,7 @@ public class PackagesDAO {
                         .description(rs.getString("Description"))
                         .createdAt(rs.getTimestamp("createdAt"))
                         .updatedAt(rs.getTimestamp("updatedAt"))
-                        .isDelete(rs.getBoolean("isDelete"))
+                        .Status(rs.getBoolean("Status"))
                         .build();
                 packages.add(p);
 
@@ -83,7 +83,7 @@ public class PackagesDAO {
                         .description(rs.getString("Description"))
                         .createdAt(rs.getTimestamp("createdAt"))
                         .updatedAt(rs.getTimestamp("updatedAt"))
-                        .isDelete(rs.getBoolean("isDelete"))
+                        .Status(rs.getBoolean("Status"))
                         .build();
                 packages.add(p);
 
@@ -116,7 +116,7 @@ public class PackagesDAO {
                         .description(rs.getString("Description"))
                         .createdAt(rs.getTimestamp("createdAt"))
                         .updatedAt(rs.getTimestamp("updatedAt"))
-                        .isDelete(rs.getBoolean("isDelete"))
+                        .Status(rs.getBoolean("Status"))
                         .build();
 
                 return p;

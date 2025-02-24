@@ -27,7 +27,7 @@ public class Packages {
     private String description;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private boolean isDelete;
+    private boolean Status;
     private Course course;
 
 }

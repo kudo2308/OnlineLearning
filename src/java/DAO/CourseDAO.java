@@ -774,4 +774,140 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
+   
+   public List<Course> searchCourse(String query, int offset, int limit) {
+        List<Course> searchResults = new ArrayList<>();
+        String sql = "SELECT * FROM Course WHERE Title LIKE ? OR Description LIKE ? "
+                + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            ps.setInt(3, offset);
+            ps.setInt(4, limit);
+            
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getBoolean("Status"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                searchResults.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in searchCourses: " + e.getMessage());
+        }
+        return searchResults;
+    }
+
+    public int getTotalSearchResults(String query) {
+        String sql = "SELECT COUNT(*) FROM Course WHERE Title LIKE ? OR Description LIKE ?";
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, "%" + query + "%");
+            ps.setString(2, "%" + query + "%");
+            
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getTotalSearchResults: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
+        List<Course> categoryResults = new ArrayList<>();
+        String sql = "SELECT * FROM Course WHERE CategoryID = ? "
+                + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, categoryId);
+            ps.setInt(2, offset);
+            ps.setInt(3, limit);
+            
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getBoolean("Status"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                categoryResults.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getCoursesByCategory: " + e.getMessage());
+        }
+        return categoryResults;
+    }
+
+    public int getTotalCoursesByCategories(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM Course WHERE CategoryID = ?";
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, categoryId);
+            
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getTotalCoursesByCategory: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public List<Course> getSortedCourses(String sortBy, int offset, int limit) {
+        List<Course> sortedResults = new ArrayList<>();
+        String orderBy;
+        
+        switch (sortBy.toLowerCase()) {
+            case "title":
+                orderBy = "Title";
+                break;
+            case "date":
+                orderBy = "CreatedAt DESC";
+                break;
+            default:
+                orderBy = "CourseID";
+        }
+        
+        String sql = "SELECT * FROM Course ORDER BY " + orderBy 
+                + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, offset);
+            ps.setInt(2, limit);
+            
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getBoolean("Status"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                sortedResults.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getSortedCourses: " + e.getMessage());
+        }
+        return sortedResults;
+    }
 }

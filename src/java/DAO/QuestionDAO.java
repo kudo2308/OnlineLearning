@@ -243,28 +243,45 @@ public class QuestionDAO {
     }
 
     public int addQuestion(Question question) {
-        String sql = "INSERT INTO [dbo].[Question] ([Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Question (content, pointPerQuestion, quizID, status, createdAt, updatedAt) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+        int generatedId = 0;
+        
         try {
+            connection = new DBContext().getConnection();
             ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-
+            
             ps.setString(1, question.getContent());
             ps.setInt(2, question.getPointPerQuestion());
             ps.setInt(3, question.getQuizID());
             ps.setBoolean(4, question.isStatus());
             ps.setTimestamp(5, question.getCreatedAt());
             ps.setTimestamp(6, question.getUpdatedAt());
-
-            int rowAff = ps.executeUpdate();
-            if (rowAff > 0) {
+            
+            System.out.println("Adding question: " + question.getContent());
+            
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    return rs.getInt(1);
+                    generatedId = rs.getInt(1);
+                    System.out.println("Generated question ID: " + generatedId);
                 }
+                rs.close();
             }
+            
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error adding question: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        return 0;
+        
+        return generatedId;
     }
 }
