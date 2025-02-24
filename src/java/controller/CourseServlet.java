@@ -24,6 +24,11 @@ public class CourseServlet extends HttpServlet {
             CourseDAO dao = new CourseDAO();
             CategoryDAO categoryDAO = new CategoryDAO();
             
+            // Get search and filter parameters
+            String searchQuery = request.getParameter("search");
+            String categoryFilter = request.getParameter("category");
+            String sortBy = request.getParameter("sort"); // price, date, name
+            
             // Get page parameter
             String pageStr = request.getParameter("page");
             int page = 1;
@@ -35,19 +40,38 @@ public class CourseServlet extends HttpServlet {
             }
             
             // Calculate offset
-            int recordsPerPage = 6;
+            int recordsPerPage = 4;
             int offset = (page - 1) * recordsPerPage;
             
             // Get courses with categories
-            List<Course> courseLst = dao.getAllCourses(offset, recordsPerPage);
+            List<Course> courseLst;
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                courseLst = dao.searchCourse(searchQuery, offset, recordsPerPage);
+            } else if (categoryFilter != null && !categoryFilter.trim().isEmpty()) {
+                courseLst = dao.getCoursesByCategories(Integer.parseInt(categoryFilter), offset, recordsPerPage);
+            } else if (sortBy != null) {
+                courseLst = dao.getSortedCourses(sortBy, offset, recordsPerPage);
+            } else {
+                courseLst = dao.getAllCourses(offset, recordsPerPage);
+            }
+            
             List<CourseWithCategory> lst = new ArrayList<>();
             for (Course course : courseLst) {
                 Category category = categoryDAO.findById(course.getCategoryID());
                 lst.add(new CourseWithCategory(course, category));
             }
             
-            // Get total records for pagination
-            int totalRecords = dao.getTotalCourses();
+            // Get total records for pagination based on filters
+            int totalRecords;
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                totalRecords = dao.getTotalSearchResults(searchQuery);
+            } else if (categoryFilter != null && !categoryFilter.trim().isEmpty()) {
+                totalRecords = dao.getTotalCoursesByCategories(Integer.parseInt(categoryFilter));
+            } else {
+                totalRecords = dao.getTotalCourses();
+            }
+            
+            // Calculate total pages
             int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
             
             // Set attributes
@@ -55,12 +79,16 @@ public class CourseServlet extends HttpServlet {
             request.setAttribute("listallcategory", categoryDAO.findAll());
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
+            request.setAttribute("searchQuery", searchQuery);
+            request.setAttribute("categoryFilter", categoryFilter);
+            request.setAttribute("sortBy", sortBy);
             
-            request.getRequestDispatcher("/views/course/OurCourse.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/course/courseList.jsp").forward(request, response);
         } catch (Exception e) {
             System.out.println("Error in CourseServlet: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect("public/404.jsp");
+            request.setAttribute("error", "An error occurred while loading courses. Please try again later.");
+            request.getRequestDispatcher("/views/course/courseList.jsp").forward(request, response);
         }
     }
 
