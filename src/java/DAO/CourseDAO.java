@@ -32,7 +32,7 @@ public class CourseDAO extends DBContext {
     public static void main(String[] args) {
         CourseDAO courseDAO = new CourseDAO();
 
-        int a = courseDAO.findTotalRecord();
+        Course a = courseDAO.getCourseById(1);
 
         System.out.println(a);
 
@@ -271,6 +271,7 @@ public class CourseDAO extends DBContext {
                           ,c.[CreatedAt]
                           ,c.[UpdatedAt]
                           ,a.FullName as ExpertName
+                          ,a.Image as ExpertAvatar
                           ,cat.Name as CategoryName
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
@@ -297,8 +298,9 @@ public class CourseDAO extends DBContext {
 
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
+                expert.setImage(rs.getString("ExpertAvatar"));
                 course.setExpert(expert);
-
+                
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);

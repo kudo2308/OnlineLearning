@@ -97,43 +97,41 @@
                                 <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                                     <div class="widget courses-search-bx placeani">
                                         <div class="form-group">
-                                            <form id="search" action="CourseSearch" method="post">
+                                            <form id="search" action="CourseSearch" method="get">
+                                                <label>Search courses</label>
                                                 <div class="input-group">
-                                                    <label>Search Courses</label>
-                                                    <input name="search" type="text" required class="form-control">
+                                                    <input name="search" type="text" value="" >
                                                 </div>
-                                            </form>
                                         </div>
                                     </div>
                                     <div class="widget widget_archive">
-                                        <form action="CourseSearch" method="get">
-                                            <h5>Filter by Category</h5>
-                                            <c:forEach var="category" items="${categories}">
-                                                <div class="category-checkbox">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        name="categoryId" 
-                                                        value="${category.categoryID}" 
-                                                        id="cat-${category.categoryID}"
-                                                        <c:if test="${selectedCategories != null && fn:contains(fn:join(selectedCategories, ','), category.categoryID)}">checked</c:if>>
-                                                    <label for="cat-${category.categoryID}">${category.name}</label>
-                                                </div>
-                                            </c:forEach>
-                                            <button class="sub-but" type="submit">Apply Filter</button>
-                                            <hr>
-                                            <!-- Lọc theo giá -->
-                                            <h5 class="widget-title style-1">Price</h5>
-                                            <div class="price-range">
-                                                    <input type="number" name="minPrice" placeholder="Min Price" class="range-control min-ui" value="${minPrice != 0 ? minPrice : ''}">
-                                                    <input type="number" name="maxPrice" placeholder="Max Price" class="range-control max-ui" value="${maxPrice != Double.MAX_VALUE ? maxPrice : ''}">
-                                                    <button class="sub-but" type="submit"><span class="material-symbols-outlined">
-                                                            filter_alt
-                                                        </span></button>
+                                        <h5>Filter by Category</h5>
+                                        <c:forEach var="category" items="${categories}">
+                                            <div class="category-checkbox">
+                                                <input 
+                                                    type="checkbox" 
+                                                    name="categoryId" 
+                                                    value="${category.categoryID}" 
+                                                    id="cat-${category.categoryID}"
+                                                    <c:if test="${selectedCategories != null && fn:contains(fn:join(selectedCategories, ','), category.categoryID)}">checked</c:if>>
+                                                <label for="cat-${category.categoryID}">${category.name}</label>
+                                            </div>
+                                        </c:forEach>
+                                        <button class="sub-but" type="submit">Apply Filter</button>
+                                        <hr>
+                                        <!-- Lọc theo giá -->
+                                        <h5 class="widget-title style-1">Price</h5>
+                                        <div class="price-range">
+                                            <input type="number" name="minPrice" placeholder="Min Price" class="range-control min-ui" value="${minPrice != 0 ? minPrice : ''}">
+                                            <input type="number" name="maxPrice" placeholder="Max Price" class="range-control max-ui" value="${maxPrice != Double.MAX_VALUE ? maxPrice : ''}">
+                                            <button class="sub-but" type="submit"><span class="material-symbols-outlined">
+                                                    filter_alt
+                                                </span></button>
 
-                                                </div>
-                                        </form>
+                                        </div>
 
                                     </div>
+                                    </form>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-12">
                                     <div class="row">
@@ -145,7 +143,7 @@
                                                         <a href="#" class="btn">Register</a>
                                                     </div>
                                                     <div class="info-bx text-center sync">
-                                                        <h5><a href="#">${course.title}</a></h5>
+                                                        <h5><a href="${pageContext.request.contextPath}/coursedetail?courseId=${course.courseID}">${course.title}</a></h5>
                                                         <span>${course.category.getName()}</span>
                                                     </div>
                                                     <div class="cours-more-info">
@@ -308,7 +306,7 @@
             <button class="back-to-top fa fa-chevron-up" ></button>
         </div>
         <!-- External JavaScripts -->
-        <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+<!--        <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
@@ -322,7 +320,7 @@
         <script src="${pageContext.request.contextPath}/assets/vendors/owl-carousel/owl.carousel.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/functions.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/contact.js"></script>
-        <script src='${pageContext.request.contextPath}/assets/vendors/switcher/switcher.js'></script>
+        <script src='${pageContext.request.contextPath}/assets/vendors/switcher/switcher.js'></script>-->
     </body>
 
 </html>
