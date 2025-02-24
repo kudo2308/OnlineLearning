@@ -69,7 +69,7 @@
                                     class="image-product"
                                     src="${pageContext.request.contextPath}${course.imageUrl}"  alt="${course.title}">
                                 <p>
-                                    <a style="color: black; text-decoration: none" href="#">
+                                    <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${course.courseID}">
                                         ${course.title}
                                     </a> 
                                 <p class="des-course">${course.description}$</p>

@@ -45,7 +45,7 @@ public class CourseSearchController extends HttpServlet {
 
         // Lọc theo nhiều danh mục
         String[] categoryIds = request.getParameterValues("categoryId");
-        
+
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
                 page = Integer.parseInt(pageParam);
@@ -70,8 +70,8 @@ public class CourseSearchController extends HttpServlet {
                     .filter(course -> selectedCategories.contains(course.getCategoryID()))
                     .collect(Collectors.toList());
         }
-
         // Lọc theo từ khóa
+        
         if (keyword != null && !keyword.trim().isEmpty()) {
             courses = courses.stream()
                     .filter(course -> course.getTitle().toLowerCase().contains(keyword.toLowerCase()))
@@ -117,4 +117,3 @@ public class CourseSearchController extends HttpServlet {
         processRequest(request, response);
     }
 }
-

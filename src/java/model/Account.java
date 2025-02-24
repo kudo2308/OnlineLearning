@@ -168,4 +168,9 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
+    @Override
+    public String toString() {
+        return "Account{" + "userID=" + userID + ", fullName=" + fullName + ", password=" + password + ", email=" + email + ", phone=" + phone + ", image=" + image + ", address=" + address + ", genderID=" + genderID + ", dob=" + dob + ", role=" + role + ", subScriptionType=" + subScriptionType + ", subScriptionExpiry=" + subScriptionExpiry + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+    }
+    
 }

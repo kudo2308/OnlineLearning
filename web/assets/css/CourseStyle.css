@@ -45,3 +45,16 @@
 .max-ui{
     margin-left: 20px;
 }
+
+label{
+    margin-bottom: 0px;
+}
+
+.input-group input{
+    box-shadow: none;
+    height: 30px;
+    font-size: 13px;
+    line-height: 20px;
+    border: none;
+        border-bottom: #e0e0e0 solid 2px;
+}
