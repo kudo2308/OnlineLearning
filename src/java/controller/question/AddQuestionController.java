@@ -109,10 +109,10 @@ public class AddQuestionController extends HttpServlet {
                     }
                     
                     // If no more questions needed or not tracking questions,
-                    // redirect back to quiz page
+                    // redirect back to testQuiz page through QuizController
                     session.removeAttribute("remainingQuestions");
                     session.removeAttribute("currentQuizId");
-                    response.sendRedirect(request.getContextPath() + "/Quiz?action=view&id=" + quizID);
+                    response.sendRedirect(request.getContextPath() + "/Quiz");
                 } else {
                     request.setAttribute("error", "Failed to add question");
                     request.getRequestDispatcher("/views/test/AddQuestion.jsp").forward(request, response);
