@@ -149,13 +149,6 @@ public class BlogDAO extends DBContext {
         return 0; // Nếu có lỗi thì trả về 0
     }
 
-    public static void main(String[] args) {
-        BlogDAO blogDAO = new BlogDAO();
-
-        int blogs = blogDAO.getTotalBlogs();
-        System.out.println(blogs);
-    }
-
     public List<Blog> getBlogByCategoryId(int categoryId) {
         List<Blog> blogList = new ArrayList<>();
         String sql = """
@@ -252,6 +245,90 @@ public class BlogDAO extends DBContext {
             System.out.println(ex);
         }
         return blogList;
+    }
+
+    public Blog getBlogByBlogId(int blogId) {
+        String sql = """
+                    SELECT b.[BlogID]
+                          ,b.[Title]
+                          ,b.[Content]
+                          ,b.[AuthorID]
+                          ,b.[CategoryID]
+                          ,b.[ImageUrl]
+                          ,b.[Status]
+                          ,b.[CreatedAt]
+                          ,b.[UpdatedAt]
+                          ,a.FullName as AuthorName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Blog] b
+                    JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
+                    JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
+                    WHERE b.BlogID = ?
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, blogId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setBlogId(rs.getInt("BlogID"));
+                blog.setTitle(rs.getString("Title"));
+                blog.setContent(rs.getString("Content"));
+                blog.setAuthorId(rs.getInt("AuthorID"));
+                blog.setCategoryID(rs.getInt("CategoryID"));
+                blog.setImgUrl(rs.getString("ImageUrl"));
+                blog.setStatus(rs.getBoolean("Status"));
+                blog.setCreateAt(rs.getDate("CreatedAt"));
+                blog.setUpdateAt(rs.getDate("UpdatedAt"));
+
+                Account author = new Account();
+                author.setFullName(rs.getString("AuthorName"));
+                blog.setAuthor(author);
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                blog.setCategory(category);
+
+                return blog;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public List<Blog> getAllRecentBlogs() {
+        List<Blog> blogs = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM Blog b JOIN Account a ON b.AuthorID = a.UserID ORDER BY b.CreatedAt DESC";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setBlogId(rs.getInt("BlogID"));
+                blog.setTitle(rs.getString("Title"));
+                blog.setContent(rs.getString("Content"));
+                blog.setImgUrl(rs.getString("ImageUrl"));
+                blog.setCreateAt(rs.getDate("CreatedAt"));
+                blog.setCategoryID(rs.getInt("CategoryID"));
+
+                Account author = new Account();
+                author.setFullName(rs.getString("FullName"));
+                blog.setAuthor(author);
+                blogs.add(blog);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return blogs;
+    }
+
+    public static void main(String[] args) {
+        BlogDAO blogDAO = new BlogDAO();
+        Blog blog = blogDAO.getBlogByBlogId(3);
+        List<Blog> blogs = blogDAO.getAllRecentBlogs();
+        for (Blog blog1 : blogs) {
+            System.out.println(blog1.getTitle());
+        }
     }
 
 }
