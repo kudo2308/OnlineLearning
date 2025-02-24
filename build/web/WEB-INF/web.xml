@@ -29,14 +29,6 @@
         <servlet-class>controller.lesson.AddLesson</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UpdateLesson</servlet-name>
-        <servlet-class>controller.lesson.UpdateLesson</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ViewLessonForAd</servlet-name>
-        <servlet-class>controller.lesson.ViewLessonForAd</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>WatchCourse</servlet-name>
         <servlet-class>controller.WatchCourse</servlet-class>
     </servlet>
@@ -80,14 +72,6 @@
     <servlet-mapping>
         <servlet-name>AddLesson</servlet-name>
         <url-pattern>/addLesson</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UpdateLesson</servlet-name>
-        <url-pattern>/updateLesson</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ViewLessonForAd</servlet-name>
-        <url-pattern>/viewLessonForAd</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>WatchCourse</servlet-name>

@@ -63,7 +63,7 @@ public class UpdateLesson extends HttpServlet {
             lesson.getPackages().setPackageID(packageId);
 
             if (lessonDAO.updateLesson(lesson)) {
-                response.sendRedirect("viewLessonForAdlessonId=" + lessonId);
+                response.sendRedirect("viewLessonForAd?lessonId=" + lessonId);
             } else {
                throw new EOFException("Update lesson failed!");
             }
