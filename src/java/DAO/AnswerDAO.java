@@ -93,9 +93,16 @@ public class AnswerDAO {
     public int addAnswer(Answer answer) {
         String sql = "INSERT INTO Answer (content, isCorrect, explanation, questionID) VALUES (?, ?, ?, ?)";
         int generatedId = 0;
+        Connection conn = null;
+        PreparedStatement ps = null;
         
-        try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try {
+            conn = db.getConnection();
+            conn.setAutoCommit(false); // Tắt auto commit
+            
+            ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            
+            System.out.println("Adding answer: Content=" + answer.getContent() + ", isCorrect=" + answer.isCorrect());
             
             ps.setString(1, answer.getContent());
             ps.setBoolean(2, answer.isCorrect());
@@ -103,16 +110,113 @@ public class AnswerDAO {
             ps.setInt(4, answer.getQuestionID());
             
             int affectedRows = ps.executeUpdate();
+            System.out.println("Affected rows: " + affectedRows);
+            
             if (affectedRows > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     generatedId = rs.getInt(1);
+                    System.out.println("Generated answer ID: " + generatedId);
                 }
+                rs.close();
             }
+            
+            conn.commit(); // Commit transaction
+            System.out.println("Transaction committed successfully");
+            
         } catch (SQLException e) {
             System.out.println("Error adding answer: " + e.getMessage());
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.out.println("Transaction rolled back");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true); // Reset auto commit
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         
         return generatedId;
+    }
+    
+    public boolean addAnswers(List<Answer> answers) {
+        String sql = "INSERT INTO Answer (content, isCorrect, explanation, questionID) VALUES (?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = true;
+        
+        try {
+            conn = db.getConnection();
+            conn.setAutoCommit(false); // Tắt auto commit
+            ps = conn.prepareStatement(sql);
+            
+            System.out.println("Starting to add " + answers.size() + " answers");
+            
+            for (Answer answer : answers) {
+                ps.setString(1, answer.getContent());
+                ps.setBoolean(2, answer.isCorrect());
+                ps.setString(3, answer.getExplanation());
+                ps.setInt(4, answer.getQuestionID());
+                ps.addBatch();
+                
+                System.out.println("Added to batch: Content=" + answer.getContent() + ", isCorrect=" + answer.isCorrect());
+            }
+            
+            int[] results = ps.executeBatch();
+            System.out.println("Batch execution completed. Results length: " + results.length);
+            
+            // Kiểm tra kết quả
+            for (int i = 0; i < results.length; i++) {
+                if (results[i] <= 0) {
+                    success = false;
+                    System.out.println("Failed to insert answer at index " + i);
+                    break;
+                }
+            }
+            
+            if (success) {
+                conn.commit();
+                System.out.println("All answers committed successfully");
+            } else {
+                conn.rollback();
+                System.out.println("Transaction rolled back due to insertion failure");
+            }
+            
+        } catch (SQLException e) {
+            success = false;
+            System.out.println("Error adding answers: " + e.getMessage());
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.out.println("Transaction rolled back due to error");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return success;
     }
 }

@@ -83,12 +83,17 @@ public class AddQuestionController extends HttpServlet {
                                 .questionID(questionID)
                                 .build();
                         answers.add(answer);
+                        System.out.println("Created answer object: " + answer.getContent());
                     }
                     
-                    // Add answers to database
+                    // Add all answers to database in one transaction
                     AnswerDAO answerDAO = new AnswerDAO();
-                    for (Answer answer : answers) {
-                        answerDAO.addAnswer(answer);
+                    boolean answersAdded = answerDAO.addAnswers(answers);
+                    
+                    if (!answersAdded) {
+                        request.setAttribute("error", "Failed to add answers for question. Please try again.");
+                        request.getRequestDispatcher("/views/test/AddQuestion.jsp").forward(request, response);
+                        return;
                     }
                     
                     // Update remaining questions count
