@@ -1,5 +1,3 @@
-
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -81,8 +79,8 @@
                                 </div>
                                 <div class="wc-title">
                                     <h4 style="color: red" >${msg}</h4>
-                                </div>
-                                <div class="widget-inner">
+                            </div>
+                            <div class="widget-inner">
                                 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
                                 <form class="edit-profile m-b30" action="addCourse" method="post" enctype="multipart/form-data">
@@ -104,6 +102,18 @@
                                             <textarea class="form-control" name="description" required>${courseRequest.description}</textarea>
                                             <c:forEach var="violation" items="${violations}">
                                                 <c:if test="${violation.propertyPath.toString() == 'description'}">
+                                                    <span style="color:red">${violation.message}</span>
+                                                </c:if>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Price</label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" type="number" name="price" value="${courseRequest.price}" required>
+                                            <c:forEach var="violation" items="${violations}">
+                                                <c:if test="${violation.propertyPath.toString() == 'price'}">
                                                     <span style="color:red">${violation.message}</span>
                                                 </c:if>
                                             </c:forEach>
@@ -169,7 +179,6 @@
                 </div>
             </div>
         </main>
-        <jsp:include page="../../common/pagination.jsp"></jsp:include>
         <div class="ttr-overlay"></div>
 
         <!-- External JavaScripts -->

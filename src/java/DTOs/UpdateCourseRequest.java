@@ -24,7 +24,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateCourseRequest {
+public class UpdateCourseRequest {
+
     @NotBlank(message = "Tên khóa học không được để trống")
     @Size(max = 255, message = "Tên khóa học không được quá 255 ký tự")
     private String title;
@@ -37,8 +38,9 @@ public class CreateCourseRequest {
 
     @Min(value = 1, message = "Số lượng bài học phải lớn hơn hoặc bằng 1")
     private int totalLesson;
-    
+
     @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải là số dương")
     private float price;
     
+    private boolean status;
 }

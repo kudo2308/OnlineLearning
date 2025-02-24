@@ -7,9 +7,11 @@ package controller;
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
 import DTOs.CreateCourseRequest;
+import DTOs.UpdateCourseRequest;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +33,8 @@ import model.Course;
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2,
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 50)
-public class AddCourse extends HttpServlet {
+@WebServlet(name = "EditCourse", urlPatterns = {"/editCourse"})
+public class EditCourse extends HttpServlet {
 
     private Validator validator;
     private static final String UPLOAD_DIR = "img";
@@ -45,12 +48,25 @@ public class AddCourse extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CategoryDAO categoryDAO = new CategoryDAO();
+        try {
+            int courseId = Integer.parseInt(request.getParameter("courseId"));
 
-        List<Category> categories = categoryDAO.findAll();
+            CourseDAO courseDAO = new CourseDAO();
+            CategoryDAO categoryDAO = new CategoryDAO();
 
-        request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+            List<Category> categories = categoryDAO.findAll();
+            Course course = courseDAO.findCourseById(courseId);
+
+            if (course == null) {
+                throw new Exception("Object not found!");
+            }
+            request.setAttribute("course", course);
+            request.setAttribute("categories", categories);
+            request.getRequestDispatcher("views/admin/edit-course.jsp").forward(request, response);
+        } catch (Exception e) {
+            response.sendRedirect("error.jsp");
+        }
+
     }
 
     @Override
@@ -64,49 +80,59 @@ public class AddCourse extends HttpServlet {
             int totalLesson = Integer.parseInt(request.getParameter("totalLesson"));
             Part filePart = request.getPart("image");
             Float price = Float.valueOf(request.getParameter("price"));
+            boolean status = request.getParameter("status").equals("1");
+
+            int courseId = Integer.parseInt(request.getParameter("courseId"));
+
+            CourseDAO courseDAO = new CourseDAO();
 
             CategoryDAO categoryDAO = new CategoryDAO();
             List<Category> categories = categoryDAO.findAll();
             request.setAttribute("categories", categories);
 
-            CreateCourseRequest courseRequest = new CreateCourseRequest(title, description,
-                    categoryId, totalLesson, price);
+            Course course = courseDAO.findCourseById(courseId);
 
-            Set<ConstraintViolation<CreateCourseRequest>> violations = validator.validate(courseRequest);
+            if (course == null) {
+                throw new Exception("Course not found");
+            }
+
+            UpdateCourseRequest courseRequest = new UpdateCourseRequest(title, description,
+                    categoryId, totalLesson, price, status);
+
+            Set<ConstraintViolation<UpdateCourseRequest>> violations = validator.validate(courseRequest);
 
             if (!violations.isEmpty()) {
                 request.setAttribute("courseRequest", courseRequest);
                 request.setAttribute("violations", violations);
-                request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/admin/edit-course.jsp").forward(request, response);
                 return;
             }
-
+            CourseMapper.mapUpdateCoursetoCourse(course, courseRequest);
+            
             String fileName = extractFileName(filePart);
-            String imagePath = saveFile(filePart, fileName);
 
-            Course course = CourseMapper.mapCreateCoursetoCourse(courseRequest);
-            course.setImageUrl(imagePath);
-            course.setStatus(true);
+            if (!fileName.isEmpty()) {
+                String imagePath = saveFile(filePart, fileName);
+                course.setImageUrl(imagePath);
+            }
+
+            //example experId = 2
             course.setExpertID(2);
 
-            CourseDAO courseDAO = new CourseDAO();
-            if (courseDAO.AddCourse(course)) {
-                request.setAttribute("courseRequest", courseRequest);
-                request.setAttribute("msg", "Add successfully!");
-                request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+            if (courseDAO.UpdateCourse(course)) {
+                response.sendRedirect("editCourse?courseId=" + courseId);
             } else {
-                throw new Exception("Add faild");
+                throw new Exception("Update faild");
             }
         } catch (Exception e) {
             response.sendRedirect("error.jsp");
         }
-
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
+    }// </editor-fold>
 
     private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
