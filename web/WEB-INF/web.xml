@@ -49,6 +49,10 @@
         <servlet-name>AddQuestionController</servlet-name>
         <servlet-class>controller.question.AddQuestionController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LessonController</servlet-name>
+        <servlet-class>controller.lesson.LessonController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CourseDetailServlet</servlet-name>
         <url-pattern>/coursedetails</url-pattern>
@@ -92,5 +96,9 @@
     <servlet-mapping>
         <servlet-name>AddQuestionController</servlet-name>
         <url-pattern>/AddQuestion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LessonController</servlet-name>
+        <url-pattern>/lesson</url-pattern>
     </servlet-mapping>
 </web-app>

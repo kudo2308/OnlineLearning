@@ -593,7 +593,7 @@
                                     <i class="fas fa-book-open"></i>
                                     ${course.course.totalLesson} lessons
                                 </span>
-                                <a href="${pageContext.request.contextPath}/lesson-demo?courseId=${course.course.courseID}" 
+                                <a href="${pageContext.request.contextPath}/lesson?courseId=${course.course.courseID}" 
                                    class="view-btn">
                                     <i class="fas fa-play-circle"></i>
                                     Start Learning
