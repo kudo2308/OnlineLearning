@@ -306,7 +306,9 @@
                         clearInterval(countdown);
                         alert("Time's up!");
                         // Tự động submit bài
-                        document.getElementById('quizForm').submit();
+                         var form = document.getElementById('quizForm');
+                        form.action = "Test?action=submit";
+                        form.submit();
                     }
                 }, 1000);
             }
