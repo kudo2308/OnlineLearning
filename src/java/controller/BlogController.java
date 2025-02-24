@@ -30,7 +30,7 @@ public class BlogController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int page = 1; // Trang mặc định
-        int recordsPerPage = 3; // Số bài viết mỗi trang
+        int recordsPerPage = 6; // Số bài viết mỗi trang
 
         // Nhận tham số từ request
         String pageParam = request.getParameter("page");

@@ -97,10 +97,8 @@
                                         </option>
                                     </c:forEach>
                                 </select>
-                            </form>
                         </div>
                         <div class="filter-search">
-                            <form id="search-blog" action="Blog" method="get">
                                 <div class="input-group">
                                     <input name="search" type="text" required class="form-control" placeholder="Search blogs">
                                 </div>
@@ -122,7 +120,7 @@
                                             <li><a href="#"><i class="fa fa-calendar"></i>${blog.createAt}</a></li>
                                             <li><a href="#"><i class="fa fa-user"></i>${blog.author.fullName}</a></li>
                                         </ul>
-                                        <h5 class="post-title"><a href="blog-details.html">${blog.title}</a></h5>
+                                        <h5 class="post-title"><a href="${pageContext.request.contextPath}/BlogDetail?blogId=${blog.blogId}">${blog.title}</a></h5>
                                         <p class="truncate-text">${blog.content}</p>
                                         <div class="post-extra">
                                             <a href="#" class="btn-link">READ MORE</a>

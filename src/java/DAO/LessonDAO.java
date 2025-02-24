@@ -288,6 +288,69 @@ public class LessonDAO extends DBContext {
         }
         return lessonList;
     }
+    
+    public List<Lesson> getLessonsByCourseId(int courseId) {
+        List<Lesson> courseLessons = new ArrayList<>();
+        String sql = "SELECT l.*, c.*, p.* FROM Lesson l "
+                + "JOIN Course c ON l.CourseID = c.CourseID "
+                + "JOIN Packages p ON l.PackageID = p.PackageID "
+                + "WHERE l.CourseID = ? "
+                + "ORDER BY l.OrderNumber ASC";
+        System.out.println("Executing SQL: " + sql + " with courseId: " + courseId);
+        
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseId);
+            rs = ps.executeQuery();
+            System.out.println("SQL executed successfully");
+
+            while (rs.next()) {
+                Lesson lesson = new Lesson();
+                
+                // Set lesson properties
+                lesson.setLessonID(rs.getInt("LessonID"));
+                lesson.setTitle(rs.getString("Title"));
+                lesson.setContent(rs.getString("Content"));
+                lesson.setLessonType(rs.getString("LessonType"));
+                lesson.setVideoUrl(rs.getString("VideoUrl"));
+                lesson.setDocumentUrl(rs.getString("DocumentUrl"));
+                lesson.setDuration(rs.getInt("Duration"));
+                lesson.setOrderNumber(rs.getInt("OrderNumber"));
+                lesson.setCourseID(rs.getInt("CourseID"));
+                lesson.setStatus(rs.getBoolean("Status"));
+                lesson.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                lesson.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                // Set Course information
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("c.Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setStatus(rs.getBoolean("c.Status"));
+                lesson.setCourse(course);
+                
+                // Set Package information
+                Packages packages = new Packages();
+                packages.setPackageID(rs.getInt("PackageID"));
+                packages.setName(rs.getString("Name"));
+                lesson.setPackages(packages);
+                
+                System.out.println("Found lesson: ID=" + lesson.getLessonID() 
+                    + ", Title=" + lesson.getTitle() 
+                    + ", Course=" + course.getTitle());
+                
+                courseLessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getLessonsByCourseId: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        System.out.println("Returning " + courseLessons.size() + " lessons");
+        return courseLessons;
+    }
+    
     public static void main(String[] args) {
         LessonDAO less = new LessonDAO();
         List<Lesson> lesssonList = less.getAllLessonByCourseId(1);
