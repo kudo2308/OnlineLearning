@@ -41,6 +41,7 @@
         <![endif]-->
 
         <!-- All PLUGINS CSS ============================================= -->
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/courseDetailStyle.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/assets.css">
 
         <!-- TYPOGRAPHY ============================================= -->
@@ -83,8 +84,7 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                             <div class="course-detail-bx">
                                 <div class="course-price">
-                                    <del>$190</del>
-                                    <h4 class="price">$120</h4>
+                                    <h4 class="price">${course.price}đ</h4>
                                 </div>	
                                 <div class="course-buy-now text-center">
                                     <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
@@ -92,10 +92,10 @@
                                 <div class="teacher-bx">
                                     <div class="teacher-info">
                                         <div class="teacher-thumb">
-                                            <img src="${pageContext.request.contextPath}/assets/images/testimonials/pic1.jpg" alt=""/>
+                                            <img src="${pageContext.request.contextPath}${course.expert.getImage()}" alt=""/>
                                         </div>
                                         <div class="teacher-name">
-                                            <h5>Hinata Hyuga</h5>
+                                            <h5>${course.expert.getFullName()}</h5>
                                             <span>Science Teacher</span>
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@
                                     </div>
                                     <div class="price categories">
                                         <span>Categories</span>
-                                        <h5 class="text-primary">Frontend</h5>
+                                        <h5 class="text-primary">${course.category.getName()}</h5>
                                     </div>
                                 </div>
                                 <div class="course-info-list scroll-page">
@@ -128,11 +128,11 @@
                         <div class="col-lg-9 col-md-8 col-sm-12">
                             <div class="courses-post">
                                 <div class="ttr-post-media media-effect">
-                                    <a href="#"><img src="${pageContext.request.contextPath}/assets/images/blog/default/thum1.jpg" alt=""></a>
+                                    <a href="#"><img src="${pageContext.request.contextPath}${course.imageUrl}" alt=""></a>
                                 </div>
                                 <div class="ttr-post-info">
                                     <div class="ttr-post-title ">
-                                        <h2 class="post-title">Nvidia and UE4 Technologies Practice</h2>
+                                        <h2 class="post-title">${course.title}</h2>
                                     </div>
                                     <div class="ttr-post-text">
                                         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
@@ -144,18 +144,14 @@
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4">
                                         <ul class="course-features">
-                                            <li><i class="ti-book"></i> <span class="label">Lectures</span> <span class="value">8</span></li>
-                                            <li><i class="ti-help-alt"></i> <span class="label">Quizzes</span> <span class="value">1</span></li>
-                                            <li><i class="ti-time"></i> <span class="label">Duration</span> <span class="value">60 hours</span></li>
-                                            <li><i class="ti-stats-up"></i> <span class="label">Skill level</span> <span class="value">Beginner</span></li>
-                                            <li><i class="ti-smallcap"></i> <span class="label">Language</span> <span class="value">English</span></li>
-                                            <li><i class="ti-user"></i> <span class="label">Students</span> <span class="value">32</span></li>
-                                            <li><i class="ti-check-box"></i> <span class="label">Assessments</span> <span class="value">Yes</span></li>
+                                            <li><i class="ti-book"></i> <span class="label">Lectures</span> <span class="value">${lessonNumber}</span></li>
+                                            <li><i class="ti-help-alt"></i> <span class="label">Quizzes</span> <span class="value">${quiz}</span></li>
+                                            <li><i class="ti-time"></i> <span class="label">Duration</span> <span class="value">${durationHour} hours</span></li>
                                         </ul>
                                     </div>
                                     <div class="col-md-12 col-lg-8">
                                         <h5 class="m-b5">Course Description</h5>
-                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+                                        <p>${course.description}</p>
                                         <h5 class="m-b5">Certification</h5>
                                         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
                                         <h5 class="m-b5">Learning Outcomes</h5>
@@ -175,72 +171,17 @@
                             <div class="m-b30" id="curriculum">
                                 <h4>Curriculum</h4>
                                 <ul class="curriculum-list">
-                                    <li>
-                                        <h5>First Level</h5>
-                                        <ul>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Lesson 1.</span> Introduction to UI Design
-                                                </div>
-                                                <span>120 minutes</span>
-                                            </li>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Lesson 2.</span> User Research and Design
-                                                </div>
-                                                <span>60 minutes</span>
-                                            </li>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Lesson 3.</span> Evaluating User Interfaces Part 1
-                                                </div>
-                                                <span>85 minutes</span>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <h5>Second Level</h5>
-                                        <ul>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Lesson 1.</span> Prototyping and Design
-                                                </div>
-                                                <span>110 minutes</span>
-                                            </li>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Lesson 2.</span> UI Design Capstone
-                                                </div>
-                                                <span>120 minutes</span>
-                                            </li>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Lesson 3.</span> Evaluating User Interfaces Part 2
-                                                </div>
-                                                <span>120 minutes</span>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <h5>Final</h5>
-                                        <ul>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Part 1.</span> Final Test
-                                                </div>
-                                                <span>120 minutes</span>
-                                            </li>
-                                            <li>
-                                                <div class="curriculum-list-box">
-                                                    <span>Part 2.</span> Online Test
-                                                </div>
-                                                <span>120 minutes</span>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                    <c:forEach var="lessonList" items="${lessonList}">                                       
+                                        <li class="curriculum-list-box">
+                                            <div >
+                                                <span>Lesson ${lessonList.orderNumber}.</span> ${lessonList.title}
+
+                                            </div>
+                                            <span>${lessonList.duration} minutes</span>
+                                        </li>
+                                    </c:forEach>
                                 </ul>
                             </div>
-
                         </div>
 
                     </div>

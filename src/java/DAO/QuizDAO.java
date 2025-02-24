@@ -17,7 +17,7 @@ import DBContext.DBContext;
  *
  * @author dohie
  */
-public class QuizDAO {
+public class QuizDAO extends DBContext{
     private Connection conn = null;
     private PreparedStatement ps = null;
     private ResultSet rs = null;
@@ -132,5 +132,29 @@ public class QuizDAO {
             closeResources();
         }
         return 0;
+    }
+    
+    public int countQuizByCourseId(int courseId) {
+        String sql = "SELECT COUNT(Q.QuizID) AS QuizCount FROM Quiz Q WHERE Q.CourseID = ?";
+        int quizCount = 0;
+
+        try{
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, courseId);
+            ResultSet resultSet = st.executeQuery();
+
+            if (resultSet.next()) {
+                quizCount = resultSet.getInt("QuizCount");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizCount;
+    }
+    
+    public static void main(String[] args) {
+        QuizDAO quizDAO = new QuizDAO();
+        int quiz = quizDAO.countQuizByCourseId(1);
+        System.out.println(quiz);
     }
 }
