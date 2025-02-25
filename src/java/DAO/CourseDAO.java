@@ -898,7 +898,7 @@ public class CourseDAO extends DBContext {
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setTitle(rs.getString("Description"));
-                course.setPrice(rs.getDouble("Price"));
+                course.setPrice(rs.getFloat("Price"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
