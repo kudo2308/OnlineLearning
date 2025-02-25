@@ -886,5 +886,41 @@ public class CourseDAO extends DBContext {
         }
         return sortedResults;
     }
+    
+    public List<Course> getAllCourses() {
+    List<Course> courses = new ArrayList<>();
+    String sql = "SELECT * FROM Course";
+    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+            Course course = new Course();
+            course.setCourseID(rs.getInt("courseID"));
+            course.setTitle(rs.getString("title"));
+            course.setPrice(rs.getFloat("price"));
+            courses.add(course);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return courses;
+}
+
+public Course getCourseById1(int courseID) {
+    String sql = "SELECT * FROM Course WHERE courseID = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setInt(1, courseID);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("courseID"));
+                course.setTitle(rs.getString("title"));
+                course.setPrice(rs.getFloat("price"));
+                return course;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
 }
