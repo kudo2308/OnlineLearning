@@ -19,15 +19,16 @@ public class Account {
     private boolean status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private int roleID;
 
     // Constructors
     public Account() {
     }
 
-    public Account(int userID, String fullName, Role role) {
+    public Account(int userID, String fullName, int roleID) {
         this.userID = userID;
         this.fullName = fullName;
-        this.role = role;
+        this.roleID =roleID;
     }
 
     public Account(int userID, String fullName, String password, String email, String phone, String image, String address, String genderID, Timestamp dob, Role role, String subScriptionType, Timestamp subScriptionExpiry, boolean status, Timestamp createdAt, Timestamp updatedAt) {
@@ -47,6 +48,15 @@ public class Account {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public int getRoleID() {
+        return roleID;
+    }
+
+    public void setRoleID(int roleID) {
+        this.roleID = roleID;
+    }
+    
 
     public int getUserID() {
         return userID;

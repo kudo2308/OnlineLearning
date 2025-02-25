@@ -5,21 +5,31 @@
 package mapper;
 
 import DTOs.CreateCourseRequest;
+import DTOs.UpdateCourseRequest;
 import model.Course;
 
-/**
- *
- * @author PC
- */
 public class CourseMapper {
-     public static Course mapCreateCoursetoCourse(CreateCourseRequest createCourseRequest){
+
+    public static Course mapCreateCoursetoCourse(CreateCourseRequest createCourseRequest) {
         Course course = new Course();
         course.setTitle(createCourseRequest.getTitle());
         course.setDescription(createCourseRequest.getDescription());
         course.setCategoryID(createCourseRequest.getCategoryID());
-        course.setTotalLesson(createCourseRequest.getTotalLesson());      
+        course.setTotalLesson(createCourseRequest.getTotalLesson());
         course.setStatus(true);
+        course.setPrice(createCourseRequest.getPrice());
         return course;
-        
+
+    }
+
+    public static void mapUpdateCoursetoCourse(Course course,  UpdateCourseRequest updateCourseRequest) {
+
+        course.setTitle(updateCourseRequest.getTitle());
+        course.setDescription(updateCourseRequest.getDescription());
+        course.setCategoryID(updateCourseRequest.getCategoryID());
+        course.setTotalLesson(updateCourseRequest.getTotalLesson());
+        course.setStatus(updateCourseRequest.isStatus());
+        course.setPrice(updateCourseRequest.getPrice());
+
     }
 }
