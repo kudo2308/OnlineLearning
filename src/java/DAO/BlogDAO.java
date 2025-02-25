@@ -322,13 +322,47 @@ public class BlogDAO extends DBContext {
         return blogs;
     }
 
-    public static void main(String[] args) {
-        BlogDAO blogDAO = new BlogDAO();
-        Blog blog = blogDAO.getBlogByBlogId(3);
-        List<Blog> blogs = blogDAO.getAllRecentBlogs();
-        for (Blog blog1 : blogs) {
-            System.out.println(blog1.getTitle());
+    public boolean addBlog(Blog blog) {
+        String sql = """
+                    INSERT INTO [dbo].[Blog] 
+                    ([Title], [Content], [AuthorID], [CategoryID], [ImageUrl], [Status], [CreatedAt], [UpdatedAt])
+                    VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE());
+                    """;
+
+        try (Connection conn = connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, blog.getTitle());
+            ps.setString(2, blog.getContent());
+            ps.setInt(3, blog.getAuthorId());
+            ps.setInt(4, blog.getCategoryID());
+            ps.setString(5, blog.getImgUrl());
+            ps.setBoolean(6, blog.isStatus());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu thêm thành công
+
+        } catch (SQLException ex) {
+            System.out.println("Lỗi khi thêm blog: " + ex.getMessage());
         }
+        return false;
     }
 
+    public static void main(String[] args) {
+        BlogDAO blogDAO = new BlogDAO();
+        Blog newBlog = new Blog();
+
+        newBlog.setTitle("Học lập trình Java hiệu quả");
+        newBlog.setContent("Hướng dẫn từng bước giúp bạn tiếp cận Java nhanh nhất.");
+        newBlog.setAuthorId(2); // ID tác giả
+        newBlog.setCategoryID(2); // ID danh mục
+        newBlog.setImgUrl("/assets/images/java-blog.jpg");
+        newBlog.setStatus(true);
+
+        boolean success = blogDAO.addBlog(newBlog);
+        if (success) {
+            System.out.println("Thêm bài blog thành công!");
+        } else {
+            System.out.println("Thêm bài blog thất bại!");
+        }
+    }
 }

@@ -204,7 +204,7 @@ public class CourseDAO extends DBContext {
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                     WHERE c.[Status] = 1
-                    ORDER BY c.[CourseID]
+                    ORDER BY c.[Price]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
                     """;
@@ -909,5 +909,30 @@ public class CourseDAO extends DBContext {
             System.out.println("Error in getSortedCourses: " + e.getMessage());
         }
         return sortedResults;
+    }
+    
+    public List<Course> getAllRecentCourses() {
+        List<Course> courses = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM Course where status = 1 ORDER BY CreatedAt DESC";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setTitle(rs.getString("Description"));
+                course.setPrice(rs.getDouble("Price"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                course.setStatus(rs.getBoolean("Status"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
     }
 }
