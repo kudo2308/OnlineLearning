@@ -290,4 +290,22 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+    public User getUserByEmail(String email) {
+    String sql = "SELECT * FROM Account WHERE email = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setString(1, email);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                User user = new User();
+                user.setUserID(rs.getInt("userID"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("fullName"));
+                return user;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 }
