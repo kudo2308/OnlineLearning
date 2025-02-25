@@ -246,21 +246,24 @@ public class LessonDAO extends DBContext {
     public List<Lesson> getAllLessonByCourseId(int courseId) {
         List<Lesson> lessonList = new ArrayList<>();
         String sql = """
-                    SELECT b.[LessonID]
-                          ,b.[Title]
-                          ,b.[Content]
-                          ,b.[LessonType]
-                          ,b.[VideoUrl]
-                          ,b.[DocumentUrl]
-                          ,b.[Duration]
-                          ,b.[OrderNumber]
-                          ,b.[CourseID]
-                          ,b.[Status]
-                          ,b.[CreatedAt]
-                          ,b.[UpdatedAt]
-                    FROM [dbo].[Lesson] b
-                    WHERE b.[Status] = 1 and b.[CourseID] = ?
-                    ORDER BY b.[LessonID]
+                    SELECT l.[LessonID]
+                          ,l.[Title]
+                          ,l.[Content]
+                          ,l.[LessonType]
+                          ,l.[VideoUrl]
+                          ,l.[DocumentUrl]
+                          ,l.[Duration]
+                          ,l.[OrderNumber]
+                          ,l.[CourseID]
+                          ,l.[Status]
+                          ,l.[CreatedAt]
+                          ,l.[UpdatedAt]
+                          ,l.[PackageID]
+                          ,c.[Title] as CourseTitle
+                    FROM [dbo].[Lesson] l
+                    INNER JOIN [dbo].[Course] c ON l.[CourseID] = c.[CourseID]
+                    WHERE l.[CourseID] = ? AND l.[Status] = 1
+                    ORDER BY l.[OrderNumber] ASC, l.[LessonID] ASC
                     """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -276,15 +279,27 @@ public class LessonDAO extends DBContext {
                 lesson.setDocumentUrl(rs.getString("DocumentUrl"));
                 lesson.setDuration(rs.getInt("Duration"));
                 lesson.setOrderNumber(rs.getInt("OrderNumber"));
-                lesson.setCourseID(rs.getInt("CourseID"));
+                lesson.setCourseID(courseId);
                 lesson.setStatus(rs.getBoolean("Status"));
                 lesson.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 lesson.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                 
+                // Set Course info
+                Course course = new Course();
+                course.setCourseID(courseId);
+                course.setTitle(rs.getString("CourseTitle"));
+                lesson.setCourse(course);
+                
+                // Set Package info
+                Packages packages = new Packages();
+                packages.setPackageID(rs.getInt("PackageID"));
+                lesson.setPackages(packages);
+                
                 lessonList.add(lesson);
             }
         } catch (SQLException ex) {
-            System.out.println(ex);
+            System.out.println("Error getting lessons by course ID: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return lessonList;
     }
@@ -349,6 +364,73 @@ public class LessonDAO extends DBContext {
         
         System.out.println("Returning " + courseLessons.size() + " lessons");
         return courseLessons;
+    }
+    
+    public List<Lesson> getLessonsByCourseIdNew(int courseId) {
+        List<Lesson> lessons = new ArrayList<>();
+        String sql = "SELECT l.*, c.Title as CourseTitle, p.Name as PackageName FROM Lesson l "
+                + "JOIN Course c ON l.CourseID = c.CourseID "
+                + "JOIN Packages p ON l.PackageID = p.PackageID "
+                + "WHERE l.CourseID = ? "
+                + "ORDER BY l.OrderNumber ASC";
+        
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int lessonID = rs.getInt("LessonID");
+                String title = rs.getString("Title");
+                String content = rs.getString("Content");
+                String lessonType = rs.getString("LessonType");
+                String videoUrl = rs.getString("VideoUrl");
+                String documentUrl = rs.getString("DocumentUrl");
+                int duration = rs.getInt("Duration");
+                int orderNumber = rs.getInt("OrderNumber");
+                boolean status = rs.getBoolean("Status");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                Timestamp updatedAt = rs.getTimestamp("UpdatedAt");
+
+                // Course info
+                Course course = new Course();
+                course.setCourseID(courseId);
+                course.setTitle(rs.getString("CourseTitle"));
+
+                // Package info
+                int packageId = rs.getInt("PackageID");
+                Packages packages = Packages.builder()
+                        .packageID(packageId)
+                        .name(rs.getString("PackageName"))
+                        .build();
+
+                Lesson lesson = new Lesson(lessonID, title, content,
+                        lessonType, videoUrl, documentUrl,
+                        duration, orderNumber, courseId, status,
+                        createdAt, updatedAt, course, packages);
+
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting lessons by course ID: " + e.getMessage());
+        }
+        return lessons;
+    }
+    
+    public boolean updateLessonVideo(int lessonId, String videoUrl, int duration) {
+        String sql = "UPDATE Lesson SET VideoUrl = ?, Duration = ?, UpdatedAt = GETDATE() WHERE LessonID = ?";
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, videoUrl);
+            ps.setInt(2, duration);
+            ps.setInt(3, lessonId);
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating lesson video: " + e.getMessage());
+            return false;
+        }
     }
     
     public static void main(String[] args) {
