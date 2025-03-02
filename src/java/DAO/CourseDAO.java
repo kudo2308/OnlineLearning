@@ -29,7 +29,7 @@ public class CourseDAO extends DBContext {
         courses = new ArrayList<>();
     }
 
-     public static void main(String[] args) {
+    public static void main(String[] args) {
         CourseDAO courseDAO = new CourseDAO();
 
         Course c = courseDAO.findCourseById(1);
@@ -37,7 +37,8 @@ public class CourseDAO extends DBContext {
         System.out.println(c);
 
     }
-     public Course findCourseById(int id) {
+
+    public Course findCourseById(int id) {
         String sql = "select * from Course co\n"
                 + "join Account a\n"
                 + "on co.ExpertID = a.UserID\n"
@@ -133,7 +134,7 @@ public class CourseDAO extends DBContext {
 
         Category category = new Category(categoryId, categoryName);
 
-        return new Course(courseId, title, description, userId, price, roleId, 
+        return new Course(courseId, title, description, userId, price, roleId,
                 categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, expert, category);
     }
 
@@ -267,7 +268,7 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE Course SET Title = ?, Description = ?, ExpertID = ?, CategoryID = ?, ImageUrl = ?, TotalLesson = ?, Status = ?, Price = ?, UpdatedAt = GETDATE() WHERE CourseID = ?";
 
         try (Connection connection = new DBContext().getConnection()) {
-            
+
             ps = connection.prepareStatement(sql);
 
             ps.setString(1, course.getTitle());
@@ -288,9 +289,6 @@ public class CourseDAO extends DBContext {
         }
         return false;
     }
-
-   
-   
 
     public List<Course> getAllCourses(int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
@@ -335,7 +333,9 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -404,11 +404,13 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 expert.setFullName(rs.getString("ExpertName"));
                 expert.setImage(rs.getString("ExpertAvatar"));
                 course.setExpert(expert);
-                
+
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
                 course.setCategory(category);
@@ -420,7 +422,8 @@ public class CourseDAO extends DBContext {
         }
         return null;
     }
-     public int getTotalCoursesByCategory(int categoryId) {
+
+    public int getTotalCoursesByCategory(int categoryId) {
         String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [CategoryID] = ? AND [Status] = 1";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -433,7 +436,7 @@ public class CourseDAO extends DBContext {
             System.out.println(ex);
         }
         return 0;
-     }
+    }
 
     public List<Course> searchCourses(String keyword, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
@@ -480,7 +483,9 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -536,7 +541,9 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -596,7 +603,9 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -662,10 +671,12 @@ public class CourseDAO extends DBContext {
                 feedback.setStatus(rs.getBoolean("Status"));
                 feedback.setCreatedAt(rs.getTimestamp("CreatedAt"));
 
-                Account user = new Account();
-                user.setFullName(rs.getString("FullName"));
-                
-                feedback.setUser(user);
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
+                expert.setFullName(rs.getString("FullName"));
+
+                feedback.setUser(expert);
 
                 feedbackList.add(feedback);
             }
@@ -674,8 +685,6 @@ public class CourseDAO extends DBContext {
         }
         return feedbackList;
     }
-
-   
 
     public int countSearchCourses(String keyword) {
         String query = "SELECT COUNT(*) FROM Course WHERE title LIKE ?";
@@ -692,7 +701,7 @@ public class CourseDAO extends DBContext {
     }
 
     // Phương thức lấy các khóa học theo categoryId
-   public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
+    public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
                     SELECT c.[CourseID]
@@ -736,7 +745,9 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -751,18 +762,19 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-   public List<Course> searchCourse(String query, int offset, int limit) {
+
+    public List<Course> searchCourse(String query, int offset, int limit) {
         List<Course> searchResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE Title LIKE ? OR Description LIKE ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        
+
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
             ps.setInt(4, limit);
-            
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
@@ -788,7 +800,7 @@ public class CourseDAO extends DBContext {
             ps = connection.prepareStatement(sql);
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
-            
+
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -803,13 +815,13 @@ public class CourseDAO extends DBContext {
         List<Course> categoryResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE CategoryID = ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        
+
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, categoryId);
             ps.setInt(2, offset);
             ps.setInt(3, limit);
-            
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
@@ -834,7 +846,7 @@ public class CourseDAO extends DBContext {
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, categoryId);
-            
+
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -848,7 +860,7 @@ public class CourseDAO extends DBContext {
     public List<Course> getSortedCourses(String sortBy, int offset, int limit) {
         List<Course> sortedResults = new ArrayList<>();
         String orderBy;
-        
+
         switch (sortBy.toLowerCase()) {
             case "title":
                 orderBy = "Title";
@@ -859,15 +871,15 @@ public class CourseDAO extends DBContext {
             default:
                 orderBy = "CourseID";
         }
-        
-        String sql = "SELECT * FROM Course ORDER BY " + orderBy 
+
+        String sql = "SELECT * FROM Course ORDER BY " + orderBy
                 + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        
+
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, offset);
             ps.setInt(2, limit);
-            
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
@@ -886,7 +898,7 @@ public class CourseDAO extends DBContext {
         }
         return sortedResults;
     }
-    
+
     public List<Course> getAllRecentCourses() {
         List<Course> courses = new ArrayList<>();
         try {
@@ -911,40 +923,41 @@ public class CourseDAO extends DBContext {
         }
         return courses;
     }
-    public List<Course> getAllCourses() {
-    List<Course> courses = new ArrayList<>();
-    String sql = "SELECT * FROM Course";
-    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-        while (rs.next()) {
-            Course course = new Course();
-            course.setCourseID(rs.getInt("courseID"));
-            course.setTitle(rs.getString("title"));
-            course.setPrice(rs.getFloat("price"));
-            courses.add(course);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return courses;
-}
 
-public Course getCourseById1(int courseID) {
-    String sql = "SELECT * FROM Course WHERE courseID = ?";
-    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-        stmt.setInt(1, courseID);
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
+    public List<Course> getAllCourses() {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT * FROM Course";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
                 Course course = new Course();
                 course.setCourseID(rs.getInt("courseID"));
                 course.setTitle(rs.getString("title"));
                 course.setPrice(rs.getFloat("price"));
-                return course;
+                courses.add(course);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return courses;
     }
-    return null;
-}
+
+    public Course getCourseById1(int courseID) {
+        String sql = "SELECT * FROM Course WHERE courseID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, courseID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseID(rs.getInt("courseID"));
+                    course.setTitle(rs.getString("title"));
+                    course.setPrice(rs.getFloat("price"));
+                    return course;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

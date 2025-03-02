@@ -11,6 +11,7 @@ import model.Account;
 import model.Blog;
 import model.Category;
 import model.Course;
+import model.Role;
 
 public class BlogDAO extends DBContext {
 
@@ -61,7 +62,9 @@ public class BlogDAO extends DBContext {
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
-                Account author = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account author = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+
                 author.setFullName(rs.getString("AuthorName"));
                 blog.setAuthor(author);
                 Category category = new Category();
@@ -120,7 +123,8 @@ public class BlogDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Account expert = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
                 expert.setFullName(rs.getString("AuthorName"));
                 course.setExpert(expert);
 
@@ -184,8 +188,8 @@ public class BlogDAO extends DBContext {
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
-                Account author = new Account();
-                author.setFullName(rs.getString("AuthorName"));
+                 Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account author = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
                 blog.setAuthor(author);
                 Category category = new Category();
                 category.setName(rs.getString("CategoryName"));
@@ -231,7 +235,8 @@ public class BlogDAO extends DBContext {
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
-                Account author = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account author = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
                 author.setFullName(rs.getString("AuthorName"));
                 blog.setAuthor(author);
 
@@ -281,7 +286,8 @@ public class BlogDAO extends DBContext {
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
-                Account author = new Account();
+               Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account author = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
                 author.setFullName(rs.getString("AuthorName"));
                 blog.setAuthor(author);
                 Category category = new Category();
@@ -311,7 +317,8 @@ public class BlogDAO extends DBContext {
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setCategoryID(rs.getInt("CategoryID"));
 
-                Account author = new Account();
+                Role role = new Role(rs.getInt("RoleID"), "Expert");
+                Account author = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
                 author.setFullName(rs.getString("FullName"));
                 blog.setAuthor(author);
                 blogs.add(blog);

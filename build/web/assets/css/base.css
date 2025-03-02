@@ -96,6 +96,7 @@ a:visited {
     position: relative;
     display: inline-block;
     cursor: pointer;
+    padding: 10px;
 }
 
 .image-container img {
@@ -368,7 +369,7 @@ footer{
 
 }
 
-@media only screen and (max-width: 1300px) {
+@media only screen and ( max-width: 1300px) {
     #nav-categories a:nth-child(4),
     #nav-categories a:nth-child(7),
     #nav-categories a:nth-child(10),
