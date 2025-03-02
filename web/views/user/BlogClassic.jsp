@@ -87,7 +87,50 @@
             <div class="container">
                 <div class="widget courses-search-bx placeani">
                     <div class="form-group filter-blog">
+
                         <div class="filter-cate">
+                            <button id="openModal">Post</button>
+                            <div id="popup" class="modal">
+                                <span class="close">&times;</span>
+                                <div class="container-post-blog">
+                                    <h2>Add new blog</h2>
+                                    <form class="add-post" action="AddBlogController" method="POST" enctype="multipart/form-data">
+                                        <!-- Tiêu đề blog -->
+                                        <label for="title">Title:</label>
+                                        <input type="text" id="title" name="title" placeholder="Title" required>
+
+                                        <!-- Nội dung blog -->
+                                        <label for="content">Content:</label>
+                                        <textarea id="content" name="content" placeholder="Enter content" required></textarea>
+
+                                        <!-- Chọn ảnh -->
+                                        <label for="image">Image:</label>
+                                        <input type="file" id="image" name="image" accept="image/*" required>
+
+                                        <!-- Chọn danh mục -->
+                                        <label for="category">Category:</label>
+                                        <select id="category" name="categoryId" required>
+                                            <c:forEach var="categories" items="${categories}">
+                                                <option value="${categories.categoryID}">${categories.name}</option>
+                                            </c:forEach>
+
+                                        </select>
+
+                                        <!--Status-->
+                                        <label for="Status">Status:</label>
+                                        <select id="status" name="status" required>
+                                            <option value="1">Public</option>
+                                            <option value="0">Private</option>
+                                        </select>
+
+                                        <!-- Nút gửi -->
+                                        <c:if test="${not empty errorMessage}">
+                                            <p style="color: red;">${errorMessage}</p>
+                                        </c:if>
+                                        <button class="submit-but" type="submit">Post</button>
+                                    </form>
+                                </div>
+                            </div>
                             <form id="filter-form" action="Blog" method="get">
                                 <select name="categoryId" class="form-control" onchange="document.getElementById('filter-form').submit();">
                                     <option value="0" ${selectedCategory == 0 ? 'selected' : ''}>All Categories</option>
@@ -99,9 +142,9 @@
                                 </select>
                         </div>
                         <div class="filter-search">
-                                <div class="input-group">
-                                    <input name="search" type="text" required class="form-control" placeholder="Search blogs">
-                                </div>
+                            <div class="input-group">
+                                <input name="search" type="text" required class="form-control" placeholder="Search blogs">
+                            </div>
                             </form>
                         </div>
                     </div>
@@ -278,6 +321,7 @@
     <!-- Footer END ==== -->
     <button class="back-to-top fa fa-chevron-up"></button>
 </div>
+<script src="${pageContext.request.contextPath}/assets/js/pop_up.js"></script>
 </body>
 
 </html>

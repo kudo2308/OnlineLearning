@@ -14,8 +14,8 @@ public class Registration {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     
-    // Navigation properties
-    private Account user;
+    
+    private User user;
     private Course course;
     
     public Registration() {
@@ -101,11 +101,11 @@ public class Registration {
         this.updatedAt = updatedAt;
     }
     
-    public Account getUser() {
+    public User getUser() {
         return user;
     }
     
-    public void setUser(Account user) {
+    public void setUser(User user) {
         this.user = user;
     }
     

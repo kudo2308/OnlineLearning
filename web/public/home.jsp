@@ -58,28 +58,28 @@
                     arrow_forward
                 </span>
                 <div class="view-more">
-                    <h1>Courses</h1>
+                    <h1>Recent Course</h1>
                     <a href="${pageContext.request.contextPath}/CourseSearch" class="btn-see-more">See More</a>
                 </div>
                 <ul id="wow">
-                    <c:if test="${not empty courses}">
-                        <c:forEach var="course" items="${courses}">
+                    <c:if test="${not empty recentCourses}">
+                        <c:forEach var="recentCourses" items="${recentCourses}">
                             <li>
                                 <img
                                     class="image-product"
-                                    src="${pageContext.request.contextPath}${course.imageUrl}"  alt="${course.title}">
+                                    src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}">
                                 <p>
-                                    <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${course.courseID}">
-                                        ${course.title}
+                                    <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
+                                        ${recentCourses.title}
                                     </a> 
-                                <p class="des-course">${course.description}$</p>
-                                <span>${course.price}đ</span>
+                                <p class="des-course">${recentCourses.description}$</p>
+                                <span>${recentCourses.price}đ</span>
 
                                 </p>
                             </li>
                         </c:forEach>
                     </c:if>
-                    <c:if test="${empty courses}">
+                    <c:if test="${empty recentCourses}">
                         <li>Hiện chưa có sản phẩm mới.</li>
                         </c:if>
                 </ul>

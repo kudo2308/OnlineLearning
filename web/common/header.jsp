@@ -23,7 +23,8 @@
     </form>
 
     <!-- Category dropdown form -->
-    <select id="categories-dropdown" onchange="this.form.submit())">
+    <form action="action"></form>
+    <select id="categories-dropdown" onchange="this.form.submit()">
         <option href="${pageContext.request.contextPath}/courses">All categories</option>
         <div class="material-icons md-18">
             arrow_drop_down

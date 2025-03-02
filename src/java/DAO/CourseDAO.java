@@ -312,7 +312,7 @@ public class CourseDAO extends DBContext {
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                     WHERE c.[Status] = 1
-                    ORDER BY c.[CourseID]
+                    ORDER BY c.[Price]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
                     """;
@@ -886,5 +886,65 @@ public class CourseDAO extends DBContext {
         }
         return sortedResults;
     }
+    
+    public List<Course> getAllRecentCourses() {
+        List<Course> courses = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM Course where status = 1 ORDER BY CreatedAt DESC";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setTitle(rs.getString("Description"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                course.setStatus(rs.getBoolean("Status"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+    public List<Course> getAllCourses() {
+    List<Course> courses = new ArrayList<>();
+    String sql = "SELECT * FROM Course";
+    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+            Course course = new Course();
+            course.setCourseID(rs.getInt("courseID"));
+            course.setTitle(rs.getString("title"));
+            course.setPrice(rs.getFloat("price"));
+            courses.add(course);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return courses;
+}
+
+public Course getCourseById1(int courseID) {
+    String sql = "SELECT * FROM Course WHERE courseID = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setInt(1, courseID);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("courseID"));
+                course.setTitle(rs.getString("title"));
+                course.setPrice(rs.getFloat("price"));
+                return course;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
 }
