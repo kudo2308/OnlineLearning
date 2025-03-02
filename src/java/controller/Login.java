@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.UUID;
 import model.Account;
@@ -17,30 +18,19 @@ import model.Account;
 @WebServlet(name = "Login", urlPatterns = {"/login"})
 public class Login extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    
+        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String errorlogin = request.getParameter("error");
-        String success = request.getParameter("success");
-        if (errorlogin != null && !errorlogin.isEmpty()) {
-            request.setAttribute("errorlogin", errorlogin);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
-        if (success != null && !success.isEmpty()) {
-            request.setAttribute("success", success);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
-        response.sendRedirect("login.jsp");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        
         String email = request.getParameter("email");
         String pass = request.getParameter("pass");
         String rem = request.getParameter("remember");
+        
+        if ((email == null || email.isEmpty()) && (pass == null || pass.isEmpty())) {
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
         if (email == null || email.isEmpty()) {
             request.setAttribute("errorlogin", "Please enter Email field");
             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -74,17 +64,12 @@ public class Login extends HttpServlet {
         response.addCookie(re);
         if (!d.checkUserLogin(email, pass)) {
             request.setAttribute("errorlogin", "Incorrect password or email");
-            request.getRequestDispatcher("login").forward(request, response);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
         if (!d.checkStatusUser(email)) {
             request.setAttribute("errorlogin", "You blocked by Admin");
-            request.getRequestDispatcher("login").forward(request, response);
-            return;
-        }
-        if (!otp.isRedisAvailable()) {
-            request.setAttribute("errorlogin", "Server have problem ");
-            request.getRequestDispatcher("login").forward(request, response);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
         String sessionActive = null;
@@ -132,5 +117,24 @@ public class Login extends HttpServlet {
                 }
         }
         response.sendRedirect("home");
+    }
+
+   
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+  
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "Short description";
     }
 }

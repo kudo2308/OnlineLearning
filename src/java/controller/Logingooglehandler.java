@@ -29,8 +29,8 @@ public class Logingooglehandler extends HttpServlet {
         String code = request.getParameter("code");
         Google gg = new Google();
         OTP otp = new OTP();
-        String accessToken = gg.getToken(code);
-        GoogleAccount acc = gg.getUserInfo(accessToken);
+        String accessToken = Google.getToken(code);
+        GoogleAccount acc = Google.getUserInfo(accessToken);
         if (!acc.isVerified_email()) {
             request.setAttribute("errorlogin", "Authentication Gmail Fail");
             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -80,9 +80,13 @@ public class Logingooglehandler extends HttpServlet {
         int random = 100000 + secureRandom.nextInt(900000);
         String pass = random + "";
         String passHash = Security.encode(pass);
-        otp.createSesssionIdApprove(sessionId, dao.getLastUserID() + 1, acc.getName(),"",acc.getPicture(),"Student", "free"); // Mặc định Student
-        dao.createAccountGg(acc.getName(), acc.getEmail(),acc.getPicture(), passHash, "Student");
-         response.sendRedirect("home");
+        Cookie newSessionCookie = new Cookie("SessionID_User", sessionId);
+        newSessionCookie.setMaxAge(60 * 60 * 24);
+        newSessionCookie.setHttpOnly(true);
+        response.addCookie(newSessionCookie);
+        otp.createSesssionIdApprove(sessionId, dao.getLastUserID() + 1, acc.getName(), "", acc.getPicture(), "Student", "free"); // Mặc định Student
+        dao.createAccountGg(acc.getName(), acc.getEmail(), acc.getPicture(), passHash, "Student");
+        response.sendRedirect("home");
     }
 
     @Override

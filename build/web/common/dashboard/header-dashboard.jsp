@@ -1,9 +1,5 @@
-<%-- 
-    Document   : header-dashboard
-    Created on : Feb 8, 2025, 4:05:03 PM
-    Author     : TNO
---%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <header class="ttr-header">
     <div class="ttr-header-wrapper">
@@ -125,12 +121,15 @@
                     <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar">
                             <c:choose>
                                 <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
-                                    <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg" width="32" height="32">
+                                    <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                                </c:when>
+                                <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                                    <img class="avt" src="${sessionScope.account.img}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}" width="32" height="32">
+                                    <img class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}">
                                 </c:otherwise>
-                            </c:choose>    
+                            </c:choose> 
                         </span></a>
                     <div class="ttr-header-submenu">
                         <ul>

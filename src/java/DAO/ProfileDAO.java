@@ -40,4 +40,20 @@ public class ProfileDAO extends DBContext{
         }
     }
     
+    public void updateUserRole(int userId, int Role) {
+        String sql = "UPDATE Account SET RoleID = ? WHERE UserId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, Role);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+               e.getMessage();
+        }
+    }
+    
+     public static void main(String[] args) {
+        ProfileDAO dao = new ProfileDAO();
+        dao.updateUserRole(6, 2);
+    }
+    
 }

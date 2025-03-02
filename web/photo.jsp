@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -27,6 +28,9 @@
                         <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/avatar/unknow.jpg'}">
                             <img src="assets/images/avatar/unknow.jpg" class="rounded-circle d-block mx-auto mb-3" alt="Avatar">
                         </c:when>
+                        <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                            <img src="${sessionScope.account.img}" class="rounded-circle d-block mx-auto mb-3" alt="Avatar">
+                        </c:when>
                         <c:otherwise>
                             <img src=".${sessionScope.account.img}" class="rounded-circle d-block mx-auto mb-3" alt="Avatar">
                         </c:otherwise>
@@ -35,7 +39,7 @@
                     <a href="#">View Profile</a>
                     <a href="userprofile">Profile Public</a>
                     <a href="photo">Photo</a>
-                    <a href="change_pass_profile.jsp">Change Password</a>
+                    <a href="changepassuser">Change Password</a>
                     <a href="#">Subscriptions</a>
                     <br>
                     <br>
@@ -53,6 +57,9 @@
                             <c:choose>
                                 <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/avatar/unknow.jpg'}">
                                     <img id="imagePreview" src="assets/images/avatar/unknow.jpg" class="img-fluid border rounded" style="max-width: 250px; display:block; margin:auto;" />
+                                </c:when>
+                                <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                                    <img src="${sessionScope.account.img}" id="imagePreview" class="img-fluid border rounded" style="max-width: 250px; display:block; margin:auto;" >
                                 </c:when>
                                 <c:otherwise>
                                     <img id="imagePreview" src=".${sessionScope.account.img}" class="img-fluid border rounded" style="max-width: 250px; display:block; margin:auto;" />

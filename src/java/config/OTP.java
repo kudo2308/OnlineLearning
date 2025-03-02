@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import redis.clients.jedis.Jedis;
@@ -120,14 +122,16 @@ public class OTP {
     }
 
     public void createSesssionIdApprove(String sessionId, int userID, String username, String description, String img, String roles, String subscriptiontype) {
-        if(description == null) description = "";
+        if (description == null) {
+            description = "";
+        }
         try (Jedis redis = Redis.getConnection()) {
             redis.hset("session:" + sessionId, "userId", userID + "");
             redis.hset("session:" + sessionId, "username", username);
             redis.hset("session:" + sessionId, "description", description);
             redis.hset("session:" + sessionId, "img", img);
             redis.hset("session:" + sessionId, "roles", roles);
-            redis.hset("session:" + sessionId, "subscriptiontype",subscriptiontype);
+            redis.hset("session:" + sessionId, "subscriptiontype", subscriptiontype);
         } catch (Exception e) {
             //Config Error
         }
@@ -138,7 +142,9 @@ public class OTP {
     }
 
     public void updateSessionField(String sessionId, String field, String value) {
-         if(value == null) value = "";
+        if (value == null) {
+            value = "";
+        }
         try (Jedis redis = Redis.getConnection()) {
             redis.hset(getSessionKey(sessionId), field, value);
         } catch (Exception e) {
@@ -210,11 +216,19 @@ public class OTP {
     }
 
     public Map<String, String> getSessionData(String sessionId) {
+        List<String> fields = Arrays.asList("userId", "username", "description", "img", "roles", "subscriptiontype");
+        Map<String, String> sessionData = new LinkedHashMap<>();
+
         try (Jedis redis = Redis.getConnection()) {
-            return redis.hgetAll("session:" + sessionId);
+            List<String> values = redis.hmget("session:" + sessionId, fields.toArray(new String[0]));
+            for (int i = 0; i < fields.size(); i++) {
+                sessionData.put(fields.get(i), values.get(i));
+            }
         } catch (Exception e) {
             return Collections.emptyMap();
         }
+
+        return sessionData;
     }
 
     public boolean isRedisAvailable() {

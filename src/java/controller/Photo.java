@@ -110,7 +110,7 @@ public class Photo extends HttpServlet {
         }
 
         if (newImagePath != null) {
-            deleteOldFile(getServletContext().getRealPath("/") + acc.getImage());
+            deleteOldFile(acc.getImage());
             ProfileDAO profileDAO = new ProfileDAO();
             profileDAO.updateUserImage(acc.getUserID(), newImagePath);
             OTP otp = new OTP();
@@ -149,10 +149,11 @@ public class Photo extends HttpServlet {
         return "/" + UPLOAD_DIR + "/" + fileName;
     }
 
-    private void deleteOldFile(String filePath) throws IOException {
-        if (filePath != null && !filePath.contains(DEFAULT_IMAGE)) {
-            Path oldFilePath = Path.of(filePath);
-            Files.deleteIfExists(oldFilePath);
-        }
+   private void deleteOldFile(String imagePath) throws IOException {
+    if (imagePath != null && !imagePath.contains(DEFAULT_IMAGE) && !imagePath.startsWith("http://") && !imagePath.startsWith("https://")) {
+        String filePath = getServletContext().getRealPath("/") + imagePath;
+        Path oldFilePath = Path.of(filePath);
+        Files.deleteIfExists(oldFilePath);
     }
+}
 }

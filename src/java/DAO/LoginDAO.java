@@ -5,7 +5,6 @@ import config.Security;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import model.Account;
 import model.Role;
 
@@ -38,7 +37,6 @@ public class LoginDAO extends DBContext {
             st.setString(11, "free");
             st.setDate(12, null);
             st.setBoolean(13, true);
-
             int rowsInserted = st.executeUpdate();
             return rowsInserted > 0;
         } catch (SQLException e) {
@@ -54,7 +52,7 @@ public class LoginDAO extends DBContext {
         } else {
             roleId = 3;
         }
-        String sql = "INSERT INTO [dbo].[Account] ([FullName],[Description], [Password], [Email], [Phone], [Image], "
+        String sql = "INSERT INTO [dbo].[Account] ([FullName],[Description], [Password], [Email], [Phone],[Image], "
                 + "[Address], [GenderID], [DOB], [RoleID], [SubScriptionType], [SubScriptionExpiry], [Status], "
                 + "[CreatedAt], [UpdatedAt]) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
@@ -133,7 +131,45 @@ public class LoginDAO extends DBContext {
                     account.setPhone(rs.getString("Phone"));
                     account.setAddress(rs.getString("Address"));
                     account.setImage(rs.getString("Image"));
-                   account.setGenderID(rs.getString("GenderID"));
+                    account.setGenderID(rs.getString("GenderID"));
+                    account.setDob(rs.getDate("DOB"));
+
+                    Role role = new Role();
+                    role.setRoleName(rs.getString("RoleName"));
+                    account.setRole(role);
+
+                    account.setSubScriptionType(rs.getString("SubScriptionType"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Ghi log lỗi để debug
+        }
+        return account;
+    }
+    
+    public Account getAccountByUserIDPass(String userId) {
+        String query = "SELECT a.UserID, a.Description, a.FullName, a.Password , a.Email, a.Phone, a.Address, "
+                + "a.Image, a.GenderID , a.DOB, r.RoleName, a.SubScriptionType "
+                + "FROM Account a "
+                + "JOIN Role r ON a.RoleID = r.RoleID "
+                + "WHERE a.UserID = ?";
+
+        Account account = null;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    account = new Account();
+                    account.setUserID(rs.getInt("UserID"));
+                    account.setDescription(rs.getString("Description"));
+                    account.setFullName(rs.getString("FullName"));
+                     account.setPassword(rs.getString("Password"));
+                    account.setEmail(rs.getString("Email"));
+                    account.setPhone(rs.getString("Phone"));
+                    account.setAddress(rs.getString("Address"));
+                    account.setImage(rs.getString("Image"));
+                    account.setGenderID(rs.getString("GenderID"));
                     account.setDob(rs.getDate("DOB"));
 
                     Role role = new Role();
@@ -194,7 +230,7 @@ public class LoginDAO extends DBContext {
                 return encodedInputPassword.equals(storedHashedPassword);
             }
         } catch (SQLException e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         return exists;
     }

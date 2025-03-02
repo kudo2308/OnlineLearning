@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <title>Online Learning</title>
@@ -37,6 +38,31 @@
     </select>
 
     <div class="right">
+        <c:choose>
+            <c:when test="${not empty sessionScope.account && sessionScope.account.roles == 'Expert'}">
+                <a id="my-course" class="instructor"
+                   href="${pageContext.request.contextPath}/courses">
+                    Instructor
+                </a>
+            </c:when>
+            <c:when test="${empty sessionScope.account || empty sessionScope.account.roles}">
+                <a id="my-course" class="instructor"
+                   href="${pageContext.request.contextPath}/login">
+                    Instructor
+                </a>
+            </c:when>
+
+            <c:otherwise>
+                <div class="popover-container">
+                    <a href="#"  id="my-course" >Instructor</a>
+                    <div class="popover-content">
+                        <p>Become a Expert and put your courses on Online Learning</p>
+                        <a href="${pageContext.request.contextPath}/instructor" class="learn-btn">Get started</a>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+
         <a id="my-course" href="${pageContext.request.contextPath}/Blog">Blog</a>
         <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
         <c:choose>
@@ -52,6 +78,9 @@
                     <c:choose>
                         <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
                             <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                        </c:when>
+                        <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                            <img class="avt" src="${sessionScope.account.img}">
                         </c:when>
                         <c:otherwise>
                             <img class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}">
