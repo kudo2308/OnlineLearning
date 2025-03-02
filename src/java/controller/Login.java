@@ -74,17 +74,17 @@ public class Login extends HttpServlet {
         response.addCookie(re);
         if (!d.checkUserLogin(email, pass)) {
             request.setAttribute("errorlogin", "Incorrect password or email");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("login").forward(request, response);
             return;
         }
         if (!d.checkStatusUser(email)) {
             request.setAttribute("errorlogin", "You blocked by Admin");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("login").forward(request, response);
             return;
         }
         if (!otp.isRedisAvailable()) {
             request.setAttribute("errorlogin", "Server have problem ");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("login").forward(request, response);
             return;
         }
         String sessionActive = null;

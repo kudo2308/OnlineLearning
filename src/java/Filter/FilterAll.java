@@ -56,11 +56,11 @@ public class FilterAll implements Filter {
                     session.setAttribute("account", sessionData);
                 } else {
                     clearSessionCookie(res);
-                    res.sendRedirect(req.getContextPath() + "/login.jsp");
+                    res.sendRedirect(req.getContextPath() + "/login");
                     return;
                 }
             } else {
-                res.sendRedirect(req.getContextPath() + "/login.jsp");
+                res.sendRedirect(req.getContextPath() + "/login");
                 return;
             }
         }

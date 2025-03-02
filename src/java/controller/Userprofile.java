@@ -20,7 +20,7 @@ import model.Account;
 
 @WebServlet(name = "userprofile", urlPatterns = {"/userprofile"})
 public class Userprofile extends HttpServlet {
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
