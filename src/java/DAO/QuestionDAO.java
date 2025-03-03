@@ -100,7 +100,7 @@ public class QuestionDAO {
         QuestionDAO questionDAO = new QuestionDAO();      
     }
 
-    public int findTotalRecord() {
+     public int findTotalRecord() {
         String sql = "select count(q.QuestionID) from Question q\n"
                 + "where q.[Status] = 1";
         try {
@@ -124,10 +124,7 @@ public class QuestionDAO {
                 + "join Quiz q\n"
                 + "on qu.QuizID = q.QuizID\n"
                 + "join Course c\n"
-                + "on qu.CourseID = c.CourseID\n"
-                + "join Lesson l\n"
-                + "on qu.LessonID = l.LessonID\n"
-                + "where qu.[Status] = 1\n"
+                + "on q.CourseID = c.CourseID\n"
                 + "Order by qu.QuestionID\n"
                 + "OFFSET ? ROWS\n"
                 + "FETCH NEXT ? ROWS ONLY";
@@ -137,34 +134,7 @@ public class QuestionDAO {
             ps.setInt(2, RECORD_PER_PAGE);
             rs = ps.executeQuery();
             while (rs.next()) {
-
-                Quiz quiz = Quiz.builder()
-                        .quizID(rs.getInt("QuizID"))
-                        .name(rs.getString("Name"))
-                        .build();
-
-                Course course = new Course();
-                course.setCourseID(rs.getInt("CourseID"));
-                course.setTitle(rs.getString(21));
-
-                Lesson lesson = Lesson.builder()
-                        .lessonID(rs.getInt("LessonID"))
-                        .title(rs.getString(32))
-                        .lessonType(rs.getString(34))
-                        .build();
-
-                Question question = Question.builder()
-                        .questionID(rs.getInt("QuestionID"))
-                        .content(rs.getString("Content"))
-                        .pointPerQuestion(rs.getInt("PointPerQuestion"))
-                        .quizID(rs.getInt("QuizID"))
-                        .status(rs.getBoolean("Status"))
-                        .createdAt(rs.getTimestamp("CreatedAt"))
-                        .updatedAt(rs.getTimestamp("UpdatedAt"))
-                        .course(course)
-                        .quiz(quiz)
-                        .lession(lesson)
-                        .build();
+                Question question = buildQuestionFromResultSet(rs);
                 listQuestion.add(question);
             }
         } catch (SQLException e) {
@@ -304,7 +274,6 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
         }
         return totalRecords;
     }
-
     public int addQuestion(Question question) {
         String sql = "INSERT INTO Question (content, pointPerQuestion, quizID, status, createdAt, updatedAt) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
