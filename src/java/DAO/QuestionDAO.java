@@ -97,12 +97,7 @@ public class QuestionDAO {
         }
     }
     public static void main(String[] args) {
-        QuestionDAO questionDAO = new QuestionDAO();
-        List<Question> q = questionDAO.filterQuestions("Java", "Giới thiệu về Java", "Cơ Bản", true, "Which", 1);
-
-        for (Question o : q) {
-            System.out.println(o);
-        }
+        QuestionDAO questionDAO = new QuestionDAO();      
     }
 
     public int findTotalRecord() {
@@ -177,69 +172,137 @@ public class QuestionDAO {
         }
         return listQuestion;
     }
+private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
+        Course course = Course.builder()
+                .courseID(rs.getInt("CourseID"))
+                .title(rs.getString(19))
+                .build();
 
-    public List<Question> filterQuestions(String titleOfCourse, String titleOfLesson, String lessonType, boolean status, String searchContent, int page) {
-        String sql = "select * from Question qu\n"
+        Quiz quiz = Quiz.builder()
+                .quizID(rs.getInt("QuizID"))
+                .name(rs.getString("Name"))
+                .courseID(rs.getInt("CourseID"))
+                .course(course)
+                .build();
+
+        return Question.builder()
+                .questionID(rs.getInt("QuestionID"))
+                .content(rs.getString("Content"))
+                .pointPerQuestion(rs.getInt("PointPerQuestion"))
+                .quizID(rs.getInt("QuizID"))
+                .status(rs.getBoolean("Status"))
+                .createdAt(rs.getTimestamp("CreatedAt"))
+                .updatedAt(rs.getTimestamp("UpdatedAt"))
+                .quiz(quiz)
+                .build();
+    }
+   public List<Question> filterQuestions(String searchContent, String titleOfCourse,
+            String titleOfQuiz, String status, String sortMode, int page) {
+        StringBuilder sql = new StringBuilder("select * from Question qu\n"
                 + "join Quiz q\n"
                 + "on qu.QuizID = q.QuizID\n"
                 + "join Course c\n"
-                + "on qu.CourseID = c.CourseID\n"
-                + "join Lesson l\n"
-                + "on qu.LessonID = l.LessonID\n"
-                + "where qu.[Status] = ? and c.Title like ? \n"
-                + "and l.Title like ? and \n"
-                + "l.LessonType like ? and qu.Content like ?\n"
-                + "Order by qu.QuestionID\n"
-                + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY";
-        try {
-            ps = connection.prepareStatement(sql);
+                + "on q.CourseID = c.CourseID\n"
+                + "where qu.Content like ? and c.Title like ? and q.[Name] like ? and qu.[Status] like ? \n"
+                + "Order by qu.QuestionID ");
 
-            ps.setBoolean(1, status);
+        if ("1".equals(sortMode)) {
+            sql.append("desc\n");
+        }
+
+        sql.append("OFFSET ? ROWS\n");
+        sql.append("FETCH NEXT ? ROWS ONLY");
+        try {
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setString(1, "%" + searchContent + "%");
             ps.setString(2, "%" + titleOfCourse + "%");
-            ps.setString(3, "%" + titleOfLesson + "%");
-            ps.setString(4, "%" + lessonType + "%");
-            ps.setString(5, "%" + searchContent + "%");
-            ps.setInt(6, (page - 1) * RECORD_PER_PAGE);
-            ps.setInt(7, RECORD_PER_PAGE);
+            ps.setString(3, "%" + titleOfQuiz + "%");
+            ps.setString(4, "%" + status + "%");
+            ps.setInt(5, (page - 1) * RECORD_PER_PAGE);
+            ps.setInt(6, RECORD_PER_PAGE);
 
             rs = ps.executeQuery();
 
             while (rs.next()) {
-
-                Quiz quiz = Quiz.builder()
-                        .quizID(rs.getInt("QuizID"))
-                        .name(rs.getString("Name"))
-                        .build();
-
-                Course course = new Course();
-                course.setCourseID(rs.getInt("CourseID"));
-                course.setTitle(rs.getString(21));
-
-                Lesson lessonObj = Lesson.builder()
-                        .lessonID(rs.getInt("LessonID"))
-                        .title(rs.getString(32))
-                        .lessonType(rs.getString(34))
-                        .build();
-
-                Question question = Question.builder()
-                        .questionID(rs.getInt("QuestionID"))
-                        .content(rs.getString("Content"))
-                        .pointPerQuestion(rs.getInt("PointPerQuestion"))
-                        .quizID(rs.getInt("QuizID"))
-                        .status(rs.getBoolean("Status"))
-                        .createdAt(rs.getTimestamp("CreatedAt"))
-                        .updatedAt(rs.getTimestamp("UpdatedAt"))
-                        .course(course)
-                        .quiz(quiz)
-                        .lession(lessonObj)
-                        .build();
+                Question question = buildQuestionFromResultSet(rs);
                 listQuestion.add(question);
+
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return listQuestion;
+    }
+  public List<Quiz> findAllQuiz() {
+        List<Quiz> quizz = new ArrayList<>();
+
+        String sql = "select * from Quiz";
+
+        try {
+            ps = connection.prepareStatement(sql);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Quiz quiz = getQuizFromRs(rs);
+                quizz.add(quiz);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return quizz;
+    }
+   private Quiz getQuizFromRs(ResultSet rs) throws SQLException, Exception {
+        Quiz quiz = Quiz.builder()
+                .quizID(rs.getInt("QuizID"))
+                .name(rs.getString("Name"))
+                .description(rs.getString("Description"))
+                .duration(rs.getInt("Duration"))
+                .passRate(rs.getDouble("PassRate"))
+                .totalQuestion(rs.getInt("TotalQuestion"))
+                .status(rs.getBoolean("Status"))
+                .createdAt(rs.getTimestamp("CreatedAt"))
+                .updatedAt(rs.getTimestamp("UpdatedAt"))
+                .build();
+
+        if (quiz != null) {
+            return quiz;
+        }
+        throw new Exception("Quizz is null");
+
+    }
+   public int findTotalRecordByFilter(String searchContent, String titleOfCourse, String titleOfQuiz, String status) {
+        int totalRecords = 0;
+        String sql = "select count(*) as total from Question qu\n"
+                + "join Quiz q\n"
+                + "on qu.QuizID = q.QuizID\n"
+                + "join Course c\n"
+                + "on q.CourseID = c.CourseID\n"
+                + "where qu.Content like ? and c.Title like ? and q.[Name] like ? and qu.[Status] like ?";
+
+        try {
+
+            ps = connection.prepareStatement(sql);
+
+            ps.setString(1, "%" + searchContent + "%");
+            ps.setString(2, "%" + titleOfCourse + "%");
+            ps.setString(3, "%" + titleOfQuiz + "%");
+            ps.setString(4, "%" + status + "%");
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                totalRecords = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return totalRecords;
     }
 
     public int addQuestion(Question question) {
