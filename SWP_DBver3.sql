@@ -15,7 +15,7 @@ CREATE TABLE Role (
 CREATE TABLE Account (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
     FullName NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(250) NOT NULL,
+    Description NVARCHAR(250) NULL,
     Password NVARCHAR(255) NOT NULL,
     Email NVARCHAR(100) NOT NULL UNIQUE,
     Phone NVARCHAR(100) Null,
@@ -241,7 +241,7 @@ VALUES
 -- Insert a sample student account (password: student123)
 INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image, Status) 
 VALUES
-('Jane Student', 'Student account', 'VmszaVktKzZlKmRlJHMu', 'student1@onlinelearning.com', 3, '1995-11-23', '/assets/images/avatar/pic1.jpg', 1);
+('Jane Student', 'Student account', 'VmszaVktKzZlKmRlJHMuc3R1ZGVudA==', 'student1@onlinelearning.com', 3, '1995-11-23', '/assets/images/avatar/pic1.jpg', 1);
 
 
 
@@ -531,5 +531,24 @@ VALUES
     ('Internet as a Service', 0, 'Incorrect, IaaS relates to infrastructure.', 7),
     ('Integration as a Service', 0, 'Incorrect, this is not a standard cloud model.', 7),
     ('Information as a Service', 0, 'Incorrect, cloud computing does not use this term.', 7);
+INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) VALUES
+((SELECT UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
+ (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 
+ 120000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE()),
 
+((SELECT UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
+ (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 
+ 220000, 'pending', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE()),
+
+((SELECT UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
+ (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 
+ 200000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE()),
+
+((SELECT UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
+ (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'), 
+ 180000, 'completed', 100, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE()),
+
+((SELECT UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
+ (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cybersecurity'), 
+ 140000, 'cancelled', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 

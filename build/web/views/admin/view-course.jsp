@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -119,9 +120,10 @@
                                     </thead>
                                     <tbody id="courseTableBody">
                                         <c:forEach items="${courses}" var="courses">
+                                            
                                             <tr>
                                                 <td>${courses.courseID}</td>
-                                                <td><img src="${courses.imageUrl}" width="50"></td>
+                                                <td><img src=".${courses.imageUrl}" width="50"></td>
                                                 <td>${courses.title}</td>
                                                 <td>${courses.expert.fullName}</td>
                                                 <td>${courses.price}</td>
@@ -131,7 +133,7 @@
                                                 <td>${courses.status == true ? "Active" : "Blocked"}</td>
                                                 <td>
                                                     <a href="editCourse?courseId=${courses.courseID}" class="btn btn-warning">Edit</a>
-                                                    <a href="deleteCourse?courseId=${courses.courseID}"class="btn btn-danger">Delete</a>
+                                                    <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>

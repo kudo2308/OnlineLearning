@@ -1,3 +1,4 @@
+
 package controller;
 
 import DAO.CategoryDAO;
@@ -19,14 +20,24 @@ public class HomeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
-        CourseDAO courseDAO = new CourseDAO();
-
+        CourseDAO courseDAO = new CourseDAO(); 
+        
         List<Category> categories = categoryDAO.findAll();
-        List<Course> courses = courseDAO.getAllCourses(0, 9);
-
+        List<Course> courses = courseDAO.getAllCourses(0, 3);
+        List<Course> recentCourses = courseDAO.getRecentCourses(9);
+        
         request.setAttribute("categories", categories);
         request.setAttribute("courses", courses);
+        request.setAttribute("recentCourses", recentCourses);
 
         request.getRequestDispatcher("public/home.jsp").forward(request, response);
     }
-}
+
+    public static void main(String[] args) {
+        CourseDAO courseDAO = new CourseDAO(); 
+        List<Course> courses = courseDAO.getAllCourses(0, 3);
+        for (Course course : courses) {
+            System.out.println(course.getTitle() + course.getPrice());
+        }
+    }
+    }

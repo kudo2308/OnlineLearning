@@ -22,7 +22,7 @@ public class FilterJsp implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
-        if (requestURI.endsWith(".jsp")) {
+        if (requestURI.endsWith(".jsp") && !requestURI.contains("forgetpassword.jsp") && !requestURI.contains("register.jsp")) {
             req.getRequestDispatcher("/public/404.jsp").forward(request, response);
             return;
         }

@@ -333,9 +333,7 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
-
+                Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -404,9 +402,7 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
-
+                Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 expert.setImage(rs.getString("ExpertAvatar"));
                 course.setExpert(expert);
@@ -483,9 +479,7 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
-
+                Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -541,9 +535,7 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
-
+                Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -603,9 +595,7 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
-
+                Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 
@@ -671,12 +661,10 @@ public class CourseDAO extends DBContext {
                 feedback.setStatus(rs.getBoolean("Status"));
                 feedback.setCreatedAt(rs.getTimestamp("CreatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
+                Account user = new Account();
+                user.setFullName(rs.getString("FullName"));
 
-                expert.setFullName(rs.getString("FullName"));
-
-                feedback.setUser(expert);
+                feedback.setUser(user);
 
                 feedbackList.add(feedback);
             }
@@ -745,9 +733,7 @@ public class CourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                Role role = new Role(rs.getInt("RoleID"), "Expert");
-                Account expert = new Account(rs.getInt("ExpertID"), rs.getString("ExpertName"), role);
-
+                Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
 

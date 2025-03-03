@@ -125,7 +125,8 @@ public class Register extends HttpServlet {
         LoginDAO dao = new LoginDAO();
         boolean checkUser = dao.check(email);
         if (checkUser) {
-            response.sendRedirect("login?error=This email has been registered");
+            request.setAttribute("errorlogin", "This email has been registered");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         } else {
             OTP otp = new OTP();
