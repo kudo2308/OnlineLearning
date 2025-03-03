@@ -34,7 +34,7 @@ import model.Course;
 public class AddCourse extends HttpServlet {
 
     private Validator validator;
-    private static final String UPLOAD_DIR = "img";
+    private static final String UPLOAD_DIR = "/assets/images/courses";
 
     @Override
     public void init() throws ServletException {
@@ -125,7 +125,7 @@ public class AddCourse extends HttpServlet {
         }
 
         // Xác định thư mục upload
-        String uploadFolder = getServletContext().getRealPath("") + "../../web/" + UPLOAD_DIR;
+        String uploadFolder = getServletContext().getRealPath("") + "../../web" + UPLOAD_DIR;
         File folder = new File(uploadFolder);
         if (!folder.exists()) {
             folder.mkdirs();

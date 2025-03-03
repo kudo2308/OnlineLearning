@@ -6,7 +6,8 @@ public enum RedisEnum {
     TTL_ENTER_OTP(30),
     TTL_PREVENT_ENTER_OTP(3*60),
     TTL_PREVENT_RESEND(5*60),
-    TTL_SEND_RESEND(30);
+    TTL_SEND_RESEND(30),
+    TTL_SESSION(24*60*60);
     
     private final int time;
 

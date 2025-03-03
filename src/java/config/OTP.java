@@ -132,6 +132,8 @@ public class OTP {
             redis.hset("session:" + sessionId, "img", img);
             redis.hset("session:" + sessionId, "roles", roles);
             redis.hset("session:" + sessionId, "subscriptiontype", subscriptiontype);
+            
+           redis.expire("session:" + sessionId, RedisEnum.TTL_SESSION.getTime());
         } catch (Exception e) {
             //Config Error
         }
@@ -141,6 +143,24 @@ public class OTP {
         return "session:" + sessionId;
     }
 
+    public  int getTTLSession(String sessionId){
+         try (Jedis redis = Redis.getConnection()) {
+         return (int)redis.ttl(getSessionKey(sessionId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    public boolean extendSessionTTL(String sessionId) {
+    try (Jedis redis = Redis.getConnection()) {
+        return redis.expire(getSessionKey(sessionId),  RedisEnum.TTL_SESSION.getTime()) == 1; 
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false; 
+    }
+}
+    
     public void updateSessionField(String sessionId, String field, String value) {
         if (value == null) {
             value = "";
