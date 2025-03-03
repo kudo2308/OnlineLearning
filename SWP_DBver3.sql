@@ -22,7 +22,7 @@ CREATE TABLE Account (
     Image NVARCHAR(100) Null,
     Address NVARCHAR(100) Null,
     GenderID NVARCHAR(50) NULL, 
-    DOB DATE NOT NULL,
+    DOB DATE NULL,
     RoleID INT,
     SubScriptionType VARCHAR(20) DEFAULT 'free' CHECK (SubScriptionType IN ('free', 'plus', 'pro')),
     SubScriptionExpiry DATETIME NULL,
@@ -56,6 +56,26 @@ CREATE TABLE Course (
     FOREIGN KEY (ExpertID) REFERENCES Account(UserID),
     FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
+
+CREATE TABLE Outcome(
+	CourseID INT PRIMARY KEY,
+	Content NVARCHAR(255) NOT NULL,
+	FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
+
+CREATE TABLE Cart (
+    CartID INT IDENTITY(1,1) PRIMARY KEY,
+    AccountID INT FOREIGN KEY REFERENCES Account(UserID)
+);
+GO
+
+-- Create CartDetail table
+CREATE TABLE CartDetail (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    CartID INT FOREIGN KEY REFERENCES Cart(CartID),
+    CourseID INT FOREIGN KEY REFERENCES Course(CourseID)
+);
+GO
 
 -- Registration table (for course enrollments)
 CREATE TABLE Registration (

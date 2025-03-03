@@ -54,7 +54,7 @@ public class Forgetpassword extends HttpServlet {
             get.deleteOTP(emailHash);
             get.deleteAttempts(emailHash);
             get.deleteResend(emailHash);
-            Cookie sessionCookie = new Cookie("Session_ID_Pending", "");
+            Cookie sessionCookie = new Cookie("SessionID_User",sessionId);
             sessionCookie.setMaxAge(0);
             sessionCookie.setHttpOnly(true);
             response.addCookie(sessionCookie);

@@ -11,7 +11,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "Register", urlPatterns = {"/register"})
 public class Register extends HttpServlet {
@@ -19,7 +18,8 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String change = request.getParameter("change");
+        String change = request.getParameter("change");
+        String errorregister = request.getParameter("errorregister");
         // Kiểm tra nếu 'change' là true
         if ("true".equals(change)) {
             String sessionId = null;
@@ -32,9 +32,9 @@ public class Register extends HttpServlet {
                     }
                 }
             }
-            if(sessionId == null){
-             response.sendRedirect("register.jsp");
-             return;
+            if (sessionId == null) {
+                response.sendRedirect("register.jsp");
+                return;
             }
             OTP get = new OTP();
             String userData = get.getSessionId(sessionId);
@@ -44,11 +44,12 @@ public class Register extends HttpServlet {
             get.deleteSesssionId(sessionId);
             get.deleteOTP(emailHash);
             get.deleteAttempts(emailHash);
-            get.deleteResend(emailHash);   
+            get.deleteResend(emailHash);
             Cookie sessionCookie = new Cookie("Session_ID_Pending", "");
-            sessionCookie.setMaxAge(0); 
+            sessionCookie.setMaxAge(0);
             sessionCookie.setHttpOnly(true);
             response.addCookie(sessionCookie);
+            request.setAttribute("errorregister", errorregister);
             request.getRequestDispatcher("register.jsp").forward(request, response);
         }
         response.sendRedirect("register.jsp");
@@ -57,6 +58,9 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
         String email = request.getParameter("email");
         String fullname = request.getParameter("fullname");
         String pass = request.getParameter("pass");
@@ -121,11 +125,18 @@ public class Register extends HttpServlet {
         LoginDAO dao = new LoginDAO();
         boolean checkUser = dao.check(email);
         if (checkUser) {
-            response.sendRedirect("login");
+            response.sendRedirect("login?error=This email has been registered");
+            return;
         } else {
             OTP otp = new OTP();
+            if (!otp.isRedisAvailable()) {
+                request.setAttribute("errorregister", "Error create OTP");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+                return;
+            }
             String sessionId = null;
             Cookie[] cookies = request.getCookies();
+
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
                     if ("Session_ID_Pending".equals(cookie.getName())) {
@@ -142,8 +153,9 @@ public class Register extends HttpServlet {
                 if (otpValue == -1) {
                     request.setAttribute("errorregister", "Error create OTP");
                     request.getRequestDispatcher("register.jsp").forward(request, response);
+                    return;
                 }
-                sessionId = otp.createSessionId(email, passHash, fullname, role ,"register");
+                sessionId = otp.createSessionId(email, passHash, fullname, role, "register");
                 //Gửi otp Email
                 EmailSender.sendOTP(email, fullname, otpValue);
                 // Gửi SessionId lên Cookie
