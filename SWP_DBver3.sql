@@ -22,7 +22,7 @@ CREATE TABLE Account (
     Image NVARCHAR(100) Null,
     Address NVARCHAR(100) Null,
     GenderID NVARCHAR(50) NULL, 
-    DOB DATE NOT NULL,
+    DOB DATE NULL,
     RoleID INT,
     SubScriptionType VARCHAR(20) DEFAULT 'free' CHECK (SubScriptionType IN ('free', 'plus', 'pro')),
     SubScriptionExpiry DATETIME NULL,

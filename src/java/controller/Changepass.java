@@ -27,6 +27,14 @@ public class Changepass extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
+        request.setAttribute("email", email);
+        request.getRequestDispatcher("changepass.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String email = request.getParameter("email");
         if (email != null) {
             String pass = request.getParameter("pass");
             String repass = request.getParameter("re-pass");
@@ -36,7 +44,7 @@ public class Changepass extends HttpServlet {
                 return;
             }
             if (pass == null || repass == null) {
-                request.setAttribute("errorchangepass","You must enter full field password and rel-password");
+                request.setAttribute("errorchangepass", "You must enter full field password and rel-password");
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("changepass.jsp").forward(request, response);
                 return;
@@ -65,7 +73,7 @@ public class Changepass extends HttpServlet {
                 request.getRequestDispatcher("changepass.jsp").forward(request, response);
                 return;
             }
-            if (!repass.equalsIgnoreCase(pass)) {
+            if (!repass.equals(pass)) {
                 request.setAttribute("errorchangepass", "You re-enter a password that doesn't match");
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("changepass.jsp").forward(request, response);
@@ -87,11 +95,14 @@ public class Changepass extends HttpServlet {
                 return;
             }
             LoginDAO dao = new LoginDAO();
-            OTP get = new OTP();
             dao.changePassword(email, pass);
-            Account a = dao.getAccountByEmail(email);
-            get.createSesssionIdApprove(sessionActive, a.getUserID(), a.getFullName(), a.getRole().getRoleName(), a.getSubScriptionType());
-            response.sendRedirect("home");
+            Cookie newSessionCookie = new Cookie("SessionID_User", sessionActive);
+            newSessionCookie.setMaxAge(0);
+            newSessionCookie.setHttpOnly(true);
+            response.addCookie(newSessionCookie);
+            request.setAttribute("success", "Password changed successfully!");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
         }
         response.sendRedirect("changepass.jsp");
     }

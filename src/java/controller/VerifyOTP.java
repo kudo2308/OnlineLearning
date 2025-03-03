@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import model.Account;
 
 /**
  *
@@ -74,6 +73,8 @@ public class VerifyOTP extends HttpServlet {
         String fullname = new String(byteFullname.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         String passHash = userInfo[2];
         String role = userInfo[3];
+        
+        
         String process = userInfo[4];
         String emailHash = Security.encode(email);
 
@@ -102,18 +103,15 @@ public class VerifyOTP extends HttpServlet {
             sessionCookie.setMaxAge(0);
             sessionCookie.setHttpOnly(true);
             response.addCookie(sessionCookie);
-            // Tạo cookie mới "SessionID_User"
-            String newsessionId = UUID.randomUUID().toString();
-            Cookie newSessionCookie = new Cookie("SessionID_User", newsessionId);
-            newSessionCookie.setMaxAge(60 * 60 * 24);
-            newSessionCookie.setHttpOnly(true);
-            response.addCookie(newSessionCookie);
             if (process.equals("register")) {
-                int userId = dao.getLastUserID() + 1;
-                get.createSesssionIdApprove(sessionId, userId, fullname, role, "free");
                 dao.createAccount(fullname, email, passHash, role);
                 json.sendJsonResponse(response, "redirect", "login?success=You register success", -1);
             } else {
+                String newsessionId = UUID.randomUUID().toString();
+                Cookie newSessionCookie = new Cookie("SessionID_User", newsessionId);
+                newSessionCookie.setMaxAge(60 * 60 * 24);
+                newSessionCookie.setHttpOnly(true);
+                response.addCookie(newSessionCookie);
                 json.sendJsonResponse(response, "redirect", "changepass?email=" + email, -1);
             }
         } else {

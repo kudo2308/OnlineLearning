@@ -1,9 +1,5 @@
-<%-- 
-    Document   : header-dashboard
-    Created on : Feb 8, 2025, 4:05:03 PM
-    Author     : TNO
---%>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <header class="ttr-header">
     <div class="ttr-header-wrapper">
@@ -16,7 +12,7 @@
         <!--logo start -->
         <div class="ttr-logo-box">
             <div>
-                <a href="index.html" class="ttr-logo">
+                <a href="home" class="ttr-logo">
                     <img alt="" class="ttr-logo-mobile" src="assets/images/logo-mobile.png" width="30" height="30">
                     <img alt="" class="ttr-logo-desktop" src="assets/images/logo-white.png" width="160" height="27">
                 </a>
@@ -27,7 +23,7 @@
             <!-- header left menu start -->
             <ul class="ttr-header-navigation">
                 <li>
-                    <a href="../index.html" class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                    <a href="${pageContext.request.contextPath}/home" class="ttr-material-button ttr-submenu-toggle">HOME</a>
                 </li>
                 <li>
                     <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK MENU <i class="fa fa-angle-down"></i></a>
@@ -122,13 +118,25 @@
                     </div>
                 </li>
                 <li>
-                    <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar"><img alt="" src="assets/images/testimonials/pic3.jpg" width="32" height="32"></span></a>
+                    <a href="#" class="ttr-material-button ttr-submenu-toggle"><span class="ttr-user-avatar">
+                            <c:choose>
+                                <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
+                                    <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                                </c:when>
+                                <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                                    <img class="avt" src="${sessionScope.account.img}">
+                                </c:when>
+                                <c:otherwise>
+                                    <img class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}">
+                                </c:otherwise>
+                            </c:choose> 
+                        </span></a>
                     <div class="ttr-header-submenu">
                         <ul>
-                            <li><a href="user-profile.html">My profile</a></li>
-                            <li><a href="list-view-calendar.html">Activity</a></li>
-                            <li><a href="mailbox.html">Messages</a></li>
-                            <li><a href="../login.html">Logout</a></li>
+                            <li><a href="${pageContext.request.contextPath}/userprofile">My profile</a></li>
+                            <!--<li><a href="list-view-calendar.html">Activity</a></li>-->
+                            <!--<li><a href="mailbox.html">Messages</a></li>-->
+                            <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                         </ul>
                     </div>
                 </li>

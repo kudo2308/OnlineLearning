@@ -9,35 +9,38 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.PrintWriter;
+import java.util.Map;
 import java.util.UUID;
 import model.Account;
 
 @WebServlet(name = "Login", urlPatterns = {"/login"})
 public class Login extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    
+        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String errorlogin = request.getParameter("error");
-        String success = request.getParameter("success");
-        if (errorlogin != null && !errorlogin.isEmpty()) {
-            request.setAttribute("errorlogin", errorlogin);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-        if (success != null && !success.isEmpty()) {
-            request.setAttribute("success", success);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-        response.sendRedirect("login.jsp");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        
         String email = request.getParameter("email");
         String pass = request.getParameter("pass");
         String rem = request.getParameter("remember");
-
+        
+        if ((email == null || email.isEmpty()) && (pass == null || pass.isEmpty())) {
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
+        if (email == null || email.isEmpty()) {
+            request.setAttribute("errorlogin", "Please enter Email field");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
+        if (pass == null || pass.isEmpty()) {
+            request.setAttribute("errorlogin", "Please enter Password field");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
         request.setAttribute("email", email);
         LoginDAO d = new LoginDAO();
         OTP otp = new OTP();
@@ -69,7 +72,6 @@ public class Login extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
-
         String sessionActive = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -92,12 +94,47 @@ public class Login extends HttpServlet {
             }
         }
         String sessionId = UUID.randomUUID().toString();
+
+        Account acc = d.getAccountByEmail(email);
+        if (acc.getDescription() == null) {
+            acc.setDescription("");
+        }
+        
+        otp.createSesssionIdApprove(sessionId, acc.getUserID(), acc.getFullName(), acc.getDescription(), acc.getImage(), acc.getRole().getRoleName(), acc.getSubScriptionType());
+
         Cookie newSessionCookie = new Cookie("SessionID_User", sessionId);
         newSessionCookie.setMaxAge(60 * 60 * 24);
         newSessionCookie.setHttpOnly(true);
         response.addCookie(newSessionCookie);
-        Account acc = d.getAccountByEmail(email);
-        otp.createSesssionIdApprove(sessionId, acc.getUserID(), acc.getFullName(), acc.getRole().getRoleName(), acc.getSubScriptionType());
+
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("account") == null) {
+
+                Map<String, String> sessionData = otp.getSessionData(sessionId);
+                if (sessionData != null) {
+                    session.setAttribute("account", sessionData);
+                }
+        }
         response.sendRedirect("home");
+    }
+
+   
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+  
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "Short description";
     }
 }

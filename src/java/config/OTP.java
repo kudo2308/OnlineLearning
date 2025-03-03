@@ -1,8 +1,13 @@
 package config;
 
 import enums.RedisEnum;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import redis.clients.jedis.Jedis;
 
@@ -85,10 +90,11 @@ public class OTP {
         }
     }
 
-    public String createSessionId(String email, String password, String fullname, String role , String process) {
+    public String createSessionId(String email, String password, String fullname, String role, String process) {
         String sessionId = UUID.randomUUID().toString();
+        String encodedFullname = new String(fullname.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
         try (Jedis redis = Redis.getConnection()) {
-            redis.setex("Pending:" + sessionId, RedisEnum.TTL_USER_PENDING.getTime(), email + ":" + fullname + ":" + password + ":" + role +":"+process);
+            redis.setex("Pending:" + sessionId, RedisEnum.TTL_USER_PENDING.getTime(), email + ":" + encodedFullname + ":" + password + ":" + role + ":" + process);
         } catch (Exception e) {
             //Config Error
         }
@@ -115,23 +121,43 @@ public class OTP {
         }
     }
 
-    public void createSesssionIdApprove(String sessionId, int userID, String username, String roles, String subscriptiontype) {
+    public void createSesssionIdApprove(String sessionId, int userID, String username, String description, String img, String roles, String subscriptiontype) {
+        if (description == null) {
+            description = "";
+        }
         try (Jedis redis = Redis.getConnection()) {
-            redis.hset("session:" + sessionId, "userId", userID+"");
+            redis.hset("session:" + sessionId, "userId", userID + "");
             redis.hset("session:" + sessionId, "username", username);
+            redis.hset("session:" + sessionId, "description", description);
+            redis.hset("session:" + sessionId, "img", img);
             redis.hset("session:" + sessionId, "roles", roles);
-            redis.hset("session:" + sessionId, "subscriptiontype", String.valueOf(subscriptiontype));
+            redis.hset("session:" + sessionId, "subscriptiontype", subscriptiontype);
         } catch (Exception e) {
             //Config Error
+        }
+    }
+
+    private String getSessionKey(String sessionId) {
+        return "session:" + sessionId;
+    }
+
+    public void updateSessionField(String sessionId, String field, String value) {
+        if (value == null) {
+            value = "";
+        }
+        try (Jedis redis = Redis.getConnection()) {
+            redis.hset(getSessionKey(sessionId), field, value);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public boolean checkSessionUserExists(String sessionId) {
         try (Jedis redis = Redis.getConnection()) {
             String otp = redis.hget("session:" + sessionId, "userId");
-            return otp != null; 
+            return otp != null;
         } catch (Exception e) {
-            return false; 
+            return false;
         }
     }
 
@@ -186,6 +212,39 @@ public class OTP {
             redis.del(key);
         } catch (Exception e) {
             //Config Error
+        }
+    }
+
+    public Map<String, String> getSessionData(String sessionId) {
+        List<String> fields = Arrays.asList("userId", "username", "description", "img", "roles", "subscriptiontype");
+        Map<String, String> sessionData = new LinkedHashMap<>();
+
+        try (Jedis redis = Redis.getConnection()) {
+            List<String> values = redis.hmget("session:" + sessionId, fields.toArray(new String[0]));
+            for (int i = 0; i < fields.size(); i++) {
+                sessionData.put(fields.get(i), values.get(i));
+            }
+        } catch (Exception e) {
+            return Collections.emptyMap();
+        }
+
+        return sessionData;
+    }
+
+    public boolean isRedisAvailable() {
+        try (Jedis redis = Redis.getConnection()) {
+            String response = redis.ping();
+            return "PONG".equals(response);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void deleteSessionUser(String sessionId) {
+        try (Jedis redis = Redis.getConnection()) {
+            redis.del("session:" + sessionId);
+        } catch (Exception e) {
+            // In lỗi ra console để debug
         }
     }
 }

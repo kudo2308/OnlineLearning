@@ -1,25 +1,33 @@
 package model;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Account {
 
+    @Override
+    public String toString() {
+        return "Account{" + "userID=" + userID + ", fullName=" + fullName + ", description=" + description + ", password=" + password + ", email=" + email + ", phone=" + phone + ", image=" + image + ", address=" + address + ", genderID=" + genderID + ", dob=" + dob + ", role=" + role + ", subScriptionType=" + subScriptionType + ", subScriptionExpiry=" + subScriptionExpiry + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+    }
+
     private int userID;
     private String fullName;
+    private String description;
     private String password;
     private String email;
     private String phone;
     private String image;
     private String address;
     private String genderID;
-    private Timestamp dob;
+    private Date dob;
     private Role role;
     private String subScriptionType;
     private Timestamp subScriptionExpiry;
     private boolean status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private int roleID;
 
     // Constructors
     public Account() {
@@ -28,12 +36,19 @@ public class Account {
     public Account(int userID, String fullName, int roleID) {
         this.userID = userID;
         this.fullName = fullName;
-        this.roleID =roleID;
+        this.role = new Role(roleID, "base"); // Đặt tên mặc định
     }
 
-    public Account(int userID, String fullName, String password, String email, String phone, String image, String address, String genderID, Timestamp dob, Role role, String subScriptionType, Timestamp subScriptionExpiry, boolean status, Timestamp createdAt, Timestamp updatedAt) {
+    public Account(int userID, String fullName, Role role) {
         this.userID = userID;
         this.fullName = fullName;
+        this.role = role;
+    }
+
+    public Account(int userID, String fullName, String description, String password, String email, String phone, String image, String address, String genderID, Date dob, Role role, String subScriptionType, Timestamp subScriptionExpiry, boolean status, Timestamp createdAt, Timestamp updatedAt) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.description = description;
         this.password = password;
         this.email = email;
         this.phone = phone;
@@ -49,15 +64,6 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
-    public int getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
-    }
-    
-
     public int getUserID() {
         return userID;
     }
@@ -72,6 +78,14 @@ public class Account {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPassword() {
@@ -122,11 +136,11 @@ public class Account {
         this.genderID = genderID;
     }
 
-    public Timestamp getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(Timestamp dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 
@@ -178,9 +192,4 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Account{" + "userID=" + userID + ", fullName=" + fullName + ", password=" + password + ", email=" + email + ", phone=" + phone + ", image=" + image + ", address=" + address + ", genderID=" + genderID + ", dob=" + dob + ", role=" + role + ", subScriptionType=" + subScriptionType + ", subScriptionExpiry=" + subScriptionExpiry + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
-    }
-    
 }

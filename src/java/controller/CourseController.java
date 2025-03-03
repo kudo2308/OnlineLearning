@@ -8,7 +8,6 @@ import DAO.CategoryDAO;
 import DAO.CourseDAO;
 import static constant.Constant.RECORD_PER_PAGE;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
