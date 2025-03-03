@@ -81,12 +81,12 @@
                                     <div class="mb-3 d-flex align-items-center gap-3">
                                         <a id="addCourse" href="addCourse" class="btn btn-primary">Add Course</a>
 
-                                        <form action="course" class="d-flex align-items-center mx-3">
+                                        <form action="courses" class="d-flex align-items-center mx-3">
                                             <input type="text" id="searchName" name="name" placeholder="Search by name" value="${name}" class="form-control me-2">
                                         <button id="searchButton" name="action" value="searchByName" class="btn btn-secondary">Search</button>
                                     </form>
 
-                                    <form action="course" class="d-flex align-items-center mx-3">
+                                    <form action="courses" class="d-flex align-items-center mx-3">
                                         <select id="filterCategory" name="categoryId" class="form-control me-2">
                                             <option value="0">All Category</option>
                                             <c:forEach items="${categories}" var="categories">

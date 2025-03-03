@@ -57,6 +57,26 @@ CREATE TABLE Course (
     FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
 
+CREATE TABLE Outcome(
+	CourseID INT PRIMARY KEY,
+	Content NVARCHAR(255) NOT NULL,
+	FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
+
+CREATE TABLE Cart (
+    CartID INT IDENTITY(1,1) PRIMARY KEY,
+    AccountID INT FOREIGN KEY REFERENCES Account(UserID)
+);
+GO
+
+-- Create CartDetail table
+CREATE TABLE CartDetail (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    CartID INT FOREIGN KEY REFERENCES Cart(CartID),
+    CourseID INT FOREIGN KEY REFERENCES Course(CourseID)
+);
+GO
+
 -- Registration table (for course enrollments)
 CREATE TABLE Registration (
     RegistrationID INT IDENTITY(1,1) PRIMARY KEY,
