@@ -42,7 +42,7 @@
                     <h5 class="text-center">${sessionScope.account.username}</h5>
                     <a href="#">View Profile</a>
                     <a href="userprofile">Profile Public</a>
-                    <a href="photo.jsp">Photo</a>
+                    <a href="photo">Photo</a>
                     <a href="changepassuser">Change Password</a>
                     <a href="#">Subscriptions</a>
                 </div>

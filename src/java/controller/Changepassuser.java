@@ -32,7 +32,7 @@ public class Changepassuser extends HttpServlet {
         String repass = request.getParameter("repass");
 
         if ((oldpass == null || oldpass.isEmpty()) && (newpass == null || newpass.isEmpty()) && (repass == null || repass.isEmpty())) {
-            response.sendRedirect("userchangepass.jsp");
+           request.getRequestDispatcher("userchangepass.jsp").forward(request, response);
             return;
         }
 
