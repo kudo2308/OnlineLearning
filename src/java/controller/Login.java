@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.PrintWriter;
 import java.util.Map;
 import java.util.UUID;
 import model.Account;
@@ -100,7 +99,7 @@ public class Login extends HttpServlet {
             acc.setDescription("");
         }
         
-        otp.createSesssionIdApprove(sessionId, acc.getUserID(), acc.getFullName(), acc.getDescription(), acc.getImage(), acc.getRole().getRoleName(), acc.getSubScriptionType());
+ otp.createSesssionIdApprove(sessionId, acc.getUserID(), acc.getFullName(), acc.getDescription(), acc.getImage(), acc.getRole().getRoleName(), acc.getSubScriptionType(),email);
 
         Cookie newSessionCookie = new Cookie("SessionID_User", sessionId);
         newSessionCookie.setMaxAge(60 * 60 * 24);

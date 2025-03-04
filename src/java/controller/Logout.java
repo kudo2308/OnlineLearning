@@ -50,6 +50,7 @@ public class Logout extends HttpServlet {
         newSessionCookie.setMaxAge(0);
         newSessionCookie.setHttpOnly(true);
         response.addCookie(newSessionCookie);
+        
         response.sendRedirect("home");
     }
 

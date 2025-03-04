@@ -106,7 +106,6 @@
                                 <p class="des-course">${recentCourses.description}$</p>
                                 <span>${recentCourses.price}đ</span>
 
-                                </p>
                             </li>
                         </c:forEach>
                     </c:if>
