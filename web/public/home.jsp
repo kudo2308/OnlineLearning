@@ -31,8 +31,6 @@
         <link class="skin" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/color/color-1.css">
 
         <!-- REVOLUTION SLIDER CSS ============================================= -->
-        <!-- Swiper CSS -->
-        <!-- Swiper CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 
 
@@ -108,7 +106,6 @@
                                 <p class="des-course">${recentCourses.description}$</p>
                                 <span>${recentCourses.price}đ</span>
 
-                                </p>
                             </li>
                         </c:forEach>
                     </c:if>
@@ -182,9 +179,6 @@
         <jsp:include page="../common/footer.jsp"></jsp:include> 
         <script src="${pageContext.request.contextPath}/assets/js/js.js"></script>
         <!-- Swiper JS -->
-        <!-- Swiper JS -->
-        <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
         <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 
         <script>

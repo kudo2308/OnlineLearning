@@ -42,11 +42,16 @@ public class Logout extends HttpServlet {
         }
         OTP otp = new OTP();
         otp.deleteSessionUser(sessionActive);
-        HttpSession session = request.getSession(false); 
+        HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        response.sendRedirect("login?success=Log out success !");
+        Cookie newSessionCookie = new Cookie("SessionID_User", sessionActive);
+        newSessionCookie.setMaxAge(0);
+        newSessionCookie.setHttpOnly(true);
+        response.addCookie(newSessionCookie);
+        
+        response.sendRedirect("home");
     }
 
 }

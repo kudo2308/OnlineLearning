@@ -291,6 +291,11 @@ Kracher
     min-height: 72px;
 }
 
+.action-box img{
+    max-height: 219px;
+    min-width: 366px;
+}
+
 /* Định dạng Swiper container */
 .blog-slider {
     position: relative;

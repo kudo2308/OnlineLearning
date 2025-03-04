@@ -9,7 +9,6 @@
             <i class="ti-menu ttr-close-icon"></i>
         </div>
         <!--sidebar menu toggler end -->
-        <!--logo start -->
         <div class="ttr-logo-box">
             <div>
                 <a href="home" class="ttr-logo">
@@ -18,20 +17,19 @@
                 </a>
             </div>
         </div>
-        <!--logo end -->
         <div class="ttr-header-menu">
             <!-- header left menu start -->
             <ul class="ttr-header-navigation">
                 <li>
-                    <a href="${pageContext.request.contextPath}/home" class="ttr-material-button ttr-submenu-toggle">HOME</a>
+                    <a href="${pageContext.request.contextPath}/dashboard.jsp" class="ttr-material-button ttr-submenu-toggle">DASHBOARD</a>
                 </li>
                 <li>
                     <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK MENU <i class="fa fa-angle-down"></i></a>
                     <div class="ttr-header-submenu">
                         <ul>
-                            <li><a href="../courses.html">Our Courses</a></li>
-                            <li><a href="../event.html">New Event</a></li>
-                            <li><a href="../membership.html">Membership</a></li>
+                            <li><a href="#">Courses List</a></li>
+                            <li><a href="${pageContext.request.contextPath}/UserList">Users List</a></li>
+                            <li><a href="#">Registration List</a></li>
                         </ul>
                     </div>
                 </li>
@@ -48,7 +46,7 @@
                     <a href="#" class="ttr-material-button ttr-submenu-toggle"><i class="fa fa-bell"></i></a>
                     <div class="ttr-header-submenu noti-menu">
                         <div class="ttr-notify-header">
-                            <span class="ttr-notify-text-top">9 New</span>
+                            <span class="ttr-notify-text-top">New</span>
                             <span class="ttr-notify-text">User Notifications</span>
                         </div>
                         <div class="noti-box-list">
@@ -133,38 +131,8 @@
                         </span></a>
                     <div class="ttr-header-submenu">
                         <ul>
-                            <li><a href="${pageContext.request.contextPath}/userprofile">My profile</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                         </ul>
-                    </div>
-                </li>
-                <li class="ttr-hide-on-mobile">
-                    <a href="#" class="ttr-material-button"><i class="ti-layout-grid3-alt"></i></a>
-                    <div class="ttr-header-submenu ttr-extra-menu">
-                        <a href="#">
-                            <i class="fa fa-music"></i>
-                            <span>Musics</span>
-                        </a>
-                        <a href="#">
-                            <i class="fa fa-youtube-play"></i>
-                            <span>Videos</span>
-                        </a>
-                        <a href="#">
-                            <i class="fa fa-envelope"></i>
-                            <span>Emails</span>
-                        </a>
-                        <a href="#">
-                            <i class="fa fa-book"></i>
-                            <span>Reports</span>
-                        </a>
-                        <a href="#">
-                            <i class="fa fa-smile-o"></i>
-                            <span>Persons</span>
-                        </a>
-                        <a href="#">
-                            <i class="fa fa-picture-o"></i>
-                            <span>Pictures</span>
-                        </a>
                     </div>
                 </li>
             </ul>

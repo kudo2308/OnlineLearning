@@ -134,8 +134,6 @@
                     <div class="ttr-header-submenu">
                         <ul>
                             <li><a href="${pageContext.request.contextPath}/userprofile">My profile</a></li>
-                            <!--<li><a href="list-view-calendar.html">Activity</a></li>-->
-                            <!--<li><a href="mailbox.html">Messages</a></li>-->
                             <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                         </ul>
                     </div>

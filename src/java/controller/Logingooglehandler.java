@@ -71,7 +71,7 @@ public class Logingooglehandler extends HttpServlet {
             newSessionCookie.setHttpOnly(true);
             response.addCookie(newSessionCookie);
             Account account = dao.getAccountByEmail(acc.getEmail());
-            otp.createSesssionIdApprove(sessionId, account.getUserID(), account.getFullName(), account.getDescription(), account.getImage(), account.getRole().getRoleName(), account.getSubScriptionType());
+            otp.createSesssionIdApprove(sessionId, account.getUserID(), account.getFullName(), account.getDescription(), account.getImage(), account.getRole().getRoleName(), account.getSubScriptionType(),account.getEmail());
             response.sendRedirect("home");
             return;
         }
@@ -84,7 +84,7 @@ public class Logingooglehandler extends HttpServlet {
         newSessionCookie.setMaxAge(60 * 60 * 24);
         newSessionCookie.setHttpOnly(true);
         response.addCookie(newSessionCookie);
-        otp.createSesssionIdApprove(sessionId, dao.getLastUserID() + 1, acc.getName(), "", acc.getPicture(), "Student", "free"); // Mặc định Student
+        otp.createSesssionIdApprove(sessionId, dao.getLastUserID() + 1, acc.getName(), "", acc.getPicture(), "Student", "free" ,acc.getEmail()); // Mặc định Student
         dao.createAccountGg(acc.getName(), acc.getEmail(), acc.getPicture(), passHash, "Student");
         response.sendRedirect("home");
     }

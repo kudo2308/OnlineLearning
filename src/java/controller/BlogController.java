@@ -55,7 +55,7 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
 
         // Hiển thị thông báo thành công hoặc lỗi nếu có
         if ("true".equals(success)) {
-            request.setAttribute("successMessage", "Thêm blog thành công!");
+            request.setAttribute("successMessage", "Add blog successfully!");
         } else if ("missingTitle".equals(error)) {
             request.setAttribute("errorMessage", "Vui long nhap title");
         } else if ("missingContent".equals(error)) {
@@ -68,12 +68,11 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
             request.setAttribute("errorMessage", "Vui lòng chọn status");
         }
         else if ("invalidCategory".equals(error)) {
-            request.setAttribute("errorMessage", "Danh mục không hợp lệ.");
+            request.setAttribute("errorMessage", "Category invalid.");
         } else if ("addFailed".equals(error)) {
-            request.setAttribute("errorMessage", "Thêm blog thất bại, vui lòng thử lại!");
+            request.setAttribute("errorMessage", "Add blog failed, Please try again!");
         }
 
-        // Chuyển đổi page từ String sang int
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
                 page = Integer.parseInt(pageParam);
@@ -81,8 +80,6 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
                 page = 1;
             }
         }
-
-        // Chuyển đổi categoryId từ String sang int
         int categoryId = 0;
         if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
             try {
@@ -92,17 +89,10 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
             }
         }
 
-        // Tính toán offset để phân trang
         int offset = (page - 1) * recordsPerPage;
-
-        // Khởi tạo DAO
         CategoryDAO categoryDAO = new CategoryDAO();
         BlogDAO blogDAO = new BlogDAO();
-
-        // Lấy danh sách danh mục
         List<Category> categoryList = categoryDAO.findAll();
-
-        // Lấy danh sách blog theo danh mục (nếu có)
         List<Blog> blogs;
 
         if (categoryId > 0) {
@@ -111,26 +101,22 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
             blogs = blogDAO.getAllBlogs(0, Integer.MAX_VALUE);
         }
 
-        // Lọc theo từ khóa tìm kiếm (nếu có)
         if (keyword != null && !keyword.trim().isEmpty()) {
             blogs = blogs.stream()
                     .filter(blog -> blog.getTitle().toLowerCase().contains(keyword.toLowerCase()))
                     .collect(Collectors.toList());
         }
 
-        // Tính tổng số bài viết sau khi lọc
         int totalBlogs = blogs.size();
         int totalPages = (int) Math.ceil((double) totalBlogs / recordsPerPage);
 
-        // Cắt danh sách blog theo trang
         int toIndex = Math.min(offset + recordsPerPage, totalBlogs);
         if (offset < totalBlogs) {
             blogs = blogs.subList(offset, toIndex);
         } else {
-            blogs = List.of(); // Tránh lỗi IndexOutOfBoundsException
+            blogs = List.of();
         }
 
-        // Đưa dữ liệu vào request
         request.setAttribute("blogs", blogs);
         request.setAttribute("searchKeyword", keyword);
         request.setAttribute("categories", categoryList);
@@ -138,7 +124,6 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         request.setAttribute("currentPage", page);
         request.setAttribute("selectedCategory", categoryId);
 
-        // Chuyển hướng đến trang blog
         request.getRequestDispatcher("views/user/BlogClassic.jsp").forward(request, response);
     }
 
@@ -149,7 +134,6 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
 
-        // 1. Kiểm tra đăng nhập
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login?redirect=Blog");
             return;
@@ -164,13 +148,11 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         LoginDAO dao = new LoginDAO();
         Account acc = dao.getAccountByUserID(userID);
 
-        // 2. Kiểm tra tài khoản hợp lệ
         if (acc == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp?error=invalidAccount");
             return;
         }
 
-        // 3. Lấy dữ liệu từ form
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String categoryIdStr = request.getParameter("categoryId");
@@ -178,19 +160,16 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         String status = request.getParameter("status");
 
-        // 4. Kiểm tra tiêu đề
         if (title == null || title.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/Blog?error=missingTitle");
             return;
         }
 
-        // 5. Kiểm tra nội dung
         if (content == null || content.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/Blog?error=missingContent");
             return;
         }
 
-        // 6. Kiểm tra danh mục hợp lệ
         if (categoryIdStr == null || categoryIdStr.isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/Blog?error=missingCategory");
             return;
@@ -218,7 +197,6 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
-        // 8. Tạo blog mới
         Blog blog = new Blog();
         blog.setTitle(title);
         blog.setContent(content);
@@ -232,11 +210,9 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         }
         
 
-        // 9. Lưu blog vào database
         BlogDAO blogDAO = new BlogDAO();
         boolean isAdded = blogDAO.addBlog(blog);
 
-        // 10. Kiểm tra kết quả lưu
         if (isAdded) {
             response.sendRedirect(request.getContextPath() + "/Blog?success=true");
         } else {

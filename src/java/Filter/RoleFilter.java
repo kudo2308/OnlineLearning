@@ -22,7 +22,7 @@ import java.util.Map;
             "/courses", "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion", "/manageQuestion",
             "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz",
             // URL cho Admin
-            "/AddUserServlet", "/BlockUserServlet", "/DeleteUserServlet", "/EditUserServlet", "/UserList"
+            "/dashboard.jsp", "/UserList"
         },
         dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD}
 )
@@ -47,19 +47,18 @@ public class RoleFilter implements Filter {
                     account = sessionData;
                 }
             }
-        } 
-        else {
+        } else {
             account = (Map<String, String>) session.getAttribute("account");
         }
         if (account == null) {
             res.sendRedirect(req.getContextPath() + "/login");
             return;
         }
-        String role = account.get("roles"); 
-        String requestURI = req.getRequestURI(); //LẤY ĐƯỜNG DẪN
+        String role = account.get("roles");
+        String requestURI = req.getRequestURI();
         boolean hasPermission = checkPermission(role, requestURI);
         if (!hasPermission) {
-             res.sendRedirect(req.getContextPath() + "/home");
+            res.sendRedirect(req.getContextPath() + "/home");
             return;
         }
         chain.doFilter(request, response);
@@ -81,11 +80,11 @@ public class RoleFilter implements Filter {
             return false;
         }
         String[] expertURLs = {
-            "/courses", "/addCourse", "/addLesson", "/updateLesson","/viewLessonForAd", "/addQuestion", "/AddQuestion",
-            "/manageQuestion", "/updateQuestion", "/AddQuiz","/quiz", "/Test", "/Review", "/Quiz"
+            "/courses", "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion",
+            "/manageQuestion", "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz"
         };
         String[] adminURLs = {
-            "/AddUserServlet", "/BlockUserServlet", "/DeleteUserServlet","/EditUserServlet", "/UserList"
+            "/dashboard.jsp", "/UserList"
         };
         boolean isExpertURL = false;
         for (String url : expertURLs) {

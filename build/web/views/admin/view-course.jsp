@@ -59,7 +59,8 @@
         <jsp:include page="../../common/dashboard/header-dashboard.jsp"></jsp:include>
             <!-- header end -->
             <!-- Left sidebar menu start -->
-        <jsp:include page="../../common/dashboard/left-sidebar-dashboard.jsp"></jsp:include>
+        <jsp:include page="../../common/dashboard/left-sidebar-das
+                     ...............................................................................................................................................................................................hboard.jsp"></jsp:include>
             <!-- Left sidebar menu end -->
 
             <!--Main container start -->
