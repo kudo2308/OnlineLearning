@@ -147,6 +147,13 @@ public class LoginDAO extends DBContext {
         return account;
     }
     
+    public static void main(String[] args) {
+        LoginDAO dao = new LoginDAO();
+       
+        System.out.println( dao.getAccountByUserID("4"));
+    }
+    
+//lỗi
     public Account getAccountByUserIDPass(String userId) {
         String query = "SELECT a.UserID, a.Description, a.FullName, a.Password , a.Email, a.Phone, a.Address, "
                 + "a.Image, a.GenderID , a.DOB, r.RoleName, a.SubScriptionType "

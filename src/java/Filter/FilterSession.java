@@ -17,7 +17,7 @@ import java.util.Map;
 
 @WebFilter(
     filterName = "FilterSession",
-    urlPatterns = {"/home", "/userprofile", "/photo" ,"/instructor"},
+    urlPatterns = {"/home", "/userprofile", "/photo" },
     dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE}
 )
 public class FilterSession implements Filter {
