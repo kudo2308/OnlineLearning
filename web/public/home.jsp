@@ -159,7 +159,7 @@
                                                     </h5>
                                                     <p class="truncate-text">${blog.content}</p>
                                                     <div class="post-extra">
-                                                        <a href="#" class="btn-link">READ MORE</a>
+                                                        <a href="${pageContext.request.contextPath}/BlogDetail?blogId=${blog.blogId}" class="btn-link">READ MORE</a>
                                                     </div>
                                                 </div>
                                             </div>
