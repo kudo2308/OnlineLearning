@@ -1,9 +1,3 @@
-<%-- 
-    Document   : left-sidebar-dashboard
-    Created on : Feb 8, 2025, 4:07:15 PM
-    Author     : TNO
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="ttr-sidebar">
     <div class="ttr-sidebar-wrapper content-scroll">
