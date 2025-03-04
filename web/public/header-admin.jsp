@@ -27,9 +27,9 @@
                     <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK MENU <i class="fa fa-angle-down"></i></a>
                     <div class="ttr-header-submenu">
                         <ul>
-                            <li><a href="../courses.html">Courses List</a></li>
-                            <li><a href="../event.html">Users List</a></li>
-                            <li><a href="../membership.html">Registration List</a></li>
+                            <li><a href="#">Courses List</a></li>
+                            <li><a href="${pageContext.request.contextPath}/UserList">Users List</a></li>
+                            <li><a href="#">Registration List</a></li>
                         </ul>
                     </div>
                 </li>

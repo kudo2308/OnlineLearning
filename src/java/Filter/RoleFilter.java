@@ -18,7 +18,6 @@ import java.util.Map;
 @WebFilter(
         filterName = "RoleFilter",
         urlPatterns = {
-            "/home",
             // URL cho Expert
             "/courses", "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion", "/manageQuestion",
             "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz",
@@ -48,23 +47,18 @@ public class RoleFilter implements Filter {
                     account = sessionData;
                 }
             }
-        } 
-        else {
+        } else {
             account = (Map<String, String>) session.getAttribute("account");
         }
         if (account == null) {
             res.sendRedirect(req.getContextPath() + "/login");
             return;
         }
-         String role = account.get("roles");
-        if ("ADMIN".equalsIgnoreCase(role) && req.getRequestURI().endsWith("/home")) {
-            res.sendRedirect(req.getContextPath() + "/dashboard.jsp");
-            return;
-        }      
-        String requestURI = req.getRequestURI(); 
+        String role = account.get("roles");
+        String requestURI = req.getRequestURI();
         boolean hasPermission = checkPermission(role, requestURI);
         if (!hasPermission) {
-             res.sendRedirect(req.getContextPath() + "/home");
+            res.sendRedirect(req.getContextPath() + "/home");
             return;
         }
         chain.doFilter(request, response);
@@ -86,8 +80,8 @@ public class RoleFilter implements Filter {
             return false;
         }
         String[] expertURLs = {
-            "/courses", "/addCourse", "/addLesson", "/updateLesson","/viewLessonForAd", "/addQuestion", "/AddQuestion",
-            "/manageQuestion", "/updateQuestion", "/AddQuiz","/quiz", "/Test", "/Review", "/Quiz"
+            "/courses", "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion",
+            "/manageQuestion", "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz"
         };
         String[] adminURLs = {
             "/dashboard.jsp", "/UserList"

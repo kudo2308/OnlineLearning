@@ -115,6 +115,11 @@ public class Login extends HttpServlet {
                     session.setAttribute("account", sessionData);
                 }
         }
+           String role = acc.getRole().getRoleName();
+         if ("ADMIN".equalsIgnoreCase(role)) {
+            response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
+            return;
+        }      
         response.sendRedirect("home");
     }
 
