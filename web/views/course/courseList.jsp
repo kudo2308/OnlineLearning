@@ -580,7 +580,7 @@
                         <div class="course-image">
                             <img src="${pageContext.request.contextPath}${course.course.imageUrl}" 
                                  alt="${course.course.title}"
-                                 onerror="this.src='${pageContext.request.contextPath}/assets/images/courses/default.jpg'">
+                                 onerror="this.src='${pageContext.request.contextPath}${course.course.imageUrl}'">
                             <div class="course-category">${course.category.name}</div>
                         </div>
                         <div class="course-info">

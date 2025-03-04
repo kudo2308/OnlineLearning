@@ -17,7 +17,7 @@
         <meta name="description" content="EduChamp : Education HTML Template" />
 
         <!-- OG -->
-        <meta property="og:title" content="EduChamp : Education HTML Template" />
+        <meta property="og:title" content="EduChamp : Educationhom HTML Template" />
         <meta property="og:description" content="EduChamp : Education HTML Template" />
         <meta property="og:image" content="" />
         <meta name="format-detection" content="telephone=no">
