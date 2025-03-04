@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 import model.Blog;
 import model.Category;
 import model.Course;
@@ -25,7 +26,10 @@ public class HomeController extends HttpServlet {
         CourseDAO courseDAO = new CourseDAO(); 
         BlogDAO blogDAO = new BlogDAO();
         
-        List<Blog> blogs = blogDAO.getAllBlogs(0, 9);
+        List<Blog> blogs = blogDAO.getAllRecentBlogs()
+                .stream()
+                .limit(9)
+                .collect(Collectors.toList());
         List<Category> categories = categoryDAO.findAll();
         List<Course> courses = courseDAO.getAllCourses(0, 3);
         List<Course> recentCourses = courseDAO.getRecentCourses(9);

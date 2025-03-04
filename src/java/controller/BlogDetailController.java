@@ -54,7 +54,7 @@ public class BlogDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String blogIdParam = request.getParameter("blogId");
-        
+
         int blogId = 0;
         if (blogIdParam != null && !blogIdParam.isEmpty()) {
             try {
@@ -75,10 +75,8 @@ public class BlogDetailController extends HttpServlet {
         List<Blog> recentBlogs = blogDAO.getAllRecentBlogs()
                 .stream()
                 .filter(blog -> blog.getBlogId() != blogDetail.getBlogId()) // Loại bỏ bài hiện tại
-                .sorted((b1, b2) -> b2.getCreateAt().compareTo(b1.getCreateAt())) // Sắp xếp bài mới nhất lên đầu
                 .limit(3) // Hiển thị tối đa 5 bài gần nhất
                 .collect(Collectors.toList());
-        
 
         // Set attributes for the JSP
         request.setAttribute("blog", blogDetail);

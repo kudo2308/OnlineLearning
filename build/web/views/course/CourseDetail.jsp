@@ -89,6 +89,10 @@
                                 <div class="course-buy-now text-center">
                                     <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
                                 </div>
+                                <form action="cart?action=add" method="post">
+                                    <input value="${course.courseID}" type="text" name="id" hidden>
+                                    <button class="buy-now-btn" type="submit">Add to cart</button>
+                                </form>
                                 <div class="teacher-bx">
                                     <div class="teacher-info">
                                         <div class="teacher-thumb">
