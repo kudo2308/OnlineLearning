@@ -106,12 +106,13 @@
                             </div>
                             <div class="account-info">
                                 <p class="account-name">${sessionScope.account.username}</p>
-                                <p class="account-email">${sessionScope.account.email}</p>
+                                <p class="account-email">${sessionScope.account.gmail}</p>
                             </div>
                         </div>
                         <ul class="acount-menu">
                             <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
+                               
                         </ul>
                     </div>
                 </div>

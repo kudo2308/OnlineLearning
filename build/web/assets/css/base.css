@@ -314,8 +314,7 @@ header {
 }
 
 .avatar-circle {
-    width: 40px;
-    height: 40px;
+
     background-color: #6c5ce7;
     color: white;
     font-size: 18px;
@@ -330,8 +329,13 @@ header {
 .account-info {
     font-size: 14px;
 }
-
+.account-info p {
+    margin-bottom: 10px;
+}
 .account-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: bold;
 }
 
@@ -378,7 +382,7 @@ header {
 }
 
 .dropdown-content li {
-    list-style-type: none; 
+    list-style-type: none;
     text-align: left;
 }
 

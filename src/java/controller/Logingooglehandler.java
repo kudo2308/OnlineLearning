@@ -71,7 +71,7 @@ public class Logingooglehandler extends HttpServlet {
             newSessionCookie.setHttpOnly(true);
             response.addCookie(newSessionCookie);
             Account account = dao.getAccountByEmail(acc.getEmail());
-            otp.createSesssionIdApprove(sessionId, account.getUserID(), account.getFullName(), account.getDescription(), account.getImage(), account.getRole().getRoleName(), account.getSubScriptionType(),account.getEmail());
+            otp.createSesssionIdApprove(sessionId, account.getUserID(), account.getFullName(), account.getDescription(), account.getImage(), account.getRole().getRoleName(), account.getSubScriptionType(),acc.getEmail());
             response.sendRedirect("home");
             return;
         }
