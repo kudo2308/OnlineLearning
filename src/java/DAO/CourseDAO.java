@@ -66,7 +66,7 @@ public class CourseDAO extends DBContext {
 
     }
 
-    public int findTotalRecord() {
+     public int findTotalRecord() {
         String sql = "select count(c.CourseID) from Course c";
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
@@ -111,7 +111,8 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-    private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
+
+     private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
 
         int courseId = rs.getInt("CourseID");
         String title = rs.getString("Title");
@@ -134,7 +135,7 @@ public class CourseDAO extends DBContext {
 
         Category category = new Category(categoryId, categoryName);
 
-        return new Course(courseId, title, description, userId, price, roleId,
+        return new Course(courseId, title, description, userId, price, roleId, 
                 categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, expert, category);
     }
 
@@ -208,7 +209,7 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-    public List<Course> searchCourseByName(int page, String nameRequest) {
+     public List<Course> searchCourseByName(int page, String nameRequest) {
 
         String sql = "select * from Course co\n"
                 + "join Account a\n"
@@ -253,7 +254,7 @@ public class CourseDAO extends DBContext {
             ps.setString(5, course.getImageUrl());
             ps.setInt(6, course.getTotalLesson());
             ps.setBoolean(7, course.isStatus());
-            ps.setDouble(8, course.getPrice());
+            ps.setFloat(8, course.getPrice());
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;
@@ -268,7 +269,7 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE Course SET Title = ?, Description = ?, ExpertID = ?, CategoryID = ?, ImageUrl = ?, TotalLesson = ?, Status = ?, Price = ?, UpdatedAt = GETDATE() WHERE CourseID = ?";
 
         try (Connection connection = new DBContext().getConnection()) {
-
+            
             ps = connection.prepareStatement(sql);
 
             ps.setString(1, course.getTitle());
@@ -278,7 +279,7 @@ public class CourseDAO extends DBContext {
             ps.setString(5, course.getImageUrl());
             ps.setInt(6, course.getTotalLesson());
             ps.setBoolean(7, course.isStatus());
-            ps.setDouble(8, course.getPrice());
+            ps.setFloat(8, course.getPrice());
             ps.setInt(9, course.getCourseID());
 
             int rowsUpdated = ps.executeUpdate();

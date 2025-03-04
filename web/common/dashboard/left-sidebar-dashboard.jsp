@@ -1,9 +1,3 @@
-<%-- 
-    Document   : left-sidebar-dashboard
-    Created on : Feb 8, 2025, 4:07:15 PM
-    Author     : TNO
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="ttr-sidebar">
     <div class="ttr-sidebar-wrapper content-scroll">
@@ -23,6 +17,17 @@
                         <span class="ttr-icon"><i class="ti-book"></i></span>
                         <span class="ttr-label">Courses</span>
                     </a>
+                        <ul>
+                        <li>
+                            <a href="AddQuiz" class="ttr-material-button"><span class="ttr-label">Add Quiz</span></a>
+                        </li>
+                        <li>
+                            <a href="AddQuestion" class="ttr-material-button"><span class="ttr-label">Add Question</span></a>
+                        </li>
+                        <li>
+                            <a href="manageQuestion" class="ttr-material-button"><span class="ttr-label">Question List</span></a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="#" class="ttr-material-button">
