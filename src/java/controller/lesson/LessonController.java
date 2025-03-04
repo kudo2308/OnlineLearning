@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Lesson;
 import utils.YouTubeDurationFetcher;
@@ -167,39 +168,51 @@ public class LessonController extends HttpServlet {
         }
     }
 
-    private void handleVideoUpdate(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        try {
-            int lessonId = Integer.parseInt(request.getParameter("lessonId"));
-            String videoUrl = request.getParameter("videoUrl");
-            
-            // Validate YouTube URL
-            if (!isValidYouTubeUrl(videoUrl)) {
-                request.setAttribute("error", "Invalid YouTube URL. Please provide a valid YouTube video URL.");
-                response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
-                return;
-            }
-            
-            // Get video duration using YouTubeDurationFetcher
-            int duration = YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl);
-            
-            // Update lesson in database
-            LessonDAO lessonDAO = new LessonDAO();
-            boolean success = lessonDAO.updateLessonVideo(lessonId, videoUrl, duration);
-            
-            if (success) {
-                response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
-            } else {
-                request.setAttribute("error", "Failed to update video URL");
-                response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
-            }
-            
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid lesson ID");
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating video: " + e.getMessage());
+   private void handleVideoUpdate(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    
+    try {
+        int lessonId = Integer.parseInt(request.getParameter("lessonId"));
+        String videoUrl = request.getParameter("videoUrl");
+
+        if (!isValidYouTubeUrl(videoUrl)) {
+            session.setAttribute("error", "Invalid YouTube URL. Please provide a valid YouTube video URL.");
+            response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
+            return;
         }
+
+        // Get video duration
+        int duration = YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl);
+        if (duration <= 0) {
+            session.setAttribute("error", "Failed to retrieve video duration.");
+            response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
+            return;
+        }
+
+        // Check if lesson exists
+        LessonDAO lessonDAO = new LessonDAO();
+        if (!lessonDAO.lessonExists(lessonId)) {
+            session.setAttribute("error", "Invalid lesson: The specified lesson ID " + lessonId + " does not exist in the system.");
+            response.sendRedirect(request.getContextPath() + "/course-content");
+            return;
+        }
+
+        // Update video
+        boolean success = lessonDAO.updateLessonVideo(lessonId, videoUrl, duration);
+        if (!success) {
+            session.setAttribute("error", "Failed to update video URL.");
+        }
+        
+        response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
+        
+    } catch (NumberFormatException e) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid lesson ID");
+    } catch (Exception e) {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating video: " + e.getMessage());
     }
+}
+
     
     private boolean isValidYouTubeUrl(String url) {
         if (url == null || url.isEmpty()) {
