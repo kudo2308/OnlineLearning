@@ -433,14 +433,27 @@ public class LessonDAO extends DBContext {
         }
     }
     
+    public boolean lessonExists(int lessonId) {
+        String sql = "SELECT COUNT(*) FROM Lesson WHERE LessonID = ?";
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, lessonId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking lesson existence: " + e.getMessage());
+        }
+        return false;
+    }
+    
     public static void main(String[] args) {
         LessonDAO less = new LessonDAO();
         List<Lesson> lesssonList = less.getAllLessonByCourseId(1);
-        int duration = 0;
+       
         for (Lesson lesson : lesssonList) {
-            duration += lesson.getDuration();
+            System.out.println(lesson);
         }
-        System.out.println(duration/60 + "." + duration%60/10);
-        System.out.println(duration);
     }
 }

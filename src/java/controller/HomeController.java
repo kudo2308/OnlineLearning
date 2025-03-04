@@ -1,6 +1,7 @@
 
 package controller;
 
+import DAO.BlogDAO;
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.stream.Collectors;
+import model.Blog;
 import model.Category;
 import model.Course;
 
@@ -21,11 +24,17 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
         CourseDAO courseDAO = new CourseDAO(); 
+        BlogDAO blogDAO = new BlogDAO();
         
+        List<Blog> blogs = blogDAO.getAllRecentBlogs()
+                .stream()
+                .limit(9)
+                .collect(Collectors.toList());
         List<Category> categories = categoryDAO.findAll();
         List<Course> courses = courseDAO.getAllCourses(0, 3);
         List<Course> recentCourses = courseDAO.getRecentCourses(9);
         
+        request.setAttribute("blogs", blogs);
         request.setAttribute("categories", categories);
         request.setAttribute("courses", courses);
         request.setAttribute("recentCourses", recentCourses);

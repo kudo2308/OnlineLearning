@@ -19,11 +19,7 @@ import model.Course;
 import model.Lesson;
 import model.PageControl;
 import model.Question;
-
-/**
- *
- * @author PC
- */
+import model.Quiz;
 @WebServlet(name = "ManageQuestion", urlPatterns = {"/manageQuestion"})
 public class ManageQuestion extends HttpServlet {
 
@@ -63,6 +59,9 @@ public class ManageQuestion extends HttpServlet {
         String pageRaw = request.getParameter("page");
         QuestionDAO questionDAO = new QuestionDAO();
 
+        List<Quiz> quizz = questionDAO.findAllQuiz();
+        request.setAttribute("quizz", quizz);
+
         //valid page
         int page;
         try {
@@ -80,23 +79,27 @@ public class ManageQuestion extends HttpServlet {
         switch (action) {
             case "FilterAll":
                 String titleCourse = request.getParameter("titleCourse");
-                String titleLesson = request.getParameter("titleLesson");
-                String lessonType = request.getParameter("level");
+                String titleQuiz = request.getParameter("quizName");
                 String content = request.getParameter("content");
+                String sort = request.getParameter("sort");
 
-                boolean status = request.getParameter("status").equals("1");
+                String status = request.getParameter("status");
 
-                questions = questionDAO.filterQuestions(titleCourse, titleLesson, lessonType, status, content, page);
+                questions = questionDAO.filterQuestions(content,
+                        titleCourse, titleQuiz, status,
+                        sort, page);
 
-                totalRecord = questions.size();
+                totalRecord = questionDAO.findTotalRecordByFilter(content, 
+                        titleCourse, titleQuiz, status);
+                
                 pageControl.setUrlPattern("manageQuestion?content=" + content + "&titleCourse="
-                        + titleCourse + "&titleLesson=" + titleLesson + "&level=" + lessonType + "&action=FilterAll&");
+                        + titleCourse + "&titleQuiz=" + titleQuiz + "&action=FilterAll&");
 
                 request.setAttribute("titleCourse", titleCourse);
-                request.setAttribute("titleLesson", titleLesson);
-                request.setAttribute("lessonType", lessonType);
+                request.setAttribute("quizName", titleQuiz);
                 request.setAttribute("content", content);
                 request.setAttribute("status", status);
+                request.setAttribute("sort", sort);
 
                 break;
             default:

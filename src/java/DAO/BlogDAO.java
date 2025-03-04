@@ -299,7 +299,7 @@ public class BlogDAO extends DBContext {
     public List<Blog> getAllRecentBlogs() {
         List<Blog> blogs = new ArrayList<>();
         try {
-            String query = "SELECT * FROM Blog b JOIN Account a ON b.AuthorID = a.UserID ORDER BY b.CreatedAt DESC";
+            String query = "SELECT * FROM Blog b JOIN Account a ON b.AuthorID = a.UserID Where b.Status = 1 ORDER BY b.CreatedAt DESC";
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

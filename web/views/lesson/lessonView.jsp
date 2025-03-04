@@ -17,15 +17,22 @@
                 --border-color: #e5e7eb;
                 --bg-light: #f8fafc;
                 --sidebar-width: 320px;
-                --header-height: 60px;
+                --header-height: 130px;
             }
 
             /* Main Layout */
+            body {
+                margin: 0;
+                padding: 0;
+                overflow-x: hidden;
+            }
+
             .lesson-container {
                 display: flex;
                 min-height: calc(100vh - var(--header-height));
                 background-color: var(--bg-light);
                 margin-top: var(--header-height);
+                position: relative;
             }
 
             /* Sidebar Styles */
@@ -40,6 +47,17 @@
                 left: 0;
                 top: var(--header-height);
                 box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+                z-index: 10;
+            }
+
+            /* Main Content Styles */
+            .lesson-content {
+                flex: 1;
+                margin-left: var(--sidebar-width);
+                padding: 2rem;
+                max-width: calc(100% - var(--sidebar-width));
+                min-height: calc(100vh - var(--header-height));
+                overflow-y: auto;
             }
 
             .course-info {
@@ -128,13 +146,6 @@
             }
 
             /* Main Content Styles */
-            .lesson-content {
-                flex: 1;
-                margin-left: var(--sidebar-width);
-                padding: 2rem;
-                max-width: calc(100% - var(--sidebar-width));
-            }
-
             .lesson-header {
                 margin-bottom: 2rem;
             }
@@ -292,7 +303,7 @@
                 }
 
                 .lesson-sidebar {
-                    position: relative;
+                    position: fixed;
                     width: 100%;
                     height: auto;
                     top: 0;
@@ -344,7 +355,7 @@
                 <div class="breadcrumb">
                     <a href="${pageContext.request.contextPath}/course">Courses</a>
                     <span>/</span>
-                    <a href="${pageContext.request.contextPath}/course/detail?id=${courseId}">${currentLesson.course.title}</a>
+                    <a href="${pageContext.request.contextPath}/coursedetail?courseId=${courseId}">${currentLesson.course.title}</a>
                     <span>/</span>
                     <span>${currentLesson.title}</span>
                 </div>

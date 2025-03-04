@@ -51,6 +51,106 @@
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/style.css">
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/dashboard.css">
         <link class="skin" rel="stylesheet" type="text/css" href="assets/admin/assets/css/color/color-1.css">
+        <style>
+            /* Custom button styles */
+            .btn-custom {
+                padding: 6px 12px;
+                margin-right: 5px;
+                border-radius: 4px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                min-width: 70px; /* Đảm bảo nút trong bảng đồng nhất kích thước */
+            }
+
+            /* Nút Show */
+            .btn-show {
+                background-color: #17a2b8;
+                border-color: #17a2b8;
+                color: white;
+            }
+            .btn-show:hover {
+                background-color: #138496;
+                border-color: #117a8b;
+            }
+
+            /* Nút Hide */
+            .btn-hide {
+                background-color: #6c757d;
+                border-color: #6c757d;
+                color: white;
+            }
+            .btn-hide:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+            }
+
+            /* Nút Edit */
+            .btn-edit {
+                background-color: #ffc107;
+                border-color: #ffc107;
+                color: #212529;
+            }
+            .btn-edit:hover {
+                background-color: #e0a800;
+                border-color: #d39e00;
+            }
+
+            /* Nút Import Question */
+            .btn-import {
+                background-color: #28a745;
+                border-color: #28a745;
+                color: white;
+                padding: 8px 16px; /* Kích thước lớn hơn cho nút chính */
+                white-space: nowrap; /* Ngăn text xuống dòng */
+            }
+            .btn-import:hover {
+                background-color: #218838;
+                border-color: #1e7e34;
+            }
+
+            /* Nút Filter */
+            .btn-filter {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+                margin-left: 5px; /* Khoảng cách nhỏ bên trái nút Filter */
+            }
+            .btn-filter:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+            }
+
+            /* Nút Clear */
+            .btn-clear {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                color: white;
+                padding: 8px 16px; /* Kích thước lớn hơn cho nút chính */
+                white-space: nowrap; /* Ngăn text xuống dòng */
+            }
+            .btn-clear:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+            /* Bố cục tổng thể của phần nút Import và Filter */
+            .filter-section {
+                display: flex;
+                align-items: center;
+                gap: 20px; /* Khoảng cách giữa nút Import và form filter */
+                margin-bottom: 20px; /* Khoảng cách dưới để tách biệt với bảng */
+            }
+
+            /* Form filter */
+            .filter-form {
+                display: flex;
+                align-items: center;
+                gap: 10px; /* Khoảng cách đều giữa các phần tử trong form */
+            }
+            .filter-form .form-control {
+                margin-right: 5px; /* Khoảng cách nhỏ giữa các trường */
+            }
+        </style>
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
 
@@ -78,36 +178,33 @@
                                     <h4>Questions List</h4>
                                 </div>
                                 <div class="widget-inner">
-                                    <div class="mb-3 d-flex align-items-center gap-3">
-                                        <a id="importQuestion" href="importQuestion" class="btn btn-primary">Import Question</a>
-                                        <form action="manageQuestion" class="d-flex align-items-center mx-3">
-                                            <input type="text" id="searchContent" name="content" placeholder="Search by content" value="${content}" class="form-control me-2">         
-                                        <select id="filterSubject" name="titleCourse" class="form-control me-2">
+                                    <div class="filter-section">
+                                        <a id="importQuestion" href="" class="btn btn-custom btn-import">Import Question</a>
+                                        <form action="manageQuestion" class="filter-form">
+                                            <input type="text" id="searchContent" name="content" placeholder="Search by content" value="${content}" class="form-control">         
+                                        <select id="filterSubject" name="titleCourse" class="form-control">
                                             <option value="">All Courses</option>
                                             <c:forEach items="${courses}" var="courses">
-                                                <option  ${titleCourse eq courses.title ? 'selected' : ""} value="${courses.title}">${courses.title}</option>
+                                                <option ${titleCourse eq courses.title ? 'selected' : ""} value="${courses.title}">${courses.title}</option>
                                             </c:forEach>
                                         </select>
-
-                                        <select id="filterLesson" name="titleLesson" class="form-control me-2">
-                                            <option value="">All Lessons</option>
-                                            <c:forEach items="${lessons}" var="lessons">
-                                                <option ${titleLesson eq lessons.title ? 'selected' : ""} value="${lessons.title}">${lessons.title}</option>
+                                        <select id="filterQuiz" name="quizName" class="form-control">
+                                            <option value="">All Quizzes</option>
+                                            <c:forEach items="${quizz}" var="quiz">
+                                                <option ${quizName eq quiz.name ? 'selected' : ""} value="${quiz.name}">${quiz.name}</option>
                                             </c:forEach>
                                         </select>
-
-                                        <select id="filterLevel" name="level" class="form-control me-2">
-                                            <option value="">All Levels</option>
-                                            <option>Cơ Bản</option>
-                                            <option>Nâng Cao</option>
+                                        <select id="filterStatus" name="status" class="form-control">
+                                            <option ${status eq '1' ? 'selected' : ""} value="1">Active</option>
+                                            <option ${status eq '0' ? 'selected' : ""} value="0">Hidden</option>
                                         </select>
-
-                                        <select id="filterStatus" name="status" class="form-control me-2">
-                                            <option ${status == true ? 'selected' : ""} value="1">Active</option>
-                                            <option ${status == false ? 'selected' : ""} value="0">Hidden</option>
+                                        <select id="sortOrder" name="sort" class="form-control">
+                                            <option value="1" ${sort eq 'newest' ? 'selected' : ''}>Newest First</option>
+                                            <option value="0" ${sort eq 'oldest' ? 'selected' : ''}>Oldest First</option>
                                         </select>
+                                        <button id="filterButton" name="action" value="FilterAll" class="btn btn-custom btn-filter">Filter</button>
 
-                                        <button id="filterButton" name="action" value="FilterAll" class="btn btn-secondary">Filter</button>
+                                        <a href="manageQuestion" class="btn btn-custom btn-clear">Clear</a>
                                     </form>
                                 </div>
 
@@ -117,8 +214,7 @@
                                             <th>ID</th>
                                             <th>Content</th>
                                             <th>Course</th>
-                                            <th>Lesson</th>  
-                                            <th>Level</th>
+                                            <th>Quiz</th>  
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
@@ -128,14 +224,13 @@
                                             <tr>
                                                 <td>${questions.questionID}</td>
                                                 <td>${questions.content}</td>
-                                                <td>${questions.course.title}</td>
-                                                <td>${questions.lession.title}</td>
-                                                <td>${questions.lession.lessonType}</td>
+                                                <td>${questions.quiz.course.title}</td>
+                                                <td>${questions.quiz.name}</td>
                                                 <td>${questions.status == true ? "Active" : "Hidden"}</td>
                                                 <td>
-                                                    <button class="btn btn-info">Show</button>
-                                                    <button class="btn btn-secondary">Hide</button>
-                                                    <button class="btn btn-warning">Edit</button>
+                                                    <button class="btn btn-custom btn-show">Show</button>
+                                                    <button class="btn btn-custom btn-hide">Hide</button>
+                                                    <button class="btn btn-custom btn-edit">Edit</button>
                                                 </td>
                                             </tr>
                                         </c:forEach>
