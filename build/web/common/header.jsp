@@ -64,9 +64,10 @@
         </c:choose>
 
         <a id="my-course" href="${pageContext.request.contextPath}/Blog">Blog</a>
-        <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
+
         <c:choose>
             <c:when test="${not empty sessionScope.account}">
+                <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
                 <!-- Display Hello, account.name if account exists in session -->
                 <a id="bell" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                     <span class="material-icons md-18">notifications_none</span>
@@ -74,23 +75,36 @@
                 <a href="${pageContext.request.contextPath}/cart" id="cart">
                     <span class="material-icons md-18">shopping_cart</span>
                 </a>
-                <div class="image-container">
-                    <c:choose>
-                        <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
-                            <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
-                        </c:when>
-                        <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
-                            <img class="avt" src="${sessionScope.account.img}">
-                        </c:when>
-                        <c:otherwise>
-                            <img class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}">
-                        </c:otherwise>
-                    </c:choose>
-                    <ul class="menu">
-                        <li><a href="${pageContext.request.contextPath}/userprofile">${sessionScope.account.username}</a></li>
-                        <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
-                        <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
-                    </ul>
+                <div class="account-dropdown">
+                    <div class="account-avatar">
+                        <c:choose>
+                            <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
+                                <img class="avatar-img" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                            </c:when>
+                            <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                                <img class="avatar-img" src="${sessionScope.account.img}">
+                            </c:when>
+                            <c:otherwise>
+                                <img class="avatar-img" src="${pageContext.request.contextPath}${sessionScope.account.img}">
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <div class="dropdown-content">
+                        <div class="account-header">
+                            <div class="avatar-circle">
+                                <span>${fn:toUpperCase(sessionScope.account.username.substring(0,1))}</span>
+                            </div>
+                            <div class="account-info">
+                                <p class="account-name">${sessionScope.account.username}</p>
+                                <p class="account-email">${sessionScope.account.email}</p>
+                            </div>
+                        </div>
+                        <ul class="acount-menu">
+                            <li><a href="${pageContext.request.contextPath}/userprofile">${sessionScope.account.username}</a></li>
+                            <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
+                            <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
+                        </ul>
+                    </div>
                 </div>
             </c:when>
             <c:otherwise>
