@@ -220,6 +220,149 @@ Kracher
     transform: rotateZ(-90deg);
 }
 
+/* Phần nền banner */
+.page-banner {
+    position: relative;
+    background-image: url(${pageContext.request.contextPath}$/assets/images/background/bg1.jpg); /* Đường dẫn hình nền */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Giữ nền cố định khi cuộn trang */
+    height: 400px; /* Điều chỉnh chiều cao */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 95%;
+    margin: auto;
+}
+
+/* Lớp phủ mờ trên nền */
+.page-banner .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Màu tối giúp chữ nổi bật hơn */
+}
+
+/* Căn giữa nội dung */
+.page-banner-entry {
+    position: relative;
+    z-index: 1; /* Đảm bảo chữ không bị che khuất */
+}
+
+/* Chữ tiêu đề */
+.page-banner h1 {
+    color: white;
+    font-size: 40px; /* Tăng kích thước chữ */
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: fadeInUp 1s ease-in-out; /* Hiệu ứng xuất hiện từ dưới lên */
+}
+
+/* Hiệu ứng xuất hiện chữ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*danh sach blog*/
+.truncate-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-bx{
+    min-height: 283px;
+}
+
+.post-title{
+    min-height: 72px;
+}
+
+/* Định dạng Swiper container */
+.blog-slider {
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+}
+
+/* Định dạng Swiper slide */
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Định dạng Swiper buttons */
+.swiper-button-next, .swiper-button-prev {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.8); /* Màu nền */
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Đảm bảo nằm trên */
+    transition: background 0.3s ease, transform 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.swiper-button-next:hover, .swiper-button-prev:hover {
+    background-color: rgba(0, 0, 0, 0.6); /* Đổi màu nền khi hover */
+    color: white;
+}
+
+/* Định dạng biểu tượng mũi tên trong button */
+.swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Responsive: Điều chỉnh vị trí nút trên màn hình nhỏ */
+@media (max-width: 1024px) {
+    .swiper-button-prev {
+        left: -30px;
+    }
+
+    .swiper-button-next {
+        right: -30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .swiper-button-prev, .swiper-button-next {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .swiper-button-prev {
+        left: -20px;
+    }
+
+    .swiper-button-next {
+        right: -20px;
+    }
+}
+
+
 /*responsive tablet*/
 
 @media only screen and (max-width: 1000px) {
@@ -290,7 +433,7 @@ Kracher
 
 
 .slide-show {
-    width: 70%;
+    width: 80%;
     overflow: hidden;
     position: relative;
     border-radius: inherit;
@@ -316,11 +459,11 @@ Kracher
     transition: 0.5s;
     cursor: pointer;
 }
-.btn-left {
-    left: 0;
+.btn-left:hover{
+    background: none;
 }
-.btn-right {
-    right: 0;
+.btn-right:hover {
+    background: none;
 }
 .index-images {
     position: absolute;
@@ -355,7 +498,7 @@ Kracher
 
 
 .btn-right, .btn-left {
-    background-color: rgba(239, 252, 255, 60%);
+    background: none;
     border-radius: 100%;
 }
 
