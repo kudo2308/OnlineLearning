@@ -30,6 +30,9 @@
                         <li>
                             <a href="AddQuestion" class="ttr-material-button"><span class="ttr-label">Add Question</span></a>
                         </li>
+                        <li>
+                            <a href="manageQuestion" class="ttr-material-button"><span class="ttr-label">Question List</span></a>
+                        </li>
                     </ul>
                 </li>
                 <li>
