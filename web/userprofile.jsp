@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="./assets/css/userprofile.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
@@ -20,11 +21,15 @@
                 padding-right: 5px;
                 padding-left: 5px;
             }
+            .account-info p {
+                margin-bottom: 10px;
+            }
         </style>
     </head>
-    <jsp:include page="common/header.jsp"></jsp:include>
-        <hr>
-        <body>
+    <body>
+        <jsp:include page="./common/header.jsp"></jsp:include>
+            <nav style="height: 0">
+            </nav>
             <div class="container mt-5">
                 <div class="d-flex">
                     <div class="sidebar p-3 border rounded bg-white">                 

@@ -6,8 +6,6 @@
 <title>Online Learning</title>
 
 <nav>
-    <!-- Your navigation bar code -->
-
 </nav>
 
 <header class="logo-body">
