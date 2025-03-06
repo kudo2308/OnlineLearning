@@ -121,9 +121,12 @@ public class OTP {
         }
     }
 
-    public void createSesssionIdApprove(String sessionId, int userID, String username, String description, String img, String roles, String subscriptiontype) {
+    public void createSesssionIdApprove(String sessionId, int userID, String username, String description, String img, String roles, String subscriptiontype,String gmail) {
         if (description == null) {
             description = "";
+        }
+        if (gmail == null) {
+            gmail = "";
         }
         try (Jedis redis = Redis.getConnection()) {
             redis.hset("session:" + sessionId, "userId", userID + "");
@@ -132,7 +135,7 @@ public class OTP {
             redis.hset("session:" + sessionId, "img", img);
             redis.hset("session:" + sessionId, "roles", roles);
             redis.hset("session:" + sessionId, "subscriptiontype", subscriptiontype);
-            
+            redis.hset("session:" + sessionId, "gmail", gmail);
            redis.expire("session:" + sessionId, RedisEnum.TTL_SESSION.getTime());
         } catch (Exception e) {
             //Config Error
@@ -236,7 +239,7 @@ public class OTP {
     }
 
     public Map<String, String> getSessionData(String sessionId) {
-        List<String> fields = Arrays.asList("userId", "username", "description", "img", "roles", "subscriptiontype");
+        List<String> fields = Arrays.asList("userId", "username", "description", "img", "roles", "subscriptiontype" ,"gmail");
         Map<String, String> sessionData = new LinkedHashMap<>();
 
         try (Jedis redis = Redis.getConnection()) {

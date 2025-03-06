@@ -210,7 +210,15 @@ CREATE TABLE Blog (
     FOREIGN KEY (AuthorID) REFERENCES Account(UserID),
 	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
-
+CREATE TABLE SocialLink (
+    UserID INT PRIMARY KEY,
+    Xspace NVARCHAR(255) NULL,
+    Youtube NVARCHAR(255) NULL,
+    Facebook NVARCHAR(255) NULL,
+    Linkedin NVARCHAR(255) NULL,
+	Private NVARCHAR(20) DEFAULT 'public' CHECK (Private IN ('public', 'block-course', 'block-inscrits', 'block-view')),
+    FOREIGN KEY (UserID) REFERENCES Account(UserID)
+);
 -- Insert roles
 INSERT INTO Role (RoleName) VALUES
 ('Admin'),

@@ -6,8 +6,6 @@
 <title>Online Learning</title>
 
 <nav>
-    <!-- Your navigation bar code -->
-
 </nav>
 
 <header class="logo-body">
@@ -79,30 +77,40 @@
                     <div class="account-avatar">
                         <c:choose>
                             <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
-                                <img class="avatar-img" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                                <img class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
                             </c:when>
                             <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
-                                <img class="avatar-img" src="${sessionScope.account.img}">
+                                <img class="avt" src="${sessionScope.account.img}">
                             </c:when>
                             <c:otherwise>
-                                <img class="avatar-img" src="${pageContext.request.contextPath}${sessionScope.account.img}">
+                                <img class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}">
                             </c:otherwise>
                         </c:choose>
                     </div>
                     <div class="dropdown-content">
                         <div class="account-header">
                             <div class="avatar-circle">
-                                <span>${fn:toUpperCase(sessionScope.account.username.substring(0,1))}</span>
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.account.img || sessionScope.account.img == '/assets/images/profile/unknow.jpg'}">
+                                        <img style=" border-radius: 50%;" class="avt" src="${pageContext.request.contextPath}/assets/images/profile/unknow.jpg">
+                                    </c:when>
+                                    <c:when test="${fn:startsWith(sessionScope.account.img, 'https://')}">
+                                        <img style=" border-radius: 50%;" class="avt" src="${sessionScope.account.img}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img  style=" border-radius: 50%;" class="avt" src="${pageContext.request.contextPath}${sessionScope.account.img}">
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="account-info">
                                 <p class="account-name">${sessionScope.account.username}</p>
-                                <p class="account-email">${sessionScope.account.email}</p>
+                                <p class="account-email">${sessionScope.account.gmail}</p>
                             </div>
                         </div>
                         <ul class="acount-menu">
-                            <li><a href="${pageContext.request.contextPath}/userprofile">${sessionScope.account.username}</a></li>
                             <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
+                               
                         </ul>
                     </div>
                 </div>

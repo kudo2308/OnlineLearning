@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.Account;
 import model.Role;
+import model.SocialLink;
 
 public class LoginDAO extends DBContext {
 //Done
@@ -146,7 +147,14 @@ public class LoginDAO extends DBContext {
         }
         return account;
     }
-    
+
+    public static void main(String[] args) {
+        LoginDAO dao = new LoginDAO();
+
+        System.out.println(dao.getAccountByUserID("4"));
+    }
+
+//lỗi
     public Account getAccountByUserIDPass(String userId) {
         String query = "SELECT a.UserID, a.Description, a.FullName, a.Password , a.Email, a.Phone, a.Address, "
                 + "a.Image, a.GenderID , a.DOB, r.RoleName, a.SubScriptionType "
@@ -164,7 +172,7 @@ public class LoginDAO extends DBContext {
                     account.setUserID(rs.getInt("UserID"));
                     account.setDescription(rs.getString("Description"));
                     account.setFullName(rs.getString("FullName"));
-                     account.setPassword(rs.getString("Password"));
+                    account.setPassword(rs.getString("Password"));
                     account.setEmail(rs.getString("Email"));
                     account.setPhone(rs.getString("Phone"));
                     account.setAddress(rs.getString("Address"));
@@ -268,5 +276,27 @@ public class LoginDAO extends DBContext {
             e.printStackTrace(); // Log lỗi để debug
         }
         return false;
+    }
+
+    public SocialLink getSocialLink(int userId) {
+        String sql = "SELECT Xspace, Youtube, Facebook, Linkedin ,Private FROM SocialLink WHERE UserID = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    SocialLink socialLink = new SocialLink();
+                    socialLink.setUserId(userId);
+                    socialLink.setXspace(rs.getString("Xspace"));
+                    socialLink.setYoutube(rs.getString("Youtube"));
+                    socialLink.setFacebook(rs.getString("Facebook"));
+                    socialLink.setLinkedin(rs.getString("Linkedin"));
+                    socialLink.setCheckPrivate(rs.getString("Private"));
+                    return socialLink;
+                }
+            }
+        }catch(SQLException e){
+            e.getMessage();
+        }
+        return null;
     }
 }

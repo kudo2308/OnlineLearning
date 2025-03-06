@@ -12,13 +12,14 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 
 @WebFilter(
-    filterName = "FilterSession",
-    urlPatterns = {"/home", "/userprofile", "/photo" ,"/instructor"},
-    dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE}
+        filterName = "FilterSession",
+        urlPatterns = {"/home", "/userprofile", "/photo"},
+        dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE}
 )
 public class FilterSession implements Filter {
 
@@ -33,15 +34,24 @@ public class FilterSession implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false); // Không tạo session mới nếu chưa có
-
+        Map<String, String> account = null;
         if (session == null || session.getAttribute("account") == null) {
             String sessionId = getSessionIdFromCookies(req);
             if (sessionId != null) {
                 Map<String, String> sessionData = otp.getSessionData(sessionId);
                 if (sessionData != null) {
-                    req.getSession().setAttribute("account", sessionData);
+                    session = req.getSession();
+                    session.setAttribute("account", sessionData);
                 }
+            }
+        } else {
+            account = (Map<String, String>) session.getAttribute("account");
+            String role = account.get("roles");
+            if ("ADMIN".equalsIgnoreCase(role) && req.getRequestURI().endsWith("/home")) {
+                res.sendRedirect(req.getContextPath() + "/dashboard.jsp");
+                return;
             }
         }
 
