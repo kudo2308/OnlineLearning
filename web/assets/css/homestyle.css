@@ -99,6 +99,12 @@ li .right:hover {
     text-overflow: ellipsis; /* Thêm dấu ba chấm (...) ở cuối */
 }
 
+.expert-name{
+    margin: 0px 0px;
+    color: rgb(84, 86, 102);
+    font-size: small;
+}
+
 .image-product img {
     cursor: pointer;
 }

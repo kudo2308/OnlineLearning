@@ -4,6 +4,7 @@ package controller;
 import DAO.BlogDAO;
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
+import DAO.RegistrationDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import model.Blog;
 import model.Category;
 import model.Course;
+import model.Registration;
 
 @WebServlet(name = "HomeController", urlPatterns = {"/home"})
 public class HomeController extends HttpServlet {
@@ -30,6 +32,7 @@ public class HomeController extends HttpServlet {
                 .stream()
                 .limit(9)
                 .collect(Collectors.toList());
+        
         List<Category> categories = categoryDAO.findAll();
         List<Course> courses = courseDAO.getAllCourses(0, 3);
         List<Course> recentCourses = courseDAO.getRecentCourses(9);
@@ -39,7 +42,7 @@ public class HomeController extends HttpServlet {
         request.setAttribute("courses", courses);
         request.setAttribute("recentCourses", recentCourses);
 
-        request.getRequestDispatcher("public/home.jsp").forward(request, response);
+        request.getRequestDispatcher("/public/home.jsp").forward(request, response);
     }
 
     public static void main(String[] args) {
