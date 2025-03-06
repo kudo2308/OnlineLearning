@@ -197,10 +197,6 @@ li:nth-child(6) img {
     border-color: rgb(241, 174, 46);
 }
 
-#wow p {
-    color: rgb(232, 2, 2);
-}
-
 #wow li:first-child img {
     object-position: 30% 0%;
 }
