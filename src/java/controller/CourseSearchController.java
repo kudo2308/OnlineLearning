@@ -35,15 +35,12 @@ public class CourseSearchController extends HttpServlet {
         String keyword = request.getParameter("search");
         String pageParam = request.getParameter("page");
 
-        // Nhận giá trị lọc theo giá
         String minPriceString = request.getParameter("minPrice");
         String maxPriceString = request.getParameter("maxPrice");
 
-        // Chuyển đổi minPrice và maxPrice thành kiểu số nếu có
         double minPrice = (minPriceString != null && !minPriceString.isEmpty()) ? Double.parseDouble(minPriceString) : 0;
         double maxPrice = (maxPriceString != null && !maxPriceString.isEmpty()) ? Double.parseDouble(maxPriceString) : Double.MAX_VALUE;
 
-        // Lọc theo nhiều danh mục
         String[] categoryIds = request.getParameterValues("categoryId");
 
         if (pageParam != null && !pageParam.isEmpty()) {
@@ -60,7 +57,6 @@ public class CourseSearchController extends HttpServlet {
         List<Category> categories = categoryDAO.findAll();
         List<Course> courses = courseDAO.getAllCourses(0, Integer.MAX_VALUE); // Lấy tất cả khóa học
 
-        // Lọc theo nhiều danh mục
         if (categoryIds != null && categoryIds.length > 0) {
             List<Integer> selectedCategories = Arrays.stream(categoryIds)
                     .map(Integer::parseInt)
@@ -70,37 +66,32 @@ public class CourseSearchController extends HttpServlet {
                     .filter(course -> selectedCategories.contains(course.getCategoryID()))
                     .collect(Collectors.toList());
         }
-        // Lọc theo từ khóa
-        
+
         if (keyword != null && !keyword.trim().isEmpty()) {
             courses = courses.stream()
                     .filter(course -> course.getTitle().toLowerCase().contains(keyword.toLowerCase()))
                     .collect(Collectors.toList());
         }
 
-        // Lọc theo giá
         courses = courses.stream()
                 .filter(course -> course.getPrice() >= minPrice && course.getPrice() <= maxPrice)
                 .collect(Collectors.toList());
 
-        // Tổng số khóa học sau khi lọc
         int totalCourses = courses.size();
         int totalPages = (int) Math.ceil((double) totalCourses / recordsPerPage);
 
-        // Phân trang danh sách sau khi lọc
         int startIndex = (page - 1) * recordsPerPage;
         int endIndex = Math.min(startIndex + recordsPerPage, totalCourses);
         List<Course> paginatedCourses = courses.subList(startIndex, endIndex);
 
-        // Truyền dữ liệu về JSP
         request.setAttribute("categories", categories);
         request.setAttribute("courses", paginatedCourses);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("currentPage", page);
         request.setAttribute("searchKeyword", keyword);
-        request.setAttribute("selectedCategories", categoryIds); // Giữ các danh mục được chọn
-        request.setAttribute("minPrice", minPrice); // Truyền minPrice
-        request.setAttribute("maxPrice", maxPrice); // Truyền maxPrice
+        request.setAttribute("selectedCategories", categoryIds); 
+        request.setAttribute("minPrice", minPrice); 
+        request.setAttribute("maxPrice", maxPrice); 
 
         request.getRequestDispatcher("/views/course/Courses.jsp").forward(request, response);
     }
