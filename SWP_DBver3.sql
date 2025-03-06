@@ -41,28 +41,29 @@ CREATE TABLE Category (
 );
 
 -- Course table
-CREATE TABLE Course (
-    CourseID INT IDENTITY(1,1) PRIMARY KEY,
-    Title NVARCHAR(255) NOT NULL,
-    Description NTEXT,
-    ExpertID INT,  -- ID of the instructor/expert
-    Price Float DEFAULT 0.00,
-    CategoryID INT,
-    ImageUrl NVARCHAR(255),
-    TotalLesson INT DEFAULT 0,
-    Status BIT DEFAULT 1,
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (ExpertID) REFERENCES Account(UserID),
-    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
-);
-
-CREATE TABLE Outcome(
-	CourseID INT PRIMARY KEY,
-	Content NVARCHAR(255) NOT NULL,
-	FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
-);
-
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Course](
+	[CourseID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](255) NOT NULL,
+	[Description] [ntext] NULL,
+	[ExpertID] [int] NULL,
+	[Price] [float] NULL,
+	[CategoryID] [int] NULL,
+	[ImageUrl] [nvarchar](255) NULL,
+	[TotalLesson] [int] NULL,
+	[Status] [bit] NULL,
+	[CreatedAt] [datetime] NULL,
+	[UpdatedAt] [datetime] NULL,
+	[Outcome] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[CourseID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
 CREATE TABLE Cart (
     CartID INT IDENTITY(1,1) PRIMARY KEY,
     AccountID INT FOREIGN KEY REFERENCES Account(UserID)
@@ -109,7 +110,7 @@ CREATE TABLE Lesson (
     LessonID INT IDENTITY(1,1) PRIMARY KEY,
     Title NVARCHAR(255) NOT NULL,
     Content NTEXT,
-    LessonType NVARCHAR(50) CHECK (LessonType IN ('video', 'document', 'file')) NOT NULL,
+    LessonType NVARCHAR(50) CHECK (LessonType IN ('Basic', 'Advanced')) NOT NULL,
     VideoUrl NVARCHAR(MAX) NULL,
     DocumentUrl NVARCHAR(MAX) NULL,
     Duration INT, -- in minutes
@@ -219,6 +220,58 @@ CREATE TABLE SocialLink (
 	Private NVARCHAR(20) DEFAULT 'public' CHECK (Private IN ('public', 'block-course', 'block-inscrits', 'block-view')),
     FOREIGN KEY (UserID) REFERENCES Account(UserID)
 );
+
+CREATE TABLE [Order] (
+    OrderID INT IDENTITY(1,1) PRIMARY KEY,
+    AccountID INT NOT NULL FOREIGN KEY REFERENCES Account(UserID),
+    TotalAmount DECIMAL(10,2) NOT NULL,
+    PaymentMethod NVARCHAR(50) DEFAULT 'VNPay',
+    PaymentStatus NVARCHAR(20) DEFAULT 'pending' CHECK (PaymentStatus IN ('pending', 'paid', 'failed', 'refunded')),
+    VNPayTransactionID NVARCHAR(255) NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE OrderItem (
+    OrderItemID INT IDENTITY(1,1) PRIMARY KEY,
+    OrderID INT NOT NULL FOREIGN KEY REFERENCES [Order](OrderID),
+    CourseID INT NOT NULL FOREIGN KEY REFERENCES Course(CourseID),
+    ExpertID INT NOT NULL FOREIGN KEY REFERENCES Account(UserID),
+    OriginalPrice DECIMAL(10,2) NOT NULL,
+    CommissionRate DECIMAL(5,2) NOT NULL, -- Ví d?: 0.2 cho 20%
+    FinalAmount DECIMAL(10,2) NOT NULL, -- S? ti?n expert nh?n ???c
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE [Transaction] (
+    TransactionID INT IDENTITY(1,1) PRIMARY KEY,
+    OrderID INT NULL FOREIGN KEY REFERENCES [Order](OrderID),
+    ExpertID INT NULL FOREIGN KEY REFERENCES Account(UserID),
+    Amount DECIMAL(10,2) NOT NULL,
+    TransactionType NVARCHAR(50) CHECK (TransactionType IN ('payment', 'payout', 'commission', 'refund')),
+    Description NVARCHAR(255),
+    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'completed', 'failed')),
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE ExpertPayout (
+    PayoutID INT IDENTITY(1,1) PRIMARY KEY,
+    ExpertID INT NOT NULL FOREIGN KEY REFERENCES Account(UserID),
+    Amount DECIMAL(10,2) NOT NULL,
+    BankAccountNumber NVARCHAR(255) NOT NULL,
+    BankName NVARCHAR(255) NOT NULL,
+    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'processed', 'failed')),
+    RequestedAt DATETIME DEFAULT GETDATE(),
+    ProcessedAt DATETIME NULL
+);
+CREATE TABLE ExpertBankInfo (
+    ExpertID INT PRIMARY KEY,
+    BankAccountNumber NVARCHAR(255) NOT NULL,
+    BankName NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (ExpertID) REFERENCES Account(UserID)
+);
 -- Insert roles
 INSERT INTO Role (RoleName) VALUES
 ('Admin'),
@@ -246,11 +299,15 @@ INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image,
 VALUES
 ('John Expert', 'Expert account', 'VmszaVktKzZlKmRlJHMuZXhwZXJ0MTIz', 'expert1@onlinelearning.com', 2, '1985-05-12', '/assets/images/avatar/pic2.jpg', 1);
 
--- Insert a sample student account (password: student123)
+-- Insert a sample student account (password: student)
 INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image, Status) 
 VALUES
 ('Jane Student', 'Student account', 'VmszaVktKzZlKmRlJHMuc3R1ZGVudA==', 'student1@onlinelearning.com', 3, '1995-11-23', '/assets/images/avatar/pic1.jpg', 1);
 
+INSERT INTO SocialLink (UserID, Xspace, Youtube, Facebook, Linkedin, Private) VALUES
+(1, 'admin', 'admin', 'admin', 'admin', 'public'),
+(2, 'expert1', 'expert1', 'expert1', 'expert1', 'public'),
+(3, 'student1', 'student1', 'student1', 'student1', 'public');
 
 
 -- Insert sample course
@@ -439,34 +496,42 @@ VALUES
 -- Insert statements for Lesson
 INSERT INTO Lesson (Title, Content, LessonType, VideoUrl, DocumentUrl, Duration, OrderNumber, CourseID, Status, CreatedAt)
 VALUES
-('Introduction to Java', 'Learn the basics of Java programming.', 'video', '/videos/java-intro.mp4', NULL, 25, 1, (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 1, GETDATE()),
-('Object-Oriented Programming in Java', 'Understand OOP principles in Java.', 'document', NULL, '/docs/java-oop.pdf', 20, 2, (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 1, GETDATE()),
-('Multithreading Basics', 'Learn about threads and concurrency in Java.', 'video', '/videos/java-multithreading.mp4', NULL, 28, 1, (SELECT CourseID FROM Course WHERE Title = 'Advanced Java Programming'), 1, GETDATE()),
-('Design Patterns Overview', 'Introduction to common design patterns.', 'document', NULL, '/docs/java-design-patterns.pdf', 22, 2, (SELECT CourseID FROM Course WHERE Title = 'Advanced Java Programming'), 1, GETDATE()),
-('HTML & CSS Basics', 'Learn HTML structure and CSS styling.', 'video', '/videos/html-css-intro.mp4', NULL, 27, 1, (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 1, GETDATE()),
-('JavaScript Introduction', 'Fundamentals of JavaScript programming.', 'document', NULL, '/docs/js-intro.pdf', 25, 2, (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 1, GETDATE()),
-('SQL Fundamentals', 'Learn SQL syntax and queries.', 'video', '/videos/sql-fundamentals.mp4', NULL, 26, 1, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'), 1, GETDATE()),
-('Normalization & Indexing', 'Understanding database optimization.', 'file', NULL, '/files/advanced_sql_queries.pdf', 23, 2, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'), 1, GETDATE()),
-('Networking Basics', 'Learn about networking models and protocols.', 'video', '/videos/networking-basics.mp4', NULL, 24, 1, (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'), 1, GETDATE()),
-('Network Security Essentials', 'Basic security practices in networking.', 'document', NULL, '/docs/network-security.pdf', 26, 2, (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'), 1, GETDATE()),
-('Getting Started with Flutter', 'Setup Flutter and first app.', 'video', '/videos/flutter-intro.mp4', NULL, 27, 1, (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'), 1, GETDATE()),
-('State Management in Flutter', 'Managing app states in Flutter.', 'document', NULL, '/docs/flutter-state.pdf', 25, 2, (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'), 1, GETDATE()),
-('Python for Data Science', 'Introduction to Python for analysis.', 'video', '/videos/python-datascience.mp4', NULL, 28, 1, (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 1, GETDATE()),
-('Data Visualization with Pandas', 'Using Pandas for data analysis.', 'document', NULL, '/docs/pandas-visualization.pdf', 26, 2, (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 1, GETDATE()),
-('Cybersecurity Overview', 'Basic principles of cybersecurity.', 'video', '/videos/cybersecurity-overview.mp4', NULL, 27, 1, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cybersecurity'), 1, GETDATE()),
-('Encryption Methods', 'Introduction to encryption and cryptography.', 'document', NULL, '/docs/encryption-methods.pdf', 25, 2, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cybersecurity'), 1, GETDATE()),
-('What is DevOps?', 'Understanding DevOps principles.', 'video', '/videos/devops-intro.mp4', NULL, 28, 1, (SELECT CourseID FROM Course WHERE Title = 'Building Modern DevOps Pipelines'), 1, GETDATE()),
-('Continuous Integration', 'Basics of CI/CD pipelines.', 'file', NULL, '/files/cloud_deployment_strategies.pdf', 26, 2, (SELECT CourseID FROM Course WHERE Title = 'Building Modern DevOps Pipelines'), 1, GETDATE()),
-('Java Data Types', 'Understanding primitive and non-primitive data types in Java.', 'video', '/videos/java-data-types.mp4', '', 30, 3, 1, 1, GETDATE()),
-('Java Control Statements', 'Learn about if-else, loops, and switch statements in Java.', 'document', '', '/docs/java-control-statements.pdf', 28, 4, 1, 1, GETDATE()),
-('Java Methods and Functions', 'How to define and use methods in Java.', 'video', '/videos/java-methods.mp4', '', 32, 5, 1, 1, GETDATE()),
-('Java Arrays', 'Introduction to arrays and array operations in Java.', 'document', '', '/docs/java-arrays.pdf', 26, 6, 1, 1, GETDATE()),
-('Java Exception Handling', 'Learn how to handle exceptions in Java.', 'video', '/videos/java-exceptions.mp4', '', 34, 7, 1, 1, GETDATE()),
-('Java Collections Framework', 'Introduction to ArrayList, HashMap, and other collections.', 'document', '', '/docs/java-collections.pdf', 30, 8, 1, 1, GETDATE()),
-('File Handling in Java', 'Reading and writing files using Java IO and NIO.', 'video', '/videos/java-file-handling.mp4', '', 33, 9, 1, 1, GETDATE()),
-('Multithreading in Java', 'Learn how to use threads and concurrency in Java.', 'document', '', '/docs/java-multithreading.pdf', 29, 10, 1, 1, GETDATE()),
-('Lambda Expressions in Java', 'Understanding functional programming in Java.', 'video', '/videos/java-lambda.mp4', '', 35, 11, 1, 1, GETDATE()),
-('Spring Boot Basics', 'Introduction to Spring Boot framework.', 'document', '', '/docs/java-spring-boot.pdf', 27, 12, 1, 1, GETDATE());
+('Introduction to Java', 'Learn the basics of Java programming.', 'Basic', '/videos/java-intro.mp4', NULL, 25, 1, (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 1, GETDATE()),
+('Object-Oriented Programming in Java', 'Understand OOP principles in Java.', 'Advanced', NULL, '/docs/java-oop.pdf', 20, 2, (SELECT CourseID FROM Course WHERE Title = 'Java Programming Fundamentals'), 1, GETDATE()),
+('Multithreading Basics', 'Learn about threads and concurrency in Java.', 'Basic', '/videos/java-multithreading.mp4', NULL, 28, 1, (SELECT CourseID FROM Course WHERE Title = 'Advanced Java Programming'), 1, GETDATE()),
+('Design Patterns Overview', 'Introduction to common design patterns.', 'Advanced', NULL, '/docs/java-design-patterns.pdf', 22, 2, (SELECT CourseID FROM Course WHERE Title = 'Advanced Java Programming'), 1, GETDATE()),
+('HTML & CSS Basics', 'Learn HTML structure and CSS styling.', 'Basic', '/videos/html-css-intro.mp4', NULL, 27, 1, (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 1, GETDATE()),
+('JavaScript Introduction', 'Fundamentals of JavaScript programming.', 'Advanced', NULL, '/docs/js-intro.pdf', 25, 2, (SELECT CourseID FROM Course WHERE Title = 'Full Stack Web Development'), 1, GETDATE()),
+('SQL Fundamentals', 'Learn SQL syntax and queries.', 'Basic', '/videos/sql-fundamentals.mp4', NULL, 26, 1, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'), 1, GETDATE()),
+('Normalization & Indexing', 'Understanding database optimization.', 'Advanced', NULL, '/files/advanced_sql_queries.pdf', 23, 2, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Databases and SQL'), 1, GETDATE()),
+('Networking Basics', 'Learn about networking models and protocols.', 'Basic', '/videos/networking-basics.mp4', NULL, 24, 1, (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'), 1, GETDATE()),
+('Network Security Essentials', 'Basic security practices in networking.', 'Advanced', NULL, '/docs/network-security.pdf', 26, 2, (SELECT CourseID FROM Course WHERE Title = 'Networking Fundamentals'), 1, GETDATE()),
+('Getting Started with Flutter', 'Setup Flutter and first app.', 'Basic', '/videos/flutter-intro.mp4', NULL, 27, 1, (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'), 1, GETDATE()),
+('State Management in Flutter', 'Managing app states in Flutter.', 'Advanced', NULL, '/docs/flutter-state.pdf', 25, 2, (SELECT CourseID FROM Course WHERE Title = 'Mobile App Development with Flutter'), 1, GETDATE()),
+('Python for Data Science', 'Introduction to Python for analysis.', 'Basic', '/videos/python-datascience.mp4', NULL, 28, 1, (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 1, GETDATE()),
+('Data Visualization with Pandas', 'Using Pandas for data analysis.', 'Advanced', NULL, '/docs/pandas-visualization.pdf', 26, 2, (SELECT CourseID FROM Course WHERE Title = 'Data Science with Python'), 1, GETDATE()),
+('Cybersecurity Overview', 'Basic principles of cybersecurity.', 'Basic', '/videos/cybersecurity-overview.mp4', NULL, 27, 1, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cybersecurity'), 1, GETDATE()),
+('Encryption Methods', 'Introduction to encryption and cryptography.', 'Advanced', NULL, '/docs/encryption-methods.pdf', 25, 2, (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cybersecurity'), 1, GETDATE()),
+('What is DevOps?', 'Understanding DevOps principles.', 'Basic', '/videos/devops-intro.mp4', NULL, 28, 1, (SELECT CourseID FROM Course WHERE Title = 'Building Modern DevOps Pipelines'), 1, GETDATE()),
+('Continuous Integration', 'Basics of CI/CD pipelines.', 'Advanced', NULL, '/files/cloud_deployment_strategies.pdf', 26, 2, (SELECT CourseID FROM Course WHERE Title = 'Building Modern DevOps Pipelines'), 1, GETDATE()),
+('Java Data Types', 'Understanding primitive and non-primitive data types in Java.', 'Basic', '/videos/java-data-types.mp4', '', 30, 3, 1, 1, GETDATE()),
+('Java Control Statements', 'Learn about if-else, loops, and switch statements in Java.', 'Advanced', '', '/docs/java-control-statements.pdf', 28, 4, 1, 1, GETDATE()),
+('Java Methods and Functions', 'How to define and use methods in Java.', 'Basic', '/videos/java-methods.mp4', '', 32, 5, 1, 1, GETDATE()),
+('Java Arrays', 'Introduction to arrays and array operations in Java.', 'Advanced', '', '/docs/java-arrays.pdf', 26, 6, 1, 1, GETDATE()),
+('Java Exception Handling', 'Learn how to handle exceptions in Java.', 'Basic', '/videos/java-exceptions.mp4', '', 34, 7, 1, 1, GETDATE()),
+('Java Collections Framework', 'Introduction to ArrayList, HashMap, and other collections.', 'Advanced', '', '/docs/java-collections.pdf', 30, 8, 1, 1, GETDATE()),
+('File Handling in Java', 'Reading and writing files using Java IO and NIO.', 'Basic', '/videos/java-file-handling.mp4', '', 33, 9, 1, 1, GETDATE()),
+('Multithreading in Java', 'Learn how to use threads and concurrency in Java.', 'Advanced', '', '/docs/java-multithreading.pdf', 29, 10, 1, 1, GETDATE()),
+('Lambda Expressions in Java', 'Understanding functional programming in Java.', 'Basic', '/videos/java-lambda.mp4', '', 35, 11, 1, 1, GETDATE()),
+('Spring Boot Basics', 'Introduction to Spring Boot framework.', 'Advanced', '', '/docs/java-spring-boot.pdf', 27, 12, 1, 1, GETDATE());
+SET IDENTITY_INSERT [dbo].[Packages] ON 
+INSERT [dbo].[Packages] ([PackageID], [CourseID], [Name], [Description], [createdAt], [updatedAt], [Status]) VALUES (1, 1, N'Java - Basic', N'Java Programming - Basic', CAST(N'2025-02-20T10:39:04.837' AS DateTime), CAST(N'2025-02-20T10:39:04.837' AS DateTime), 0)
+INSERT [dbo].[Packages] ([PackageID], [CourseID], [Name], [Description], [createdAt], [updatedAt], [Status]) VALUES (2, 1, N'Java - Advanced', N'Java Programming - Advanced', CAST(N'2025-02-20T10:39:24.530' AS DateTime), CAST(N'2025-02-20T10:39:24.530' AS DateTime), 0)
+SET IDENTITY_INSERT [dbo].[Packages] OFF
+
+SET IDENTITY_INSERT [dbo].[Question] ON 
+
+
 -- Insert quizzes for courses
 INSERT INTO Quiz (Name, Description, Duration, PassRate, TotalQuestion, CourseID, Status, CreatedAt) 
 VALUES 
@@ -486,22 +551,17 @@ VALUES
      (SELECT CourseID FROM Course WHERE Title = 'Introduction to Cloud Computing'), 1, GETDATE());
 
 -- Insert questions for each quiz
-INSERT INTO Question (Content, PointPerQuestion, QuizID, Status, CreatedAt) 
-VALUES 
-    ('What is the default value of an int variable in Java?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'Java Basics Quiz'), 1, GETDATE()),
-    ('Which React hook is used for managing state in a functional component?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'React Development Quiz'), 1, GETDATE()),
-    ('What SQL clause is used to filter records based on a condition?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'SQL Proficiency Quiz'), 1, GETDATE()),
-    ('What is the primary function of a firewall in cybersecurity?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'Cybersecurity Basics Quiz'), 1, GETDATE()),
-    ('Which keyword is used to define a function in Python?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'Python Fundamentals Quiz'), 1, GETDATE()),
-    ('What is supervised learning in machine learning?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'Machine Learning Quiz'), 1, GETDATE()),
-    ('What does IaaS stand for in cloud computing?', 1, 
-     (SELECT QuizID FROM Quiz WHERE Name = 'Cloud Computing Quiz'), 1, GETDATE());
+SET IDENTITY_INSERT [dbo].[Question] ON 
+
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (1, N'What is the default value of an int variable in Java?', 1, 1, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (2, N'Which React hook is used for managing state in a functional component?', 1, 2, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (3, N'What SQL clause is used to filter records based on a condition?', 1, 3, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (4, N'What is the primary function of a firewall in cybersecurity?', 1, 4, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (5, N'Which keyword is used to define a function in Python?', 1, 5, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (6, N'What is supervised learning in machine learning?', 1, 6, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+INSERT [dbo].[Question] ([QuestionID], [Content], [PointPerQuestion], [QuizID], [Status], [CreatedAt], [UpdatedAt]) VALUES (7, N'What does IaaS stand for in cloud computing?', 1, 7, 1, CAST(N'2025-03-02T23:26:49.317' AS DateTime), CAST(N'2025-03-02T23:26:49.317' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Question] OFF
+GO
 
 -- Insert answers for each question (4 options per question, one correct answer)
 INSERT INTO Answer (content, isCorrect, Explanation, questionID) 

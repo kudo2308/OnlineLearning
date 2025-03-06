@@ -17,6 +17,11 @@ public class SocialLink {
         this.checkPrivate = checkPrivate;
     }
 
+    @Override
+    public String toString() {
+        return "SocialLink{" + "userId=" + userId + ", xspace=" + xspace + ", youtube=" + youtube + ", facebook=" + facebook + ", linkedin=" + linkedin + ", checkPrivate=" + checkPrivate + '}';
+    }
+
     public SocialLink() {
     }
     

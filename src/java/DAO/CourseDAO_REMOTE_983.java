@@ -136,7 +136,8 @@ public class CourseDAO extends DBContext {
 
         Category category = new Category(categoryId, categoryName);
 
-        return new Course(courseId, title, description, userId, price, roleId, categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, roleId, expert, category);
+        return new Course(courseId, title, description, userId, 
+                price, roleId, categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, roleId, expert, category);
     }
 
     public List<Course> findAll() {
