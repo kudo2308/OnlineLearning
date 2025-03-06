@@ -33,6 +33,7 @@ public class Course {
     private Timestamp updatedAt;
     
     // Navigation properties
+    private int register;
     private Account expert;
     private Category category;
     

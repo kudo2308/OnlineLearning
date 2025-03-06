@@ -124,27 +124,6 @@ public class RegistrationDAO extends DBContext {
         return null;
     }
 
-    public static void main(String[] args) {
-        try {
-            RegistrationDAO registrationDAO = new RegistrationDAO();
-            List<Registration> registrations = registrationDAO.getAllRegistrations();
-            registrationDAO.updateStatus(1, "completed");
-
-            System.out.println("Cập nhật trạng thái thành công!");
-            System.out.println("Danh sách đăng ký khóa học:");
-            for (Registration reg : registrations) {
-                System.out.println("Registration ID: " + reg.getRegistrationID());
-                System.out.println("User ID: " + reg.getUserID());
-                System.out.println("Course Title: " + (reg.getCourse() != null ? reg.getCourse().getTitle() : "Unknown"));
-                System.out.println("Price: " + reg.getPrice());
-                System.out.println("Status: " + reg.getStatus());
-                System.out.println("----------------------");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public List<Registration> searchByFullName(String fullname) {
         List<Registration> registrations = new ArrayList<>();
 
@@ -440,6 +419,34 @@ public class RegistrationDAO extends DBContext {
         registration.setCourse(course);
 
         return registration;
+    }
+
+    public int getNumberOfRegistrationByCourseId(int courseId) {
+        String sql = "SELECT COUNT(r.RegistrationID) as NumOfRegister FROM Registration r "
+                + "left join Course c on r.CourseID = c. CourseID WHERE c.CourseID = ?";
+        int NumOfRegister = 0;
+        try (Connection connection = new DBContext().getConnection()) {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, courseId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                NumOfRegister = rs.getInt("NumOfRegister");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return NumOfRegister;
+    }
+
+    public static void main(String[] args) {
+        try {
+            RegistrationDAO registrationDAO = new RegistrationDAO();
+            int numofreg = 0;
+            numofreg = registrationDAO.getNumberOfRegistrationByCourseId(1);
+            System.out.println(numofreg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

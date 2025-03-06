@@ -113,7 +113,7 @@ public class CartController extends HttpServlet {
         LoginDAO dao = new LoginDAO();
         Account acc = dao.getAccountByUserID(userID);
 
-        int courseId = Integer.parseInt(request.getParameter("id"));
+        int courseId = Integer.parseInt(request.getParameter("courseId"));
         String action = request.getParameter("action");
 
         CourseDAO courseDAO = new CourseDAO();
@@ -131,8 +131,17 @@ public class CartController extends HttpServlet {
                 if (cart.getItems() != null) {
                     isExist = cart.getItems().stream().anyMatch(c -> c.getCourse().getCourseID() == courseId);
                 }
-
+                if (isExist) {
+                    for (CartItem item : cart.getItems()) {
+                        if (item.getCourse().getCourseID() == courseId) {
+                            request.setAttribute("isExist", 1);
+                            break;
+                        }
+                    }
+                } else {
                     cartDAO.add(courseDAO.getCourseById(courseId), cart);
+                }
+
             }
 
             case "delete" -> {

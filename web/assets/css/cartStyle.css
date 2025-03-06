@@ -1,86 +1,118 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
-/* 
-    Created on : Mar 3, 2025, 11:14:45 PM
-    Author     : ASUS
-*/
-
-/* Global Styles */
+/* ==================== Global Styles ==================== */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
 }
 
-/* Container */
+/* ==================== Container ==================== */
 .container {
     background: #fff;
-    width: 70%;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 75%;
+    min-height: 630px;
+    min-width: 1280px;
+    padding: 25px;
+    margin: 30px auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.cart-container{
-    display: flex;
-    justify-content:space-around;
-}
-
-/* Shopping Cart Header */
+/* ==================== Shopping Cart Header ==================== */
 h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #333;
 }
 
 .course-count {
-    font-size: 16px;
+    font-size: 18px;
     color: #777;
+    margin-bottom: 20px;
 }
 
-/* Course Items */
+.cart-des{
+    width: 60%;
+}
+
+/* ==================== Cart Layout ==================== */
+.cart-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+/* ==================== Course Items ==================== */
 .cart-item {
     display: flex;
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid #ddd;
     position: relative;
+    transition: all 0.3s ease-in-out;
+    border-top: 1px solid #ddd; 
+    width: 90%;
 }
 
+.cart-item:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.02);
+}
+
+/* ==================== Course Image ==================== */
 .cart-item img {
-    width: 100px;
-    height: 70px;
-    border-radius: 5px;
-    margin-right: 15px;
+    width: 110px;
+    height: 80px;
+    border-radius: 8px;
+    margin-right: 20px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* ==================== Course Details ==================== */
 .course-details {
     flex: 1;
 }
 
 .course-details h3 {
-    font-size: 18px;
+    font-size: 20px;
+    color: #222;
     margin: 0;
+    font-weight: 600;
 }
 
 .course-details p {
-    font-size: 14px;
-    color: #555;
+    font-size: 16px;
+    color: #666;
     margin: 5px 0;
 }
 
-/* Buttons */
+/* ==================== Price Styling ==================== */
+.price {
+    text-align: right;
+    margin-left: 30px;
+}
+
+.discounted {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.original {
+    text-decoration: line-through;
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* ==================== Buttons ==================== */
 button {
     border: none;
-    padding: 6px 10px;
+    padding: 10px 15px;
     cursor: pointer;
     margin-right: 5px;
-    border-radius: 5px;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
 }
 
 .action-box {
@@ -88,9 +120,17 @@ button {
     color: white;
 }
 
+.action-box:hover {
+    background-color: #732d91;
+}
+
 .remove {
     background-color: #e74c3c;
     color: white;
+}
+
+.remove:hover {
+    background-color: #c0392b;
 }
 
 .save, .wishlist {
@@ -98,47 +138,92 @@ button {
     color: white;
 }
 
-/* Price Styling */
-.price {
-    text-align: right;
-    margin-left: 30px;
+.save:hover, .wishlist:hover {
+    background-color: #2980b9;
 }
 
-.discounted {
-    font-size: 18px;
-    font-weight: bold;
-    color: black;
-}
-
-.original {
-    text-decoration: line-through;
-    color: #777;
-    font-size: 14px;
-}
-
-/* Checkout Section */
+/* ==================== Checkout Section ==================== */
 .checkout {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f4f4f4;
-    border-radius: 8px;
-    margin-left: 50px;
-    max-height: 300px;
+    background: #fff;
+    padding: 20px;
+    margin-right: 30px;
+    border-radius: 10px;
+    width: 70%;
+    height: 330px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 30px;
+}
+
+.checkout-out{
+    width: 35%;
 }
 
 .total {
-    font-size: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
 }
 
 .checkout-btn {
     background-color: #8e44ad;
     color: white;
-    padding: 10px;
+    padding: 12px;
     width: 100%;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+}
+
+.checkout-btn:hover {
+    background-color: #732d91;
+    transform: scale(1.05);
+}
+
+/* ==================== Coupon Section ==================== */
+.coupon {
+    margin-top: 20px;
+    padding: 15px;
+    height: 150px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.coupon p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.coupon input {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+.coupon .apply-btn {
+    background-color: #2ecc71;
+    color: white;
+    padding: 10px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
     margin-top: 10px;
 }
 
-/* Checkbox Styling */
+.coupon .apply-btn:hover {
+    background-color: #27ae60;
+    transform: scale(1.05);
+}
+
+/* ==================== Checkbox Styling ==================== */
 .checkbox-container {
     position: absolute;
     bottom: 10px;
@@ -154,5 +239,11 @@ button {
     width: 100%;
     height: 100%;
     cursor: pointer;
+}
 
+.course-details a{
+    text-decoration: none;
+    color: black;
+    font-size: large;
+    font-weight: bold;
 }

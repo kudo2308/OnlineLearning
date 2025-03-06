@@ -17,6 +17,7 @@ import model.Course;
 import model.Account;
 import model.Category;
 import model.Feedback;
+import model.Registration;
 import model.Role;
 
 public class CourseDAO extends DBContext {
@@ -32,9 +33,10 @@ public class CourseDAO extends DBContext {
     public static void main(String[] args) {
         CourseDAO courseDAO = new CourseDAO();
 
-        Course c = courseDAO.findCourseById(1);
-
-        System.out.println(c);
+        List<Course> list = courseDAO.getRecentCourses(9);
+        for (Course course : list) {
+            System.out.println(course.getRegister());
+        }
 
     }
 
@@ -66,7 +68,7 @@ public class CourseDAO extends DBContext {
 
     }
 
-     public int findTotalRecord() {
+    public int findTotalRecord() {
         String sql = "select count(c.CourseID) from Course c";
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
@@ -111,8 +113,7 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-
-     private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
+    private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
 
         int courseId = rs.getInt("CourseID");
         String title = rs.getString("Title");
@@ -135,7 +136,7 @@ public class CourseDAO extends DBContext {
 
         Category category = new Category(categoryId, categoryName);
 
-        return new Course(courseId, title, description, userId, price, roleId, 
+        return new Course(courseId, title, description, userId, price, roleId,
                 categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, expert, category);
     }
 
@@ -209,7 +210,7 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-     public List<Course> searchCourseByName(int page, String nameRequest) {
+    public List<Course> searchCourseByName(int page, String nameRequest) {
 
         String sql = "select * from Course co\n"
                 + "join Account a\n"
@@ -269,7 +270,7 @@ public class CourseDAO extends DBContext {
         String sql = "UPDATE Course SET Title = ?, Description = ?, ExpertID = ?, CategoryID = ?, ImageUrl = ?, TotalLesson = ?, Status = ?, Price = ?, UpdatedAt = GETDATE() WHERE CourseID = ?";
 
         try (Connection connection = new DBContext().getConnection()) {
-            
+
             ps = connection.prepareStatement(sql);
 
             ps.setString(1, course.getTitle());
@@ -499,23 +500,30 @@ public class CourseDAO extends DBContext {
     public List<Course> getRecentCourses(int limit) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
-                    SELECT TOP (?) c.[CourseID]
-                          ,c.[Title]
-                          ,c.[Description]
-                          ,c.[Price]
-                          ,c.[ExpertID]
-                          ,c.[CategoryID]
-                          ,c.[ImageUrl]
-                          ,c.[TotalLesson]
-                          ,c.[Status]
-                          ,c.[CreatedAt]
-                          ,c.[UpdatedAt]
-                          ,a.FullName as ExpertName
-                          ,cat.Name as CategoryName
+                    SELECT TOP (?)
+                        c.[CourseID],
+                        c.[Title],
+                        c.[Description],
+                        c.[Price],
+                        c.[ExpertID],
+                        c.[CategoryID],
+                        c.[ImageUrl],
+                        c.[TotalLesson],
+                        c.[Status],
+                        c.[CreatedAt],
+                        c.[UpdatedAt],
+                        a.FullName AS ExpertName,
+                        cat.Name AS CategoryName,
+                        COUNT(r.RegistrationID) AS NumOfRegister
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
+                    LEFT JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
                     WHERE c.[Status] = 1
+                    GROUP BY 
+                        c.[CourseID], c.[Title], c.[Description], c.[Price], c.[ExpertID], 
+                        c.[CategoryID], c.[ImageUrl], c.[TotalLesson], c.[Status], 
+                        c.[CreatedAt], c.[UpdatedAt], a.FullName, cat.Name
                     ORDER BY c.[CreatedAt] DESC;
                     """;
         try (Connection connection = new DBContext().getConnection()) {
@@ -535,7 +543,8 @@ public class CourseDAO extends DBContext {
                 course.setStatus(rs.getBoolean("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-
+                course.setRegister(rs.getInt("NumOfRegister"));
+                
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);

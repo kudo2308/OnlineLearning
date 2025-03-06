@@ -3,6 +3,7 @@ package controller;
 import DAO.CourseDAO;
 import DAO.LessonDAO;
 import DAO.QuizDAO;
+import DAO.RegistrationDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,27 +30,27 @@ public class CourseDetailController extends HttpServlet {
                 request.getRequestDispatcher("/public/404.jsp").forward(request, response);
             }
         }
-        // Get course details
         CourseDAO courseDAO = new CourseDAO();
         Course course = courseDAO.getCourseById(courseId);
-
-        // Get lessons for this course
+        RegistrationDAO regisDAO = new RegistrationDAO();
         LessonDAO lessonDAO = new LessonDAO();
+
+        int register = regisDAO.getNumberOfRegistrationByCourseId(courseId);
         int countLesson = lessonDAO.countLessonsbyCourseId(courseId);
         List<Lesson> lessonList = lessonDAO.getAllLessonByCourseId(courseId);
         int duration = 0;
         for (Lesson lesson : lessonList) {
             duration += lesson.getDuration();
         }
-        String durationHour = duration/60 + "." + duration%60/6;
-        //Get quiz for this course
+        String durationHour = duration / 60 + "." + duration % 60 / 6;
+
         QuizDAO quizDAO = new QuizDAO();
         int countQuiz = quizDAO.countQuizByCourseId(courseId);
 
-        // Set attributes for the JSP
         request.setAttribute("duration", duration);
         request.setAttribute("durationHour", durationHour);
         request.setAttribute("lessonList", lessonList);
+        request.setAttribute("regisNum", register);
         request.setAttribute("course", course);
         request.setAttribute("quiz", countQuiz);
         request.setAttribute("lessonNumber", countLesson);

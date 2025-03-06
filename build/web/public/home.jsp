@@ -99,19 +99,20 @@
                                 <img
                                     class="image-product"
                                     src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}">
-                                <p>
-                                    <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
-                                        ${recentCourses.title}
-                                    </a> 
+                                <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
+                                    ${recentCourses.title}
+                                </a>
+                                <br>
+                                <a href="#" class="expert-name">${recentCourses.expert.fullName}</a>
                                 <p class="des-course">${recentCourses.description}$</p>
-                                <span>${recentCourses.price}đ</span>
+                                <span>${recentCourses.price}đ (${recentCourses.register})</span>
 
                                 </p>
                             </li>
                         </c:forEach>
                     </c:if>
                     <c:if test="${empty recentCourses}">
-                        <li>Hiện chưa có sản phẩm mới.</li>
+                        <li>There are currently no courses available.</li>
                         </c:if>
                 </ul>
             </div>
