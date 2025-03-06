@@ -84,8 +84,9 @@ public class Logingooglehandler extends HttpServlet {
         newSessionCookie.setMaxAge(60 * 60 * 24);
         newSessionCookie.setHttpOnly(true);
         response.addCookie(newSessionCookie);
-        otp.createSesssionIdApprove(sessionId, dao.getLastUserID() + 1, acc.getName(), "", acc.getPicture(), "Student", "free" ,acc.getEmail()); // Mặc định Student
+        otp.createSesssionIdApprove(sessionId,dao.getLastUserID() + 1, acc.getName(), "", acc.getPicture(), "Student", "free" ,acc.getEmail()); // Mặc định Student
         dao.createAccountGg(acc.getName(), acc.getEmail(), acc.getPicture(), passHash, "Student");
+        dao.createSocialLinks(dao.getLastUserID());
         response.sendRedirect("home");
     }
 

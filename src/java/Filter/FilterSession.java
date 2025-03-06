@@ -63,9 +63,10 @@ public class FilterSession implements Filter {
     }
 
     private String getSessionIdFromCookies(HttpServletRequest req) {
+        OTP otp = new OTP();
         if (req.getCookies() != null) {
             for (Cookie cookie : req.getCookies()) {
-                if ("SessionID_User".equals(cookie.getName())) {
+                if ("SessionID_User".equals(cookie.getName()) && otp.checkSessionUserExists(cookie.getValue())) {
                     return cookie.getValue();
                 }
             }
