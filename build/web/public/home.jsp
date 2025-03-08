@@ -12,11 +12,6 @@
         <!-- MOBILE SPECIFIC ============================================= -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!--[if lt IE 9]>
-        <script src="assets/js/html5shiv.min.js"></script>
-        <script src="assets/js/respond.min.js"></script>
-        <![endif]-->
-
         <!-- All PLUGINS CSS ============================================= -->
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/assets.css">
 
@@ -99,18 +94,19 @@
                                 <img
                                     class="image-product"
                                     src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}">
-                                <p>
-                                    <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
-                                        ${recentCourses.title}
-                                    </a> 
+                                <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
+                                    ${recentCourses.title}
+                                </a>
+                                <br>
+                                <a href="#" class="expert-name">${recentCourses.expert.fullName}</a>
                                 <p class="des-course">${recentCourses.description}$</p>
-                                <span>${recentCourses.price}đ</span>
+                                <span>${recentCourses.price}đ (${recentCourses.register})</span>
 
                             </li>
                         </c:forEach>
                     </c:if>
                     <c:if test="${empty recentCourses}">
-                        <li>Hiện chưa có sản phẩm mới.</li>
+                        <li>There are currently no courses available.</li>
                         </c:if>
                 </ul>
             </div>

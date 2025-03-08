@@ -44,11 +44,7 @@
 
         <!-- TYPOGRAPHY ============================================= -->
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/typography.css">
-
-        <!-- SHORTCODES ============================================= -->
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/shortcodes/shortcodes.css">
-
-        <!-- STYLESHEETS ============================================= -->
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/style.css">
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/dashboard.css">
         <link class="skin" rel="stylesheet" type="text/css" href="assets/admin/assets/css/color/color-1.css">

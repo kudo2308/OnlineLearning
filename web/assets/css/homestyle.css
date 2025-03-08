@@ -99,6 +99,12 @@ li .right:hover {
     text-overflow: ellipsis; /* Thêm dấu ba chấm (...) ở cuối */
 }
 
+.expert-name{
+    margin: 0px 0px;
+    color: rgb(84, 86, 102);
+    font-size: small;
+}
+
 .image-product img {
     cursor: pointer;
 }
@@ -189,11 +195,6 @@ li:nth-child(6) img {
     background-color: rgb(135, 64, 29);
     color: rgb(241, 174, 46);
     border-color: rgb(241, 174, 46);
-}
-
-wow
-#wow p {
-    color: rgb(232, 2, 2);
 }
 
 #wow li:first-child img {

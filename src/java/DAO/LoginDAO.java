@@ -5,8 +5,12 @@ import config.Security;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import model.Account;
+import model.Course;
 import model.Role;
+import model.SocialLink;
 
 public class LoginDAO extends DBContext {
 //Done
@@ -146,13 +150,13 @@ public class LoginDAO extends DBContext {
         }
         return account;
     }
-    
+
     public static void main(String[] args) {
         LoginDAO dao = new LoginDAO();
-       
-        System.out.println( dao.getAccountByUserID("4"));
+
+        System.out.println(dao.getSocialLink(3));
     }
-    
+
 //lỗi
     public Account getAccountByUserIDPass(String userId) {
         String query = "SELECT a.UserID, a.Description, a.FullName, a.Password , a.Email, a.Phone, a.Address, "
@@ -171,7 +175,7 @@ public class LoginDAO extends DBContext {
                     account.setUserID(rs.getInt("UserID"));
                     account.setDescription(rs.getString("Description"));
                     account.setFullName(rs.getString("FullName"));
-                     account.setPassword(rs.getString("Password"));
+                    account.setPassword(rs.getString("Password"));
                     account.setEmail(rs.getString("Email"));
                     account.setPhone(rs.getString("Phone"));
                     account.setAddress(rs.getString("Address"));
@@ -276,4 +280,122 @@ public class LoginDAO extends DBContext {
         }
         return false;
     }
+
+    public SocialLink getSocialLink(int userId) {
+        String sql = "SELECT Xspace, Youtube, Facebook, Linkedin ,Private FROM SocialLink WHERE UserID = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    SocialLink socialLink = new SocialLink();
+                    socialLink.setUserId(userId);
+                    socialLink.setXspace(rs.getString("Xspace"));
+                    socialLink.setYoutube(rs.getString("Youtube"));
+                    socialLink.setFacebook(rs.getString("Facebook"));
+                    socialLink.setLinkedin(rs.getString("Linkedin"));
+                    socialLink.setCheckPrivate(rs.getString("Private"));
+                    return socialLink;
+                }
+            }
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return null;
+    }
+
+    public List<Course> getRegisteredCoursesForUser(int userId) {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT c.CourseID,c.Title,c.Description, c.ExpertID, c.Price, c.CategoryID,  c.ImageUrl, c.TotalLesson, c.Status,  c.CreatedAt, c.UpdatedAt "
+                + "FROM Registration r "
+                + "JOIN Course c ON r.CourseID = c.CourseID "
+                + "WHERE r.UserID = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setTitle(rs.getString("Title"));
+                    course.setDescription(rs.getString("Description"));
+                    course.setExpertID(rs.getInt("ExpertID"));
+                    course.setPrice(rs.getFloat("Price"));
+                    course.setCategoryID(rs.getInt("CategoryID"));
+                    course.setImageUrl(rs.getString("ImageUrl"));
+                    course.setTotalLesson(rs.getInt("TotalLesson"));
+                    course.setStatus(rs.getBoolean("Status"));
+                    course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    courses.add(course);
+                }
+                return courses;
+            }
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return null;
+    }
+
+    public List<Course> getCoursesByExpert(int userId) {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT c.CourseID, c.Title,c.Description,c.Price,c.CategoryID, c.ImageUrl, c.TotalLesson,c.Status,c.CreatedAt, c.UpdatedAt "
+                + "FROM Course c "
+                + "WHERE c.ExpertID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setTitle(rs.getString("Title"));
+                    course.setDescription(rs.getString("Description"));
+                    course.setPrice(rs.getFloat("Price"));
+                    course.setCategoryID(rs.getInt("CategoryID"));
+                    course.setImageUrl(rs.getString("ImageUrl"));
+                    course.setTotalLesson(rs.getInt("TotalLesson"));
+                    course.setStatus(rs.getBoolean("Status"));
+                    course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    courses.add(course);
+                }
+            }
+            return courses;
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return courses;
+    }
+
+    public boolean createSocialLinks(int userID) {
+        boolean results = false;
+        String sql = "INSERT INTO SocialLink (UserID, Xspace, Youtube, Facebook, Linkedin, Private) VALUES (?, ?, ?, ?, ?,?)";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, userID);
+            st.setString(2, null);
+            st.setString(3, null);
+            st.setString(4, null);
+            st.setString(5, null);
+            st.setString(5, "pulic");
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+    public boolean updateSocialLinks(int userID, String xspace, String youtube, String facebook, String linkedin, String privacy) {
+    String sql = "UPDATE SocialLink SET Xspace = ?, Youtube = ?, Facebook = ?, Linkedin = ?, Private = ? WHERE UserID = ?";
+    try (PreparedStatement st = connection.prepareStatement(sql)) {
+        st.setString(1, xspace);
+        st.setString(2, youtube);
+        st.setString(3, facebook);
+        st.setString(4, linkedin);
+        st.setString(5, privacy);
+        st.setInt(6, userID);
+        
+        return st.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 }

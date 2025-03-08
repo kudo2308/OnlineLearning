@@ -43,6 +43,11 @@ public class Login extends HttpServlet {
         request.setAttribute("email", email);
         LoginDAO d = new LoginDAO();
         OTP otp = new OTP();
+        if (!otp.isRedisAvailable()) {
+                request.setAttribute("errorlogin", "No connect Session Server");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+        }
         Cookie us = new Cookie("email", email);
         Cookie pas = new Cookie("pass", pass);
         Cookie re = new Cookie("remember", rem);

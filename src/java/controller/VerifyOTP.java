@@ -105,6 +105,7 @@ public class VerifyOTP extends HttpServlet {
             response.addCookie(sessionCookie);
             if (process.equals("register")) {
                 dao.createAccount(fullname, email, passHash, role);
+                dao.createSocialLinks(dao.getLastUserID());
                 json.sendJsonResponse(response, "redirect", "login?success=You register success", -1);
             } else {
                 String newsessionId = UUID.randomUUID().toString();

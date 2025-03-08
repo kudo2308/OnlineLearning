@@ -36,11 +36,11 @@
                         </c:otherwise>
                     </c:choose>
                     <h5 class="text-center">${sessionScope.account.username}</h5>
-                    <a href="#">View Profile</a>
+                    <a href="${pageContext.request.contextPath}/publicprofile?email=${sessionScope.account.gmail}">View Profile</a>
                     <a href="userprofile">Profile Public</a>
                     <a href="photo">Photo</a>
                     <a href="changepassuser">Change Password</a>
-                    <a href="#">Subscriptions</a>
+                    <a href="${pageContext.request.contextPath}/private">Social & Privacy</a>
                     <br>
                     <br>
                 </div>

@@ -18,12 +18,16 @@
                         <span class="ttr-label">Courses</span>
                         <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
                     </a>
-                        
-                        <ul>
-                         <li>
+
+                    <ul>
+                        <li>
+                            <a href="courses" class="ttr-material-button"><span class="ttr-label">Add Course</span></a>
+                        </li>
+
+                        <li>
                             <a href="addLesson" class="ttr-material-button"><span class="ttr-label">Add Lesson</span></a>
                         </li>
-                        
+
                         <li>
                             <a href="AddQuiz" class="ttr-material-button"><span class="ttr-label">Add Quiz</span></a>
                         </li>
@@ -52,8 +56,8 @@
                 </li>
                 <li class="ttr-seperate"></li>
             </ul>
-        
+
         </nav>
-     
+
     </div>
 </div>

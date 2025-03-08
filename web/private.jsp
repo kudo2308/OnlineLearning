@@ -53,53 +53,67 @@
                 </div>
                 <div class="profile-container ms-4 flex-grow-1">
                     <div class="header-profile">
-                        <h1>Public profile</h1>
-                        <p class="text-muted">Add information about yourself</p>
+                        <h1>Private Information</h1>
+                        <p class="text-muted">Add information social about yourself and edit view private profile</p>
                     </div>
                     <hr>
-                    <form action="userprofile" method="post">
+                    <form action="private" method="post">
                         <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="fullname" class="form-control" value="${requestScope.fullname}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" name="description" rows="3">${requestScope.description}</textarea>                              
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Gender</label>
-
-                            <select class="form-select" name="gender">
-                                <c:choose>
-                                    <c:when test="${not empty requestScope.gender}">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option value="" ${empty requestScope.gender ? 'selected' : ''}>-- Select Gender --</option>
-                                    </c:otherwise>
-                                </c:choose>
-
-                                <option value="Male" ${requestScope.gender == 'Male' ? 'selected' : ''}>Male</option>
-                                <option value="Female" ${requestScope.gender == 'Female' ? 'selected' : ''}>Female</option>
-                                <option value="Others" ${requestScope.gender == 'Others' ? 'selected' : ''}>Others</option>
-                            </select>
-                        </div>                                         
-                        <div class="mb-3">
-                            <label class="form-label">Phone</label>
-                            <input type="text" name="phone" class="form-control" value="${requestScope.phone}">                              
-                        </div>                                             
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <input type="text" name="address" id="full_address" class="form-control" value="${requestScope.address}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date of Birth</label>
-                            <div class="dob">
-                                <input type="text"  class="form-control" id="dob" value="${requestScope.dob}">
-                                <input type="date" class="form-control" id="input"  name="dob">   
+                            <label class="form-label">X</label>
+                            <div class="d-flex">
+                                <input type="text" class="form-control" value="http://www.x.com/" style="background-color:#999999" readonly>
+                                <input type="text" name="xspace" class="form-control" value="${sessionScope.xspace}">
                             </div>
                         </div>
-                        <button type="submit" class="btn save-btn w-100">Save</button>
+
+                        <div class="mb-3">
+                            <label class="form-label">Facebook</label>
+                            <div class="d-flex">
+                                <input type="text" class="form-control" value="http://www.facebook.com/" style="background-color:#999999" readonly>
+                                <input type="text" name="facebook" class="form-control" value="${sessionScope.facebook}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">LinkedIn</label>
+                            <div class="d-flex">
+                                <input type="text" class="form-control" value="http://www.linkedin.com/" style="background-color:#999999" readonly>
+                                <input type="text" name="linkedin" class="form-control" value="${sessionScope.linkedin}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Youtube</label>
+                            <div class="d-flex">
+                                <input type="text" class="form-control" value="http://www.youtube.com/" style="background-color:#999999" readonly>
+                                <input type="text" name="youtube" class="form-control" value="${sessionScope.youtube}">
+                            </div>
+                        </div>
+
+                        <br>
+                        <h2> Edit private  information </h2>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="showProfile" name="showProfile" <c:if test="${showProfile == true}">checked</c:if>>
+                            <label class="form-check-label" for="showProfile">
+                                Show your profile to logged-in users
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="showCoursesRegister" name="showCoursesRegister" <c:if test="${showCoursesRegister == true && showProfile == true}">checked</c:if>>
+                            <label class="form-check-label" for="showCoursesRegister">
+                                Show courses you're taking on your profile page
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="showCourses" name="showCourses"  <c:if test="${showCourses == true && showProfile == true}">checked</c:if>>
+                            <label class="form-check-label" for="showCourses">
+                                Display your courses on your profile page
+                            </label>
+                        </div>
+                        <br>
+                         <button type="submit" class="btn btn-primary mt-3">Save</button>
                     </form>
                 </div>
             </div>

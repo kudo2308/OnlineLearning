@@ -41,12 +41,12 @@ public class CartDAO extends DBContext {
     }
 
     public void add(Course course, Cart cart) {
-        String sql = "insert CartDetail (ID_Product, ID_Cart) values (?, ?)";
+        String sql = "insert CartDetail (CartID, CourseID) values (?, ?)";
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, course.getCourseID());
-            ps.setInt(2, cart.getId());
+            ps.setInt(1, cart.getId());
+            ps.setInt(2, course.getCourseID());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -90,5 +90,11 @@ public class CartDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void main(String[] args) {
+        CartDAO cart = new CartDAO();
+        CourseDAO course = new CourseDAO();
+        cart.add(course.getCourseById(2), cart.get(2));
     }
 }

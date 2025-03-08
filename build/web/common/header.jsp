@@ -6,8 +6,6 @@
 <title>Online Learning</title>
 
 <nav>
-    <!-- Your navigation bar code -->
-
 </nav>
 
 <header class="logo-body">
@@ -110,7 +108,9 @@
                             </div>
                         </div>
                         <ul class="acount-menu">
+                            <li><a href="${pageContext.request.contextPath}/publicprofile?email=${sessionScope.account.gmail}">View Profile</a></li>
                             <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
+                            <li><a href="${pageContext.request.contextPath}/private">Social & Privacy</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
                                
                         </ul>

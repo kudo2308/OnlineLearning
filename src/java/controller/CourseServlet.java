@@ -24,12 +24,10 @@ public class CourseServlet extends HttpServlet {
             CourseDAO dao = new CourseDAO();
             CategoryDAO categoryDAO = new CategoryDAO();
             
-            // Get search and filter parameters
             String searchQuery = request.getParameter("search");
             String categoryFilter = request.getParameter("category");
             String sortBy = request.getParameter("sort"); // price, date, name
             
-            // Get page parameter
             String pageStr = request.getParameter("page");
             int page = 1;
             try {
@@ -39,11 +37,9 @@ public class CourseServlet extends HttpServlet {
                 page = 1;
             }
             
-            // Calculate offset
             int recordsPerPage = 4;
             int offset = (page - 1) * recordsPerPage;
             
-            // Get courses with categories
             List<Course> courseLst;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 courseLst = dao.searchCourse(searchQuery, offset, recordsPerPage);
@@ -61,7 +57,6 @@ public class CourseServlet extends HttpServlet {
                 lst.add(new CourseWithCategory(course, category));
             }
             
-            // Get total records for pagination based on filters
             int totalRecords;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 totalRecords = dao.getTotalSearchResults(searchQuery);
@@ -71,10 +66,8 @@ public class CourseServlet extends HttpServlet {
                 totalRecords = dao.getTotalCourses();
             }
             
-            // Calculate total pages
             int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
             
-            // Set attributes
             request.setAttribute("listcourse", lst);
             request.setAttribute("listallcategory", categoryDAO.findAll());
             request.setAttribute("currentPage", page);
