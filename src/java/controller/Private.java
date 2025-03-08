@@ -94,7 +94,7 @@ public class Private extends HttpServlet {
         if (isShowProfileChecked && isshowCoursesRegister && isshowCourses) {
             privacy = "public";
         }
-        if (!isShowProfileChecked && (!isshowCoursesRegister || !isshowCourses)) {
+        if (!isShowProfileChecked) {
             privacy = "block-view";
         }
         if (isShowProfileChecked && !isshowCoursesRegister && isshowCourses) {

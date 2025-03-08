@@ -58,6 +58,7 @@ CREATE TABLE [dbo].[Course](
 	[CreatedAt] [datetime] NULL,
 	[UpdatedAt] [datetime] NULL,
 	[Outcome] [nvarchar](max) NULL,
+	FOREIGN KEY (ExpertID) REFERENCES Account(UserID),
 PRIMARY KEY CLUSTERED 
 (
 	[CourseID] ASC
