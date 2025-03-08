@@ -21,7 +21,10 @@
 
                     <ul>
                         <li>
-                            <a href="courses" class="ttr-material-button"><span class="ttr-label">Add Course</span></a>
+                            <a href="courses" class="ttr-material-button"><span class="ttr-label">Course List</span></a>
+                        </li>
+                        <li>
+                            <a href="addCourse" class="ttr-material-button"><span class="ttr-label">Add Course</span></a>
                         </li>
 
                         <li>
