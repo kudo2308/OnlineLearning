@@ -68,10 +68,15 @@ public class CourseDAO extends DBContext {
 
     }
 
-    public int findTotalRecord() {
-        String sql = "select count(c.CourseID) from Course c";
+    public int findTotalRecord(int userId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT COUNT(c.CourseID) FROM Course c ")
+                .append("WHERE c.ExpertID = ?");
+
         try (Connection connection = new DBContext().getConnection()) {
-            ps = connection.prepareStatement(sql);
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setInt(1, userId);
 
             rs = ps.executeQuery();
 
@@ -84,22 +89,23 @@ public class CourseDAO extends DBContext {
         return -1;
     }
 
-    public List<Course> findByPage(int page) {
+     public List<Course> findByPage(int page, int userId) {
 
-        String sql = "select * from Course co\n"
-                + "join Account a\n"
-                + "on co.ExpertID = a.UserID\n"
-                + "join Category ca\n"
-                + "on co.CategoryID = ca.CategoryID\n"
-                + "Order by co.CourseID\n"
-                + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY";
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM Course co ")
+                .append("JOIN Account a ON co.ExpertID = a.UserID ")
+                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
+                .append("WHERE co.ExpertID = ? ")
+                .append("ORDER BY co.CourseID ")
+                .append("OFFSET ? ROWS ")
+                .append("FETCH NEXT ? ROWS ONLY");
 
         try (Connection connection = new DBContext().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement(sql);
+            ps = connection.prepareStatement(sql.toString());
 
-            ps.setInt(1, (page - 1) * RECORD_PER_PAGE);
-            ps.setInt(2, RECORD_PER_PAGE);
+            ps.setInt(1, userId);
+            ps.setInt(2, (page - 1) * RECORD_PER_PAGE);
+            ps.setInt(3, RECORD_PER_PAGE);
 
             ResultSet rs = ps.executeQuery();
 
@@ -162,39 +168,35 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-    public List<Course> findByPageFilterCategoryAndStatus(int page, int categoryIdRequest, String statusRequest) {
+   public List<Course> findByPageFilterCategoryAndStatus(int page, int categoryIdRequest,
+            String statusRequest, int expertId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM Course co ")
+                .append("JOIN Account a ON co.ExpertID = a.UserID ")
+                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
+                .append("WHERE co.[Status] LIKE ? ")
+                .append("AND co.ExpertID = ? ");
 
-        String sql = categoryIdRequest == 0 ? "select * from Course co\n"
-                + "join Account a\n"
-                + "on co.ExpertID = a.UserID\n"
-                + "join Category ca\n"
-                + "on co.CategoryID = ca.CategoryID\n"
-                + "where co.[Status] like ? \n"
-                + "Order by co.CourseID\n"
-                + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY" : "select * from Course co\n"
-                + "join Account a\n"
-                + "on co.ExpertID = a.UserID\n"
-                + "join Category ca\n"
-                + "on co.CategoryID = ca.CategoryID\n"
-                + "where co.[Status] like ? and co.CategoryID = ?\n"
-                + "Order by co.CourseID\n"
-                + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY";
+        if (categoryIdRequest != 0) {
+            sql.append("AND co.CategoryID = ? ");
+        }
+
+        sql.append("ORDER BY co.CourseID ")
+                .append("OFFSET ? ROWS ")
+                .append("FETCH NEXT ? ROWS ONLY");
 
         try (Connection connection = new DBContext().getConnection()) {
-            ps = connection.prepareStatement(sql);
+            ps = connection.prepareStatement(sql.toString());
+            ps.setString(1, "%" + statusRequest + "%");
+            ps.setInt(2, expertId);
 
             if (categoryIdRequest == 0) {
-                ps.setString(1, "%" + statusRequest + "%");
-                ps.setInt(2, (page - 1) * RECORD_PER_PAGE);
-                ps.setInt(3, RECORD_PER_PAGE);
-            } else {
-                ps.setString(1, "%" + statusRequest + "%");
-                ps.setInt(2, categoryIdRequest);
-
                 ps.setInt(3, (page - 1) * RECORD_PER_PAGE);
                 ps.setInt(4, RECORD_PER_PAGE);
+            } else {
+                ps.setInt(3, categoryIdRequest);
+                ps.setInt(4, (page - 1) * RECORD_PER_PAGE);
+                ps.setInt(5, RECORD_PER_PAGE);
             }
 
             rs = ps.executeQuery();
@@ -209,24 +211,25 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-    public List<Course> searchCourseByName(int page, String nameRequest) {
+    public List<Course> searchCourseByName(int page, String nameRequest, int userId) {
 
-        String sql = "select * from Course co\n"
-                + "join Account a\n"
-                + "on co.ExpertID = a.UserID\n"
-                + "join Category ca\n"
-                + "on co.CategoryID = ca.CategoryID\n"
-                + "where co.Title like ? \n"
-                + "Order by co.CourseID\n"
-                + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY";
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM Course co ")
+                .append("JOIN Account a ON co.ExpertID = a.UserID ")
+                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
+                .append("WHERE co.Title LIKE ? ")
+                .append("AND co.ExpertID = ? ")
+                .append("ORDER BY co.CourseID ")
+                .append("OFFSET ? ROWS ")
+                .append("FETCH NEXT ? ROWS ONLY");
 
         try (Connection connection = new DBContext().getConnection()) {
-            ps = connection.prepareStatement(sql);
+            ps = connection.prepareStatement(sql.toString());
 
             ps.setString(1, "%" + nameRequest + "%");
-            ps.setInt(2, (page - 1) * RECORD_PER_PAGE);
-            ps.setInt(3, RECORD_PER_PAGE);
+            ps.setInt(2, userId);
+            ps.setInt(3, (page - 1) * RECORD_PER_PAGE);
+            ps.setInt(4, RECORD_PER_PAGE);
 
             rs = ps.executeQuery();
 
