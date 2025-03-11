@@ -69,6 +69,9 @@ public class Private extends HttpServlet {
              request.setAttribute("showCoursesRegister", true);
             request.setAttribute("showCourses", true);
         }
+          if (links.getCheckPrivate().equalsIgnoreCase("view-profile-only")) {
+            request.setAttribute("showProfile", true);
+        }
         if (links.getCheckPrivate().equalsIgnoreCase("block-inscrits")) {
             request.setAttribute("showProfile", true);
             request.setAttribute("showCourses", true);
@@ -94,7 +97,13 @@ public class Private extends HttpServlet {
         if (isShowProfileChecked && isshowCoursesRegister && isshowCourses) {
             privacy = "public";
         }
-        if (!isShowProfileChecked) {
+         if (isShowProfileChecked && !isshowCoursesRegister && !isshowCourses) {
+            privacy = "view-profile-only";
+        }
+        if (!isShowProfileChecked && (!isshowCoursesRegister || !isshowCourses)) {
+            privacy = "block-view";
+        }
+        if (!isShowProfileChecked && isshowCoursesRegister && isshowCourses) {
             privacy = "block-view";
         }
         if (isShowProfileChecked && !isshowCoursesRegister && isshowCourses) {

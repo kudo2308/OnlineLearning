@@ -1,0 +1,134 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+.add-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.search-box {
+    margin-bottom: 15px;
+}
+.search-box input {
+    padding: 10px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.search-box button {
+    padding: 10px;
+    background: #ccccff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+table, th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+}
+th, td {
+    padding: 10px;
+}
+th {
+    background: #99ccff;
+    color: white;
+}
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.edit-btn, .block-btn, .unblock-btn, .delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.edit-btn {
+    background: #ffc107;
+    color: black;
+}
+.block-btn {
+    background: #dc3545;
+    color: white;
+}
+.unblock-btn {
+    background: #28a745;
+    color: white;
+}
+.delete-btn {
+    background: #6c757d;
+    color: white;
+}
+.pagination {
+    margin-top: 15px;
+    text-align: center;
+}
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 5px;
+    background: #999999;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.pagination a.active {
+    background: #cccccc;
+}
+
+.error-message {
+    width: 60%;
+    z-index: 10000;
+    margin: auto;
+    display: none;
+    position: absolute;
+    top: 120px;
+    left: 0;
+    right: 0;
+    background-color: rgba(208, 22, 39, 0.8);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 40px;
+}
+
+.success {
+    width: 60%;
+    z-index: 10000;
+    margin: auto;
+    display: none;
+    position: absolute;
+    top: 120px;
+    left: 0;
+    right: 0;
+    background-color: #00CC00;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 40px;
+}

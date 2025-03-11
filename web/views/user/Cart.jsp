@@ -24,7 +24,7 @@
     <body>
 
         <jsp:include page="/common/header.jsp"></jsp:include>
-        <hr style="color: #dddddd">
+            <hr style="color: #dddddd">
             <div class="container">
 
                 <div class="cart-container">
@@ -52,7 +52,10 @@
                                 <p class="original">₫399,000</p>
                             </div>
                             <label class="checkbox-container">
-                                <input type="checkbox" class="course-checkbox" data-price="${item.course.price}">
+                                <input type="checkbox" class="course-checkbox" 
+                                       data-price="${item.course.price}" 
+                                       data-course-id="${item.course.courseID}" 
+                                       data-expert-id="${item.course.expertID}">
                                 <span class="checkmark"></span> Select
                             </label>
                         </div>

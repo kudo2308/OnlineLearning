@@ -149,10 +149,6 @@ public class CartController extends HttpServlet {
             }
         }
 
-//        PrintWriter out = response.getWriter();
-//        for (CartItem item : cart.getItems()) {
-//            out.print(item.getProduct().getName());
-//        }
         response.sendRedirect("cart");
     }
 }
