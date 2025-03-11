@@ -12,30 +12,32 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import model.Category;
 import model.Course;
 import model.PageControl;
 
-/**
- *
- * @author PC
- */
 public class CourseController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PageControl pageControl = new PageControl();
-        CategoryDAO categoryDAO = new CategoryDAO();
+        try {
+            PageControl pageControl = new PageControl();
+            CategoryDAO categoryDAO = new CategoryDAO();
 
-        List<Category> categories = categoryDAO.findAll();
-        List<Course> courses = pagination(request, pageControl);
+            List<Category> categories = categoryDAO.findAll();
+            List<Course> courses = pagination(request, pageControl);
 
-        request.setAttribute("pageControl", pageControl);
-        request.setAttribute("courses", courses);
-        request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/views/admin/view-course.jsp").forward(request, response);
+            request.setAttribute("pageControl", pageControl);
+            request.setAttribute("courses", courses);
+            request.setAttribute("categories", categories);
+            request.getRequestDispatcher("/views/admin/view-course.jsp").forward(request, response);
+        }catch(Exception e){
+            response.sendRedirect("login");
+        }
     }
 
     @Override
@@ -49,7 +51,7 @@ public class CourseController extends HttpServlet {
         return "Short description";
     }
 
-    private List<Course> pagination(HttpServletRequest request, PageControl pageControl) {
+    private List<Course> pagination(HttpServletRequest request, PageControl pageControl) throws Exception {
 
         String pageRaw = request.getParameter("page");
         CourseDAO courseDAO = new CourseDAO();
@@ -61,6 +63,7 @@ public class CourseController extends HttpServlet {
         } catch (NumberFormatException e) {
             page = 1;
         }
+
         int totalRecord = 0;
         List<Course> listCourse = null;
 
@@ -68,15 +71,31 @@ public class CourseController extends HttpServlet {
                 ? "defaultFindAll"
                 : request.getParameter("action");
 
+        HttpSession session = request.getSession();
+
+        Object accountObj = session.getAttribute("account");
+
+        if (accountObj == null) {
+            throw new Exception("Sesson not found!");
+        }
+
+        String userID = null;
+        if (accountObj instanceof Map) {
+            Map<String, String> accountData = (Map<String, String>) accountObj;
+            userID = accountData.get("userId");
+        }
+        int userId = Integer.parseInt(userID);
+
         switch (action) {
             case "FilterCategoryAndStatus":
                 int categoryId = Integer.parseInt(request.getParameter("categoryId"));
                 String status = request.getParameter("status");
-                listCourse = courseDAO.findByPageFilterCategoryAndStatus(page, categoryId, status);
+                listCourse = courseDAO.findByPageFilterCategoryAndStatus(page,
+                        categoryId, status, userId);
 
                 totalRecord = listCourse.size();
 
-                pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
+                pageControl.setUrlPattern("course?category=" + categoryId + "&status=" + status + "&");
 
                 request.setAttribute("categoryId", categoryId);
                 request.setAttribute("status", status);
@@ -84,21 +103,21 @@ public class CourseController extends HttpServlet {
             case "searchByName":
 
                 String name = request.getParameter("name");
-                listCourse = courseDAO.searchCourseByName(page, name);
+                listCourse = courseDAO.searchCourseByName(page, name, userId);
 
                 totalRecord = listCourse.size();
 
-                pageControl.setUrlPattern("courses?name=" + name + "&");
+                pageControl.setUrlPattern("course?name=" + name + "&");
 
                 request.setAttribute("name", name);
 
                 break;
             default:
-                listCourse = courseDAO.findByPage(page);
+                listCourse = courseDAO.findByPage(page, userId);
 
-                totalRecord = courseDAO.findTotalRecord();
+                totalRecord = courseDAO.findTotalRecord(userId);
 
-                pageControl.setUrlPattern("courses?");
+                pageControl.setUrlPattern("course?");
 
         }
 

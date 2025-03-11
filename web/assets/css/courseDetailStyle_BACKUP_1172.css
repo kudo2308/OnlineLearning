@@ -1,0 +1,28 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Feb 24, 2025, 4:06:52 AM
+    Author     : ASUS
+*/
+
+.curriculum-list-box {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    font-size: 15px;
+}
+.cart-add{
+    width: 202px;
+}
+
+.course-buy-now form{
+    margin-top: 10px;
+}
+
+.go-cart{
+    width: 202px;
+}
+
