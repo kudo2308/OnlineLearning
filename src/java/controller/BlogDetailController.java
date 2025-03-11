@@ -68,22 +68,20 @@ public class BlogDetailController extends HttpServlet {
         Blog blogDetail = blogDAO.getBlogByBlogId(blogId);
         List<Blog> relatedBlogs = blogDAO.getBlogByCategoryId(blogDetail.getCategoryID())
                 .stream()
-                .filter(blog -> blog.getBlogId() != blogDetail.getBlogId()) // Loại bỏ blog hiện tại
+                .filter(blog -> blog.getBlogId() != blogDetail.getBlogId())
                 .limit(3)
                 .collect(Collectors.toList());
 
         List<Blog> recentBlogs = blogDAO.getAllRecentBlogs()
                 .stream()
-                .filter(blog -> blog.getBlogId() != blogDetail.getBlogId()) // Loại bỏ bài hiện tại
-                .limit(3) // Hiển thị tối đa 5 bài gần nhất
+                .filter(blog -> blog.getBlogId() != blogDetail.getBlogId())
+                .limit(3)
                 .collect(Collectors.toList());
 
-        // Set attributes for the JSP
         request.setAttribute("blog", blogDetail);
         request.setAttribute("relatedBlogs", relatedBlogs);
         request.setAttribute("recentBlogs", recentBlogs);
 
-        // Forward to the course detail page
         request.getRequestDispatcher("/views/user/BlogDetail.jsp").forward(request, response);
 
     }
