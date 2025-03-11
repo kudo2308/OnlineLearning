@@ -102,8 +102,12 @@
                                         </div>
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Lesson Type</label>
-                                            <div>
-                                                <input required class="form-control" type="text" name="lessonType" value="">
+                                           <div>
+                                                <select required class="form-control" name="lessonType">
+                                                    <option value="Basic">Basic</option>
+                                                    <option value="Advanced">Advanced</option>
+                                                    
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="form-group col-6">

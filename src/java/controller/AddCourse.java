@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -23,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mapper.CourseMapper;
 import model.Category;
@@ -34,7 +36,7 @@ import model.Course;
 public class AddCourse extends HttpServlet {
 
     private Validator validator;
-    private static final String UPLOAD_DIR = "img";
+    private static final String UPLOAD_DIR = "/assets/images/courses";
 
     @Override
     public void init() throws ServletException {
@@ -68,6 +70,23 @@ public class AddCourse extends HttpServlet {
             CategoryDAO categoryDAO = new CategoryDAO();
             List<Category> categories = categoryDAO.findAll();
             request.setAttribute("categories", categories);
+            
+            
+            // lay userid tu sesson
+            HttpSession session = request.getSession();
+
+            Object accountObj = session.getAttribute("account");
+
+            if (accountObj == null) {
+                throw new Exception("Session not found!");
+            }
+
+            String userID = null;
+            if (accountObj instanceof Map) {
+                Map<String, String> accountData = (Map<String, String>) accountObj;
+                userID = accountData.get("userId");
+            }
+            int userId = Integer.parseInt(userID);
 
             CreateCourseRequest courseRequest = new CreateCourseRequest(title, description,
                     categoryId, totalLesson, price);
@@ -87,7 +106,9 @@ public class AddCourse extends HttpServlet {
             Course course = CourseMapper.mapCreateCoursetoCourse(courseRequest);
             course.setImageUrl(imagePath);
             course.setStatus(true);
-            course.setExpertID(2);
+
+            //set user exper here
+            course.setExpertID(userId);
 
             CourseDAO courseDAO = new CourseDAO();
             if (courseDAO.AddCourse(course)) {
@@ -125,10 +146,10 @@ public class AddCourse extends HttpServlet {
         }
 
         // Xác định thư mục upload
-        String uploadFolder = getServletContext().getRealPath("") + "../../web/" + UPLOAD_DIR;
+        String uploadFolder = getServletContext().getRealPath("/") + "assets/images/courses";
         File folder = new File(uploadFolder);
         if (!folder.exists()) {
-            folder.mkdirs();
+            folder.mkdirs(); // Tạo thư mục nếu chưa tồn tại
         }
 
         // Đường dẫn đầy đủ trên server
