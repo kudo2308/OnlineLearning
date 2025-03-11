@@ -955,4 +955,25 @@ public class CourseDAO extends DBContext {
         return null;
     }
 
+    public List<Course> getCourseByEmail(String email) {
+        List<Course> userCourses = new ArrayList<>();
+        String sql = "select co.* from Course co\n"
+                + "join Registration r\n"
+                + "on co.CourseID = r.CourseID\n"
+                + "join Account a\n"
+                + "on r.UserID = a.UserID\n"
+                + "where a.Email = ?";
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = extractCourseFromResultSet(rs);
+                userCourses.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return userCourses;
+    }
 }

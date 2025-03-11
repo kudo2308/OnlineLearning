@@ -50,7 +50,7 @@
                                         <div class="progress-info">
                                             <p>Remaining questions to add: ${remainingQuestions}</p>
                                         </div>
-                                    </c:if>
+                                    </c:if> 
 
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label" for="quizID">Select Quiz:</label>
