@@ -89,22 +89,22 @@
                                 <div class="course-buy-now text-center">
                                     <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
                                 </div>                                    
+
                                 <c:choose>
-                                    <c:when test="${isExist == 1}">
+                                    <c:when test="${isInCart}">
                                         <div class="course-buy-now text-center">
-                                            <a class="go-cart" href="${pageContext.request.contextPath}/cart" class="btn radius-xl text-uppercase">Go to cart</a>
-                                        </div> 
+                                            <a class="btn radius-xl text-uppercase go-cart" href="${pageContext.request.contextPath}/cart">Go to Cart</a>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="course-buy-now text-center">
-                                            <form action="cart?action=add" method="post">
-                                                <input value="${course.courseID}" type="text" name="courseId" hidden>
+                                            <form action="${pageContext.request.contextPath}/cart?action=add" method="post">
+                                                <input value="${course.courseID}" type="hidden" name="courseId">
                                                 <button class="btn radius-xl text-uppercase cart-add" type="submit">Add to cart</button>
                                             </form>                                
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
-
 
 
 
