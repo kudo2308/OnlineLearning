@@ -4,6 +4,7 @@ import DAO.CartDAO;
 import DAO.CourseDAO;
 import DAO.LessonDAO;
 import DAO.LoginDAO;
+import DAO.PackagesDAO;
 import DAO.QuizDAO;
 import DAO.RegistrationDAO;
 import java.io.IOException;
@@ -13,12 +14,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.HashMap;
 import model.Course;
 import model.Lesson;
 import java.util.List;
 import java.util.Map;
 import model.Account;
 import model.Cart;
+import model.Packages;
 
 @WebServlet(name = "CourseDetailController", urlPatterns = {"/coursedetail"})
 public class CourseDetailController extends HttpServlet {
@@ -81,30 +84,39 @@ public class CourseDetailController extends HttpServlet {
         RegistrationDAO regisDAO = new RegistrationDAO();
         int register = regisDAO.getNumberOfRegistrationByCourseId(courseId);
 
+        PackagesDAO packagesDAO = new PackagesDAO();
+        List<Packages> packageList = packagesDAO.findPackagesByCourseId(courseId);
+
+        // Tạo Map chứa Packages và danh sách Lesson tương ứng
+        Map<Packages, List<Lesson>> packageLessonMap = new HashMap<>();
         LessonDAO lessonDAO = new LessonDAO();
-        List<Lesson> lessonList = lessonDAO.getAllLessonByCourseId(courseId);
+
+        for (Packages pack : packageList) {
+            List<Lesson> lessonList = lessonDAO.getAllLessonByPackagesId(pack.getPackageID());
+            packageLessonMap.put(pack, lessonList);
+        }
+
         int countLesson = lessonDAO.countLessonsbyCourseId(courseId);
 
-        int duration = 0;
-        for (Lesson lesson : lessonList) {
-            duration += lesson.getDuration();
-        }
+        int duration = packageLessonMap.values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Lesson::getDuration)
+                .sum();
         String durationHour = duration / 60 + "." + duration % 60 / 6;
 
         QuizDAO quizDAO = new QuizDAO();
         int countQuiz = quizDAO.countQuizByCourseId(courseId);
 
-        // Truyền dữ liệu sang JSP
+        request.setAttribute("packageLessonMap", packageLessonMap);
+        request.setAttribute("packageList", packageList);
         request.setAttribute("isInCart", isInCart);
         request.setAttribute("duration", duration);
         request.setAttribute("durationHour", durationHour);
-        request.setAttribute("lessonList", lessonList);
         request.setAttribute("regisNum", register);
         request.setAttribute("course", course);
         request.setAttribute("quiz", countQuiz);
         request.setAttribute("lessonNumber", countLesson);
 
-        // Forward đến trang chi tiết khóa học
         request.getRequestDispatcher("/views/course/CourseDetail.jsp").forward(request, response);
     }
 
@@ -112,5 +124,18 @@ public class CourseDetailController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
+    }
+
+    public static void main(String[] args) {
+        PackagesDAO pack = new PackagesDAO();
+        List<Packages> packList = pack.findPackagesByCourseId(1);
+        List<Lesson> lessonList = null;
+        LessonDAO lessonDAO = new LessonDAO();
+        for (Packages packages : packList) {
+            lessonList = lessonDAO.getAllLessonByPackagesId(packages.getPackageID());
+        }
+        for (Lesson lesson : lessonList) {
+            System.out.println(lesson.getTitle());
+        }
     }
 }

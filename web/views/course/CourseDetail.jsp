@@ -190,17 +190,21 @@
                             </div>
                             <div class="m-b30" id="curriculum">
                                 <h4>Curriculum</h4>
-                                <ul class="curriculum-list">
-                                    <c:forEach var="lessonList" items="${lessonList}">                                       
-                                        <li class="curriculum-list-box">
-                                            <div >
-                                                <span>Lesson ${lessonList.orderNumber}.</span> ${lessonList.title}
-
-                                            </div>
-                                            <span>${lessonList.duration} minutes</span>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
+                                <c:forEach var="pack" items="${packageList}">
+                                    <div class="package-section">
+                                        <h5>Package: ${pack.name}</h5>
+                                        <ul class="curriculum-list">
+                                            <c:forEach var="lesson" items="${packageLessonMap[pack]}">
+                                                <li class="curriculum-list-box">
+                                                    <div>
+                                                        <span>Lesson: ${lesson.title}</span>
+                                                    </div>
+                                                    <span>${lesson.duration} minutes</span>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </div>
+                                </c:forEach>
                             </div>
                         </div>
 

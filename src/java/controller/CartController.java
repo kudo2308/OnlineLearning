@@ -68,7 +68,6 @@ public class CartController extends HttpServlet {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
 
-        // Kiểm tra đăng nhập
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login?redirect=Cart");
             return;
@@ -146,10 +145,6 @@ public class CartController extends HttpServlet {
             }
         }
 
-//        PrintWriter out = response.getWriter();
-//        for (CartItem item : cart.getItems()) {
-//            out.print(item.getProduct().getName());
-//        }
         response.sendRedirect("cart");
     }
 }
