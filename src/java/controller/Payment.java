@@ -54,21 +54,21 @@ public class Payment extends HttpServlet {
             }
             courses.add(course);
         }
-        // Tạo đơn hàng
-        PaymentDAO paymentDAO = new PaymentDAO();
-        Order order = paymentDAO.createOrder(Integer.valueOf(userID),BigDecimal.valueOf(total));
-        if (order == null) {
-            response.sendRedirect("cart.jsp?error=order_failed");
-            return;
-        }
-
-        // Thêm các order item vào đơn hàng
-        for (Course course : courses) {
-            if (!paymentDAO.createOrderItem(order.getOrderID(), course.getCourseID(), course.getExpertID(),BigDecimal.valueOf(course.getPrice()))) {
-                response.sendRedirect("cart.jsp?error=item_failed");
-                return;
-            }
-        }
+//        // Tạo đơn hàng
+//        PaymentDAO paymentDAO = new PaymentDAO();
+//        Order order = paymentDAO.createOrder(Integer.valueOf(userID),BigDecimal.valueOf(total));
+//        if (order == null) {
+//            response.sendRedirect("cart.jsp?error=order_failed");
+//            return;
+//        }
+//
+//        // Thêm các order item vào đơn hàng
+//        for (Course course : courses) {
+//            if (!paymentDAO.createOrderItem(order.getOrderID(), course.getCourseID(), course.getExpertID(),BigDecimal.valueOf(course.getPrice()))) {
+//                response.sendRedirect("cart.jsp?error=item_failed");
+//                return;
+//            }
+//        }
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
