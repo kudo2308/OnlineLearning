@@ -119,7 +119,7 @@ public class QuestionDAO {
         return -1;
     }
 
-    public List<Question> findByPage(int page) {
+   public List<Question> findByPage(int page) {
         String sql = "select * from Question qu\n"
                 + "join Quiz q\n"
                 + "on qu.QuizID = q.QuizID\n"

@@ -566,6 +566,42 @@
                     <input type="hidden" name="search" id="searchInput" value="${searchQuery}">
                 </form>
             </div>
+
+            <div class="search-box">
+<!--                <div class="sidebar-title">
+                    <i class="fas fa-user"></i>
+                    <span>My Courses</span>
+                </div>-->
+                <div class="course-list">
+                    <c:forEach items="${userCourses}" var="course">
+                        <div class="course-item">
+                            <div class="course-image">
+                                <img src="${pageContext.request.contextPath}${course.imageUrl}" 
+                                     alt="${course.title}"
+                                     onerror="this.src='${pageContext.request.contextPath}/images/default-course.jpg'">
+                                <div class="course-category">${course.category.name}</div>
+                            </div>
+                            <div class="course-info">
+                                <div>
+                                    <h3 class="course-title">${course.title}</h3>
+                                    <p class="course-desc">${course.description}</p>
+                                </div>
+                                <div class="course-meta">
+                                    <span class="lesson-count">
+                                        <i class="fas fa-book-open"></i>
+                                        ${course.totalLesson} lessons
+                                    </span>
+                                    <a href="${pageContext.request.contextPath}/lesson?courseId=${course.courseID}" 
+                                       class="view-btn">
+                                        <i class="fas fa-play-circle"></i>
+                                        Start Learning
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->

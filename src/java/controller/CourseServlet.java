@@ -43,6 +43,13 @@ public class CourseServlet extends HttpServlet {
             int recordsPerPage = 4;
             int offset = (page - 1) * recordsPerPage;
             
+            // Retrieve user email from session
+            String userEmail = (String) request.getSession().getAttribute("userEmail");
+            
+            // Get courses by user email
+            List<Course> userCourses = dao.getCourseByEmail(userEmail);
+            request.setAttribute("userCourses", userCourses);
+
             // Get courses with categories
             List<Course> courseLst;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
