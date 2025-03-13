@@ -95,7 +95,7 @@ public class CourseController extends HttpServlet {
 
                 totalRecord = listCourse.size();
 
-                pageControl.setUrlPattern("course?category=" + categoryId + "&status=" + status + "&");
+                pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
 
                 request.setAttribute("categoryId", categoryId);
                 request.setAttribute("status", status);
@@ -107,7 +107,7 @@ public class CourseController extends HttpServlet {
 
                 totalRecord = listCourse.size();
 
-                pageControl.setUrlPattern("course?name=" + name + "&");
+                pageControl.setUrlPattern("courses?name=" + name + "&");
 
                 request.setAttribute("name", name);
 
@@ -117,7 +117,7 @@ public class CourseController extends HttpServlet {
 
                 totalRecord = courseDAO.findTotalRecord(userId);
 
-                pageControl.setUrlPattern("course?");
+                pageControl.setUrlPattern("courses?");
 
         }
 

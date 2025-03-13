@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <title>Online Learning</title>
 <html>
-    <head>
+<!--    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
 
@@ -106,5 +106,5 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 text-center"><a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
             </div>
         </div>
-    </div>
+    </div>-->
 </html>
