@@ -68,9 +68,8 @@ public class CartController extends HttpServlet {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
 
-        // 1. Kiểm tra đăng nhập
         if (accountObj == null) {
-            response.sendRedirect(request.getContextPath() + "/login?redirect=Blog");
+            response.sendRedirect(request.getContextPath() + "/login?redirect=Cart");
             return;
         }
 
@@ -79,17 +78,19 @@ public class CartController extends HttpServlet {
             Map<String, String> accountData = (Map<String, String>) accountObj;
             userID = accountData.get("userId");
         }
+
         LoginDAO dao = new LoginDAO();
         Account acc = dao.getAccountByUserID(userID);
         CartDAO cartDAO = new CartDAO();
 
         Cart cart = cartDAO.get(acc.getUserID());
 
-        if (cart != null) {
+        if (cart == null) {
             cartDAO.create(acc.getUserID());
-            request.setAttribute("cart", cart.getItems());
+            cart = new Cart();
         }
 
+        request.setAttribute("cart", cart.getItems());
         request.getRequestDispatcher("views/user/Cart.jsp").forward(request, response);
     }
 
@@ -132,12 +133,7 @@ public class CartController extends HttpServlet {
                     isExist = cart.getItems().stream().anyMatch(c -> c.getCourse().getCourseID() == courseId);
                 }
                 if (isExist) {
-                    for (CartItem item : cart.getItems()) {
-                        if (item.getCourse().getCourseID() == courseId) {
-                            request.setAttribute("isExist", 1);
-                            break;
-                        }
-                    }
+                    break;
                 } else {
                     cartDAO.add(courseDAO.getCourseById(courseId), cart);
                 }
@@ -149,10 +145,6 @@ public class CartController extends HttpServlet {
             }
         }
 
-//        PrintWriter out = response.getWriter();
-//        for (CartItem item : cart.getItems()) {
-//            out.print(item.getProduct().getName());
-//        }
         response.sendRedirect("cart");
     }
 }

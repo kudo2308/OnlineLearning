@@ -42,22 +42,7 @@
                             <a href="manageQuestion" class="ttr-material-button"><span class="ttr-label">Question List</span></a>
                         </li>
                     </ul>
-                </li>
-                <li>
-                    <a href="#" class="ttr-material-button">
-                        <span class="ttr-icon"><i class="ti-user"></i></span>
-                        <span class="ttr-label">My Profile</span>
-                        <span class="ttr-arrow-icon"><i class="fa fa-angle-down"></i></span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="user-profile.html" class="ttr-material-button"><span class="ttr-label">User Profile</span></a>
-                        </li>
-                        <li>
-                            <a href="teacher-profile.html" class="ttr-material-button"><span class="ttr-label">Teacher Profile</span></a>
-                        </li>
-                    </ul>
-                </li>
+                </li>      
                 <li class="ttr-seperate"></li>
             </ul>
 
