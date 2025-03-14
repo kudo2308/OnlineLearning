@@ -15,14 +15,14 @@
                 margin-bottom: 20px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            
+
             .quiz-meta {
                 display: flex;
                 gap: 20px;
                 margin-top: 10px;
                 color: #666;
             }
-            
+
             .question-container {
                 background: #fff;
                 padding: 20px;
@@ -30,19 +30,19 @@
                 margin-bottom: 20px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            
+
             .question-text {
                 font-size: 1.2em;
                 margin-bottom: 20px;
                 color: #333;
             }
-            
+
             .options {
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .option {
                 display: block;
                 padding: 15px;
@@ -51,24 +51,24 @@
                 cursor: pointer;
                 transition: all 0.3s ease;
             }
-            
+
             .option:hover {
                 background-color: #f5f5f5;
             }
-            
+
             .option.selected {
                 background-color: #2196F3;
                 color: white;
                 border-color: #2196F3;
             }
-            
+
             .question-numbers {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 10px;
                 margin: 20px 0;
             }
-            
+
             .question-number {
                 width: 40px;
                 height: 40px;
@@ -80,29 +80,29 @@
                 cursor: pointer;
                 transition: all 0.3s ease;
             }
-            
+
             .question-number:hover {
                 background-color: #f5f5f5;
             }
-            
+
             .question-number.active {
                 background-color: #4CAF50;
                 color: white;
                 border-color: #4CAF50;
             }
-            
+
             .question-number.answered {
                 background-color: #2196F3;
                 color: white;
                 border-color: #2196F3;
             }
-            
+
             .navigation-buttons {
                 display: flex;
                 justify-content: space-between;
                 margin-top: 20px;
             }
-            
+
             .nav-btn {
                 padding: 10px 20px;
                 border: none;
@@ -112,15 +112,15 @@
                 color: white;
                 transition: all 0.3s ease;
             }
-            
+
             .nav-btn:hover {
                 background-color: #45a049;
             }
-            
+
             .comment-section {
                 margin-top: 30px;
             }
-            
+
             .comment-section textarea {
                 width: 100%;
                 padding: 15px;
@@ -131,7 +131,7 @@
             }
         </style>
     </head>
-    <body>
+     <body>
         <div class="container">
             <!-- Left Sidebar -->
             <div class="left-sidebar">
@@ -151,14 +151,14 @@
                     <h2>${quiz.name}</h2>
                     <!-- Thêm đồng hồ đếm ngược -->
                     <div id="timer" class="timer" style="
-                        font-size: 24px;
-                        font-weight: bold;
-                        color: #333;
-                        background: #f8f9fa;
-                        padding: 10px;
-                        border-radius: 5px;
-                        margin: 10px 0;
-                        text-align: center;">
+                         font-size: 24px; 
+                         font-weight: bold; 
+                         color: #333; 
+                         background: #f8f9fa; 
+                         padding: 10px; 
+                         border-radius: 5px; 
+                         margin: 10px 0; 
+                         text-align: center;">
                         Time remaining: <span id="time">00:00</span>
                     </div>
                 </div>
@@ -191,7 +191,7 @@
                                                 <input type="radio" 
                                                        name="question${currentQuestion.questionID}" 
                                                        value="${answer.answerID}" 
-                                                       onclick="selectOption(this); markAnswered(${currentQuestionNum})">
+                                                       onclick="selectOption(this); markAnswered(${currentQuestionNum}); saveAnswer(${currentQuestion.questionID}, ${answer.answerID})">
                                                 ${answer.content}
                                             </label>
                                         </c:forEach>
@@ -220,13 +220,13 @@
 
                     <div class="submit-section" style="text-align: center; margin-top: 20px;">
                         <button type="button" onclick="confirmSubmit()" class="btn btn-primary" style="
-                            padding: 10px 30px;
-                            font-size: 18px;
-                            background-color: #28a745;
-                            border: none;
-                            color: white;
-                            border-radius: 5px;
-                            cursor: pointer;">
+                                padding: 10px 30px; 
+                                font-size: 18px; 
+                                background-color: #28a745; 
+                                border: none; 
+                                color: white; 
+                                border-radius: 5px; 
+                                cursor: pointer;">
                             Submit Quiz
                         </button>
                     </div>
@@ -235,52 +235,62 @@
         </div>
 
         <script>
-            function searchQuestions(searchText) {
-                const questionItems = document.querySelectorAll('.quiz-list li');
-                searchText = searchText.toLowerCase();
-                
-                questionItems.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    if (text.includes(searchText)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+            // JavaScript to manage quiz interactions
+
+            let selectedAnswers = {}; // Object to store selected answers
+
+            function saveAnswer(questionId, answerId) {
+                selectedAnswers[questionId] = answerId;
+                sessionStorage.setItem('answers', JSON.stringify(selectedAnswers));
             }
-            
+
+            function loadSavedAnswers() {
+                const savedAnswers = JSON.parse(sessionStorage.getItem('answers')) || {};
+                for (let questionId in savedAnswers) {
+                    let answerId = savedAnswers[questionId];
+                    let radioButton = document.querySelector(`input[name='question${questionId}'][value='${answerId}']`);
+                    if (radioButton) {
+                        radioButton.checked = true;
+                        radioButton.closest('.option').classList.add('selected');
+                    }
+                }
+            }
+
             function selectOption(radio) {
-                // Remove selected class from all options in the same question
+                const questionId = radio.closest('.question-container').querySelector('input[name="question' + radio.name.split('question')[1] + '"]').name.split('question')[1];
+                const answerId = radio.value;
+
+                saveAnswer(questionId, answerId);
+
+                // Handle option selection logic
                 const questionDiv = radio.closest('.question-container');
                 const options = questionDiv.getElementsByClassName('option');
                 for (let option of options) {
                     option.classList.remove('selected');
                 }
-                
-                // Add selected class to the clicked option
+
                 radio.closest('.option').classList.add('selected');
+                markAnswered(questionId);
             }
-            
+
             function markAnswered(questionNum) {
-                // Find the question number element
                 const questionNumber = document.querySelector(`.question-number:nth-child(${questionNum})`);
                 if (questionNumber) {
                     questionNumber.classList.add('answered');
                 }
             }
-            
+
             function goToQuestion(num) {
-                // Add logic to navigate to specific question
                 window.location.href = 'Test?action=question&num=' + num + '&quizId=${quiz.quizID}';
             }
-            
+
             function prevQuestion() {
                 const currentNum = ${currentQuestionNum};
                 if (currentNum > 1) {
                     goToQuestion(currentNum - 1);
                 }
             }
-            
+
             function nextQuestion() {
                 const currentNum = ${currentQuestionNum};
                 const totalQuestions = ${totalQuestions};
@@ -288,12 +298,15 @@
                     goToQuestion(currentNum + 1);
                 }
             }
-            
-            // Thêm code JavaScript cho đồng hồ đếm ngược
+
+            let timerStarted = false;
             function startTimer(duration) {
-                var timer = duration;
-                var minutes, seconds;
-                var countdown = setInterval(function () {
+                if (timerStarted) return; 
+
+                timerStarted = true;
+                let timer = duration;
+                let minutes, seconds;
+                const countdown = setInterval(function () {
                     minutes = parseInt(timer / 60, 10);
                     seconds = parseInt(timer % 60, 10);
 
@@ -305,17 +318,13 @@
                     if (--timer < 0) {
                         clearInterval(countdown);
                         alert("Time's up!");
-                        // Tự động submit bài
-                         var form = document.getElementById('quizForm');
-                        form.action = "Test?action=submit";
-                        form.submit();
+                        document.getElementById('quizForm').submit();
                     }
                 }, 1000);
             }
 
-            // Lấy thời gian từ server và bắt đầu đếm ngược
-            var timeLimit = ${quiz.timeLimit}; // Thời gian làm bài tính bằng phút
-            startTimer(timeLimit * 60); // Chuyển đổi sang giây
+            var timeLimit = ${quiz.timeLimit}; 
+            startTimer(timeLimit * 60);
 
             function confirmSubmit() {
                 if (confirm("Bạn có chắc chắn muốn nộp bài không?\nLưu ý: Sau khi nộp bài, bạn sẽ không thể quay lại để sửa.")) {
@@ -325,16 +334,9 @@
                 }
             }
 
-            function submitOnTimeout() {
-                alert("Hết giờ làm bài!");
-                if (confirm("Thời gian làm bài đã hết. Bạn có muốn nộp bài không?")) {
-                    var form = document.getElementById('quizForm');
-                    form.action = "Test?action=submit";
-                    form.submit();
-                }
-            }
+            // Load saved answers when the page loads
+            window.onload = loadSavedAnswers;
 
-            
         </script>
     </body>
 </html>

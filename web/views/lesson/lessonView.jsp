@@ -400,7 +400,7 @@
 
                 <!-- Lesson Content -->
                 <div class="lesson-text-content">
-                    ${currentLesson.content}
+                    <a href="${currentLesson.documentURL}" >${currentLesson.documentURL}</a>
                 </div>
 
                 <!-- Navigation Buttons -->
