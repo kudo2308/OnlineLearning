@@ -589,7 +589,7 @@
                                 <div class="course-meta">
                                     <span class="lesson-count">
                                         <i class="fas fa-book-open"></i>
-                                        ${course.totalLesson} lessons
+                                        ${fn:length(lessonList)} lessons
                                     </span>
                                     <a href="${pageContext.request.contextPath}/lesson?courseId=${course.courseID}" 
                                        class="view-btn">
@@ -627,7 +627,7 @@
                             <div class="course-meta">
                                 <span class="lesson-count">
                                     <i class="fas fa-book-open"></i>
-                                    ${course.course.totalLesson} lessons
+                                    ${fn:length(lessonList)} lessons
                                 </span>
                                 <a href="${pageContext.request.contextPath}/lesson?courseId=${course.course.courseID}" 
                                    class="view-btn">
@@ -666,7 +666,6 @@
         </div>
     </div>
 
-    <%@include file="/common/footer.jsp" %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script>
         let searchTimeout;
