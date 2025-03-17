@@ -30,7 +30,7 @@ public class DeleteCourse extends HttpServlet {
             if (course == null) {
                 throw new Exception("Course not found");
             }
-            course.setStatus(false);
+            course.setStatus("Blocked");
             if (courseDAO.UpdateCourse(course)) {
                 response.sendRedirect("courses");
             } else {

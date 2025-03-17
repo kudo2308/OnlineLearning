@@ -80,7 +80,7 @@ public class EditCourse extends HttpServlet {
             int totalLesson = Integer.parseInt(request.getParameter("totalLesson"));
             Part filePart = request.getPart("image");
             Float price = Float.valueOf(request.getParameter("price"));
-            boolean status = request.getParameter("status").equals("1");
+            String status = request.getParameter("status");
 
             int courseId = Integer.parseInt(request.getParameter("courseId"));
 

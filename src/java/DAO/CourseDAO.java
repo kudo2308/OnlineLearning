@@ -89,8 +89,8 @@ public class CourseDAO extends DBContext {
         return -1;
     }
 
-     public List<Course> findByPage(int page, int userId) {
-
+    public List<Course> findByPage(int page, int userId) {
+        List<Course> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
                 .append("JOIN Account a ON co.ExpertID = a.UserID ")
@@ -111,12 +111,12 @@ public class CourseDAO extends DBContext {
 
             while (rs.next()) {
                 Course course = extractCourseFromResultSet(rs);
-                courses.add(course);
+                list.add(course);
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return courses;
+        return list;
     }
 
     private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
@@ -126,7 +126,7 @@ public class CourseDAO extends DBContext {
         String description = rs.getString("Description");
         String imageUrl = rs.getString("ImageUrl");
         int totalLesson = rs.getInt("TotalLesson");
-        boolean status = rs.getBoolean("Status");
+        String status = rs.getString("Status");
         Timestamp createdAt = rs.getTimestamp("CreatedAt");
         Timestamp updatedAt = rs.getTimestamp("UpdatedAt");
         float price = rs.getFloat("Price");
@@ -168,79 +168,90 @@ public class CourseDAO extends DBContext {
         return courses;
     }
 
-   public List<Course> findByPageFilterCategoryAndStatus(int page, int categoryIdRequest,
-            String statusRequest, int expertId) {
+    public List<Course> findByPageFilterCategoryAndStatus(Integer page, int categoryIdRequest,
+            String statusRequest, int expertId, String nameRequest) {
+        List<Course> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
                 .append("JOIN Account a ON co.ExpertID = a.UserID ")
                 .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
-                .append("WHERE co.[Status] LIKE ? ")
+                .append("WHERE co.[Status] LIKE ? and co.Title LIKE ? ")
                 .append("AND co.ExpertID = ? ");
 
         if (categoryIdRequest != 0) {
             sql.append("AND co.CategoryID = ? ");
         }
-
-        sql.append("ORDER BY co.CourseID ")
-                .append("OFFSET ? ROWS ")
-                .append("FETCH NEXT ? ROWS ONLY");
+        sql.append("ORDER BY co.CourseID ");
+        if (page != null) {
+            sql.append("OFFSET ? ROWS ")
+                    .append("FETCH NEXT ? ROWS ONLY");
+        }
 
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql.toString());
             ps.setString(1, "%" + statusRequest + "%");
-            ps.setInt(2, expertId);
+            ps.setString(2, "%" + nameRequest + "%");
+            ps.setInt(3, expertId);
 
             if (categoryIdRequest == 0) {
-                ps.setInt(3, (page - 1) * RECORD_PER_PAGE);
-                ps.setInt(4, RECORD_PER_PAGE);
+                if (page != null) {
+                    ps.setInt(4, (page - 1) * RECORD_PER_PAGE);
+                    ps.setInt(5, RECORD_PER_PAGE);
+                }
             } else {
-                ps.setInt(3, categoryIdRequest);
-                ps.setInt(4, (page - 1) * RECORD_PER_PAGE);
-                ps.setInt(5, RECORD_PER_PAGE);
+                ps.setInt(4, categoryIdRequest);
+                if (page != null) {
+                    ps.setInt(5, (page - 1) * RECORD_PER_PAGE);
+                    ps.setInt(6, RECORD_PER_PAGE);
+                }
             }
 
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 Course course = extractCourseFromResultSet(rs);
-                courses.add(course);
+                list.add(course);
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return courses;
+        return list;
     }
 
-    public List<Course> searchCourseByName(int page, String nameRequest, int userId) {
-
+    public List<Course> searchCourseByName(Integer page, String nameRequest, int userId) {
+        List<Course> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
                 .append("JOIN Account a ON co.ExpertID = a.UserID ")
                 .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
                 .append("WHERE co.Title LIKE ? ")
                 .append("AND co.ExpertID = ? ")
-                .append("ORDER BY co.CourseID ")
-                .append("OFFSET ? ROWS ")
-                .append("FETCH NEXT ? ROWS ONLY");
+                .append("ORDER BY co.CourseID ");
+        if (page != null) {
+            sql.append("OFFSET ? ROWS ")
+                    .append("FETCH NEXT ? ROWS ONLY");
+        }
 
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql.toString());
 
             ps.setString(1, "%" + nameRequest + "%");
             ps.setInt(2, userId);
-            ps.setInt(3, (page - 1) * RECORD_PER_PAGE);
-            ps.setInt(4, RECORD_PER_PAGE);
+            if (page != null) {
+                ps.setInt(3, (page - 1) * RECORD_PER_PAGE);
+                ps.setInt(4, RECORD_PER_PAGE);
+            }
 
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 Course course = extractCourseFromResultSet(rs);
-                courses.add(course);
+                list.add(course);
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return courses;
+        return list;
     }
 
     public boolean AddCourse(Course course) {
@@ -256,7 +267,7 @@ public class CourseDAO extends DBContext {
             ps.setInt(4, course.getCategoryID());
             ps.setString(5, course.getImageUrl());
             ps.setInt(6, course.getTotalLesson());
-            ps.setBoolean(7, course.isStatus());
+            ps.setString(7, course.getStatus());
             ps.setFloat(8, course.getPrice());
 
             int rowsInserted = ps.executeUpdate();
@@ -281,7 +292,7 @@ public class CourseDAO extends DBContext {
             ps.setInt(4, course.getCategoryID());
             ps.setString(5, course.getImageUrl());
             ps.setInt(6, course.getTotalLesson());
-            ps.setBoolean(7, course.isStatus());
+            ps.setString(7, course.getStatus());
             ps.setFloat(8, course.getPrice());
             ps.setInt(9, course.getCourseID());
 
@@ -313,11 +324,11 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[Status] = 1
+                    WHERE c.[Status] = 'Public'
                     ORDER BY c.[Price]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
-                    """;
+                    """; //error todo
         try (Connection connection = new DBContext().getConnection()) {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, offset);
@@ -333,7 +344,7 @@ public class CourseDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
@@ -386,7 +397,7 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[CourseID] = ? AND c.[Status] = 1
+                    WHERE c.[CourseID] = ? AND c.[Status] = 'Public'
                     """;
         try (Connection connection = new DBContext().getConnection()) {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -402,7 +413,7 @@ public class CourseDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
@@ -457,7 +468,7 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status] = 1
+                    WHERE (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status] = 'Public'
                     ORDER BY c.[CourseID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -479,7 +490,7 @@ public class CourseDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
@@ -521,7 +532,7 @@ public class CourseDAO extends DBContext {
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                     LEFT JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                    WHERE c.[Status] = 1
+                    WHERE c.[Status] = 'Public'
                     GROUP BY 
                         c.[CourseID], c.[Title], c.[Description], c.[Price], c.[ExpertID], 
                         c.[CategoryID], c.[ImageUrl], c.[TotalLesson], c.[Status], 
@@ -542,11 +553,11 @@ public class CourseDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                 course.setRegister(rs.getInt("NumOfRegister"));
-                
+
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 course.setExpert(expert);
@@ -582,7 +593,7 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[ExpertID] = ? AND c.[Status] = 1
+                    WHERE c.[ExpertID] = ? AND c.[Status] = 'Public'
                     ORDER BY c.[CourseID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -603,7 +614,7 @@ public class CourseDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
@@ -720,7 +731,7 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[CategoryID] = ? AND c.[Status] = 1
+                    WHERE c.[CategoryID] = ? AND c.[Status] = 'Public'
                     ORDER BY c.[CourseID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -741,7 +752,7 @@ public class CourseDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
@@ -781,7 +792,7 @@ public class CourseDAO extends DBContext {
                 course.setDescription(rs.getString("Description"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 searchResults.add(course);
@@ -828,7 +839,7 @@ public class CourseDAO extends DBContext {
                 course.setDescription(rs.getString("Description"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 categoryResults.add(course);
@@ -886,7 +897,7 @@ public class CourseDAO extends DBContext {
                 course.setDescription(rs.getString("Description"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 sortedResults.add(course);
@@ -913,7 +924,7 @@ public class CourseDAO extends DBContext {
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 courses.add(course);
             }
         } catch (SQLException e) {
@@ -958,4 +969,60 @@ public class CourseDAO extends DBContext {
         return null;
     }
 
+    public List<Course> findCouseByExpert(int userId) {
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM Course co ")
+                .append("JOIN Account a ON co.ExpertID = a.UserID ")
+                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
+                .append("WHERE co.ExpertID = ? ")
+                .append("ORDER BY co.CourseID ");
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int courseId = rs.getInt("CourseID");
+                String title = rs.getString("Title");
+                Course course = new Course();
+                course.setCourseID(courseId);
+                course.setTitle(title);
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return courses;
+    }
+
+    public boolean checkSellCourse(int courseId) {
+        boolean check = false;
+        StringBuilder sql = new StringBuilder();
+        sql.append("select * from Course c\n"
+                + "join Packages p on c.CourseID = p.CourseID\n"
+                + "join Lesson l on l.PackageID = p.PackageID\n"
+                + "where c.CourseID = ?");
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setInt(1, courseId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                check = true;
+                break;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return check;
+    }
 }

@@ -62,45 +62,39 @@
             <main class="ttr-wrapper">
                 <div class="container-fluid">
                     <div class="db-breadcrumb">
-                        <h4 class="breadcrumb-title">Courses</h4>
+                        <h4 class="breadcrumb-title">Packages</h4>
                         <ul class="db-breadcrumb-list">
                             <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                            <li>Courses</li>
+                            <li>Packages</li>
                         </ul>
                     </div>	
                     <div class="row">
                         <div class="col-lg-12 m-b30">
                             <div class="widget-box">
                                 <div class="wc-title">
-                                    <h4>Course List</h4>
+                                    <h4>Package List</h4>
                                 </div>
                                 <div class="widget-inner">
                                     <div class="mb-3 d-flex align-items-center gap-3">
-                                        <a id="addCourse" href="addCourse" class="btn btn-primary">Add Course</a>
+                                        <a id="addCourse" href="addPackage" class="btn btn-primary">Add Package</a>
 
-                                        <form action="courses" class="d-flex align-items-center mx-3">
-                                            <input type="text" id="searchName" name="name" placeholder="Search by name" value="${name}" class="form-control me-2">
-                                        <button id="searchButton" name="action" value="searchByName" class="btn btn-secondary">Search</button>
-                                    </form>
 
-                                    <form action="courses" class="d-flex align-items-center mx-3">
-                                        <select id="filterCategory" name="categoryId" class="form-control me-2">
-                                            <option value="0">All Category</option>
-                                            <c:forEach items="${categories}" var="categories">
-                                                <option ${categoryId == categories.categoryID ? 'selected' : ""} value="${categories.categoryID}">${categories.name}</option>
+
+                                        <form action="packages" class="d-flex align-items-center mx-3">
+                                            <select id="filterCategory" name="courseId" class="form-control me-2">
+                                                <option value="">All Courses</option>
+                                            <c:forEach items="${courses}" var="c">
+                                                <option ${c.courseID == courseId ? 'selected' : ""} value="${c.courseID}">${c.title}</option>
                                             </c:forEach>
                                         </select>
 
                                         <select id="filterStatus" name="status" class="form-control me-2">
                                             <option value="">All Status</option>
-                                            <option ${status eq 'Draft' ? 'selected' : ""} value="Draft">Draft</option>
-                                            <option ${status eq 'Pending' ? 'selected' : ""} value="Pending">Pending</option>
-                                            <option ${status eq 'Public' ? 'selected' : ""} value="Public">Public</option>
-                                            <option ${status eq 'Rejected' ? 'selected' : ""} value="Rejected">Rejected</option>
-                                            <option ${status eq 'Blocked' ? 'selected' : ""} value="Blocked">Blocked</option>
+                                            <option ${status eq '1' ? 'selected' : ""} value="1">Active</option>
+                                            <option ${status eq '0' ? 'selected' : ""} value="0">Blocked</option>
                                         </select>
 
-                                        <button id="filterButton" name="action" value="FilterCategoryAndStatus" class="btn btn-secondary">Filter</button>
+                                        <button id="filterButton" class="btn btn-secondary">Filter</button>
                                     </form>
                                 </div>
 
@@ -108,38 +102,26 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Image</th>
-                                            <th>Title</th>
-                                            <th>Expert</th>  
-                                            <th>Price</th> 
-                                            <th>Category</th>   
-                                            <th>Total Lessons</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="courseTableBody">
-                                        <c:forEach items="${courses}" var="courses">
+                                        <c:forEach items="${packages}" var="p">
 
                                             <tr>
-                                                <td>${courses.courseID}</td>
-                                                <td><img src=".${courses.imageUrl}" width="50"></td>
-                                                <td>${courses.title}</td>
-                                                <td>${courses.expert.fullName}</td>
-                                                <td>${courses.price}</td>
-                                                <td>${courses.category.name}</td>
-
-                                                <td>${courses.totalLesson}</td>
-                                                <td>${courses.status}</td>
+                                                <td>${p.packageID}</td>
+                                                <td>${p.name}</td>
+                                                <td>${p.description}</td>
+                                                <td>${p.status == true ? "Active" : "Blocked"}</td>
                                                 <td>
-                                                    <a href="editCourse?courseId=${courses.courseID}" class="btn btn-warning">Edit</a>
-                                                    <c:if test="${courses.status ne 'Blocked'}">
-                                                        <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
+                                                    <a href="editPackage?packageId=${p.packageID}" class="btn btn-warning">Edit</a>
+                                                    <c:if test="${p.status == true}">
+                                                        <a href="deletePackage?packageId=${p.packageID}" class="btn btn-danger">Delete</a>
                                                     </c:if>
-                                                    <a href="packages?courseId=${courses.courseID}" class="btn btn-danger">Packages</a>
-                                                    <c:if test="${courses.status ne 'Public' && courses.status ne 'Pending' && courses.status ne 'Blocked'}">
-                                                        <a href="sellCourse?courseId=${courses.courseID}" class="btn btn-warning">Sell</a>
-                                                    </c:if>
+                                                    <a href="lessons?packageId=${p.packageID}" class="btn btn-danger">Lessons</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>

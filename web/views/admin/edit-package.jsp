@@ -65,120 +65,74 @@
             <main class="ttr-wrapper">
                 <div class="container-fluid">
                     <div class="db-breadcrumb">
-                        <h4 class="breadcrumb-title">Edit Course</h4>
+                        <h4 class="breadcrumb-title">Edit Package</h4>
                         <ul class="db-breadcrumb-list">
                             <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-                            <li>Edit Course</li>
+                            <li>Edit Package</li>
                         </ul>
                     </div>
                     <div class="row">
                         <div class="col-lg-12 m-b30">
                             <div class="widget-box">
                                 <div class="wc-title">
-                                    <h4>Edit Course</h4>
+                                    <h4>Edit Package</h4>
                                 </div>
-                                <div class="wc-title">
-                                    <h4 style="color: red" >${msg}</h4>
-                            </div>
+                                <h4 style="color: red" >${msg}</h4>
                             <div class="widget-inner">
-                                <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-                                <form class="edit-profile m-b30" action="editCourse" method="post" enctype="multipart/form-data">
+                                <form class="edit-profile m-b30" action="editPackage" method="post">
+
                                     <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Title</label>
+                                        <label class="col-sm-2 col-form-label">Course</label>
                                         <div class="col-sm-7">
-                                            <input class="form-control" style="display: none" type="text" name="courseId" value="${course.courseID}">
-                                            <input class="form-control" type="text" name="title" value="${course.title}" required>
-                                            <c:forEach var="violation" items="${violations}">
-                                                <c:if test="${violation.propertyPath.toString() == 'title'}">
-                                                    <span style="color:red">${violation.message}</span>
-                                                </c:if>
-                                            </c:forEach>
+                                            <input class="form-control" type="hidden" name="packageId" value="${p.packageID}" required>
+                                            <select required class="form-control" name="courseIdEdit">
+                                                <c:forEach items="${courses}" var="c">
+                                                    <option value="${c.courseID}" ${c.courseID == p.course.courseID ? 'selected' : ''}>${c.title}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Name</label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" type="text" name="name" value="${p.name}" required>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Description</label>
                                         <div class="col-sm-7">
-                                            <textarea class="form-control" name="description" required>${course.description}</textarea>
-                                            <c:forEach var="violation" items="${violations}">
-                                                <c:if test="${violation.propertyPath.toString() == 'description'}">
-                                                    <span style="color:red">${violation.message}</span>
-                                                </c:if>
-                                            </c:forEach>
+                                            <textarea class="form-control" name="description" required>${p.description}</textarea>
                                         </div>
                                     </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Price</label>
-                                        <div class="col-sm-7">
-                                            <input class="form-control" type="number" name="price" value="${course.price}" required>
-                                            <c:forEach var="violation" items="${violations}">
-                                                <c:if test="${violation.propertyPath.toString() == 'price'}">
-                                                    <span style="color:red">${violation.message}</span>
-                                                </c:if>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Category</label>
-                                        <div class="col-sm-7">
-                                            <select class="form-control" name="categoryId" required>
-                                                <c:forEach items="${categories}" var="categories">
-                                                    <option ${course.category.categoryID == categories.categoryID ? 'selected' : ''} value="${categories.categoryID}">${categories.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                            <c:forEach var="violation" items="${violations}">
-                                                <c:if test="${violation.propertyPath.toString() == 'categoryId'}">
-                                                    <span style="color:red">${violation.message}</span>
-                                                </c:if>
-                                            </c:forEach>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Image</label>
-                                        <div class="col-sm-7">
-                                            <input class="form-control" type="file" name="image" accept="image/*">
-                                            <c:forEach var="violation" items="${violations}">
-                                                <c:if test="${violation.propertyPath.toString() == 'image'}">
-                                                    <span style="color:red">${violation.message}</span>
-                                                </c:if>
-                                            </c:forEach>
-                                            <img id="imagePreview" src="${course.imageUrl}" alt="${course.imageUrl}" margin-top: 10px; max-width: 100%;" />                                        
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Total Lessons</label>
-                                        <div class="col-sm-7">
-                                            <input class="form-control" type="number" name="totalLesson" value="${course.totalLesson}" min="1" required>
-                                            <c:forEach var="violation" items="${violations}">
-                                                <c:if test="${violation.propertyPath.toString() == 'totalLesson'}">
-                                                    <span style="color:red">${violation.message}</span>
-                                                </c:if>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Status</label>
                                         <div class="col-sm-7">
-                                            <select class="form-control" name="status" required>
-                                                <option value="Draft" ${course.status eq 'Draft' ? 'selected' : ""}>Draft</option>
-                                                <option value="Blocked" ${course.status == 'Blocked' ? 'selected' : ""}>Blocked</option>
+                                            <select class="form-control" name="statusEdit">
+                                                <option ${p.status ==  true? 'selected' : ''} value="1">Active</option>
+                                                <option ${!p.status ==  true ? 'selected' : ''} value="0">Blocked</option>
                                             </select>
-
                                         </div>
                                     </div>
-
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Created At</label>
+                                        <div class="col-sm-7">
+                                            <input disabled class="form-control" type="datetime-local" name="createdAt" value="${p.createdAt}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Updated At</label>
+                                        <div class="col-sm-7">
+                                            <input disabled class="form-control" type="datetime-local" name="createdAt" value="${p.updatedAt}">
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-2"></div>
                                         <div class="col-sm-7">
-                                            <button type="submit" class="btn btn-primary">Save Course</button>
-                                            <a type="reset" href="courses" class="btn btn-secondary">Back</a>
+                                            <button type="submit" class="btn btn-primary">Save Package</button>
+                                            <a type="reset" href="packages" class="btn btn-secondary">Back</a>
                                         </div>
                                     </div>
                                 </form>
@@ -209,9 +163,6 @@
         <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="assets/admin/assets/js/admin.js"></script>
         <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
-
-        <script>
-        </script>
     </body>
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
