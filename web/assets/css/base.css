@@ -490,3 +490,7 @@ hr {
 .learn-btn:hover {
     background-color: #574ce0;
 }
+
+.widget a{
+    color: white;
+}

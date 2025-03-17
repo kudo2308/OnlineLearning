@@ -51,7 +51,7 @@
                     <a href="changepassuser">Change Password</a>
                     <a href="${pageContext.request.contextPath}/private">Social & Privacy</a>
                 </div>
-                <div class="profile-container ms-4 flex-grow-1">
+                <div class="profile-container ms-4 flex-grow-1" style="border: 1px solid #f4f1f1">
                     <div class="header-profile">
                         <h1>Public profile</h1>
                         <p class="text-muted">Add information about yourself</p>

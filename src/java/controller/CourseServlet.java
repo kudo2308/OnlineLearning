@@ -2,6 +2,7 @@ package controller;
 
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
+import DAO.LessonDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import java.util.List;
 import model.Category;
 import model.Course;
 import model.CourseWithCategory;
+import model.Lesson;
 
 @WebServlet(name = "CourseServlet", urlPatterns = {"/course"})
 public class CourseServlet extends HttpServlet {
@@ -23,7 +25,7 @@ public class CourseServlet extends HttpServlet {
         try {
             CourseDAO dao = new CourseDAO();
             CategoryDAO categoryDAO = new CategoryDAO();
-            
+            LessonDAO lessonDAO = new LessonDAO();
             // Get search and filter parameters
             String searchQuery = request.getParameter("search");
             String categoryFilter = request.getParameter("category");
@@ -43,6 +45,13 @@ public class CourseServlet extends HttpServlet {
             int recordsPerPage = 4;
             int offset = (page - 1) * recordsPerPage;
             
+            // Retrieve user email from session
+            String userEmail = (String) request.getSession().getAttribute("userEmail");
+            
+            // Get courses by user email
+            List<Course> userCourses = dao.getCourseByEmail(userEmail);
+            request.setAttribute("userCourses", userCourses);
+
             // Get courses with categories
             List<Course> courseLst;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {

@@ -19,7 +19,7 @@ import java.util.Map;
         filterName = "RoleFilter",
         urlPatterns = {
             // URL cho Expert
-            "/courses", "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion", "/manageQuestion",
+             "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion", "/manageQuestion",
             "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz",
             // URL cho Admin
             "/dashboard.jsp", "/UserList"
@@ -80,7 +80,7 @@ public class RoleFilter implements Filter {
             return false;
         }
         String[] expertURLs = {
-            "/courses", "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion",
+             "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion",
             "/manageQuestion", "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz"
         };
         String[] adminURLs = {

@@ -323,6 +323,103 @@
                     width: 100%;
                 }
             }
+
+            /* Document Link Styles */
+            .document-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 1rem 1.5rem;
+                background-color: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 0.5rem;
+                color: var(--text-color);
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+            .document-link:hover {
+                background-color: #f1f5f9;
+                border-color: var(--primary-light);
+                transform: translateY(-2px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            .document-link i {
+                color: var(--primary-color);
+                font-size: 1.1rem;
+            }
+
+            .document-link i.fa-external-link-alt {
+                font-size: 0.9rem;
+                opacity: 0.7;
+            }
+
+            /* Breadcrumb Styles */
+            .breadcrumb {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 1.25rem 1.75rem;
+                background-color: white;
+                border-radius: 0.75rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                margin-bottom: 2rem;
+                font-size: 1rem;
+            }
+
+            .breadcrumb a {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.5rem;
+            }
+
+            .breadcrumb a:hover {
+                color: var(--primary-dark);
+                background-color: rgba(79, 70, 229, 0.1);
+            }
+
+            .breadcrumb span {
+                color: var(--text-light);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .breadcrumb .current-page {
+                color: var(--text-color);
+                font-weight: 600;
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.25rem 0.5rem;
+                background-color: #f8fafc;
+                border-radius: 0.5rem;
+            }
+
+            .breadcrumb i {
+                font-size: 1.1rem;
+                color: var(--text-light);
+            }
+
+            .breadcrumb i.fa-home {
+                font-size: 1.25rem;
+                color: var(--primary-color);
+            }
+
+            .breadcrumb i.fa-chevron-right {
+                opacity: 0.5;
+                font-size: 0.9rem;
+                margin: 0 0.25rem;
+            }
         </style>
     </head>
     <body>
@@ -352,13 +449,21 @@
             <!-- Main Content -->
             <div class="lesson-content">
                 <!-- Breadcrumb -->
-                <div class="breadcrumb">
-                    <a href="${pageContext.request.contextPath}/course">Courses</a>
-                    <span>/</span>
-                    <a href="${pageContext.request.contextPath}/coursedetail?courseId=${courseId}">${currentLesson.course.title}</a>
-                    <span>/</span>
-                    <span>${currentLesson.title}</span>
-                </div>
+                <nav class="breadcrumb" aria-label="breadcrumb">
+                    <a href="${pageContext.request.contextPath}/course">
+                        <i class="fas fa-home"></i>
+                        <span>Courses</span>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="${pageContext.request.contextPath}/coursedetail?courseId=${courseId}">
+                        ${currentLesson.course.title}
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="current-page">
+                        <i class="fas fa-chevron-right"></i>
+                        ${currentLesson.title}
+                    </span>
+                </nav>
 
                 <!-- Lesson Header -->
                 <div class="lesson-header">
@@ -400,7 +505,11 @@
 
                 <!-- Lesson Content -->
                 <div class="lesson-text-content">
-                    ${currentLesson.content}
+                    <a href="${currentLesson.documentUrl}" class="document-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Tài liệu tham khảo</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
                 </div>
 
                 <!-- Navigation Buttons -->
@@ -470,17 +579,7 @@
                 </style>
             </div>
         </div>
-<!--         Debug information 
-        <div class="debug-info" style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 8px;">
-            <h3 style="margin-bottom: 10px; color: #374151;">Debug Information:</h3>
-            <p>Course ID: ${courseId}</p>
-            <p>Total Lessons: ${fn:length(lessonList)}</p>
-            <p>Current Lesson ID: ${currentLesson.lessonID}</p>
-            <h4 style="margin: 10px 0;">All Lessons:</h4>
-            <c:forEach items="${lessonList}" var="lesson">
-                <p>Lesson ID: ${lesson.lessonID}, Title: ${lesson.title}</p>
-            </c:forEach>
-        </div>-->
-        <%@include file="/common/footer.jsp" %>
+
+      
     </body>
 </html>

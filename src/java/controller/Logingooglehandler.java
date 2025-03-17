@@ -26,8 +26,13 @@ public class Logingooglehandler extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String error = request.getParameter("error");
+        if(error != null && !error.isEmpty()){
+            request.setAttribute("errorlogin", "Login by Gmail Fail");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
         String code = request.getParameter("code");
-        Google gg = new Google();
         OTP otp = new OTP();
         String accessToken = Google.getToken(code);
         GoogleAccount acc = Google.getUserInfo(accessToken);
@@ -71,6 +76,7 @@ public class Logingooglehandler extends HttpServlet {
             newSessionCookie.setHttpOnly(true);
             response.addCookie(newSessionCookie);
             Account account = dao.getAccountByEmail(acc.getEmail());
+            dao.updateUserUpdate(acc.getEmail());
             otp.createSesssionIdApprove(sessionId, account.getUserID(), account.getFullName(), account.getDescription(), account.getImage(), account.getRole().getRoleName(), account.getSubScriptionType(),acc.getEmail());
             response.sendRedirect("home");
             return;

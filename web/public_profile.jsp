@@ -30,12 +30,23 @@
         </nav>
         <br>
     <c:if test="${empty requestScope.privateUser}">
+        <div class="header-profile" style="padding-top:10px; margin-bottom:10px; background-color:#d4e2df">
         <main class="profile-container">
             <section class="profile-intro">
                 <!-- Avatar or user image -->
                 <div class="profile-avatar">
-                    <!-- Replace with real avatar image URL if desired -->
-                    <img src=".${requestScope.img}" alt=".${requestScope.img}"/>
+                   
+                      <c:choose>
+                        <c:when test="${empty requestScope.img || requestScope.img == '/assets/images/profile/unknow.jpg'}">
+                            <img src="assets/images/avatar/unknow.jpg"  alt="Avatar">
+                        </c:when>
+                        <c:when test="${fn:startsWith(requestScope.img, 'https://')}">
+                            <img  src="${requestScope.img}">
+                        </c:when>
+                        <c:otherwise>
+                            <img src=".${requestScope.img}" alt="Avatar">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
                 <!-- User basic info -->
@@ -67,7 +78,7 @@
                         </c:if>                           
                         <c:if test="${not empty sessionScope.linkedin}">
                             <a 
-                                href="https://linkedin.com/in/${sessionScope.linkedin}" 
+                                href="https://linkedin.com/${sessionScope.linkedin}" 
                                 class="social-link" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
@@ -96,7 +107,7 @@
                 <p>${sessionScope.description}</p>
             </section>
         </main>
-
+    </div>
         <!-- Courses Section -->
         <c:if test="${not empty requestScope.recentCourses}">   
             <div class="product-list">
@@ -161,7 +172,7 @@
     </c:if>
     <c:if test="${not empty requestScope.privateUser}">   
         <br>
-        <h1>${requestScope.privateUser}</h1>
+        <h1 style="text-align: center">${requestScope.privateUser}</h1>
         <br>
     </c:if>
     <jsp:include page="common/footer.jsp"></jsp:include> 

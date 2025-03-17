@@ -20,9 +20,10 @@ public class Security {
     public static String decode(String input) {
         byte[] s = Base64.getDecoder().decode(input);
         String code = new String(s);
-        if (code.substring(0, 3).compareTo(SECRET_KEY) == 0) {
-            return code.substring(3);
-        }
+
+        if (code.startsWith(SECRET_KEY)) {
+            return code.substring(SECRET_KEY.length());
+        }     
         return code;
     }
 

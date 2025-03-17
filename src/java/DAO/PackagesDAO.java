@@ -258,7 +258,10 @@ public class PackagesDAO {
 
     public static void main(String[] args) {
         PackagesDAO pack = new PackagesDAO();
-        System.out.println(pack.findPackageById(1));
+        List<Packages> list = pack.findPackagesByCourseId(1);
+        for (Packages packages : list) {
+            System.out.println(packages.getName());
+        }
     }
 
 }

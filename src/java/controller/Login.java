@@ -17,15 +17,14 @@ import model.Account;
 @WebServlet(name = "Login", urlPatterns = {"/login"})
 public class Login extends HttpServlet {
 
-    
-        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         String email = request.getParameter("email");
         String pass = request.getParameter("pass");
         String rem = request.getParameter("remember");
-        
+
         if ((email == null || email.isEmpty()) && (pass == null || pass.isEmpty())) {
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
@@ -44,9 +43,9 @@ public class Login extends HttpServlet {
         LoginDAO d = new LoginDAO();
         OTP otp = new OTP();
         if (!otp.isRedisAvailable()) {
-                request.setAttribute("errorlogin", "No connect Session Server");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-                return;
+            request.setAttribute("errorlogin", "No connect Session Server");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
         }
         Cookie us = new Cookie("email", email);
         Cookie pas = new Cookie("pass", pass);
@@ -103,9 +102,9 @@ public class Login extends HttpServlet {
         if (acc.getDescription() == null) {
             acc.setDescription("");
         }
-        
- otp.createSesssionIdApprove(sessionId, acc.getUserID(), acc.getFullName(), acc.getDescription(), acc.getImage(), acc.getRole().getRoleName(), acc.getSubScriptionType(),email);
 
+        otp.createSesssionIdApprove(sessionId, acc.getUserID(), acc.getFullName(), acc.getDescription(), acc.getImage(), acc.getRole().getRoleName(), acc.getSubScriptionType(), email);
+        d.updateUserUpdate(email);
         Cookie newSessionCookie = new Cookie("SessionID_User", sessionId);
         newSessionCookie.setMaxAge(60 * 60 * 24);
         newSessionCookie.setHttpOnly(true);
@@ -115,27 +114,25 @@ public class Login extends HttpServlet {
 
         if (session.getAttribute("account") == null) {
 
-                Map<String, String> sessionData = otp.getSessionData(sessionId);
-                if (sessionData != null) {
-                    session.setAttribute("account", sessionData);
-                }
+            Map<String, String> sessionData = otp.getSessionData(sessionId);
+            if (sessionData != null) {
+                session.setAttribute("account", sessionData);
+            }
         }
-           String role = acc.getRole().getRoleName();
-         if ("ADMIN".equalsIgnoreCase(role)) {
+        String role = acc.getRole().getRoleName();
+        if ("ADMIN".equalsIgnoreCase(role)) {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
             return;
-        }      
+        }
         response.sendRedirect("home");
     }
 
-   
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-  
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
