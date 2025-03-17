@@ -2,7 +2,7 @@
 /dist/
 /build/
 # Bỏ qua thư mục build và nbproject
-/build/
+/build/web/
 /nbproject/
 
 # Bỏ qua file tạm thời hoặc build khác

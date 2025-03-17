@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -25,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mapper.CourseMapper;
 import model.Category;
@@ -108,7 +110,7 @@ public class EditCourse extends HttpServlet {
                 return;
             }
             CourseMapper.mapUpdateCoursetoCourse(course, courseRequest);
-            
+
             String fileName = extractFileName(filePart);
 
             if (!fileName.isEmpty()) {
@@ -117,7 +119,22 @@ public class EditCourse extends HttpServlet {
             }
 
             //example experId = 2
-            course.setExpertID(2);
+            // lay userid tu sesson
+            HttpSession session = request.getSession();
+
+            Object accountObj = session.getAttribute("account");
+
+            if (accountObj == null) {
+                throw new Exception("Session not found!");
+            }
+
+            String userID = null;
+            if (accountObj instanceof Map) {
+                Map<String, String> accountData = (Map<String, String>) accountObj;
+                userID = accountData.get("userId");
+            }
+            int userId = Integer.parseInt(userID);
+            course.setExpertID(userId);
 
             if (courseDAO.UpdateCourse(course)) {
                 response.sendRedirect("editCourse?courseId=" + courseId);
