@@ -22,20 +22,15 @@
     </form>
 
     <!-- Category dropdown form -->
-    <form action="action"></form>
     <select id="categories-dropdown" onchange="this.form.submit()">
-        <option href="${pageContext.request.contextPath}/courses">All categories</option>
-        <div class="material-icons md-18">
-            arrow_drop_down
-            <div class="dropdown-content">
-                <c:forEach var="category" items="${categories}">
-                    <option href="${pageContext.request.contextPath}/products?category=${category.categoryID}">${category.name}</option>
-                </c:forEach>
-
-            </div>
+        <option value="${pageContext.request.contextPath}/CourseSearch">All categories</option>
+        <c:forEach var="category" items="${categories}">
+            <option value="${pageContext.request.contextPath}/CourseSearch?categoryId=${category.categoryID}">${category.name}</option>
+        </c:forEach>
     </select>
 
-    <div class="right">
+
+    <div class="right-header">
         <c:choose>
             <c:when test="${not empty sessionScope.account && sessionScope.account.roles == 'Expert'}">
                 <a id="my-course" class="instructor"
@@ -110,9 +105,10 @@
                         <ul class="acount-menu">
                             <li><a href="${pageContext.request.contextPath}/publicprofile?email=${sessionScope.account.gmail}">View Profile</a></li>
                             <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
+                            <li><a href="${pageContext.request.contextPath}/myblog">My blog</a></li>
                             <li><a href="${pageContext.request.contextPath}/private">Social & Privacy</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Sign out</a></li>
-                               
+
                         </ul>
                     </div>
                 </div>

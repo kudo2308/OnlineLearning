@@ -41,14 +41,14 @@ nav a:hover {
     background-color: #DDDDDD;
 }
 
-.right {
+.right-header {
     width: 30%;
     display: flex;
     justify-content: end;
     align-items: center
 }
 
-.right a{
+.right-header a{
     text-decoration: none;
 }
 
@@ -271,7 +271,6 @@ header {
 }
 
 /* Dropdown menu */
-/* Dropdown menu */
 .dropdown-content {
     position: absolute;
     right: -60px;
@@ -326,7 +325,8 @@ header {
     font-size: 14px;
 }
 .account-info p {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+    margin-left: 5px;
 }
 .account-name {
     white-space: nowrap;
@@ -493,4 +493,15 @@ hr {
 
 .widget a{
     color: white;
+}
+#categories-dropdown {
+    position: relative;
+    z-index: 10; /* Đảm bảo rằng dropdown category không bị ẩn dưới các thành phần khác */
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.popover-container {
+    position: relative;
+    z-index: 5; /* Đảm bảo rằng dropdown account không che khuất dropdown category */
 }

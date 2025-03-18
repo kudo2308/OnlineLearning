@@ -214,9 +214,9 @@ public class BlogController extends HttpServlet {
         blog.setCategoryID(categoryId);
         blog.setImgUrl(imageUrl);
         if (status.equals("true")) {
-            blog.setStatus(true);
+            blog.setStatus("public");
         } else {
-            blog.setStatus(false);
+            blog.setStatus("private");
         }
 
         BlogDAO blogDAO = new BlogDAO();

@@ -20,14 +20,14 @@ public class Blog {
     private Date createAt;
     private Date UpdateAt;
     private int categoryID;
-    private boolean status;
+    private String status;
     private Account author;
     private Category category;
     
     public Blog() {
     }
 
-    public Blog(int blogId, String imgUrl, String title, String content, int authorId, Date createAt, Date UpdateAt, int categoryID, boolean status, Account author, Category category) {
+    public Blog(int blogId, String imgUrl, String title, String content, int authorId, Date createAt, Date UpdateAt, int categoryID, String status, Account author, Category category) {
         this.blogId = blogId;
         this.imgUrl = imgUrl;
         this.title = title;
@@ -59,11 +59,11 @@ public class Blog {
     
     
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

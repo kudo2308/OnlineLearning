@@ -438,15 +438,44 @@ public class RegistrationDAO extends DBContext {
         return NumOfRegister;
     }
 
-    public static void main(String[] args) {
-        try {
-            RegistrationDAO registrationDAO = new RegistrationDAO();
-            int numofreg = 0;
-            numofreg = registrationDAO.getNumberOfRegistrationByCourseId(1);
-            System.out.println(numofreg);
-        } catch (Exception e) {
+    public List<int[]> getCourseIdsAndUserIds() {
+        List<int[]> courseUserIds = new ArrayList<>();
+        String sql = "SELECT userID, courseID FROM Registration";
+
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                int userID = rs.getInt("userID");
+                int courseID = rs.getInt("courseID");
+                courseUserIds.add(new int[]{userID, courseID});
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
+        return courseUserIds;
+    }
+    
+    public boolean isCourseRegisteredByUser(int userID, int courseID) {
+    String sql = "SELECT COUNT(*) FROM Registration WHERE userID = ? AND courseID = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setInt(1, userID);
+        stmt.setInt(2, courseID);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+    public static void main(String[] args) {
+        RegistrationDAO regisDAO = new RegistrationDAO();
+        boolean isRegistered = regisDAO.isCourseRegisteredByUser(2, 1);
+        System.out.println(isRegistered);
+    }
 }

@@ -39,7 +39,7 @@ public class BlogDAO extends DBContext {
                     FROM [dbo].[Blog] b
                     JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                     JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                    WHERE b.[Status] = 1
+                    WHERE b.Status = 'public'
                     ORDER BY b.[BlogID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -57,7 +57,7 @@ public class BlogDAO extends DBContext {
                 blog.setAuthorId(rs.getInt("AuthorID"));
                 blog.setCategoryID(rs.getInt("CategoryID"));
                 blog.setImgUrl(rs.getString("ImageUrl"));
-                blog.setStatus(rs.getBoolean("Status"));
+                blog.setStatus(rs.getString("Status"));
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
@@ -74,66 +74,6 @@ public class BlogDAO extends DBContext {
             System.out.println(ex);
         }
         return blogList;
-    }
-
-    public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
-        List<Course> courseList = new ArrayList<>();
-        String sql = """
-                    SELECT c.[CourseID]
-                          ,c.[Title]
-                          ,c.[Description]
-                          ,c.[Price]
-                          ,c.[ExpertID]
-                          ,c.[CategoryID]
-                          ,c.[ImageUrl]
-                          ,c.[TotalLesson]
-                          ,c.[Status]
-                          ,c.[CreatedAt]
-                          ,c.[UpdatedAt]
-                          ,a.FullName as ExpertName
-                          ,cat.Name as CategoryName
-                    FROM [dbo].[Course] c
-                    JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
-                    JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[CategoryID] = ? AND c.[Status] = 1
-                    ORDER BY c.[CourseID]
-                    OFFSET ? ROWS
-                    FETCH NEXT ? ROWS ONLY;
-                    """;
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, categoryId);
-            st.setInt(2, offset);
-            st.setInt(3, recordsPerPage);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                Course course = new Course();
-                course.setCourseID(rs.getInt("CourseID"));
-                course.setTitle(rs.getString("Title"));
-                course.setDescription(rs.getString("Description"));
-                course.setPricePackageID(rs.getInt("Price"));
-                course.setExpertID(rs.getInt("ExpertID"));
-                course.setCategoryID(rs.getInt("CategoryID"));
-                course.setImageUrl(rs.getString("ImageUrl"));
-                course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
-                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
-                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-
-                Account expert = new Account();
-                expert.setFullName(rs.getString("AuthorName"));
-                course.setExpert(expert);
-
-                Category category = new Category();
-                category.setName(rs.getString("CategoryName"));
-                course.setCategory(category);
-
-                courseList.add(course);
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-        return courseList;
     }
 
     public int getTotalBlogs() {
@@ -166,7 +106,7 @@ public class BlogDAO extends DBContext {
                     FROM [dbo].[Blog] b
                     JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                     JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                    WHERE cat.CategoryID = ?
+                    WHERE cat.CategoryID = ? and b.Status = 'public'
                     """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -180,7 +120,7 @@ public class BlogDAO extends DBContext {
                 blog.setAuthorId(rs.getInt("AuthorID"));
                 blog.setCategoryID(rs.getInt("CategoryID"));
                 blog.setImgUrl(rs.getString("ImageUrl"));
-                blog.setStatus(rs.getBoolean("Status"));
+                blog.setStatus(rs.getString("Status"));
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
@@ -208,7 +148,7 @@ public class BlogDAO extends DBContext {
                 FROM [dbo].[Blog] b
                 JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                 JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                WHERE cat.CategoryID = ?
+                WHERE cat.CategoryID = ? and b.Status = 'public'
                 ORDER BY b.[CreatedAt] DESC
                 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
                 """;
@@ -227,7 +167,7 @@ public class BlogDAO extends DBContext {
                 blog.setAuthorId(rs.getInt("AuthorID"));
                 blog.setCategoryID(rs.getInt("CategoryID"));
                 blog.setImgUrl(rs.getString("ImageUrl"));
-                blog.setStatus(rs.getBoolean("Status"));
+                blog.setStatus(rs.getString("Status"));
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
@@ -250,20 +190,20 @@ public class BlogDAO extends DBContext {
     public Blog getBlogByBlogId(int blogId) {
         String sql = """
                     SELECT b.[BlogID]
-                          ,b.[Title]
-                          ,b.[Content]
-                          ,b.[AuthorID]
-                          ,b.[CategoryID]
-                          ,b.[ImageUrl]
-                          ,b.[Status]
-                          ,b.[CreatedAt]
-                          ,b.[UpdatedAt]
-                          ,a.FullName as AuthorName
-                          ,cat.Name as CategoryName
-                    FROM [dbo].[Blog] b
-                    JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
-                    JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                    WHERE b.BlogID = ?
+                                              ,b.[Title]
+                                              ,b.[Content]
+                                              ,b.[AuthorID]
+                                              ,b.[CategoryID]
+                                              ,b.[ImageUrl]
+                                              ,b.[Status]
+                                              ,b.[CreatedAt]
+                                              ,b.[UpdatedAt]
+                                              ,a.FullName as AuthorName
+                                              ,cat.Name as CategoryName
+                                        FROM [dbo].[Blog] b
+                                        JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
+                                        JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
+                                        WHERE b.BlogID = 1 and b.Status = 'public'
                     """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -277,7 +217,7 @@ public class BlogDAO extends DBContext {
                 blog.setAuthorId(rs.getInt("AuthorID"));
                 blog.setCategoryID(rs.getInt("CategoryID"));
                 blog.setImgUrl(rs.getString("ImageUrl"));
-                blog.setStatus(rs.getBoolean("Status"));
+                blog.setStatus(rs.getString("Status"));
                 blog.setCreateAt(rs.getDate("CreatedAt"));
                 blog.setUpdateAt(rs.getDate("UpdatedAt"));
 
@@ -336,7 +276,7 @@ public class BlogDAO extends DBContext {
             ps.setInt(3, blog.getAuthorId());
             ps.setInt(4, blog.getCategoryID());
             ps.setString(5, blog.getImgUrl());
-            ps.setBoolean(6, blog.isStatus());
+            ps.setString(6, blog.getStatus());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0; // Trả về true nếu thêm thành công
@@ -347,22 +287,96 @@ public class BlogDAO extends DBContext {
         return false;
     }
 
+    public List<Blog> getBlogByUserId(int userId) {
+        List<Blog> blogList = new ArrayList<>();
+        String sql = """
+                    SELECT b.[BlogID]
+                          ,b.[Title]
+                          ,b.[Content]
+                          ,b.[AuthorID]
+                          ,b.[CategoryID]
+                          ,b.[ImageUrl]
+                          ,b.[Status]
+                          ,b.[CreatedAt]
+                          ,b.[UpdatedAt]
+                          ,a.FullName as AuthorName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Blog] b
+                    JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
+                    JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
+                    WHERE a.UserID = ? and b.Status = 'public'
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setBlogId(rs.getInt("BlogID"));
+                blog.setTitle(rs.getString("Title"));
+                blog.setContent(rs.getString("Content"));
+                blog.setAuthorId(rs.getInt("AuthorID"));
+                blog.setCategoryID(rs.getInt("CategoryID"));
+                blog.setImgUrl(rs.getString("ImageUrl"));
+                blog.setStatus(rs.getString("Status"));
+                blog.setCreateAt(rs.getDate("CreatedAt"));
+                blog.setUpdateAt(rs.getDate("UpdatedAt"));
+
+                Account author = new Account();
+                author.setFullName(rs.getString("AuthorName"));
+                blog.setAuthor(author);
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                blog.setCategory(category);
+
+                blogList.add(blog);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return blogList;
+    }
+
+    public void deleteBlog(int blogId) {
+        String sql = "DELETE FROM Blog WHERE BlogID = ?";
+        try (
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, blogId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateBlog(Blog blog) {
+        String sql = "UPDATE Blog SET Title = ?, Content = ?, ImageUrl = ?, CategoryID = ?, Status = ?, UpdatedAt = GETDATE() WHERE BlogID = ? AND AuthorID = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, blog.getTitle());
+            stmt.setString(2, blog.getContent());
+            stmt.setString(3, blog.getImgUrl());
+            stmt.setInt(4, blog.getCategoryID());
+            stmt.setString(5, blog.getStatus());
+            stmt.setInt(6, blog.getBlogId());
+            stmt.setInt(7, blog.getAuthorId());
+
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Blog updated successfully.");
+            } else {
+                System.out.println("No blog updated. Check permissions.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         BlogDAO blogDAO = new BlogDAO();
-        Blog newBlog = new Blog();
+        Blog newBlog = blogDAO.getBlogByBlogId(5);
 
-        newBlog.setTitle("Học lập trình Java hiệu quả");
-        newBlog.setContent("Hướng dẫn từng bước giúp bạn tiếp cận Java nhanh nhất.");
-        newBlog.setAuthorId(2); // ID tác giả
-        newBlog.setCategoryID(2); // ID danh mục
-        newBlog.setImgUrl("/assets/images/java-blog.jpg");
-        newBlog.setStatus(true);
-
-        boolean success = blogDAO.addBlog(newBlog);
-        if (success) {
-            System.out.println("Thêm bài blog thành công!");
-        } else {
-            System.out.println("Thêm bài blog thất bại!");
-        }
+        blogDAO.deleteBlog(9);
     }
 }

@@ -85,10 +85,19 @@
                             <div class="course-detail-bx">
                                 <div class="course-price">
                                     <h4 class="price">${course.price}đ</h4>
-                                </div>	
-                                <div class="course-buy-now text-center">
-                                    <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
-                                </div>                                    
+                                </div>
+                                <c:choose>
+                                    <c:when test="${isRegistered}">
+                                        <div class="course-buy-now text-center">
+                                            <a class="btn radius-xl text-uppercase go-cart" href="${pageContext.request.contextPath}/course?id=${course.courseID}">Go to Course</a>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="course-buy-now text-center">
+                                            <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
+                                        </div>  
+                                    </c:otherwise>
+                                </c:choose>                                   
 
                                 <c:choose>
                                     <c:when test="${isInCart}">

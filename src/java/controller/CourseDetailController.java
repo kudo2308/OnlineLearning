@@ -107,6 +107,9 @@ public class CourseDetailController extends HttpServlet {
         QuizDAO quizDAO = new QuizDAO();
         int countQuiz = quizDAO.countQuizByCourseId(courseId);
 
+        boolean isRegistered = regisDAO.isCourseRegisteredByUser(acc.getUserID(), courseId); // Kiểm tra xem người dùng đã đăng ký khóa học chưa
+        System.out.println(isRegistered);
+        request.setAttribute("isRegistered", isRegistered);  // Truyền thông tin về việc đăng ký khóa học vào JSP
         request.setAttribute("packageLessonMap", packageLessonMap);
         request.setAttribute("packageList", packageList);
         request.setAttribute("isInCart", isInCart);
