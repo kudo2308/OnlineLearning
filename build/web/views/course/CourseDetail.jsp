@@ -85,7 +85,6 @@
                             <div class="course-detail-bx">
                                 <div class="course-price">
                                     <h4 class="price">${course.price}đ</h4>
-<<<<<<< HEAD
                                 </div>
                                 <c:choose>
                                     <c:when test="${isRegistered}">
@@ -100,28 +99,21 @@
                                     </c:otherwise>
                                 </c:choose>                                   
 
-=======
-                                </div>	
-                                <div class="course-buy-now text-center">
-                                    <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
-                                </div>                                    
->>>>>>> 7adf8f03749f1b4abf7ad6d0ae557ce372b6528b
                                 <c:choose>
-                                    <c:when test="${isExist == 1}">
+                                    <c:when test="${isInCart}">
                                         <div class="course-buy-now text-center">
-                                            <a class="go-cart" href="${pageContext.request.contextPath}/cart" class="btn radius-xl text-uppercase">Go to cart</a>
-                                        </div> 
+                                            <a class="btn radius-xl text-uppercase go-cart" href="${pageContext.request.contextPath}/cart">Go to Cart</a>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="course-buy-now text-center">
-                                            <form action="cart?action=add" method="post">
-                                                <input value="${course.courseID}" type="text" name="courseId" hidden>
+                                            <form action="${pageContext.request.contextPath}/cart?action=add" method="post">
+                                                <input value="${course.courseID}" type="hidden" name="courseId">
                                                 <button class="btn radius-xl text-uppercase cart-add" type="submit">Add to cart</button>
                                             </form>                                
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
-
 
 
 
@@ -207,17 +199,21 @@
                             </div>
                             <div class="m-b30" id="curriculum">
                                 <h4>Curriculum</h4>
-                                <ul class="curriculum-list">
-                                    <c:forEach var="lessonList" items="${lessonList}">                                       
-                                        <li class="curriculum-list-box">
-                                            <div >
-                                                <span>Lesson ${lessonList.orderNumber}.</span> ${lessonList.title}
-
-                                            </div>
-                                            <span>${lessonList.duration} minutes</span>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
+                                <c:forEach var="pack" items="${packageList}">
+                                    <div class="package-section">
+                                        <h5>Package: ${pack.name}</h5>
+                                        <ul class="curriculum-list">
+                                            <c:forEach var="lesson" items="${packageLessonMap[pack]}">
+                                                <li class="curriculum-list-box">
+                                                    <div>
+                                                        <span>Lesson: ${lesson.title}</span>
+                                                    </div>
+                                                    <span>${lesson.duration} minutes</span>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </div>
+                                </c:forEach>
                             </div>
                         </div>
 

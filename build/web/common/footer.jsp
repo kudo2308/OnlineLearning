@@ -5,16 +5,42 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<title>Online Learning</title>
 <html>
 <!--    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+
     </head>
-<!--    <body>
-        <footer class="footer">
-            &copy; 2025 My Website | Hiện tại chưa có footer hê hê
-        </footer>
+    <div class="footer-top">
+        <div class="pt-exebar">
+            <div class="container">
+                <div class="d-flex align-items-stretch">
+                    <div class="pt-logo mr-auto">
+                        <a href="index.html"><img src="assets/images/logo-white.png" alt=""/></a>
+                    </div>
+                    <div class="pt-social-link">
+                        <ul class="list-inline m-a0">
+                            <li><a href="#" class="btn-link"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#" class="btn-link"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
+                            <li><a href="#" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-12 col-sm-12 footer-col-4">
+                    <div class="widget">
+                        <h5 class="footer-title">Sign Up For A Newsletter</h5>
+                        <p class="text-capitalize m-b20">Weekly Breaking news analysis and cutting edge advices on job searching.</p>
+                        <div class="subscribe-form m-b20">
 
                         </div>
                     </div>
