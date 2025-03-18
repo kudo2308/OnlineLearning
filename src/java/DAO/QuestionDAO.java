@@ -22,17 +22,17 @@ import model.Quiz;
  * @author dohie
  */
 public class QuestionDAO {
-     private PreparedStatement ps;
+    private PreparedStatement ps;
     private ResultSet rs;
     private Connection connection;
-     private List<Question> listQuestion;
-     public QuestionDAO() {
+    private List<Question> listQuestion;
+    public QuestionDAO() {
         listQuestion = new ArrayList<>();
         if (connection == null) {
             connection = new DBContext().getConnection();
         }
     }
-    
+
     public List<Question> getQuestionsByQuizId(int quizId) {
         List<Question> list = new ArrayList<>();
         String query = "SELECT * FROM Question WHERE quizID = ? AND status = 1";
@@ -43,14 +43,14 @@ public class QuestionDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Question question = Question.builder()
-                    .questionID(rs.getInt("questionID"))
-                    .content(rs.getString("content"))
-                    .pointPerQuestion(rs.getInt("pointPerQuestion"))
-                    .quizID(rs.getInt("quizID"))
-                    .status(rs.getBoolean("status"))
-                    .createdAt(rs.getTimestamp("createdAt"))
-                    .updatedAt(rs.getTimestamp("updatedAt"))
-                    .build();
+                        .questionID(rs.getInt("questionID"))
+                        .content(rs.getString("content"))
+                        .pointPerQuestion(rs.getInt("pointPerQuestion"))
+                        .quizID(rs.getInt("quizID"))
+                        .status(rs.getBoolean("status"))
+                        .createdAt(rs.getTimestamp("createdAt"))
+                        .updatedAt(rs.getTimestamp("updatedAt"))
+                        .build();
                 list.add(question);
             }
         } catch (SQLException e) {
@@ -60,7 +60,7 @@ public class QuestionDAO {
         }
         return list;
     }
-    
+
     public Question getQuestionById(int questionId) {
         String query = "SELECT * FROM Question WHERE questionID = ? AND status = 1";
         try {
@@ -70,14 +70,14 @@ public class QuestionDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return Question.builder()
-                    .questionID(rs.getInt("questionID"))
-                    .content(rs.getString("content"))
-                    .pointPerQuestion(rs.getInt("pointPerQuestion"))
-                    .quizID(rs.getInt("quizID"))
-                    .status(rs.getBoolean("status"))
-                    .createdAt(rs.getTimestamp("createdAt"))
-                    .updatedAt(rs.getTimestamp("updatedAt"))
-                    .build();
+                        .questionID(rs.getInt("questionID"))
+                        .content(rs.getString("content"))
+                        .pointPerQuestion(rs.getInt("pointPerQuestion"))
+                        .quizID(rs.getInt("quizID"))
+                        .status(rs.getBoolean("status"))
+                        .createdAt(rs.getTimestamp("createdAt"))
+                        .updatedAt(rs.getTimestamp("updatedAt"))
+                        .build();
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -86,7 +86,7 @@ public class QuestionDAO {
         }
         return null;
     }
-    
+
     private void closeResources() {
         try {
             if (rs != null) rs.close();
@@ -97,10 +97,10 @@ public class QuestionDAO {
         }
     }
     public static void main(String[] args) {
-        QuestionDAO questionDAO = new QuestionDAO();      
+        QuestionDAO questionDAO = new QuestionDAO();
     }
 
-     public int findTotalRecord() {
+    public int findTotalRecord() {
         String sql = "select count(q.QuestionID) from Question q\n"
                 + "where q.[Status] = 1";
         try {
@@ -119,7 +119,7 @@ public class QuestionDAO {
         return -1;
     }
 
-   public List<Question> findByPage(int page) {
+    public List<Question> findByPage(int page) {
         String sql = "select * from Question qu\n"
                 + "join Quiz q\n"
                 + "on qu.QuizID = q.QuizID\n"
@@ -142,7 +142,7 @@ public class QuestionDAO {
         }
         return listQuestion;
     }
-private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
+    private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
         Course course = Course.builder()
                 .courseID(rs.getInt("CourseID"))
                 .title(rs.getString(19))
@@ -166,7 +166,7 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
                 .quiz(quiz)
                 .build();
     }
-   public List<Question> filterQuestions(String searchContent, String titleOfCourse,
+    public List<Question> filterQuestions(String searchContent, String titleOfCourse,
             String titleOfQuiz, String status, String sortMode, int page) {
         StringBuilder sql = new StringBuilder("select * from Question qu\n"
                 + "join Quiz q\n"
@@ -204,7 +204,7 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
         }
         return listQuestion;
     }
-  public List<Quiz> findAllQuiz() {
+    public List<Quiz> findAllQuiz() {
         List<Quiz> quizz = new ArrayList<>();
 
         String sql = "select * from Quiz";
@@ -227,7 +227,7 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
 
         return quizz;
     }
-   private Quiz getQuizFromRs(ResultSet rs) throws SQLException, Exception {
+    private Quiz getQuizFromRs(ResultSet rs) throws SQLException, Exception {
         Quiz quiz = Quiz.builder()
                 .quizID(rs.getInt("QuizID"))
                 .name(rs.getString("Name"))
@@ -246,7 +246,7 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
         throw new Exception("Quizz is null");
 
     }
-   public int findTotalRecordByFilter(String searchContent, String titleOfCourse, String titleOfQuiz, String status) {
+    public int findTotalRecordByFilter(String searchContent, String titleOfCourse, String titleOfQuiz, String status) {
         int totalRecords = 0;
         String sql = "select count(*) as total from Question qu\n"
                 + "join Quiz q\n"
@@ -278,20 +278,20 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
         String sql = "INSERT INTO Question (content, pointPerQuestion, quizID, status, createdAt, updatedAt) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         int generatedId = 0;
-        
+
         try {
             connection = new DBContext().getConnection();
             ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            
+
             ps.setString(1, question.getContent());
             ps.setInt(2, question.getPointPerQuestion());
             ps.setInt(3, question.getQuizID());
             ps.setBoolean(4, question.isStatus());
             ps.setTimestamp(5, question.getCreatedAt());
             ps.setTimestamp(6, question.getUpdatedAt());
-            
+
             System.out.println("Adding question: " + question.getContent());
-            
+
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
@@ -301,7 +301,7 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
                 }
                 rs.close();
             }
-            
+
         } catch (SQLException e) {
             System.out.println("Error adding question: " + e.getMessage());
             e.printStackTrace();
@@ -313,7 +313,7 @@ private Question buildQuestionFromResultSet(ResultSet rs) throws SQLException {
                 e.printStackTrace();
             }
         }
-        
+
         return generatedId;
     }
 }

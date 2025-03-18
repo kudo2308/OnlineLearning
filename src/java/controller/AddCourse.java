@@ -105,7 +105,7 @@ public class AddCourse extends HttpServlet {
 
             Course course = CourseMapper.mapCreateCoursetoCourse(courseRequest);
             course.setImageUrl(imagePath);
-            course.setStatus(true);
+            course.setStatus("Draft");
 
             //set user exper here
             course.setExpertID(userId);

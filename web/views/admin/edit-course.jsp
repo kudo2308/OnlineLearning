@@ -167,8 +167,8 @@
                                         <label class="col-sm-2 col-form-label">Status</label>
                                         <div class="col-sm-7">
                                             <select class="form-control" name="status" required>
-                                                <option value="1" ${course.status == true ? 'selected' : ""}>Active</option>
-                                                <option value="0" ${course.status == false ? 'selected' : ""}>Blocked</option>
+                                                <option value="Draft" ${course.status eq 'Draft' ? 'selected' : ""}>Draft</option>
+                                                <option value="Blocked" ${course.status == 'Blocked' ? 'selected' : ""}>Blocked</option>
                                             </select>
 
                                         </div>

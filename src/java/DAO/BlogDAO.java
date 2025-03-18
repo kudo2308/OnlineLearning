@@ -95,7 +95,7 @@ public class BlogDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[CategoryID] = ? AND c.[Status] = 1
+                    WHERE c.[CategoryID] = ? AND c.[Status] = 'Public'
                     ORDER BY c.[CourseID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -116,7 +116,7 @@ public class BlogDAO extends DBContext {
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
                 course.setTotalLesson(rs.getInt("TotalLesson"));
-                course.setStatus(rs.getBoolean("Status"));
+                course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 

@@ -1,3 +1,21 @@
 /nbproject/private/
 /dist/
 /build/
+# Bỏ qua thư mục build và nbproject
+/build/web/
+/nbproject/
+
+# Bỏ qua file tạm thời hoặc build khác
+/dist/
+/lib/
+/webimg/
+/test/
+
+/*.log
+*.tmp
+*.bak
+*.swp
+
+# Bỏ qua hệ điều hành
+.DS_Store
+Thumbs.db
