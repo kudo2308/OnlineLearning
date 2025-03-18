@@ -16,7 +16,7 @@ public class CourseMapper {
         course.setDescription(createCourseRequest.getDescription());
         course.setCategoryID(createCourseRequest.getCategoryID());
         course.setTotalLesson(createCourseRequest.getTotalLesson());
-        course.setStatus(true);
+        course.setStatus("Draft");
         course.setPrice(createCourseRequest.getPrice());
         return course;
 
@@ -28,7 +28,7 @@ public class CourseMapper {
         course.setDescription(updateCourseRequest.getDescription());
         course.setCategoryID(updateCourseRequest.getCategoryID());
         course.setTotalLesson(updateCourseRequest.getTotalLesson());
-        course.setStatus(updateCourseRequest.isStatus());
+        course.setStatus(updateCourseRequest.getStatus());
         course.setPrice(updateCourseRequest.getPrice());
 
     }

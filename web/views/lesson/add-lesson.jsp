@@ -132,7 +132,7 @@
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Document URL</label>
                                             <div>
-                                                <input required class="form-control" type="text" name="documentUrl">
+                                                <input class="form-control" type="text" name="documentUrl">
                                             </div>
                                         </div>
                                         <div class="form-group col-6">

@@ -113,12 +113,4 @@
         <servlet-name>LessonController</servlet-name>
         <url-pattern>/lesson</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>BlogController</servlet-name>
-        <servlet-class>controller.BlogController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>BlogController</servlet-name>
-        <url-pattern>/Blog</url-pattern>
-    </servlet-mapping>
 </web-app>

@@ -91,9 +91,9 @@
                     <c:if test="${not empty recentCourses}">
                         <c:forEach var="recentCourses" items="${recentCourses}">
                             <li>
-                                <a href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}"><img
+                                <img
                                     class="image-product"
-                                    src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}"></a>
+                                    src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}">
                                 <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
                                     ${recentCourses.title}
                                 </a>
@@ -138,7 +138,7 @@
                                         <div class="post action-card">
                                             <div class="recent-news">
                                                 <div class="action-box">
-                                                    <a href="${pageContext.request.contextPath}/BlogDetail?blogId=${blog.blogId}"><img src="${pageContext.request.contextPath}${blog.imgUrl}" alt=""></a>
+                                                    <img src="${pageContext.request.contextPath}${blog.imgUrl}" alt="">
                                                 </div>
                                                 <div class="info-bx">
                                                     <ul class="media-post">

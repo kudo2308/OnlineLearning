@@ -35,7 +35,7 @@ public class CourseController extends HttpServlet {
             request.setAttribute("courses", courses);
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("/views/admin/view-course.jsp").forward(request, response);
-        }catch(Exception e){
+        } catch (Exception e) {
             response.sendRedirect("login");
         }
     }
@@ -72,7 +72,6 @@ public class CourseController extends HttpServlet {
                 : request.getParameter("action");
 
         HttpSession session = request.getSession();
-
         Object accountObj = session.getAttribute("account");
 
         if (accountObj == null) {
@@ -86,15 +85,16 @@ public class CourseController extends HttpServlet {
         }
         int userId = Integer.parseInt(userID);
 
-        switch (action) {
-            case "FilterCategoryAndStatus":
-                int categoryId = Integer.parseInt(request.getParameter("categoryId"));
-                String status = request.getParameter("status");
-                listCourse = courseDAO.findByPageFilterCategoryAndStatus(page,
-                        categoryId, status, userId);
+        int categoryId = Integer.parseInt(request.getParameter("categoryId") == null ? "0" : request.getParameter("categoryId"));
+        String status = request.getParameter("status") == null ? "" : request.getParameter("status");
+        String name = request.getParameter("name") == null ? "" : request.getParameter("name");
+        listCourse = courseDAO.findByPageFilterCategoryAndStatus(page,
+                categoryId, status, userId, name);
 
-                totalRecord = listCourse.size();
+        totalRecord = courseDAO.findByPageFilterCategoryAndStatus(null,
+                categoryId, status, userId, name).size();
 
+<<<<<<< HEAD
                 pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
 
                 request.setAttribute("categoryId", categoryId);
@@ -120,6 +120,13 @@ public class CourseController extends HttpServlet {
                 pageControl.setUrlPattern("courses?");
 
         }
+=======
+        pageControl.setUrlPattern("courses?categoryId=" + categoryId + "&status=" + status + "&");
+
+        request.setAttribute("categoryId", categoryId);
+        request.setAttribute("status", status);
+        request.setAttribute("name", name);
+>>>>>>> 7adf8f03749f1b4abf7ad6d0ae557ce372b6528b
 
         request.setAttribute("currentPage", page);
 

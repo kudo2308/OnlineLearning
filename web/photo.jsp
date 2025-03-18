@@ -44,7 +44,7 @@
                     <br>
                     <br>
                 </div>
-                <div style="margin:0 " class="profile-container ms-4 flex-grow-1">
+                <div style="margin:0;border: 1px solid #f4f1f1 " class="profile-container ms-4 flex-grow-1" >
                     <div class="header-profile">
                         <h1>Photo</h1>
                         <p class="text-muted">Add a nice photo of yourself for your profile.</p>

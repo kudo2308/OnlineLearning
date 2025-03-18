@@ -16,3 +16,38 @@ function updateTotal() {
     document.getElementById('total-price').innerText = `₫${total.toLocaleString()}`;
 }
 
+function checkout() {
+    let selectedCheckboxes = document.querySelectorAll('.course-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one product');
+        return;
+    }
+
+    let form = document.createElement('form');
+    form.method = 'post';
+    form.action = 'payment';
+
+    let total = 0;
+    selectedCheckboxes.forEach(function(checkbox, index) {
+        let courseId = checkbox.getAttribute('data-course-id');
+        let expertId = checkbox.getAttribute('data-expert-id');
+        let price = parseInt(checkbox.getAttribute('data-price'));
+        total += price;
+
+        // Tạo trường ẩn cho mỗi cặp courseId và expertID
+        let pairInput = document.createElement('input');
+        pairInput.type = 'hidden';
+        pairInput.name = 'courseExpertPairs';
+        pairInput.value = courseId + ':' + expertId;
+        form.appendChild(pairInput);
+    });
+
+    let totalInput = document.createElement('input');
+    totalInput.type = 'hidden';
+    totalInput.name = 'total';
+    totalInput.value = total;
+    form.appendChild(totalInput);
+
+    document.body.appendChild(form);
+    form.submit();
+}

@@ -2,6 +2,7 @@ package DAO;
 
 import DBContext.DBContext;
 import config.Security;
+import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,6 +39,34 @@ public class LoginDAO extends DBContext {
             st.setString(8, null);
             st.setDate(9, null);
             st.setInt(10, roleId);
+            st.setString(11, "free");
+            st.setDate(12, null);
+            st.setBoolean(13, true);
+            int rowsInserted = st.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.getMessage(); // Log the error
+        }
+        return false;
+    }
+
+    public boolean createAccountAdmin(String fullname, String email, String pass, int role) {
+        String sql = "INSERT INTO [dbo].[Account] ([FullName],[Description], [Password], [Email], [Phone], [Image], "
+                + "[Address], [GenderID], [DOB], [RoleID], [SubScriptionType], [SubScriptionExpiry], [Status], "
+                + "[CreatedAt], [UpdatedAt]) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, fullname);
+            st.setString(2, null);
+            st.setString(3, pass);
+            st.setString(4, email);
+            st.setString(5, null);
+            st.setString(6, "/assets/images/avatar/unknow.jpg");
+            st.setString(7, null);
+            st.setString(8, null);
+            st.setDate(9, null);
+            st.setInt(10, role);
             st.setString(11, "free");
             st.setDate(12, null);
             st.setBoolean(13, true);
@@ -322,7 +351,7 @@ public class LoginDAO extends DBContext {
                     course.setCategoryID(rs.getInt("CategoryID"));
                     course.setImageUrl(rs.getString("ImageUrl"));
                     course.setTotalLesson(rs.getInt("TotalLesson"));
-                    course.setStatus(rs.getBoolean("Status"));
+                    course.setStatus(rs.getString("Status"));
                     course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                     course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                     courses.add(course);
@@ -353,7 +382,7 @@ public class LoginDAO extends DBContext {
                     course.setCategoryID(rs.getInt("CategoryID"));
                     course.setImageUrl(rs.getString("ImageUrl"));
                     course.setTotalLesson(rs.getInt("TotalLesson"));
-                    course.setStatus(rs.getBoolean("Status"));
+                    course.setStatus(rs.getString("Status"));
                     course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                     course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                     courses.add(course);
@@ -375,27 +404,39 @@ public class LoginDAO extends DBContext {
             st.setString(3, null);
             st.setString(4, null);
             st.setString(5, null);
-            st.setString(5, "pulic");
+            st.setString(6, "public");
             return st.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return results;
     }
+
     public boolean updateSocialLinks(int userID, String xspace, String youtube, String facebook, String linkedin, String privacy) {
-    String sql = "UPDATE SocialLink SET Xspace = ?, Youtube = ?, Facebook = ?, Linkedin = ?, Private = ? WHERE UserID = ?";
-    try (PreparedStatement st = connection.prepareStatement(sql)) {
-        st.setString(1, xspace);
-        st.setString(2, youtube);
-        st.setString(3, facebook);
-        st.setString(4, linkedin);
-        st.setString(5, privacy);
-        st.setInt(6, userID);
-        
-        return st.executeUpdate() > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
+        String sql = "UPDATE SocialLink SET Xspace = ?, Youtube = ?, Facebook = ?, Linkedin = ?, Private = ? WHERE UserID = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, xspace);
+            st.setString(2, youtube);
+            st.setString(3, facebook);
+            st.setString(4, linkedin);
+            st.setString(5, privacy);
+            st.setInt(6, userID);
+
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-    return false;
-}
+
+    public void updateUserUpdate(String email) {
+        String sql = "UPDATE Account SET UpdatedAt = ? WHERE Email = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            stmt.setString(2, email);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
 }

@@ -41,15 +41,18 @@ public class PublicProfile extends HttpServlet {
         request.getSession().setAttribute("youtube", links.getYoutube());
         request.getSession().setAttribute("xspace", links.getXspace());
         request.getSession().setAttribute("facebook", links.getFacebook());
-        request.getSession().setAttribute("description",acc.getDescription());
+        request.getSession().setAttribute("description", acc.getDescription());
         request.setAttribute("img", acc.getImage());
         request.setAttribute("fullname", acc.getFullName());
         request.setAttribute("email", email);
-
+        if (links.getCheckPrivate().equals("view-profile-only")) {
+            request.getRequestDispatcher("public_profile.jsp").forward(request, response);
+            return;
+        }
         List<Course> listCourseRegis = dao.getRegisteredCoursesForUser(acc.getUserID());
         if (acc.getRole().getRoleName().equalsIgnoreCase("EXPERT")) {
             List<Course> listCourseTeach = dao.getCoursesByExpert(acc.getUserID());
-            if (listCourseTeach != null &&!listCourseTeach.isEmpty() &&!links.getCheckPrivate().equals("block-inscrits")) {
+            if (listCourseTeach != null && !listCourseTeach.isEmpty() && !links.getCheckPrivate().equals("block-inscrits")) {
                 request.setAttribute("listCourseTeach", listCourseTeach);
             }
         }

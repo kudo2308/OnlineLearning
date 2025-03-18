@@ -5,7 +5,6 @@ import DAO.QuestionDAO;
 import DAO.QuizDAO;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -41,7 +40,7 @@ public class TestController extends HttpServlet {
             // Display quiz list
             List<Quiz> quizList = quizDAO.getAllQuizzes();
             request.setAttribute("quizList", quizList);
-            request.getRequestDispatcher("/views/test/Test.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/test/testQuiz.jsp").forward(request, response);
         } else if (action.equals("take")) {
             // Start taking a quiz
             int quizId = Integer.parseInt(request.getParameter("id"));
@@ -66,10 +65,7 @@ public class TestController extends HttpServlet {
             
             // Clear old session data and store new questions
             HttpSession session = request.getSession();
-            session.removeAttribute("currentQuiz");
-            session.removeAttribute("quizQuestions");
-            session.removeAttribute("userAnswers");
-            
+
             // Store new data in session
             session.setAttribute("currentQuiz", quiz);
             session.setAttribute("quizQuestions", questions);

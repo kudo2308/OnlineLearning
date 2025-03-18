@@ -92,8 +92,12 @@
                                         </select>
 
                                         <select id="filterStatus" name="status" class="form-control me-2">
-                                            <option ${status eq '1' ? 'selected' : ""} value="1">Actived</option>
-                                            <option ${status eq '0' ? 'selected' : ""} value="0">Blocked</option>
+                                            <option value="">All Status</option>
+                                            <option ${status eq 'Draft' ? 'selected' : ""} value="Draft">Draft</option>
+                                            <option ${status eq 'Pending' ? 'selected' : ""} value="Pending">Pending</option>
+                                            <option ${status eq 'Public' ? 'selected' : ""} value="Public">Public</option>
+                                            <option ${status eq 'Rejected' ? 'selected' : ""} value="Rejected">Rejected</option>
+                                            <option ${status eq 'Blocked' ? 'selected' : ""} value="Blocked">Blocked</option>
                                         </select>
 
                                         <button id="filterButton" name="action" value="FilterCategoryAndStatus" class="btn btn-secondary">Filter</button>
@@ -116,7 +120,7 @@
                                     </thead>
                                     <tbody id="courseTableBody">
                                         <c:forEach items="${courses}" var="courses">
-                                            
+
                                             <tr>
                                                 <td>${courses.courseID}</td>
                                                 <td><img src=".${courses.imageUrl}" width="50"></td>
@@ -126,10 +130,16 @@
                                                 <td>${courses.category.name}</td>
 
                                                 <td>${courses.totalLesson}</td>
-                                                <td>${courses.status == true ? "Active" : "Blocked"}</td>
+                                                <td>${courses.status}</td>
                                                 <td>
                                                     <a href="editCourse?courseId=${courses.courseID}" class="btn btn-warning">Edit</a>
-                                                    <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
+                                                    <c:if test="${courses.status ne 'Blocked'}">
+                                                        <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
+                                                    </c:if>
+                                                    <a href="packages?courseId=${courses.courseID}" class="btn btn-danger">Packages</a>
+                                                    <c:if test="${courses.status ne 'Public' && courses.status ne 'Pending' && courses.status ne 'Blocked'}">
+                                                        <a href="sellCourse?courseId=${courses.courseID}" class="btn btn-warning">Sell</a>
+                                                    </c:if>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -142,26 +152,38 @@
             </div>
         </main>
         <jsp:include page="../../common/pagination.jsp"></jsp:include>
-        <div class="ttr-overlay"></div>
+            <div class="ttr-overlay"></div>
 
-        <!-- External JavaScripts -->
-        <script src="assets/admin/assets/js/jquery.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-        <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
-        <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
-        <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
-        <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
-        <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
-        <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
-        <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
-        <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
-        <script src="assets/admin/assets/js/functions.js"></script>
-        <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
-        <script src="assets/admin/assets/js/admin.js"></script>
-        <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
+            <!-- External JavaScripts -->
+            <script src="assets/admin/assets/js/jquery.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+            <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+            <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
+            <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
+            <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+            <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
+            <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
+            <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+            <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+            <script src="assets/admin/assets/js/functions.js"></script>
+            <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
+            <script src="assets/admin/assets/js/admin.js"></script>
+            <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
+            <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <c:if test="${message != null}">
+            <script type="text/javascript">
+                toastr.success(`${message}`, 'Success', {timeOut: 1000});
+            </script>
+        </c:if>
+        <c:if test="${errorMessage != null}">
+            <script type="text/javascript">
+                toastr.error(`${errorMessage}`, 'Error', {timeOut: 2000});
+            </script>
+        </c:if>
     </body>
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
