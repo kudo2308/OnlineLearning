@@ -36,14 +36,14 @@ nav a:hover {
     background-color: #DDDDDD;
 }
 
-.right {
+.right-header {
     width: 30%;
     display: flex;
     justify-content: end;
     align-items: center
 }
 
-.right a{
+.right-header a{
     text-decoration: none;
 }
 
@@ -266,7 +266,6 @@ header {
 }
 
 /* Dropdown menu */
-/* Dropdown menu */
 .dropdown-content {
     position: absolute;
     right: -60px;
@@ -321,7 +320,8 @@ header {
     font-size: 14px;
 }
 .account-info p {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+    margin-left: 5px;
 }
 .account-name {
     white-space: nowrap;
@@ -484,4 +484,8 @@ hr {
 
 .learn-btn:hover {
     background-color: #574ce0;
+}
+
+.widget a{
+    color: white;
 }

@@ -2,7 +2,6 @@ package controller;
 
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
-import DAO.MyCourseDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +15,7 @@ import java.util.Map;
 import model.Category;
 import model.Course;
 import model.CourseWithCategory;
+import model.Lesson;
 
 @WebServlet(name = "CourseServlet", urlPatterns = {"/course"})
 public class CourseServlet extends HttpServlet {
@@ -27,7 +27,7 @@ public class CourseServlet extends HttpServlet {
             CourseDAO dao = new CourseDAO();
             MyCourseDAO d = new MyCourseDAO();
             CategoryDAO categoryDAO = new CategoryDAO();
-
+            
             // Get search and filter parameters
             String searchQuery = request.getParameter("search");
             String categoryFilter = request.getParameter("category");

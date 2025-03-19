@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+    <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -99,7 +99,7 @@
                     <div class="db-breadcrumb">
                         <h4 class="breadcrumb-title">Courses</h4>
                         <ul class="db-breadcrumb-list">
-                            <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
+                            <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i>Home</a></li>
                             <li>Courses</li>
                         </ul>
                     </div>	
@@ -127,8 +127,12 @@
                                         </select>
 
                                         <select id="filterStatus" name="status" class="form-control me-2">
-                                            <option ${status eq '1' ? 'selected' : ""} value="1">Actived</option>
-                                            <option ${status eq '0' ? 'selected' : ""} value="0">Blocked</option>
+                                            <option value="">All Status</option>
+                                            <option ${status eq 'Draft' ? 'selected' : ""} value="Draft">Draft</option>
+                                            <option ${status eq 'Pending' ? 'selected' : ""} value="Pending">Pending</option>
+                                            <option ${status eq 'Public' ? 'selected' : ""} value="Public">Public</option>
+                                            <option ${status eq 'Rejected' ? 'selected' : ""} value="Rejected">Rejected</option>
+                                            <option ${status eq 'Blocked' ? 'selected' : ""} value="Blocked">Blocked</option>
                                         </select>
 
                                         <button id="filterButton" name="action" value="FilterCategoryAndStatus" class="btn btn-secondary">Filter</button>
@@ -161,10 +165,16 @@
                                                 <td>${courses.category.name}</td>
 
                                                 <td>${courses.totalLesson}</td>
-                                                <td>${courses.status == true ? "Active" : "Blocked"}</td>
+                                                <td>${courses.status}</td>
                                                 <td>
                                                     <a href="editCourse?courseId=${courses.courseID}" class="btn btn-warning">Edit</a>
-                                                    <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
+                                                    <c:if test="${courses.status ne 'Blocked'}">
+                                                        <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
+                                                    </c:if>
+                                                    <a href="packages?courseId=${courses.courseID}" class="btn btn-danger">Packages</a>
+                                                    <c:if test="${courses.status ne 'Public' && courses.status ne 'Pending' && courses.status ne 'Blocked'}">
+                                                        <a href="sellCourse?courseId=${courses.courseID}" class="btn btn-warning">Sell</a>
+                                                    </c:if>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -190,33 +200,7 @@
         </c:if>
         <jsp:include page="../../common/pagination.jsp"></jsp:include>
         <div class="ttr-overlay"></div>
-    <script>
-        function showMessage() {
-            var errorMessage = document.getElementById("error-message");
-            var successMessage = document.getElementById("success");
 
-            // Hiển thị thông báo lỗi nếu có
-            if (errorMessage) {
-                errorMessage.style.display = "block";
-                setTimeout(function () {
-                    errorMessage.style.display = "none";
-                }, 3000);
-            }
-
-            // Hiển thị thông báo thành công nếu có
-            if (successMessage) {
-                successMessage.style.display = "block";
-                setTimeout(function () {
-                    successMessage.style.display = "none";
-                }, 3000);
-            }
-        }
-
-        // Gọi hàm khi trang đã tải xong
-        window.onload = function () {
-            showMessage();
-        };
-    </script>
         <!-- External JavaScripts -->
         <script src="assets/admin/assets/js/jquery.min.js"></script>
         <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
@@ -234,6 +218,7 @@
         <script src="assets/admin/assets/js/functions.js"></script>
         <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="assets/admin/assets/js/admin.js"></script>
+        <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
     </body>
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->

@@ -47,6 +47,9 @@ public class CourseDetailController extends HttpServlet {
         QuizDAO quizDAO = new QuizDAO();
         int countQuiz = quizDAO.countQuizByCourseId(courseId);
 
+        request.setAttribute("packageLessonMap", packageLessonMap);
+        request.setAttribute("packageList", packageList);
+        request.setAttribute("isInCart", isInCart);
         request.setAttribute("duration", duration);
         request.setAttribute("durationHour", durationHour);
         request.setAttribute("lessonList", lessonList);

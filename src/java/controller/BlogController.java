@@ -202,11 +202,11 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         blog.setContent(content);
         blog.setAuthorId(acc.getUserID());
         blog.setCategoryID(categoryId);
-        blog.setImgUrl(UPLOAD_DIRECTORY + "/" + fileName);
-        if(status.equals("true")){
-            blog.setStatus(true);
-        }else{
-            blog.setStatus(false);
+        blog.setImgUrl(imageUrl);
+        if (status.equals("true")) {
+            blog.setStatus("public");
+        } else {
+            blog.setStatus("private");
         }
         
 

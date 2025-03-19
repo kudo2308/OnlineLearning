@@ -1,0 +1,261 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Mar 15, 2025, 5:39:39 PM
+    Author     : ASUS
+*/
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* Main Layout */
+.main-container {
+    display: flex;
+    width: 100%;
+    border-top: solid 1px #dddddd;
+}
+
+/* Sidebar */
+.sidebar {
+    min-height: 100vh;
+}
+
+.profile-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card .profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile-card h3 {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+.profile-card p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.social-icons a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    color: #6a1b9a;
+}
+
+/* Sidebar Menu */
+.menu-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.menu-sidebar li {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu-sidebar li i {
+    margin-right: 10px;
+}
+
+.menu-sidebar li:hover,
+.menu-sidebar .active {
+    background-color: #ff9800;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Content */
+.container {
+    width: 80%;
+    flex-grow: 1;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.container-sidebar{
+    width: 20%;
+    flex-grow: 1;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #6a1b9a;
+    color: white;
+}
+
+/* Buttons */
+.action-buttons button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.action-buttons button.delete {
+    background-color: red;
+}
+
+/* Modal Pop-up */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form chỉnh sửa */
+.container-post-blog {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 500px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin: 10px 0 5px;
+    display: block;
+}
+
+input, textarea, .editCategoryId{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* Nút đóng */
+.close {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+/* Nút gửi */
+.submit-but {
+    width: 100%;
+    padding: 10px;
+    background-color: #6c3fb1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-but:hover {
+    background-color: #218838;
+}
+
+#filter-form{
+    display: flex;
+}
+
+#filter-form select{
+    margin-right: 20px;
+}

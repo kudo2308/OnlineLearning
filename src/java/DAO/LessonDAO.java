@@ -5,6 +5,7 @@
 package DAO;
 
 import DBContext.DBContext;
+import static constant.Constant.RECORD_PER_PAGE;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -342,7 +343,7 @@ public class LessonDAO extends DBContext {
                 course.setTitle(rs.getString("c.Title"));
                 course.setDescription(rs.getString("Description"));
                 course.setImageUrl(rs.getString("ImageUrl"));
-                course.setStatus(rs.getBoolean("c.Status"));
+                course.setStatus(rs.getString("c.Status"));
                 lesson.setCourse(course);
                 
                 // Set Package information
@@ -447,11 +448,66 @@ public class LessonDAO extends DBContext {
         }
         return false;
     }
-    
+
+    public List<Lesson> getAllLessonByPackagesId(int packageId) {
+        List<Lesson> lessonList = new ArrayList<>();
+        String sql = """
+                    SELECT l.[LessonID]
+                          ,l.[Title]
+                          ,l.[Content]
+                          ,l.[LessonType]
+                          ,l.[VideoUrl]
+                          ,l.[DocumentUrl]
+                          ,l.[Duration]
+                          ,l.[OrderNumber]
+                          ,l.[CourseID]
+                          ,l.[Status]
+                          ,l.[CreatedAt]
+                          ,l.[UpdatedAt]
+                          ,l.[PackageID]
+                          ,c.[Title] as CourseTitle
+                    FROM [dbo].[Lesson] l
+                    INNER JOIN [dbo].[Course] c ON l.[CourseID] = c.[CourseID]
+                    JOIN [dbo].[Packages] p ON l.[PackageID] = p.[PackageID]
+                    WHERE l.[PackageID] = ? AND l.[Status] = 1
+                    ORDER BY l.[OrderNumber] ASC, l.[LessonID] ASC
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, packageId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Lesson lesson = new Lesson();
+                lesson.setLessonID(rs.getInt("LessonID"));
+                lesson.setTitle(rs.getString("Title"));
+                lesson.setContent(rs.getString("Content"));
+                lesson.setLessonType(rs.getString("LessonType"));
+                lesson.setVideoUrl(rs.getString("VideoUrl"));
+                lesson.setDocumentUrl(rs.getString("DocumentUrl"));
+                lesson.setDuration(rs.getInt("Duration"));
+                lesson.setOrderNumber(rs.getInt("OrderNumber"));
+                lesson.setStatus(rs.getBoolean("Status"));
+                lesson.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                lesson.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+
+                // Set Package info
+                Packages packages = new Packages();
+                packages.setPackageID(rs.getInt("PackageID"));
+                lesson.setPackages(packages);
+
+                lessonList.add(lesson);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting lessons by course ID: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        return lessonList;
+    }
+
     public static void main(String[] args) {
         LessonDAO less = new LessonDAO();
-        List<Lesson> lesssonList = less.getAllLessonByCourseId(1);
-       
+        List<Lesson> lesssonList = less.getAllLessonByPackagesId(1);
+
         for (Lesson lesson : lesssonList) {
             System.out.println(lesson);
         }

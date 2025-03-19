@@ -28,7 +28,7 @@ public class Course {
     private int categoryID;
     private String imageUrl;
     private int totalLesson;
-    private boolean status;
+    private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     

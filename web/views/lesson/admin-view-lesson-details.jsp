@@ -135,7 +135,7 @@
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Document URL</label>
                                             <div>
-                                                <input required class="form-control" type="text" name="documentUrl" value="${lesson.documentUrl}">
+                                                <input class="form-control" type="text" name="documentUrl" value="${lesson.documentUrl}">
                                             </div>
                                         </div>
                                         <div class="form-group col-6">

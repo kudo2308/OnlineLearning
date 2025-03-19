@@ -89,6 +89,7 @@
                                 <div class="course-buy-now text-center">
                                     <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
                                 </div>                                    
+
                                 <c:choose>
                                     <c:when test="${isExist == 1}">
                                         <div class="course-buy-now text-center">

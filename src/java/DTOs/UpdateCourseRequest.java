@@ -42,5 +42,5 @@ public class UpdateCourseRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải là số dương")
     private float price;
     
-    private boolean status;
+    private String status;
 }
