@@ -1,72 +1,90 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class ExpertPayout {
     private int payoutId;
     private int expertId;
-    private BigDecimal amount;
+    private double amount;
     private String bankAccountNumber;
     private String bankName;
-    private String status; // defaults to "pending"; allowed: "pending", "processed", "failed"
-    private Date requestedAt;
-    private Date processedAt; // can be null
-
+    private String status;
+    private Timestamp requestedAt;
+    private Timestamp processedAt;
+    
     public ExpertPayout() {
+        this.status = "pending";
+    }
+    
+    public ExpertPayout(int expertId, double amount, String bankAccountNumber, String bankName) {
+        this.expertId = expertId;
+        this.amount = amount;
+        this.bankAccountNumber = bankAccountNumber;
+        this.bankName = bankName;
+        this.status = "pending";
     }
 
-    // Getters and Setters
     public int getPayoutId() {
         return payoutId;
     }
+
     public void setPayoutId(int payoutId) {
         this.payoutId = payoutId;
     }
+
     public int getExpertId() {
         return expertId;
     }
+
     public void setExpertId(int expertId) {
         this.expertId = expertId;
     }
-    public BigDecimal getAmount() {
+
+    public double getAmount() {
         return amount;
     }
-    public void setAmount(BigDecimal amount) {
+
+    public void setAmount(double amount) {
         this.amount = amount;
     }
+
     public String getBankAccountNumber() {
         return bankAccountNumber;
     }
+
     public void setBankAccountNumber(String bankAccountNumber) {
         this.bankAccountNumber = bankAccountNumber;
     }
+
     public String getBankName() {
         return bankName;
     }
+
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
+
     public String getStatus() {
         return status;
     }
+
     public void setStatus(String status) {
         this.status = status;
     }
-    public Date getRequestedAt() {
+
+    public Timestamp getRequestedAt() {
         return requestedAt;
     }
-    public void setRequestedAt(Date requestedAt) {
+
+    public void setRequestedAt(Timestamp requestedAt) {
         this.requestedAt = requestedAt;
     }
-    public Date getProcessedAt() {
+
+    public Timestamp getProcessedAt() {
         return processedAt;
     }
-    public void setProcessedAt(Date processedAt) {
+
+    public void setProcessedAt(Timestamp processedAt) {
         this.processedAt = processedAt;
     }
 }

@@ -13,11 +13,6 @@
     padding: 0 15px;
 }
 
-#bell span,
-#cart span {
-    position: relative;
-    top: 3px;
-}
 
 nav {
     height: 30px;

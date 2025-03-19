@@ -116,4 +116,10 @@ public class Registration {
     public void setCourse(Course course) {
         this.course = course;
     }
+
+    @Override
+    public String toString() {
+        return "Registration{" + "registrationID=" + registrationID + ", userID=" + userID + ", courseID=" + courseID + ", price=" + price + ", status=" + status + ", progress=" + progress + ", validFrom=" + validFrom + ", validTo=" + validTo + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", user=" + user + ", course=" + course + '}';
+    }
+    
 }

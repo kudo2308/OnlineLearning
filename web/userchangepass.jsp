@@ -53,17 +53,17 @@
                      <form action="changepassuser" method="post">
                     <div class="mb-3">
                         <label class="form-label">Old password</label>
-                        <input type="text" name="oldpass" class="form-control" value="${requestScope.oldpass}">
+                        <input type="password" name="oldpass" class="form-control" value="${requestScope.oldpass}">
                     </div>
                     <br>
                     <div class="mb-3">
                         <label class="form-label">New password</label>
-                        <input type="text" name="newpass" class="form-control" value="${requestScope.newpass}">
+                        <input type="password" name="newpass" class="form-control" value="${requestScope.newpass}">
                     </div>
                     <br>
                     <div class="mb-3">
                         <label class="form-label">Re-enter password</label>
-                        <input type="text" name="repass" class="form-control" >
+                        <input type="password" name="repass" class="form-control" >
                     </div>
                     <br>
                       <button type="submit" class="btn save-btn ">Change</button>

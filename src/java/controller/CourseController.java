@@ -24,6 +24,16 @@ public class CourseController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String error = request.getParameter("error");
+        String success = request.getParameter("success");
+
+        if (success != null) {
+            request.setAttribute("success", success);
+        }
+        if (error != null) {
+            request.setAttribute("error", error);
+        }
+
         try {
             PageControl pageControl = new PageControl();
             CategoryDAO categoryDAO = new CategoryDAO();
@@ -35,7 +45,7 @@ public class CourseController extends HttpServlet {
             request.setAttribute("courses", courses);
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("/views/admin/view-course.jsp").forward(request, response);
-        }catch(Exception e){
+        } catch (Exception e) {
             response.sendRedirect("login");
         }
     }
@@ -95,7 +105,7 @@ public class CourseController extends HttpServlet {
 
                 totalRecord = listCourse.size();
 
-                pageControl.setUrlPattern("course?category=" + categoryId + "&status=" + status + "&");
+                pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
 
                 request.setAttribute("categoryId", categoryId);
                 request.setAttribute("status", status);
@@ -107,7 +117,7 @@ public class CourseController extends HttpServlet {
 
                 totalRecord = listCourse.size();
 
-                pageControl.setUrlPattern("course?name=" + name + "&");
+                pageControl.setUrlPattern("courses?name=" + name + "&");
 
                 request.setAttribute("name", name);
 
@@ -117,7 +127,7 @@ public class CourseController extends HttpServlet {
 
                 totalRecord = courseDAO.findTotalRecord(userId);
 
-                pageControl.setUrlPattern("course?");
+                pageControl.setUrlPattern("courses?");
 
         }
 
@@ -133,6 +143,7 @@ public class CourseController extends HttpServlet {
         pageControl.setTotalRecord(totalRecord);
 
         return listCourse;
+
     }
 
 }

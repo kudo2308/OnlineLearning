@@ -68,6 +68,16 @@ public class CartController extends HttpServlet {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
 
+         String error = request.getParameter("error");
+        String success = request.getParameter("success");
+
+        if (success != null) {
+            request.setAttribute("success", success);
+        }
+        if (error != null) {
+            request.setAttribute("error", error);
+        }
+        
         // 1. Kiểm tra đăng nhập
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login?redirect=Blog");

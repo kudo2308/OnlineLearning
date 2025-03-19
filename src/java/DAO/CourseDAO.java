@@ -30,15 +30,7 @@ public class CourseDAO extends DBContext {
         courses = new ArrayList<>();
     }
 
-    public static void main(String[] args) {
-        CourseDAO courseDAO = new CourseDAO();
-
-        List<Course> list = courseDAO.getRecentCourses(9);
-        for (Course course : list) {
-            System.out.println(course.getRegister());
-        }
-
-    }
+    
 
     public Course findCourseById(int id) {
         String sql = "select * from Course co\n"
@@ -761,13 +753,14 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-    public List<Course> searchCourse(String query, int offset, int limit) {
+    public List<Course> searchCourse(String query, int offset, int limit ) {
         List<Course> searchResults = new ArrayList<>();
-        String sql = "SELECT * FROM Course WHERE Title LIKE ? OR Description LIKE ? "
+        String sql = "SELECT * FROM Course WHERE   Title LIKE ? OR Description LIKE ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
+           
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
@@ -978,5 +971,78 @@ public class CourseDAO extends DBContext {
             System.out.println(e);
         }
         return userCourses;
+    }
+    public List<Course> getCoursesByStudent(int studentId) {
+        List<Course> courseList = new ArrayList<>();
+        String sql = """
+                    SELECT c.[CourseID]
+                          ,c.[Title]
+                          ,c.[Description]
+                          ,c.[Price]
+                          ,c.[ExpertID]
+                          ,c.[CategoryID]
+                          ,c.[ImageUrl]
+                          ,c.[TotalLesson]
+                          ,c.[Status]
+                          ,c.[CreatedAt]
+                          ,c.[UpdatedAt]
+                          ,a.FullName as ExpertName
+                          ,cat.Name as CategoryName
+                          ,r.Progress as Progress
+                          ,r.Status as RegistrationStatus
+                    FROM [dbo].[Course] c
+                    JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
+                    JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
+                    JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
+                    WHERE r.[UserID] = ? AND c.[Status] = 1
+                    ORDER BY r.[CreatedAt] DESC
+                    """;
+        try{
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, studentId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setPrice(rs.getInt("Price"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getBoolean("Status"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                // Set registration-related information
+                Registration registration = new Registration();
+                registration.setProgress(rs.getInt("Progress"));
+                registration.setStatus(rs.getString("RegistrationStatus"));
+                
+                Account expert = new Account();
+                expert.setFullName(rs.getString("ExpertName"));
+                course.setExpert(expert);
+
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                course.setCategory(category);
+
+                courseList.add(course);
+            }
+        } catch (SQLException ex) {
+           ex.getMessage();
+        }
+        return courseList;
+    }
+    
+    public static void main(String[] args) {
+        CourseDAO courseDAO = new CourseDAO();
+
+        List<Course> list = courseDAO.getCoursesByStudent(10);
+        for (Course course : list) {
+            System.out.println(course);
+        }
+
     }
 }

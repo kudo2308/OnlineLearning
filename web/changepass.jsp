@@ -13,12 +13,12 @@
             <hr>
             <h2>New password</h2>  
             <div class="input-box">
-                    <input type="text" name="pass">
+                    <input type="password" name="pass">
                     <i class='bx bxs-user'></i>
             </div> 
             <h2>Re-enter password</h2>  
             <div class="input-box">
-                    <input type="text" name="re-pass">
+                <input type="password" name="re-pass">
                     <i class='bx bxs-user'></i>
             </div>
             <br>

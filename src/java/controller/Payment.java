@@ -1,7 +1,9 @@
 package controller;
 
 import DAO.CourseDAO;
+import DAO.LoginDAO;
 import DAO.PaymentDAO;
+import config.EmailSendOTP;
 import config.VNPayConfig;
 import static config.VNPayConfig.hmacSHA512;
 import jakarta.servlet.ServletException;
@@ -16,6 +18,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import model.Account;
 import model.Course;
 import model.Order;
 
@@ -36,39 +39,42 @@ public class Payment extends HttpServlet {
             Map<String, String> accountData = (Map<String, String>) accountObj;
             userID = accountData.get("userId");
         }
-
+        
         String totalStr = request.getParameter("total");
         int total = Integer.parseInt(totalStr);
 
         CourseDAO dao = new CourseDAO();
-
+      
         String[] courseExpertPairs = request.getParameterValues("courseExpertPairs");
         List<Course> courses = new ArrayList<>();
         for (String pair : courseExpertPairs) {
             String[] parts = pair.split(":");
-            int courseId = Integer.parseInt(parts[0]);      
+            int courseId = Integer.parseInt(parts[0]);
             Course course = dao.findCourseById(courseId);
             if (course == null) {
-                response.sendRedirect("cart.jsp?error=course_not_found");
+                response.sendRedirect("cart?error=course_not_found");
                 return;
             }
             courses.add(course);
         }
-//        // Tạo đơn hàng
-//        PaymentDAO paymentDAO = new PaymentDAO();
-//        Order order = paymentDAO.createOrder(Integer.valueOf(userID),BigDecimal.valueOf(total));
-//        if (order == null) {
-//            response.sendRedirect("cart.jsp?error=order_failed");
-//            return;
-//        }
-//
-//        // Thêm các order item vào đơn hàng
-//        for (Course course : courses) {
-//            if (!paymentDAO.createOrderItem(order.getOrderID(), course.getCourseID(), course.getExpertID(),BigDecimal.valueOf(course.getPrice()))) {
-//                response.sendRedirect("cart.jsp?error=item_failed");
-//                return;
-//            }
-//        }
+        // Tạo đơn hàng   Done
+        PaymentDAO paymentDAO = new PaymentDAO();
+        paymentDAO.createOrder(Integer.parseInt(userID), BigDecimal.valueOf(total));
+        int maxorder = paymentDAO.getMaxOrderId();
+        // Thêm các order item vào đơn hàng  
+        for (Course course : courses) {
+            if (!paymentDAO.createOrderItem(maxorder, course.getCourseID(), course.getExpertID(), BigDecimal.valueOf(course.getPrice()))) {
+                response.sendRedirect("error.jsp");
+                return;
+            }
+        }
+        
+        session.setAttribute("maxorder", maxorder);
+        session.setAttribute("total", total);
+        
+        LoginDAO dao1 = new LoginDAO();
+        Account acc = dao1.getAccountByUserID(userID);
+        EmailSendOTP.sendOTP(acc.getEmail(),acc.getFullName(), total);
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
@@ -135,8 +141,6 @@ public class Payment extends HttpServlet {
         hashData.deleteCharAt(hashData.length() - 1);
         query.deleteCharAt(query.length() - 1);
 
-        System.out.println("🔹 Chuỗi hashData: " + hashData.toString());
-        System.out.println("🔹 Secret Key: " + VNPayConfig.secretKey);
 
         String vnp_SecureHash = hmacSHA512(VNPayConfig.secretKey, hashData.toString());
 
@@ -144,8 +148,6 @@ public class Payment extends HttpServlet {
 
         String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + query.toString();
 
-        System.out.println("🔹 URL Thanh Toán: " + paymentUrl);
-        System.out.println("🔹 Final hashData (sau khi sửa encode): " + hashData.toString());
 
         response.sendRedirect(paymentUrl);
     }

@@ -1,4 +1,4 @@
---create database
+﻿--create database
 
 create database SWP_ver2
 GO
@@ -221,7 +221,7 @@ CREATE TABLE SocialLink (
     Youtube NVARCHAR(255) NULL,
     Facebook NVARCHAR(255) NULL,
     Linkedin NVARCHAR(255) NULL,
-	Private NVARCHAR(20) DEFAULT 'public' CHECK (Private IN ('public', 'block-course', 'block-inscrits', 'block-view' ,'view-profile-only')),
+	Private NVARCHAR(20) DEFAULT 'public' CHECK (Private IN ('public', 'block-course', 'block-inscrits', 'block-view')),
     FOREIGN KEY (UserID) REFERENCES Account(UserID)
 );
 
@@ -242,19 +242,8 @@ CREATE TABLE OrderItem (
     CourseID INT NOT NULL FOREIGN KEY REFERENCES Course(CourseID),
     ExpertID INT NOT NULL FOREIGN KEY REFERENCES Account(UserID),
     OriginalPrice DECIMAL(10,2) NOT NULL,
-    CommissionRate DECIMAL(5,2) NOT NULL, -- V� d?: 0.2 cho 20%
+    CommissionRate DECIMAL(5,2) NOT NULL, -- Ví d?: 0.2 cho 20%
     FinalAmount DECIMAL(10,2) NOT NULL, -- S? ti?n expert nh?n ???c
-    CreatedAt DATETIME DEFAULT GETDATE()
-);
-
-CREATE TABLE [Transaction] (
-    TransactionID INT IDENTITY(1,1) PRIMARY KEY,
-    OrderID INT NULL FOREIGN KEY REFERENCES [Order](OrderID),
-    ExpertID INT NULL FOREIGN KEY REFERENCES Account(UserID),
-    Amount DECIMAL(10,2) NOT NULL,
-    TransactionType NVARCHAR(50) CHECK (TransactionType IN ('payment', 'payout', 'commission', 'refund')),
-    Description NVARCHAR(255),
-    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'completed', 'failed')),
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
@@ -264,17 +253,76 @@ CREATE TABLE ExpertPayout (
     Amount DECIMAL(10,2) NOT NULL,
     BankAccountNumber NVARCHAR(255) NOT NULL,
     BankName NVARCHAR(255) NOT NULL,
-    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'completed', 'failed')),
+    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'processed', 'failed')),
     RequestedAt DATETIME DEFAULT GETDATE(),
     ProcessedAt DATETIME NULL
 );
 CREATE TABLE ExpertBankInfo (
     ExpertID INT PRIMARY KEY,
-    BankAccountNumber NVARCHAR(255) NOT NULL,
-    BankName NVARCHAR(255) NOT NULL,
+    BankAccountNumber NVARCHAR(255) NULL,
+    BankName NVARCHAR(255) NULL,
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE(),
+	WalletBalance DECIMAL(18, 2) DEFAULT 0.00,
     FOREIGN KEY (ExpertID) REFERENCES Account(UserID)
+);
+
+-- Bảng quản lý thông báo
+CREATE TABLE Notification (
+    NotificationID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    Title NVARCHAR(255) NOT NULL,
+    Content NVARCHAR(MAX) NOT NULL,
+    Type NVARCHAR(50) CHECK (Type IN ('system', 'course', 'message', 'payment', 'other')),
+    RelatedID INT NULL, -- ID của đối tượng liên quan (khóa học, tin nhắn...)
+    IsRead BIT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (UserID) REFERENCES Account(UserID)
+);
+
+-- Bảng chat conversation (cuộc trò chuyện)
+CREATE TABLE Conversation (
+    ConversationID INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(255) NULL,
+    Type NVARCHAR(20) CHECK (Type IN ('private', 'group')) DEFAULT 'private',
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
+
+-- Bảng quản lý thành viên trong cuộc trò chuyện
+CREATE TABLE ConversationMember (
+    MemberID INT IDENTITY(1,1) PRIMARY KEY,
+    ConversationID INT NOT NULL,
+    UserID INT NOT NULL,
+    JoinedAt DATETIME DEFAULT GETDATE(),
+    LeftAt DATETIME NULL,
+    Status BIT DEFAULT 1, -- 1: Active, 0: Inactive
+    FOREIGN KEY (ConversationID) REFERENCES Conversation(ConversationID),
+    FOREIGN KEY (UserID) REFERENCES Account(UserID),
+    CONSTRAINT UQ_UserConversation UNIQUE (UserID, ConversationID)
+);
+
+-- Bảng tin nhắn
+CREATE TABLE Message (
+    MessageID INT IDENTITY(1,1) PRIMARY KEY,
+    ConversationID INT NOT NULL,
+    SenderID INT NOT NULL,
+    Content NVARCHAR(MAX) NOT NULL,
+    AttachmentUrl NVARCHAR(255) NULL,
+    SentAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (ConversationID) REFERENCES Conversation(ConversationID),
+    FOREIGN KEY (SenderID) REFERENCES Account(UserID)
+);
+
+-- Bảng trạng thái đọc tin nhắn
+CREATE TABLE MessageRead (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    MessageID INT NOT NULL,
+    UserID INT NOT NULL,
+    ReadAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (MessageID) REFERENCES Message(MessageID),
+    FOREIGN KEY (UserID) REFERENCES Account(UserID),
+    CONSTRAINT UQ_MessageUser UNIQUE (MessageID, UserID)
 );
 -- Insert roles
 INSERT INTO Role (RoleName) VALUES
@@ -322,11 +370,29 @@ VALUES
 ('Student7', 'Student account', 'VmszaVktKzZlKmRlJHMuc3R1ZGVudA==', 'student7@onlinelearning.com', 3, '1995-11-23', '/assets/images/avatar/pic1.jpg', 1),
 ('Student8', 'Student account', 'VmszaVktKzZlKmRlJHMuc3R1ZGVudA==', 'student8@onlinelearning.com', 3, '1995-11-23', '/assets/images/avatar/pic1.jpg', 1);
 
-INSERT INTO SocialLink (UserID, Xspace, Youtube, Facebook, Linkedin, Private) VALUES
-(1, 'admin', 'admin', 'admin', 'admin', 'public'),
+-- Insert social links for System Admin
+INSERT INTO SocialLink (UserID, Xspace, Youtube, Facebook, Linkedin, Private) 
+VALUES (1, 'admin', 'admin', 'admin', 'admin', 'public');
+-- Insert social links for Expert accounts
+INSERT INTO SocialLink (UserID, Xspace, Youtube, Facebook, Linkedin, Private) 
+VALUES 
 (2, 'expert1', 'expert1', 'expert1', 'expert1', 'public'),
-(3, 'student1', 'student1', 'student1', 'student1', 'public');
-
+(3, 'expert2', 'expert2', 'expert2', 'expert2', 'public'),
+(4, 'expert3', 'expert3', 'expert3', 'expert3', 'public'),
+(5, 'expert4', 'expert4', 'expert4', 'expert4', 'public'),
+(6, 'expert5', 'expert5', 'expert5', 'expert5', 'public');
+-- Insert social links for Student accounts
+INSERT INTO SocialLink (UserID, Xspace, Youtube, Facebook, Linkedin, Private) 
+VALUES 
+(7, 'student1', 'student1', 'student1', 'student1', 'public'),
+(8, 'student9', 'student9', 'student9', 'student9', 'public'),
+(9, 'student2', 'student2', 'student2', 'student2', 'public'),
+(10, 'student3', 'student3', 'student3', 'student3', 'public'),
+(11, 'student4', 'student4', 'student4', 'student4', 'public'),
+(12, 'student5', 'student5', 'student5', 'student5', 'public'),
+(13, 'student6', 'student6', 'student6', 'student6', 'public'),
+(14, 'student7', 'student7', 'student7', 'student7', 'public'),
+(15, 'student8', 'student8', 'student8', 'student8', 'public');
 
 -- Insert sample course with Status set to 1
 -- Insert sample courses with improved titles
@@ -344,7 +410,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  'Comprehensive guide to data structures and algorithms. Cover essential topics like arrays, linked lists, trees, sorting algorithms, and complexity analysis. Includes practical coding exercises and problem-solving techniques.',
  2,
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- '/assets/images/courses/pic1.jpg',
+ '/assets/images/courses/pic2.jpg',
  10,
  200000,
  1),
@@ -353,7 +419,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  'Complete C++ programming course from basics to advanced concepts. Learn object-oriented programming, memory management, STL library, and modern C++ features. Includes hands-on projects and coding exercises.',
  3,
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- '/assets/images/courses/pic1.jpg',
+ '/assets/images/courses/pic3.jpg',
  10,
  275000,
  1),
@@ -362,7 +428,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  'Master modern React development. Learn components, hooks, state management, routing, and best practices. Build responsive user interfaces and single-page applications using the latest React features.',
  4,
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- '/assets/images/courses/pic1.jpg',
+ '/assets/images/courses/pic4.jpg',
  10,
  640000,
  1),
@@ -371,7 +437,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  'Learn web development fundamentals with HTML5 and CSS3. Master responsive design, flexbox, grid layouts, and modern CSS frameworks. Create beautiful, mobile-friendly websites from scratch.',
  5,
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- '/assets/images/courses/pic1.jpg',
+ '/assets/images/courses/pic5.jpg',
  10,
  600000,
  1),
@@ -380,7 +446,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  'Comprehensive JavaScript course covering ES6+ features, DOM manipulation, async programming, and modern JS frameworks. Learn to create interactive web applications and dynamic user interfaces.',
  5,
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- '/assets/images/courses/pic1.jpg',
+ '/assets/images/courses/pic6.jpg',
  10,
  300000,
  1),
@@ -398,71 +464,218 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  'Master backend development with Java. Cover Spring Boot, REST APIs, microservices, JPA/Hibernate, and security. Learn to build and deploy enterprise-grade applications using modern Java frameworks.',
  6,
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- '/assets/images/courses/pic1.jpg',
+ '/assets/images/courses/pic2.jpg',
  10,
  750000,
  1);
 
+ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, Status) VALUES
+('Java Programming Fundamentals', 
+ 'Learn the basics of Java programming language including syntax, OOP concepts, and practical applications',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
+ '/assets/images/courses/pic3.jpg',
+ 10,
+ 120000,
+ 1),
+
+('Advanced Java Programming', 
+ 'This course will take you beyond the basics of Java, exploring advanced topics such as multithreading, concurrency, design patterns, and Java s ecosystem for building scalable applications.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
+ '/assets/images/courses/pic2.jpg',
+ 15,
+ 150000,
+ 1),
+
+('Full Stack Web Development', 
+ 'Master both front-end and back-end web development. This course covers HTML, CSS, JavaScript, React, Node.js, and database integration. You will also learn how to deploy your full-stack applications.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Web Development'),
+ '/assets/images/courses/pic3.jpg',
+ 20,
+ 200000,
+ 1),
+
+('Introduction to Databases and SQL', 
+ 'In this course, you will learn the fundamentals of relational databases, SQL syntax, and how to work with databases. It covers topics such as database normalization, indexing, and optimization.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Database'),
+ '/assets/images/courses/pic4.jpg',
+ 10,
+ 100000,
+ 1),
+
+('Networking Fundamentals', 
+ 'This course provides an in-depth understanding of networking concepts including IP addressing, subnetting, TCP/IP protocols, routing, and network security.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Networking'),
+ '/assets/images/courses/pic5.jpg',
+ 12,
+ 120000,
+ 1),
+
+('Mobile App Development with Flutter', 
+ 'Learn how to build mobile applications for both iOS and Android using Flutter. This course will guide you through the entire process from setting up the environment to deploying your first app.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Mobile Development'),
+ '/assets/images/courses/pic6.jpg',
+ 18,
+ 180000,
+ 1),
+
+('Data Science with Python', 
+ 'This course teaches you the essentials of Data Science, focusing on Python programming. Topics covered include data cleaning, visualization, and machine learning algorithms using libraries like Pandas, NumPy, and Scikit-Learn.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Data Science'),
+ '/assets/images/courses/pic7.jpg',
+ 22,
+ 220000,
+ 1),
+
+('Introduction to Cybersecurity', 
+ 'Learn the basics of cybersecurity, including network security, cryptography, and threat analysis. This course provides essential knowledge to protect systems and data from potential cyber threats.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Security'),
+ '/assets/images/courses/pic8.jpg',
+ 14,
+ 140000,
+ 1),
+
+('Building Modern DevOps Pipelines', 
+ 'This course introduces DevOps concepts, including continuous integration, continuous delivery, and the use of tools like Docker, Kubernetes, and Jenkins to automate software development and deployment.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'DevOps'),
+ '/assets/images/courses/pic9.jpg',
+ 16,
+ 160000,
+ 1),
+
+('Python for Data Analysis', 
+ 'Learn how to use Python for data analysis. This course covers libraries such as Pandas, NumPy, and Matplotlib for data manipulation and visualization. You will also learn how to clean and prepare data for analysis.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Data Science'),
+ '/assets/images/courses/pic1.jpg',
+ 18,
+ 180000,
+ 1),
+
+('React Native for Mobile Apps', 
+ 'This course covers the basics of React Native, an open-source framework for building mobile apps. You will learn how to create cross-platform mobile applications for both iOS and Android using JavaScript and React.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Mobile Development'),
+ '/assets/images/courses/pic2.jpg',
+ 20,
+ 200000,
+ 1),
+
+('Deep Learning with TensorFlow', 
+ 'In this course, you will learn the basics of deep learning and how to implement neural networks using TensorFlow. Topics include supervised learning, CNNs, RNNs, and reinforcement learning.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Data Science'),
+ '/assets/images/courses/pic3.jpg',
+ 25,
+ 250000,
+ 1),
+
+('Introduction to Cloud Computing', 
+ 'Cloud computing is transforming the way businesses operate. In this course, you will learn the fundamentals of cloud computing, the different cloud service models, and the leading cloud platforms such as AWS, Azure, and Google Cloud.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Networking'),
+ '/assets/images/courses/pic4.jpg',
+ 12,
+ 120000,
+ 1),
+
+('Advanced Cybersecurity Practices', 
+ 'This course is designed for those who already have a basic understanding of cybersecurity. You will learn about advanced topics such as penetration testing, incident response, advanced threat protection, and ethical hacking.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Security'),
+ '/assets/images/courses/pic5.jpg',
+ 20,
+ 200000,
+ 1),
+
+('Agile Project Management', 
+ 'Agile is a popular project management methodology used in software development and other industries. In this course, you will learn about Agile principles, Scrum framework, and how to manage projects using Agile techniques.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'DevOps'),
+ '/assets/images/courses/pic6.jpg',
+ 15,
+ 150000,
+ 1),
+
+('Introduction to Internet of Things (IoT)', 
+ 'The Internet of Things (IoT) is a rapidly growing technology that connects devices to the internet. This course will introduce you to IoT concepts, including sensors, actuators, and cloud computing for managing IoT devices.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Networking'),
+ '/assets/images/courses/pic7.jpg',
+ 18,
+ 180000,
+ 1),
+
+('Building Scalable Web Applications', 
+ 'This course will teach you how to build scalable web applications using modern technologies such as microservices, containers, and cloud platforms. You will also learn about API design, load balancing, and database scaling.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Web Development'),
+ '/assets/images/courses/pic8.jpg',
+ 22,
+ 220000,
+ 1);
  -- Insert multiple blog posts with longer content
-INSERT INTO Blog (Title, Content, ImageUrl, CategoryID, AuthorID, Status) VALUES
-('Java & SQL', 
- 'Mastering the integration of Java and SQL is essential for building robust database applications. The Java Database Connectivity (JDBC) API serves as the foundation for database operations in Java applications, providing a standardized way to interact with various database systems. Understanding connection pooling, prepared statements, and transaction management is crucial for developing efficient database-driven applications. Modern Java applications often utilize JPA (Java Persistence API) and Hibernate ORM for simplified database interactions, offering object-relational mapping capabilities that bridge the gap between object-oriented Java code and relational databases. Advanced topics include batch processing for improved performance, handling large result sets efficiently, and implementing proper connection management strategies. Security considerations such as SQL injection prevention and proper credential management are paramount. Additionally, modern development practices incorporate connection pools like HikariCP, migration tools like Flyway or Liquibase, and advanced querying capabilities through specifications and criteria APIs. Understanding both Java and SQL optimization techniques ensures applications perform well under heavy loads, while proper error handling and logging strategies help maintain application reliability and debuggability.',
- '/assets/images/blogs/java-sql.jpg',
- (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+INSERT INTO Blog (Title, Content, ImageUrl, CategoryID, AuthorID, Status) 
+VALUES
+('Understanding SQL Joins', 
+ 'SQL Joins are fundamental to relational databases and allow us to retrieve data from multiple tables in a single query. There are several types of joins that we can use, such as INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN. Each type serves a different purpose depending on the way we want to combine data from two or more tables. INNER JOIN only returns rows where there is a match in both tables. LEFT JOIN returns all rows from the left table and matching rows from the right table, while RIGHT JOIN returns all rows from the right table and matching rows from the left. FULL OUTER JOIN returns all rows when there is a match in either table. Understanding these joins and when to use them is crucial for writing efficient SQL queries.',
+ '/assets/images/courses/pic2.jpg',
+ 1,
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
  1),
 
-('Data Structures and Algorithms', 
- 'Data structures and algorithms form the cornerstone of computer science and software development. Understanding these fundamentals is crucial for writing efficient and scalable code. Starting with basic data structures like arrays and linked lists, developers must grasp their characteristics, implementation details, and appropriate use cases. Trees and graphs represent more complex structures, essential for solving hierarchical and relationship-based problems. Algorithm analysis focuses on time and space complexity, using Big O notation to evaluate efficiency. Sorting algorithms like QuickSort, MergeSort, and HeapSort demonstrate different approaches to organizing data, each with its own tradeoffs. Search algorithms, from binary search to depth-first and breadth-first traversals, show how different problems require different approaches. Dynamic programming and greedy algorithms provide strategies for solving complex optimization problems. Advanced topics include balanced trees (AVL, Red-Black), advanced graph algorithms (Dijkstra''s, A*), and string matching algorithms. Real-world applications of these concepts appear in database indexing, network routing, and artificial intelligence. Understanding these fundamentals helps developers make informed decisions about data organization and processing in their applications.',
- '/assets/images/blogs/dsa.jpg',
- (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+('Introduction to Data Science', 
+ 'Data Science is one of the fastest-growing fields today, revolutionizing how industries analyze and interpret data. At its core, Data Science is about using scientific methods, algorithms, and systems to extract knowledge and insights from structured and unstructured data. The field includes a variety of techniques such as machine learning, data mining, and statistical analysis. One of the key aspects of data science is the ability to work with large datasets, often referred to as Big Data. Data scientists need proficiency in various programming languages such as Python and R, as well as familiarity with tools like Hadoop, Spark, and SQL. Additionally, they must possess a strong foundation in mathematics and statistics to interpret data accurately and create meaningful predictions.',
+ '/assets/images/courses/pic3.jpg',
+ 2,
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
  1),
 
-('C++', 
- 'C++ continues to evolve with modern standards bringing powerful features and improved safety. Modern C++ programming emphasizes RAII (Resource Acquisition Is Initialization), smart pointers, and move semantics for better resource management. The Standard Template Library (STL) provides a rich set of containers and algorithms, enabling efficient and reusable code. Memory management in modern C++ has been simplified with smart pointers (unique_ptr, shared_ptr) reducing the risk of memory leaks and dangling pointers. Lambda expressions and functional programming features allow for more expressive and concise code. Template metaprogramming enables powerful compile-time computations and type-safe generic programming. Modern C++ also includes improved multithreading support through the standard library, making concurrent programming more accessible and safer. The concept of modules, introduced in C++20, is revolutionizing how we organize and compile C++ code. Understanding move semantics and perfect forwarding is crucial for writing efficient code that minimizes unnecessary copying. Modern C++ also emphasizes compile-time computation and type safety through features like constexpr, concepts, and ranges.',
- '/assets/images/blogs/cpp.jpg',
- (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- (SELECT UserID FROM Account WHERE Email = 'expert2@onlinelearning.com'),
+('Tips for Efficient Web Development', 
+ 'Web development is a constantly evolving field, and staying up to date with best practices is essential for building modern, efficient websites. One of the first tips for efficient web development is to ensure that your website is responsive. A responsive design adjusts the layout of the website to look great on any device, whether it s a desktop, tablet, or mobile phone. Another important practice is code optimization. Minimizing CSS and JavaScript files, reducing image sizes, and utilizing techniques like lazy loading can significantly improve website performance. Additionally, a clean and well-organized codebase is crucial for long-term maintainability. Developers should use version control systems like Git, follow naming conventions, and ensure that they write modular and reusable code.',
+ '/assets/images/courses/pic4.jpg',
+ 3,
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
  1),
 
-('Frontend ReactJS', 
- 'React.js has evolved significantly, becoming more powerful and efficient in modern web development. The introduction of React Server Components has revolutionized how we think about component rendering and data fetching. Hooks have become more sophisticated, with custom hooks emerging as a powerful pattern for code reuse and state management. The Context API and state management solutions like Redux Toolkit and Zustand offer different approaches to handling application state. Performance optimization in React applications now focuses on automatic batching, concurrent rendering, and the use of memo and useMemo for selective re-rendering. The React ecosystem has grown to include powerful tools like Next.js and Remix, offering enhanced features for server-side rendering and static site generation. Modern React development emphasizes type safety through TypeScript integration, component composition patterns, and effective testing strategies. The introduction of Suspense for data fetching and error boundaries has improved how we handle loading states and errors. React''s integration with WebAssembly and new browser APIs has opened up possibilities for high-performance web applications. Understanding these modern features and patterns is essential for building scalable and maintainable React applications.',
- '/assets/images/blogs/react.jpg',
- (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- (SELECT UserID FROM Account WHERE Email = 'expert3@onlinelearning.com'),
+('Mobile App Development for Beginners', 
+ 'Mobile app development is a rapidly growing area in the tech world, with millions of apps being developed for platforms like iOS and Android every year. For beginners, it is essential to start by understanding the basics of mobile app development. Both iOS and Android apps are typically built using specific programming languages: Swift or Objective-C for iOS, and Java or Kotlin for Android. Additionally, developers should learn about integrated development environments (IDEs) like Xcode for iOS and Android Studio for Android. Building a simple app, such as a calculator or a to-do list, is a great way to get started. After that, you can progress to more complex projects, such as social media apps or e-commerce platforms. Understanding UI/UX design principles is also important for creating user-friendly mobile applications.',
+ '/assets/images/courses/pic5.jpg',
+ 4,
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
  1),
 
-('Frontend HTML/CSS', 
- 'Modern web development with HTML5 and CSS3 has transformed how we build responsive and accessible websites. Semantic HTML elements improve accessibility and SEO, while new input types and form validation features enhance user experience. CSS Grid and Flexbox have revolutionized layout design, making complex layouts more manageable and responsive. Custom properties (CSS variables) enable dynamic styling and improved maintainability. Modern CSS features like container queries, logical properties, and the :has() selector provide powerful new ways to style content. Animation and transition capabilities in CSS have expanded, reducing the need for JavaScript in many cases. CSS architecture patterns like BEM, SMACSS, and utility-first frameworks like Tailwind CSS offer different approaches to managing style complexity. Performance considerations include critical CSS, loading strategies, and effective use of media queries. Modern CSS also includes powerful features for dark mode, color schemes, and variable fonts. Understanding accessibility requirements and implementing ARIA attributes ensures websites are usable by all. Progressive enhancement ensures sites work across different browsers while taking advantage of modern features where available.',
- '/assets/images/blogs/html-css.jpg',
- (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- (SELECT UserID FROM Account WHERE Email = 'expert3@onlinelearning.com'),
+('Best Practices in Cybersecurity', 
+ 'In today s digital age, cybersecurity is more important than ever. As more businesses and individuals rely on the internet for daily activities, the risk of cyberattacks continues to rise. Best practices in cybersecurity include ensuring strong password management, using multi-factor authentication (MFA), and regularly updating software to protect against vulnerabilities. Additionally, organizations should conduct regular security audits, implement firewalls, and use encryption to secure sensitive data. Employees should also be trained on recognizing phishing attempts and suspicious activities. Cybersecurity is not just about preventing attacks but also about preparing for potential breaches and having a robust recovery plan in place.',
+ '/assets/images/courses/pic6.jpg',
+ 5,
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
  1),
 
-('Frontend JavaScript', 
- 'JavaScript has evolved from a simple scripting language to a powerful programming language driving modern 
- web development. ES6+ features have transformed how we write code, with arrow functions, destructuring, 
- and modules improving code organization and readability. Asynchronous programming has become more intuitive
-  with async/await syntax, replacing callback patterns with more maintainable code. The JavaScript ecosystem 
-  continues to grow with tools like Webpack, Vite, and esbuild optimizing development workflows. Modern JavaScript 
-  development emphasizes type safety through TypeScript adoption, while testing frameworks like Jest and Testing 
-  Library improve code reliability. Browser APIs have expanded, offering features like Intersection Observer, Web Workers, and the File System Access API. Performance optimization techniques include code splitting, tree shaking, and effective use of the browser''s rendering pipeline. Modern JavaScript also includes powerful features for handling dates, internationalization, and binary data. Understanding event delegation, memory management, and the event loop is crucial for building performant applications. The rise of Web Components and shadow DOM provides new ways to create reusable UI components.',
- '/assets/images/blogs/javascript.jpg',
- (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
- (SELECT UserID FROM Account WHERE Email = 'expert3@onlinelearning.com'),
+('How to Learn Programming Effectively', 
+ 'Learning to code can seem like a daunting task, especially for beginners, but with the right strategies, anyone can become proficient in programming. The first step is to choose the right programming language. Popular languages for beginners include Python, JavaScript, and Ruby, as they are versatile and widely used. Once a language is chosen, beginners should focus on understanding the basic concepts such as variables, loops, functions, and conditionals. Practicing regularly by building small projects is key to solidifying concepts. Additionally, online tutorials, coding bootcamps, and community forums can provide valuable resources and support. The key to success is consistency setting aside time every day to practice and solve coding challenges will lead to steady improvement.',
+ '/assets/images/courses/pic7.jpg',
+ 6,
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
  1),
-
 ('Backend Node.js', 
  'Node.js has matured into a robust platform for building scalable backend applications. The event-driven, non-blocking I/O model makes Node.js particularly well-suited for handling concurrent connections efficiently. Express.js remains the most popular framework, providing a minimal yet powerful foundation for building web applications and APIs. Modern Node.js development emphasizes architectural patterns like Clean Architecture and Domain-Driven Design for building maintainable applications. Authentication and authorization implementations have evolved, with JSON Web Tokens (JWT) and OAuth becoming standard practices. Database integration options have expanded, with ORMs like Prisma and TypeORM offering type-safe database access. Error handling strategies have matured, incorporating proper logging, monitoring, and error reporting practices. Performance optimization includes clustering, caching strategies, and proper memory management. Security best practices encompass input validation, rate limiting, and protection against common vulnerabilities. Microservices architecture in Node.js often utilizes message queues and service discovery mechanisms. Testing strategies incorporate unit tests, integration tests, and end-to-end testing using frameworks like Jest and Supertest.',
- '/assets/images/blogs/nodejs.jpg',
+ '/assets/images/courses/pic4.jsp',
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
  (SELECT UserID FROM Account WHERE Email = 'expert4@onlinelearning.com'),
  1),
 
 ('backend Java', 
  'Enterprise Java development has evolved significantly with Spring Boot and modern Java features leading the way. Microservices architecture has become the standard for building scalable enterprise applications, with Spring Cloud providing essential distributed system patterns. Modern Java backend development emphasizes reactive programming for building responsive and resilient systems. Security implementations have become more sophisticated, incorporating OAuth2, OpenID Connect, and fine-grained authorization. Database access patterns have evolved with Spring Data JPA, R2DBC for reactive database access, and advanced caching strategies. API design focuses on REST best practices, GraphQL integration, and proper documentation using OpenAPI/Swagger. Monitoring and observability are crucial, with tools like Micrometer, Prometheus, and ELK stack becoming standard. Testing strategies incorporate unit tests, integration tests, and contract tests for microservices. Deployment practices emphasize containerization with Docker and orchestration with Kubernetes. Performance optimization includes proper connection pooling, caching strategies, and efficient resource utilization. Understanding transaction management, message queuing, and distributed tracing is essential for building robust enterprise applications.',
- '/assets/images/blogs/java-backend.jpg',
+ '/assets/images/courses/pic6.jsp',
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
  (SELECT UserID FROM Account WHERE Email = 'expert5@onlinelearning.com'),
  1);
@@ -556,7 +769,7 @@ VALUES
 ('Lesson 12 - Heaps & Priority Queues', 'Understanding heaps, priority queues, and their applications.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=12', NULL, 25, 1, 2, 1, GETDATE(), 4),
 ('Lesson 13 - Graphs & Graph Representations', 'Introduction to graphs, adjacency lists, adjacency matrices, and graph types.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=13', NULL, 25, 1, 2, 1, GETDATE(), 4),
 ('Lesson 14 - Graph Traversal Algorithms', 'Exploring BFS (Breadth-First Search) and DFS (Depth-First Search) algorithms.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=14', NULL, 25, 1, 2, 1, GETDATE(), 4),
-('Lesson 15 - Shortest Path Algorithms', 'Dijkstra�s Algorithm, Bellman-Ford Algorithm, and Floyd-Warshall Algorithm.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=15', NULL, 25, 1, 2, 1, GETDATE(), 4),
+('Lesson 15 - Shortest Path Algorithms', 'Dijkstra’s Algorithm, Bellman-Ford Algorithm, and Floyd-Warshall Algorithm.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=15', NULL, 25, 1, 2, 1, GETDATE(), 4),
 ('Lesson 16 - Dynamic Programming', 'Introduction to dynamic programming, memoization, and tabulation techniques.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=16', NULL, 25, 1, 2, 1, GETDATE(), 4),
 ('Lesson 17 (Part 1) - Greedy Algorithms', 'Understanding greedy algorithms and their applications.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=17', NULL, 25, 1, 2, 1, GETDATE(), 4),
 ('Lesson 17 (Part 2) - Greedy Algorithms', 'Exploring practical greedy algorithms such as Huffman coding and activity selection.', 'Basic', 'https://www.youtube.com/watch?v=mMcpAiosYdE&index=18', NULL, 25, 1, 2, 1, GETDATE(), 4);
@@ -690,76 +903,76 @@ INSERT INTO Quiz (Name, Description, Duration, PassRate, TotalQuestion, CourseID
 VALUES 
     -- Java & SQL Quizzes
     ('Java Fundamentals Quiz', 'Test your understanding of Java basics.', 30, 70, 5, 
-     (SELECT CourseID FROM Course WHERE Title = 'Java & SQL'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java & SQL')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery')),
      1, GETDATE()),
 
     ('Advanced Java Quiz', 'Test your knowledge of advanced Java concepts.', 30, 70, 5, 
-     (SELECT CourseID FROM Course WHERE Title = 'Java & SQL'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java & SQL')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery')),
      1, GETDATE()),
 
     ('SQL Basics Quiz', 'Test your SQL knowledge and query writing skills.', 30, 70, 5, 
-     (SELECT CourseID FROM Course WHERE Title = 'Java & SQL'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java & SQL')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery')),
      1, GETDATE()),
 
     ('SQL Advanced Queries Quiz', 'Test your ability to write complex SQL queries.', 30, 70, 5, 
-     (SELECT CourseID FROM Course WHERE Title = 'Java & SQL'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java & SQL')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery')),
      1, GETDATE()),
 
     -- Data Structures & Algorithms Quizzes
     ('Data Structures Quiz', 'Test your knowledge of basic data structures.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Data Structure and Algorithms'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Data Structure and Algorithms')),
+     (SELECT CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms')),
      1, GETDATE()),
 
     ('Algorithms Quiz', 'Test your understanding of common algorithms.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Data Structure and Algorithms'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Data Structure and Algorithms')),
+     (SELECT CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms')),
      1, GETDATE()),
 
     ('Sorting & Searching Quiz', 'Evaluate your knowledge on sorting and searching algorithms.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Data Structure and Algorithms'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Data Structure and Algorithms')),
+     (SELECT CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms')),
      1, GETDATE()),
 
     -- Frontend Development Quizzes
     ('React Fundamentals Quiz', 'Test your React.js knowledge.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Frontend ReactJS'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Frontend ReactJS')),
+     (SELECT CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js')),
      1, GETDATE()),
 
     ('JavaScript Basics Quiz', 'Test your JavaScript fundamentals.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Frontend JavaScript'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Frontend JavaScript')),
+     (SELECT CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js')),
      1, GETDATE()),
 
     ('HTML & CSS Quiz', 'Test your knowledge of HTML & CSS basics.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Frontend HTML/CSS'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Frontend HTML/CSS')),
+     (SELECT CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js')),
      1, GETDATE()),
 
     -- Backend Development Quizzes
     ('Node.js Fundamentals Quiz', 'Test your understanding of backend development with Node.js.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Backend Node.js'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Backend Node.js')),
+     (SELECT CourseID FROM Course WHERE Title = 'Backend Web Development with Node.js & Express'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Backend Web Development with Node.js & Express')),
      1, GETDATE()),
 
     ('Spring Boot Quiz', 'Test your knowledge of backend development using Java Spring Boot.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Backend Java'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Backend Java')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot')),
      1, GETDATE()),
 
     ('REST API Quiz', 'Test your understanding of RESTful API design principles.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Backend Java'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Backend Java')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot')),
      1, GETDATE()),
 
     ('Microservices Quiz', 'Test your knowledge of microservices architecture and design.', 30, 70, 5,
-     (SELECT CourseID FROM Course WHERE Title = 'Backend Java'),
-     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Backend Java')),
+     (SELECT CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot'),
+     (SELECT TOP 1 PackageID FROM Packages WHERE CourseID = (SELECT CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot')),
      1, GETDATE());
 
 -- Insert questions for each quiz
@@ -962,59 +1175,59 @@ INSERT INTO Answer (Content, IsCorrect, Explanation, QuestionID) VALUES
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Java & SQL'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Java Programming & SQL Database Mastery'), 
  2800000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student2@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Data Structure and Algorithms'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Comprehensive Data Structures & Algorithms'), 
  2000000, 'pending', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student3@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Frontend ReactJS'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Modern Frontend Development with React.js'), 
  6400000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Frontend HTML/CSS'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Frontend Web Development with HTML & CSS'), 
  6000000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student2@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Frontend JavaScript'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Advanced JavaScript & Frontend Development'), 
  7000000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student3@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Backend Node.js'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Backend Web Development with Node.js & Express'), 
  7000000, 'pending', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student1@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Backend Java'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Backend Web Development with Node.js & Express'), 
  7000000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student2@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Backend Java'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot'), 
  7000000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student3@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Backend Java'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Java Backend Development with Spring Boot'), 
  7000000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
 
 INSERT INTO Registration (UserID, CourseID, Price, Status, Progress, ValidFrom, ValidTo, CreatedAt) 
 VALUES 
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student2@onlinelearning.com'), 
- (SELECT TOP 1 CourseID FROM Course WHERE Title = 'C++'), 
+ (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Complete C++ Programming: From Beginner to Advanced'), 
  2750000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());

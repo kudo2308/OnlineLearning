@@ -19,12 +19,47 @@
         <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+        <style>
+            .error-message {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top: 120px;
+                left: 0;
+                right: 0;
+                background-color: rgba(208, 22, 39, 0.8);
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+
+            .success {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top:120px;
+                left: 0;
+                right: 0;
+                background-color: #00CC00;
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+        </style>
     </head>
 
     <body>
 
         <jsp:include page="/common/header.jsp"></jsp:include>
-            <hr style="color: #dddddd">
+          <nav style="height: 0 ;border-bottom: 1px solid #ddd"></nav>
             <div class="container">
 
                 <div class="cart-container">
@@ -80,9 +115,47 @@
             </div>
         </div>
 
-        <!-- Course List -->
+        <c:set var="error" value="${requestScope.error}" />
+        <c:if test="${not empty error}">
+            <div id="error-message" class="error-message">
+                <i class="bx bxs-error"></i> ${error}
+            </div>
+        </c:if>
+        <c:set var="success" value="${requestScope.success}" />
+        <c:if test="${not empty success}">
+            <div id="success" class="success">
+                <i class="bx bxs-error"></i> ${success}
+            </div>
+        </c:if>
 
 
         <script src="${pageContext.request.contextPath}/assets/js/CartJs.js"></script>
+        <script>
+                            function showMessage() {
+                                var errorMessage = document.getElementById("error-message");
+                                var successMessage = document.getElementById("success");
+
+                                // Hiển thị thông báo lỗi nếu có
+                                if (errorMessage) {
+                                    errorMessage.style.display = "block";
+                                    setTimeout(function () {
+                                        errorMessage.style.display = "none";
+                                    }, 3000);
+                                }
+
+                                // Hiển thị thông báo thành công nếu có
+                                if (successMessage) {
+                                    successMessage.style.display = "block";
+                                    setTimeout(function () {
+                                        successMessage.style.display = "none";
+                                    }, 3000);
+                                }
+                            }
+
+                            // Gọi hàm khi trang đã tải xong
+                            window.onload = function () {
+                                showMessage();
+                            };
+        </script>
     </body>
 </html>
