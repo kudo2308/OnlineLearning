@@ -389,7 +389,7 @@ public class LoginDAO extends DBContext {
                     course.setCategoryID(rs.getInt("CategoryID"));
                     course.setImageUrl(rs.getString("ImageUrl"));
                     course.setTotalLesson(rs.getInt("TotalLesson"));
-                    course.setStatus(rs.getBoolean("Status"));
+                    course.setStatus(rs.getString("Status"));
                     course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                     course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                     courses.add(course);
@@ -420,7 +420,7 @@ public class LoginDAO extends DBContext {
                     course.setCategoryID(rs.getInt("CategoryID"));
                     course.setImageUrl(rs.getString("ImageUrl"));
                     course.setTotalLesson(rs.getInt("TotalLesson"));
-                    course.setStatus(rs.getBoolean("Status"));
+                    course.setStatus(rs.getString("Status"));
                     course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                     course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                     courses.add(course);

@@ -76,8 +76,6 @@ public class BlogDAO extends DBContext {
         return blogList;
     }
 
-<<<<<<< HEAD
-=======
     public List<Course> getCoursesByCategory(int categoryId, int offset, int recordsPerPage) {
         List<Course> courseList = new ArrayList<>();
         String sql = """
@@ -137,8 +135,6 @@ public class BlogDAO extends DBContext {
         }
         return courseList;
     }
-
->>>>>>> 7adf8f03749f1b4abf7ad6d0ae557ce372b6528b
     public int getTotalBlogs() {
         String sql = "SELECT COUNT(*) FROM [dbo].[Blog] WHERE [Status] = 1";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
