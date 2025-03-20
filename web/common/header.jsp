@@ -220,9 +220,15 @@
                         </div>
                     </div>
                 </div>
-                <a href="${pageContext.request.contextPath}/cart" id="cart">
-                    <span class="material-icons md-18">shopping_cart</span>
+                <a href="${pageContext.request.contextPath}/cart" id="cart" class="cart-icon">
+                    <c:if test="${not empty sessionScope.totalCourse and sessionScope.totalCourse > 0}">
+                        <span class="cart-count">${sessionScope.totalCourse > 99 ? '99+' : sessionScope.totalCourse}</span>
+                    </c:if>
+                    <span class="material-icons">shopping_cart</span>
                 </a>
+
+
+
                 <div class="account-dropdown">
                     <div class="account-avatar">
                         <c:choose>
@@ -284,12 +290,10 @@
 
 <script>
     var contextPath = '${pageContext.request.contextPath}';
-
     document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('notification-badge')) {
             fetchNotificationCount();
             setInterval(fetchNotificationCount, 30000);
-
             document.getElementById('bell').addEventListener('click', function (e) {
                 e.preventDefault();
                 var notificationContent = document.getElementById('notification-content');
@@ -300,12 +304,10 @@
                     fetchNotifications();
                 }
             });
-
             document.getElementById('mark-all-read').addEventListener('click', function (e) {
                 e.preventDefault();
                 markAllAsRead();
             });
-
             document.addEventListener('click', function (e) {
                 var notificationDropdown = document.querySelector('.notification-dropdown');
                 var notificationContent = document.getElementById('notification-content');
@@ -315,7 +317,6 @@
             });
         }
     });
-
     function fetchNotificationCount() {
         fetch(contextPath + '/notifications?action=count', {
             method: 'GET',
@@ -337,7 +338,6 @@
     function fetchNotifications() {
         var notificationList = document.getElementById('notification-list');
         notificationList.innerHTML = '<div class="loading">Loading...</div>';
-
         fetch(contextPath + '/notifications?action=getUnread', {
             method: 'GET',
             headers: {'X-Requested-With': 'XMLHttpRequest'}
@@ -355,38 +355,29 @@
                         notificationItem.setAttribute('data-id', notification.notificationID);
                         notificationItem.setAttribute('data-type', notification.type);
                         notificationItem.setAttribute('data-related-id', notification.relatedID);
-
                         var title = document.createElement('div');
                         title.className = 'notification-title';
                         title.textContent = notification.title;
-
                         var content = document.createElement('div');
                         content.className = 'notification-content';
                         content.textContent = notification.content;
-
                         var meta = document.createElement('div');
                         meta.className = 'notification-meta';
-
                         var timeSpan = document.createElement('span');
                         timeSpan.className = 'notification-time';
                         timeSpan.textContent = formatTime(new Date(notification.createdAt));
-
                         var typeSpan = document.createElement('span');
                         typeSpan.className = 'notification-type type-' + notification.type;
                         typeSpan.textContent = notification.type;
-
                         meta.appendChild(timeSpan);
                         meta.appendChild(typeSpan);
-
                         notificationItem.appendChild(title);
                         notificationItem.appendChild(content);
                         notificationItem.appendChild(meta);
-
                         notificationItem.addEventListener('click', function () {
                             markAsRead(notification.notificationID);
                             handleNotificationClick(notification);
                         });
-
                         notificationList.appendChild(notificationItem);
                     });
                 })
@@ -452,4 +443,36 @@
         else
             return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
     }
+
+    function updateCartCount() {
+        fetch('${pageContext.request.contextPath}/cart?action=count', {
+            method: 'GET',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+                .then(response => response.json())
+                .then(data => {
+                    var cartCount = document.querySelector('.cart-count');
+                    if (data.count > 0) {
+                        if (!cartCount) {
+                            var cartIcon = document.getElementById('cart');
+                            cartCount = document.createElement('span');
+                            cartCount.className = 'cart-count';
+                            cartIcon.appendChild(cartCount);
+                        }
+                        cartCount.textContent = data.count;
+                        cartCount.style.display = 'block';
+                    } else {
+                        if (cartCount) {
+                            cartCount.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error updating cart count:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCartCount();
+        setInterval(updateCartCount, 30000);
+    });
+
 </script>

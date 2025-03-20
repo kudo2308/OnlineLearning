@@ -58,8 +58,16 @@ public class CartController extends HttpServlet {
             cartDAO.create(acc.getUserID());
             cart = new Cart();
         }
+        if ("count".equals(request.getParameter("action"))) {
+            Integer totalCourses = (Integer) session.getAttribute("totalCourse");
+            totalCourses = (totalCourses != null) ? totalCourses : 0;
 
-        request.setAttribute("totalCourse", totalCourse);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"count\": " + totalCourse + "}");
+            return;
+        }
+
+        session.setAttribute("totalCourse", totalCourse);
         request.setAttribute("cart", cart.getItems());
         request.getRequestDispatcher("views/user/Cart.jsp").forward(request, response);
     }
