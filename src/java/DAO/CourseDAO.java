@@ -111,7 +111,7 @@ public class CourseDAO extends DBContext {
         return list;
     }
 
-    private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
+   private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
 
         int courseId = rs.getInt("CourseID");
         String title = rs.getString("Title");
@@ -356,7 +356,7 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-    public int getTotalCourses() {
+     public int getTotalCourses() {
         String sql = "SELECT COUNT(*) FROM Course WHERE Status = 1";
         try (Connection connection = new DBContext().getConnection()) {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -425,6 +425,7 @@ public class CourseDAO extends DBContext {
         }
         return null;
     }
+
 
     public int getTotalCoursesByCategory(int categoryId) {
         String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [CategoryID] = ? AND [Status] = 1";
@@ -626,7 +627,7 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-    public double getAverageRating(int courseId) {
+     public double getAverageRating(int courseId) {
         String sql = """
                     SELECT AVG(CAST(Rating AS FLOAT)) as AvgRating
                     FROM [dbo].[Feedback]
@@ -813,7 +814,7 @@ public class CourseDAO extends DBContext {
         return 0;
     }
 
-    public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
+      public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
         List<Course> categoryResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE CategoryID = ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -982,5 +983,60 @@ public class CourseDAO extends DBContext {
             System.out.println(e);
         }
         return userCourses;
+    }
+    public boolean checkSellCourse(int courseId) {
+        boolean check = false;
+        StringBuilder sql = new StringBuilder();
+        sql.append("select * from Course c\n"
+                + "join Packages p on c.CourseID = p.CourseID\n"
+                + "join Lesson l on l.PackageID = p.PackageID\n"
+                + "where c.CourseID = ?");
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setInt(1, courseId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                check = true;
+                break;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return check;
+    }
+      public List<Course> findCouseByExpert(int userId) {
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM Course co ")
+                .append("JOIN Account a ON co.ExpertID = a.UserID ")
+                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
+                .append("WHERE co.ExpertID = ? ")
+                .append("ORDER BY co.CourseID ");
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int courseId = rs.getInt("CourseID");
+                String title = rs.getString("Title");
+                Course course = new Course();
+                course.setCourseID(courseId);
+                course.setTitle(title);
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return courses;
     }
 }
