@@ -113,4 +113,14 @@
         <servlet-name>LessonController</servlet-name>
         <url-pattern>/lesson</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>CartController</servlet-name>
+        <servlet-class>controller.CartController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CartController</servlet-name>
+        <url-pattern>/cart</url-pattern>
+    </servlet-mapping>
+
 </web-app>

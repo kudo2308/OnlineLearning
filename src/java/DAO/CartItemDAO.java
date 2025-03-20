@@ -35,7 +35,6 @@ public class CartItemDAO extends DBContext {
             while (rs.next()) {
                 courseIds.add(rs.getInt("CourseID"));
             }
-            
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,7 +50,7 @@ public class CartItemDAO extends DBContext {
 
         return cartItems;
     }
-    
+
     public int countItemsByCartId(int userId) {
         int totalCourse = 0;
         String sql = "SELECT COUNT(cd.CourseID) as totalOfCourse FROM Cart c \n"
@@ -68,17 +67,30 @@ public class CartItemDAO extends DBContext {
             if (rs.next()) {
                 totalCourse = rs.getInt("totalOfCourse");
             }
-            
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return totalCourse;
     }
-    
+
+    public void removePurchasedCoursesFromCart(int userId) {
+        String sql = "DELETE FROM CartDetail "
+                + "WHERE CourseID IN (SELECT CourseID FROM Registration WHERE UserID = ?) "
+                + "AND CartID IN (SELECT CartID FROM Cart WHERE AccountID = ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, userId);
+            int rowsDeleted = stmt.executeUpdate();
+            System.out.println("Deleted " + rowsDeleted + " items from cart.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         CartItemDAO cartDAO = new CartItemDAO();
-        int count = cartDAO.countItemsByCartId(2);
-        System.out.println(count);
+        cartDAO.removePurchasedCoursesFromCart(2);
     }
 }

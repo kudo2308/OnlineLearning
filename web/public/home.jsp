@@ -1,4 +1,4 @@
- <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -91,9 +91,9 @@
                     <c:if test="${not empty recentCourses}">
                         <c:forEach var="recentCourses" items="${recentCourses}">
                             <li>
-                                <img
+                                <a href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}"><img
                                     class="image-product"
-                                    src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}">
+                                    src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}"></a>
                                 <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
                                     ${recentCourses.title}
                                 </a>
@@ -138,7 +138,7 @@
                                         <div class="post action-card">
                                             <div class="recent-news">
                                                 <div class="action-box">
-                                                    <img src="${pageContext.request.contextPath}${blog.imgUrl}" alt="">
+                                                    <a href="${pageContext.request.contextPath}/BlogDetail?blogId=${blog.blogId}"><img src="${pageContext.request.contextPath}${blog.imgUrl}" alt=""></a>
                                                 </div>
                                                 <div class="info-bx">
                                                     <ul class="media-post">
