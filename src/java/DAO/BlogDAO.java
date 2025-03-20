@@ -39,7 +39,7 @@ public class BlogDAO extends DBContext {
                     FROM [dbo].[Blog] b
                     JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                     JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                    WHERE b.Status = 'public'
+                    WHERE b.Status = 'Public'
                     ORDER BY b.[BlogID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -135,6 +135,7 @@ public class BlogDAO extends DBContext {
         }
         return courseList;
     }
+
     public int getTotalBlogs() {
         String sql = "SELECT COUNT(*) FROM [dbo].[Blog] WHERE [Status] = 1";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
@@ -165,7 +166,7 @@ public class BlogDAO extends DBContext {
                     FROM [dbo].[Blog] b
                     JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                     JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                    WHERE cat.CategoryID = ? and b.Status = 'public'
+                    WHERE cat.CategoryID = ? and b.Status = 'Public'
                     """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -207,7 +208,7 @@ public class BlogDAO extends DBContext {
                 FROM [dbo].[Blog] b
                 JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                 JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                WHERE cat.CategoryID = ? and b.Status = 'public'
+                WHERE cat.CategoryID = ? and b.Status = 'Public'
                 ORDER BY b.[CreatedAt] DESC
                 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
                 """;
@@ -262,7 +263,7 @@ public class BlogDAO extends DBContext {
                                         FROM [dbo].[Blog] b
                                         JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                                         JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                                        WHERE b.BlogID = 1 and b.Status = 'public'
+                                        WHERE b.BlogID = ?
                     """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -298,7 +299,7 @@ public class BlogDAO extends DBContext {
     public List<Blog> getAllRecentBlogs() {
         List<Blog> blogs = new ArrayList<>();
         try {
-            String query = "SELECT * FROM Blog b JOIN Account a ON b.AuthorID = a.UserID Where b.Status = 1 ORDER BY b.CreatedAt DESC";
+            String query = "SELECT * FROM Blog b JOIN Account a ON b.AuthorID = a.UserID Where b.Status = 'public' ORDER BY b.CreatedAt DESC";
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -363,7 +364,7 @@ public class BlogDAO extends DBContext {
                     FROM [dbo].[Blog] b
                     JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
                     JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
-                    WHERE a.UserID = ? and b.Status = 'public'
+                    WHERE a.UserID = ?
                     """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -396,19 +397,20 @@ public class BlogDAO extends DBContext {
         return blogList;
     }
 
-    public void deleteBlog(int blogId) {
+    public boolean deleteBlog(int blogId) {
         String sql = "DELETE FROM Blog WHERE BlogID = ?";
-        try (
-                PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, blogId);
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0; // Trả về true nếu có ít nhất 1 dòng bị xóa
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
         }
     }
 
     public void updateBlog(Blog blog) {
-        String sql = "UPDATE Blog SET Title = ?, Content = ?, ImageUrl = ?, CategoryID = ?, Status = ?, UpdatedAt = GETDATE() WHERE BlogID = ? AND AuthorID = ?";
+        String sql = "UPDATE Blog SET Title = ?, Content = ?, ImageUrl = ?, CategoryID = ?, Status = ?, UpdatedAt = GETDATE() WHERE BlogID = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -418,7 +420,6 @@ public class BlogDAO extends DBContext {
             stmt.setInt(4, blog.getCategoryID());
             stmt.setString(5, blog.getStatus());
             stmt.setInt(6, blog.getBlogId());
-            stmt.setInt(7, blog.getAuthorId());
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -434,8 +435,27 @@ public class BlogDAO extends DBContext {
 
     public static void main(String[] args) {
         BlogDAO blogDAO = new BlogDAO();
-        Blog newBlog = blogDAO.getBlogByBlogId(5);
 
-        blogDAO.deleteBlog(9);
+        // Chọn Blog ID để cập nhật
+
+        // Lấy blog từ database
+        Blog blog = blogDAO.getBlogByBlogId(9);
+        
+        System.out.println(blog);
+        
+        if (blog != null) {
+            // Cập nhật thông tin mới cho blog
+            blog.setTitle("Updated Blog Title");
+            blog.setContent("This is the updated content of the blog.");
+            blog.setCategoryID(2); // Giả sử category ID mới là 2
+            blog.setStatus("public"); // Hoặc "private"
+
+            // Nếu cần cập nhật ảnh mới (giữ nguyên nếu không có ảnh mới)
+            String newImageUrl = "/assets/images/blog/new-image.jpg"; // Giả sử có ảnh mới
+            blog.setImgUrl(newImageUrl);
+
+            // Gọi phương thức update
+            blogDAO.updateBlog(blog);
+        }
     }
 }

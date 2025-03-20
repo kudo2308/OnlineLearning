@@ -59,13 +59,13 @@
     <body>
 
         <jsp:include page="/common/header.jsp"></jsp:include>
-          <nav style="height: 0 ;border-bottom: 1px solid #ddd"></nav>
+            <hr style="color: #dddddd">
             <div class="container">
 
                 <div class="cart-container">
                     <div class="cart-des">
                         <h2>Shopping Cart</h2>
-                        <!--                    <p class="course-count">3 Courses in Cart</p>-->
+                        <p class="course-count">${totalCourse} Courses in Cart</p>
                     <c:forEach var="item" items="${cart}">
                         <div class="cart-item">
                             <img src="${pageContext.request.contextPath}${item.course.imageUrl}" alt="Adobe Illustrator Course">
@@ -77,8 +77,8 @@
                                     </c:if>
                                 </p>
                                 <!--                                <p>4 total hours | 13 lectures | All Levels</p>-->
-                                <form action="cart?action=delete&courseId=${item.course.courseID}" method="post">
-                                    <button class="action-box" type="submit">Remove</button>
+                                <form class="action-box" action="cart?action=delete&courseId=${item.course.courseID}" method="post">
+                                    <button type="submit">Remove</button>
                                 </form>
 
                             </div>
@@ -86,12 +86,17 @@
                                 <p class="discounted">${item.course.price}</p>
                                 <p class="original">₫399,000</p>
                             </div>
+                            <form class="action-box" action="cart?action=delete&courseId=${item.course.courseID}" method="post">
+                                <button  type="submit">Remove</button>
+                            </form>
+
                             <label class="checkbox-container">
                                 <input type="checkbox" class="course-checkbox" 
+
                                        data-price="${item.course.price}" 
                                        data-course-id="${item.course.courseID}" 
                                        data-expert-id="${item.course.expertID}">
-                                <span class="checkmark"></span> Select
+                                <div class="checkmark"></div>
                             </label>
                         </div>
                     </c:forEach>
@@ -114,19 +119,6 @@
 
             </div>
         </div>
-
-        <c:set var="error" value="${requestScope.error}" />
-        <c:if test="${not empty error}">
-            <div id="error-message" class="error-message">
-                <i class="bx bxs-error"></i> ${error}
-            </div>
-        </c:if>
-        <c:set var="success" value="${requestScope.success}" />
-        <c:if test="${not empty success}">
-            <div id="success" class="success">
-                <i class="bx bxs-error"></i> ${success}
-            </div>
-        </c:if>
 
 
         <script src="${pageContext.request.contextPath}/assets/js/CartJs.js"></script>

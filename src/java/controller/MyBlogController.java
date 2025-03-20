@@ -10,14 +10,19 @@ import DAO.LoginDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import model.Account;
 import model.Blog;
 import model.Category;
@@ -27,7 +32,14 @@ import model.Category;
  * @author ASUS
  */
 @WebServlet(name = "MyBlogController", urlPatterns = {"/myblog"})
+@MultipartConfig( // Cấu hình giới hạn kích thước file upload
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 public class MyBlogController extends HttpServlet {
+
+    private static final String UPLOAD_DIRECTORY = "web/assets/images/blog/recent-blog";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -55,15 +67,6 @@ public class MyBlogController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -71,7 +74,7 @@ public class MyBlogController extends HttpServlet {
         Object accountObj = session.getAttribute("account");
 
         if (accountObj == null) {
-            response.sendRedirect(request.getContextPath() + "/login?redirect=Blog");
+            response.sendRedirect(request.getContextPath() + "/login?redirect=MyBlog");
             return;
         }
 
@@ -80,35 +83,91 @@ public class MyBlogController extends HttpServlet {
             Map<String, String> accountData = (Map<String, String>) accountObj;
             userID = accountData.get("userId");
         }
-        CategoryDAO cateDAO = new CategoryDAO();
+
         LoginDAO dao = new LoginDAO();
         Account acc = dao.getAccountByUserID(userID);
 
-        List<Category> cateList = cateDAO.findAll();
-        BlogDAO blogDAO = new BlogDAO();
-        List<Blog> blogList = blogDAO.getBlogByUserId(acc.getUserID());
+        if (acc == null) {
+            response.sendRedirect(request.getContextPath() + "/login?error=invalidAccount");
+            return;
+        }
 
-        request.setAttribute("category", cateList);
+        int page = 1; // Mặc định trang đầu tiên
+        int recordsPerPage = 10; // Số bài viết mỗi trang
+
+        // Lấy tham số từ request
+        String pageParam = request.getParameter("page");
+        String categoryIdParam = request.getParameter("categoryId");
+        String keyword = request.getParameter("search");
+
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int categoryId = 0;
+        if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
+            try {
+                categoryId = Integer.parseInt(categoryIdParam);
+            } catch (NumberFormatException e) {
+                categoryId = 0;
+            }
+        }
+        
+        int offset = (page - 1) * recordsPerPage;
+        
+        // Lấy thông báo lỗi/thành công từ URL
+        String message = request.getParameter("message");
+        String error = request.getParameter("error");
+        CategoryDAO categoryDAO = new CategoryDAO();
+        BlogDAO blogDAO = new BlogDAO();
+        List<Category> categoryList = categoryDAO.findAll();
+        List<Blog> blogs;
+
+        if (categoryId > 0) {
+            blogs = blogDAO.getBlogByCategoryId(categoryId);
+        } else {
+            blogs = blogDAO.getBlogByUserId(acc.getUserID());
+        }
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            blogs = blogs.stream()
+                    .filter(blog -> blog.getTitle().toLowerCase().contains(keyword.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        int totalBlogs = blogs.size();
+        int totalPages = (int) Math.ceil((double) totalBlogs / recordsPerPage);
+
+        int toIndex = Math.min(offset + recordsPerPage, totalBlogs);
+        if (offset < totalBlogs) {
+            blogs = blogs.subList(offset, toIndex);
+        } else {
+            blogs = List.of();
+        }
+
+        request.setAttribute("message", message);
+        request.setAttribute("error", error);
         request.setAttribute("account", acc);
-        request.setAttribute("blogList", blogList);
+        request.setAttribute("blogs", blogs);
+        request.setAttribute("searchKeyword", keyword);
+        request.setAttribute("categories", categoryList);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("selectedCategory", categoryId);
+
         request.getRequestDispatcher("/views/user/MyBlog.jsp").forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
 
-        // Kiểm tra đăng nhập
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login?redirect=Blog");
             return;
@@ -119,72 +178,139 @@ public class MyBlogController extends HttpServlet {
             Map<String, String> accountData = (Map<String, String>) accountObj;
             userID = accountData.get("userId");
         }
+
         LoginDAO dao = new LoginDAO();
         Account acc = dao.getAccountByUserID(userID);
+
+        if (acc == null) {
+            response.sendRedirect(request.getContextPath() + "/login?error=invalidAccount");
+            return;
+        }
 
         String action = request.getParameter("action");
         String blogIdStr = request.getParameter("blogId");
 
-        // Kiểm tra nếu blogId bị null hoặc rỗng
+        if (action == null || action.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/myblog?error=invalidAction");
+            return;
+        }
+
         if (blogIdStr == null || blogIdStr.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/myblog?error=missingBlogId");
             return;
         }
 
-        int blogId = Integer.parseInt(blogIdStr);
+        int blogId;
+        try {
+            blogId = Integer.parseInt(blogIdStr);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/myblog?error=invalidBlogId");
+            return;
+        }
+
         BlogDAO blogDAO = new BlogDAO();
+        Blog blog = blogDAO.getBlogByBlogId(blogId);
+
+        if (blog == null) {
+            response.sendRedirect(request.getContextPath() + "/myblog?error=blogNotFound");
+            return;
+        }
 
         switch (action) {
-            case "delete" -> {
-                blogDAO.deleteBlog(blogId);
-                response.sendRedirect(request.getContextPath() + "/myblog?message=deleted");
-            }
             case "update" -> {
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
                 String categoryIdStr = request.getParameter("categoryId");
                 String status = request.getParameter("status");
 
-                // Kiểm tra nếu categoryId bị null
+                if (title == null || title.trim().isEmpty()) {
+                    response.sendRedirect(request.getContextPath() + "/myblog?error=missingTitle");
+                    return;
+                }
+
+                if (content == null || content.trim().isEmpty()) {
+                    response.sendRedirect(request.getContextPath() + "/myblog?error=missingContent");
+                    return;
+                }
+
                 if (categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
                     response.sendRedirect(request.getContextPath() + "/myblog?error=missingCategory");
                     return;
                 }
 
-                int categoryId = Integer.parseInt(categoryIdStr);
-
-                // Xử lý ảnh nếu có tải lên
-                Part filePart = request.getPart("imageUrl");
-                String fileName = null;
-                if (filePart != null && filePart.getSize() > 0) {
-                    fileName = "uploads/" + filePart.getSubmittedFileName();
-                    String uploadPath = getServletContext().getRealPath("/") + fileName;
-                    filePart.write(uploadPath);
+                int categoryId;
+                try {
+                    categoryId = Integer.parseInt(categoryIdStr);
+                } catch (NumberFormatException e) {
+                    response.sendRedirect(request.getContextPath() + "/myblog?error=invalidCategory");
+                    return;
                 }
 
-                Blog blog = blogDAO.getBlogByBlogId(blogId);
-                if (blog != null) {
-                    blog.setTitle(title);
-                    blog.setContent(content);
-                    blog.setCategoryID(categoryId);
-                    blog.setStatus(status);
-                    if (fileName != null) {
-                        blog.setImgUrl(fileName);
+                // **Khai báo biến imageUrl trước khi dùng**
+                String imageUrl = blog.getImgUrl(); // Giữ nguyên ảnh cũ nếu không upload ảnh mới
+
+                // Xử lý hình ảnh nếu người dùng có upload file mới
+                Part filePart = request.getPart("imageUrl");
+                if (filePart != null && filePart.getSize() > 0) {
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+                    // Tách phần mở rộng của file
+                    int dotIndex = fileName.lastIndexOf(".");
+                    String extension = "";
+                    String baseName = fileName;
+
+                    if (dotIndex > 0) {
+                        extension = fileName.substring(dotIndex);
+                        baseName = fileName.substring(0, dotIndex);
                     }
 
-                    blogDAO.updateBlog(blog);
+                    // Lấy đường dẫn gốc của project
+                    String projectRoot = getServletContext().getRealPath("/");
+                    if (projectRoot.contains("build")) {
+                        projectRoot = projectRoot.substring(0, projectRoot.indexOf("build"));
+                    }
+
+                    String uploadPath = projectRoot + File.separator + UPLOAD_DIRECTORY;
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+
+                    // Kiểm tra trùng lặp tên file
+                    File newFile = new File(uploadPath + File.separator + fileName);
+                    if (newFile.exists()) {
+                        fileName = UUID.randomUUID().toString() + "-" + baseName + extension;
+                        newFile = new File(uploadPath + File.separator + fileName);
+                    }
+
+                    // Lưu file mới
+                    filePart.write(newFile.getAbsolutePath());
+                    imageUrl = "/assets/images/blog/recent-blog/" + fileName;
                 }
 
+                // Cập nhật thông tin blog
+                blog.setTitle(title);
+                blog.setContent(content);
+                blog.setCategoryID(categoryId);
+                blog.setStatus(status);
+                blog.setImgUrl(imageUrl);
+
+                blogDAO.updateBlog(blog);
                 response.sendRedirect(request.getContextPath() + "/myblog?message=updated");
             }
+            case "delete" -> {
+                boolean deleted = blogDAO.deleteBlog(blogId);
+                if (deleted) {
+                    response.sendRedirect(request.getContextPath() + "/myblog?message=deleted");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/myblog?error=deleteFailed");
+                }
+            }
+            default ->
+                response.sendRedirect(request.getContextPath() + "/myblog?error=invalidAction");
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";

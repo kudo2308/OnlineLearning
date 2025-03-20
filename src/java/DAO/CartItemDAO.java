@@ -51,4 +51,34 @@ public class CartItemDAO extends DBContext {
 
         return cartItems;
     }
+    
+    public int countItemsByCartId(int userId) {
+        int totalCourse = 0;
+        String sql = "SELECT COUNT(cd.CourseID) as totalOfCourse FROM Cart c \n"
+                + "JOIN CartDetail cd ON c.CartID = cd.CartID\n"
+                + "WHERE c.AccountID = ?";
+
+        List<Integer> courseIds = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                totalCourse = rs.getInt("totalOfCourse");
+            }
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalCourse;
+    }
+    
+    public static void main(String[] args) {
+        CartItemDAO cartDAO = new CartItemDAO();
+        int count = cartDAO.countItemsByCartId(2);
+        System.out.println(count);
+    }
 }

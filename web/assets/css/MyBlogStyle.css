@@ -7,9 +7,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : ASUS
 */
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+html, body {
+    height: 100vh; /* Chiều cao 100% màn hình */
+    overflow: hidden; /* Ẩn thanh cuộn */
     margin: 0;
     padding: 0;
     display: flex;
@@ -38,11 +38,12 @@ body {
     border-radius: 50%;
 }
 
-/* Main Layout */
+/* Bố cục chính gồm sidebar (20%) và nội dung (80%) */
 .main-container {
     display: flex;
+    height: calc(100vh - 60px); /* Trừ chiều cao navbar/header */
     width: 100%;
-    border-top: solid 1px #dddddd;
+    position: relative; /* Giữ phân trang ở cuối */
 }
 
 /* Sidebar */
@@ -121,9 +122,8 @@ body {
 }
 
 /* Content */
-.container {
+.container-right {
     width: 80%;
-    flex-grow: 1;
     padding: 20px;
     background: white;
     border-radius: 10px;
@@ -133,17 +133,19 @@ body {
 
 .container-sidebar{
     width: 20%;
-    flex-grow: 1;
     padding: 20px;
     background: white;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     margin: 20px;
+
 }
 
 /* Table */
 .table-container {
-    overflow-x: auto;
+    flex-grow: 1; /* Cho phép mở rộng khi có nhiều blog */
+    overflow-y: auto; /* Chỉ cuộn phần nội dung */
+    max-height: calc(100vh - 160px); /* Giữ khoảng trống cho phân trang */
 }
 
 table {
@@ -258,4 +260,117 @@ textarea {
 
 #filter-form select{
     margin-right: 20px;
+}
+
+.action-buttons{
+    display: flex;
+
+}
+
+.action-buttons button{
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+}
+
+.editStatus{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Alert Styles */
+.alert2 {
+    position: fixed;
+    top: 13%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Success Message */
+.alert-success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Error Message */
+.alert-danger {
+    background-color: #ff3b3b;
+    color: white;
+}
+
+/* Close Button */
+.alert2 .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: black;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Hide Alert */
+.hide-alert {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+}
+
+/* Giữ phân trang cố định ở cuối */
+.pagination-container {
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+/* Định dạng phân trang */
+.pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background: #6a1b9a;
+    color: white;
+    transition: 0.3s;
+}
+
+.pagination a:hover {
+    background: #ff9800;
+}
+
+/* Nút phân trang active */
+.pagination .active a {
+    background: #ff9800;
+}
+
+.form-control2{
+    width: 178px;
+    border: #ced4da 1px solid;
+    border-radius: 5px;
 }

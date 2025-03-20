@@ -46,7 +46,6 @@ public class CourseController extends HttpServlet {
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("/views/admin/view-course.jsp").forward(request, response);
         } catch (Exception e) {
-        } catch (Exception e) {
             response.sendRedirect("login");
         }
     }
@@ -105,13 +104,14 @@ public class CourseController extends HttpServlet {
         totalRecord = courseDAO.findByPageFilterCategoryAndStatus(null,
                 categoryId, status, userId, name).size();
 
+        pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
 
-                pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
+        request.setAttribute("categoryId", categoryId);
+        request.setAttribute("status", status);
+        break;
+    
 
-                request.setAttribute("categoryId", categoryId);
-                request.setAttribute("status", status);
-                break;
-            case "searchByName":
+    case "searchByName":
 
                 String name = request.getParameter("name");
                 listCourse = courseDAO.searchCourseByName(page, name, userId);
@@ -131,25 +131,36 @@ public class CourseController extends HttpServlet {
                 pageControl.setUrlPattern("courses?");
 
         }
-        pageControl.setUrlPattern("courses?categoryId=" + categoryId + "&status=" + status + "&");
+    pageControl.setUrlPattern (
 
-        request.setAttribute("categoryId", categoryId);
-        request.setAttribute("status", status);
-        request.setAttribute("name", name);
+    "courses?categoryId=" + categoryId + "&status=" + status + "&");
 
-        request.setAttribute("currentPage", page);
+    request.setAttribute (
+
+    "categoryId", categoryId);
+    request.setAttribute (
+
+    "status", status);
+    request.setAttribute (
+
+    "name", name);
+
+    request.setAttribute (
+    "currentPage", page);
 
         //tìm kiếm xem tổng có bao nhiêu page
         int totalPage = (totalRecord % RECORD_PER_PAGE) == 0
-                ? (totalRecord / RECORD_PER_PAGE)
-                : (totalRecord / RECORD_PER_PAGE) + 1;
+            ? (totalRecord / RECORD_PER_PAGE)
+            : (totalRecord / RECORD_PER_PAGE) + 1;
 
-        pageControl.setPage(page);
-        pageControl.setTotalPage(totalPage);
-        pageControl.setTotalRecord(totalRecord);
+    pageControl.setPage (page);
 
-        return listCourse;
+    pageControl.setTotalPage (totalPage);
 
-    }
+    pageControl.setTotalRecord (totalRecord);
+
+    return listCourse ;
+
+}
 
 }

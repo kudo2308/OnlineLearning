@@ -11,6 +11,13 @@
 #cart,
 #bell, #my-course, .avt .login .register{
     padding: 0 15px;
+   
+}
+
+#bell span,
+#cart span {
+    position: relative;
+    top: 3px;
 }
 
 
@@ -40,7 +47,9 @@ nav a:hover {
     width: 30%;
     display: flex;
     justify-content: end;
-    align-items: center
+    align-items: center;
+    margin-left: 10px;
+       
 }
 
 .right-header a{
@@ -146,14 +155,13 @@ nav a:hover {
 
 /* header */
 header {
-    display: block;
-    max-width: 90%;
-    width: 100%;
+    width: 90%;
     margin: auto;
     display: flex;
     height: 100px;
     align-items: center;
 }
+
 
 /*search*/
 
@@ -386,11 +394,6 @@ header {
     text-align: left;
 }
 
-.dropdown-content a:hover {
-    background-color: #949393;
-    border-radius: 10px;
-}
-
 #categories-dropdown:hover .dropdown-content {
     display: block;
 }
@@ -401,6 +404,7 @@ header {
 
 .logo-body {
     height: 70px;
+    width: 90%;
 }
 
 #logo img {

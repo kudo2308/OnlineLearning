@@ -38,8 +38,9 @@ import model.Category;
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class BlogController extends HttpServlet {
-private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
-    
+
+    private static final String UPLOAD_DIRECTORY = "web/assets/images/blog/recent-blog";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -64,10 +65,9 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
             request.setAttribute("errorMessage", "Vui lòng nhập category.");
         } else if ("missingImage".equals(error)) {
             request.setAttribute("errorMessage", "Vui lòng nhập image.");
-        } else if ("missingStatus".equals(error)){
+        } else if ("missingStatus".equals(error)) {
             request.setAttribute("errorMessage", "Vui lòng chọn status");
-        }
-        else if ("invalidCategory".equals(error)) {
+        } else if ("invalidCategory".equals(error)) {
             request.setAttribute("errorMessage", "Category invalid.");
         } else if ("addFailed".equals(error)) {
             request.setAttribute("errorMessage", "Add blog failed, Please try again!");
@@ -174,7 +174,7 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
             response.sendRedirect(request.getContextPath() + "/Blog?error=missingCategory");
             return;
         }
-        
+
         if (status == null || status.isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/Blog?error=missingStatus");
             return;
@@ -188,7 +188,15 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
             return;
         }
 
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
+        String projectRoot = getServletContext().getRealPath("/");
+        if (projectRoot.contains("build")) {
+            projectRoot = projectRoot.substring(0, projectRoot.indexOf("build"));
+        }
+        System.out.println("Project root after removing 'build': " + projectRoot);
+
+        String uploadPath = projectRoot + File.separator + UPLOAD_DIRECTORY;
+        System.out.println("Real Path: " + getServletContext().getRealPath("/assets/images/blog/recent-blog"));
+
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
@@ -197,18 +205,19 @@ private static final String UPLOAD_DIRECTORY = "/assets/images/blog";
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
+        String imageUrl = "/assets/images/blog/recent-blog/" + fileName;
+
         Blog blog = new Blog();
         blog.setTitle(title);
         blog.setContent(content);
         blog.setAuthorId(acc.getUserID());
         blog.setCategoryID(categoryId);
-        blog.setImgUrl(filePath);
+        blog.setImgUrl(imageUrl);
         if (status.equals("true")) {
-            blog.setStatus("public");
+            blog.setStatus("Public");
         } else {
-            blog.setStatus("private");
+            blog.setStatus("Private");
         }
-        
 
         BlogDAO blogDAO = new BlogDAO();
         boolean isAdded = blogDAO.addBlog(blog);
