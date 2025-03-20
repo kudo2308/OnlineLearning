@@ -5,6 +5,7 @@
 package controller;
 
 import DAO.CartDAO;
+import DAO.CartItemDAO;
 import DAO.CourseDAO;
 import DAO.LoginDAO;
 import java.io.IOException;
@@ -27,41 +28,6 @@ import model.CartItem;
 @WebServlet(name = "CartController", urlPatterns = {"/cart"})
 public class CartController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CartController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CartController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -82,14 +48,26 @@ public class CartController extends HttpServlet {
         LoginDAO dao = new LoginDAO();
         Account acc = dao.getAccountByUserID(userID);
         CartDAO cartDAO = new CartDAO();
-
+        CartItemDAO itemDAO = new CartItemDAO();
+        itemDAO.removePurchasedCoursesFromCart(acc.getUserID());
+        int totalCourse = itemDAO.countItemsByCartId(acc.getUserID());
         Cart cart = cartDAO.get(acc.getUserID());
-
+        System.out.println("CartController: doGet() is running");
+        System.out.println("User ID: " + acc.getUserID());
         if (cart == null) {
             cartDAO.create(acc.getUserID());
             cart = new Cart();
         }
+        if ("count".equals(request.getParameter("action"))) {
+            Integer totalCourses = (Integer) session.getAttribute("totalCourse");
+            totalCourses = (totalCourses != null) ? totalCourses : 0;
 
+            response.setContentType("application/json");
+            response.getWriter().write("{\"count\": " + totalCourse + "}");
+            return;
+        }
+
+        session.setAttribute("totalCourse", totalCourse);
         request.setAttribute("cart", cart.getItems());
         request.getRequestDispatcher("views/user/Cart.jsp").forward(request, response);
     }
@@ -116,7 +94,6 @@ public class CartController extends HttpServlet {
 
         int courseId = Integer.parseInt(request.getParameter("courseId"));
         String action = request.getParameter("action");
-
         CourseDAO courseDAO = new CourseDAO();
         CartDAO cartDAO = new CartDAO();
         Cart cart = cartDAO.get(acc.getUserID());
@@ -126,8 +103,9 @@ public class CartController extends HttpServlet {
         }
 
         switch (action) {
-
             case "add" -> {
+                CartItemDAO itemDAO = new CartItemDAO();
+                itemDAO.removePurchasedCoursesFromCart(acc.getUserID());
                 boolean isExist = false;
                 if (cart.getItems() != null) {
                     isExist = cart.getItems().stream().anyMatch(c -> c.getCourse().getCourseID() == courseId);

@@ -1,0 +1,589 @@
+body {
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #2d3748;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.wallet-flex {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 50px 25px;
+    margin: 0 auto;
+}
+
+.wallet-box,
+.wallet-container {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    padding: 32px;
+    flex: 1;
+    max-width: 520px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wallet-box:hover,
+.wallet-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.09);
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #edf2f7;
+    margin-bottom: 32px;
+}
+
+.wallet-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.wallet-header span {
+    font-size: 14px;
+    color: #718096;
+}
+
+/* Balance section with enhanced visual design */
+.wallet-balance {
+    background: linear-gradient(145deg, #EBF4FF, #E6FFFA);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(66, 153, 225, 0.12);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.wallet-balance::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.wallet-balance p {
+    font-size: 16px;
+    color: #4a5568;
+    margin: 0 0 8px 0;
+    font-weight: 500;
+}
+
+.balance-amount {
+    font-size: 38px;
+    font-weight: 800;
+    color: #2c5282;
+    margin: 14px 0;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.5px;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+}
+
+/* Section styling with refined visuals */
+.wallet-section {    
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.wallet-section:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.wallet-section:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #edf2f7;
+    color: #2d3748;
+    position: relative;
+    letter-spacing: -0.3px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 70px;
+    height: 4px;
+    background: linear-gradient(to right, #4285f4, #63b3ed);
+    border-radius: 2px;
+}
+
+/* Wallet info cards for displaying bank details */
+.wallet-info {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.wallet-info-card {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wallet-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.wallet-info-card h3 {
+    font-size: 14px;
+    color: #718096;
+    margin: 0 0 5px 0;
+    font-weight: 500;
+}
+
+.wallet-info-card p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* Form elements with enhanced interaction */
+.form-group {
+    margin-bottom: 26px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    color: #2d3748;
+}
+
+.form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+    outline: none;
+}
+
+.form-control:hover:not(:focus) {
+    border-color: #cbd5e0;
+    background-color: #fafafa;
+}
+
+/* Button styling with improved interaction and design */
+.btn-primary {
+    background: linear-gradient(to right, #4285f4, #3182ce);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(66, 133, 244, 0.2);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #3367d6, #2b6cb0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+/* Helper text styling with improved visuals */
+.help-text {
+    color: #718096;
+    font-size: 14px;
+    margin-top: 8px;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+.help-text::before {
+    content: "info";
+    font-family: 'Material Icons';
+    margin-right: 6px;
+    font-size: 16px;
+    color: #4285f4;
+}
+
+.warning-text {
+    color: #e53e3e;
+    font-size: 14px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.warning-text::before {
+    content: "warning";
+    font-family: 'Material Icons';
+    margin-right: 6px;
+    font-size: 16px;
+}
+
+/* Payout history table styling */
+.payout-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.payout-table th,
+.payout-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.payout-table th {
+    background-color: #f7fafc;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.payout-table tr:last-child td {
+    border-bottom: none;
+}
+
+.payout-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.payout-table tbody tr:hover {
+    background-color: #f7fafc;
+}
+
+/* Status indicators for withdrawal history */
+.status-PENDING {
+    color: #d69e2e;
+    background-color: #fefcbf;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-COMPLETED {
+    color: #2f855a;
+    background-color: #c6f6d5;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-REJECTED {
+    color: #c53030;
+    background-color: #fed7d7;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Better responsiveness with refined breakpoints */
+@media (max-width: 1100px) {
+    .wallet-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .wallet-box,
+    .wallet-container {
+        width: 100%;
+        max-width: 650px;
+    }
+}
+
+@media (max-width: 768px) {
+    .wallet-box,
+    .wallet-container {
+        padding: 24px;
+        margin: 15px 0;
+        border-radius: 12px;
+    }
+
+    .wallet-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .balance-amount {
+        font-size: 32px;
+    }
+    
+    .section-title {
+        font-size: 22px;
+    }
+    
+    .wallet-info {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .payout-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .wallet-flex {
+        padding: 20px 15px;
+    }
+    
+    .wallet-box,
+    .wallet-container {
+        padding: 20px;
+    }
+    
+    .wallet-balance {
+        padding: 20px;
+    }
+    
+    .balance-amount {
+        font-size: 28px;
+    }
+    
+    .btn-primary {
+        width: 100%;
+    }
+}
+
+/* Enhanced animations for page load */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(15px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.wallet-container {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+
+
+/* Enhanced Wallet History Container */
+.wallet-history {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    padding: 32px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 50%; /* Set to 50% of the screen width */
+    margin: 30px auto; /* Center horizontally with some vertical spacing */
+    box-sizing: border-box; /* Include padding in width calculation */
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.wallet-history:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.09);
+}
+
+/* Keep text aligned at the top */
+.wallet-history .wallet-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0; /* Remove padding since parent already has padding */
+    background: none; /* Remove background since parent already has it */
+    box-shadow: none; /* Remove shadow since parent already has it */
+    margin: 0; /* Remove margin */
+    max-width: 100%; /* Allow to fill parent width */
+    opacity: 1; /* Override animation from parent */
+    animation: none; /* Override animation from parent */
+}
+
+/* Enhanced table styling to fit the new container */
+.wallet-history .payout-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+}
+
+.wallet-history .payout-table thead {
+    background: linear-gradient(to right, #f7fafc, #f0f5fa);
+}
+
+.wallet-history .payout-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.wallet-history .payout-table td {
+    padding: 16px 20px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 15px;
+    color: #2d3748;
+}
+
+.wallet-history .payout-table tr:last-child td {
+    border-bottom: none;
+}
+
+.wallet-history .payout-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.wallet-history .payout-table tbody tr:hover {
+    background-color: #f7fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+/* Empty state styling for better UX */
+.wallet-history .wallet-section p {
+    padding: 30px 20px;
+    text-align: center;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed #e2e8f0;
+    color: #718096;
+    font-size: 16px;
+    width: 100%;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .wallet-history {
+        width: 70%;
+    }
+}
+
+@media (max-width: 768px) {
+    .wallet-history {
+        width: 90%;
+        padding: 24px;
+    }
+    
+    .wallet-history .payout-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .wallet-history .payout-table th,
+    .wallet-history .payout-table td {
+        padding: 14px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wallet-history {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .wallet-history .section-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Animation for page load - keep consistent with site animations */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(15px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+/* Add a subtle pulse animation to the balance amount */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.balance-amount:hover {
+    animation: pulse 1.5s infinite ease-in-out;
+}

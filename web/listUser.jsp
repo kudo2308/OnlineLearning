@@ -97,7 +97,6 @@
                                 <th>Full Name</th>
                                 <th>Image</th>
                                 <th>Email</th>
-                                <th>Password</th>
                                 <th>Last sign in</th>
                                 <th>Role</th>
                                 <th>Status</th>
@@ -123,7 +122,6 @@
                                         </c:choose> 
                                     </td>
                                     <td>${account.email}</td>
-                                     <td>${account.password}</td>
                                     <td class="last-sign-in" data-time="${account.updatedAt}">${account.updatedAt}</td>
                                     <td>${account.role.roleName}</td>
                                     <td>

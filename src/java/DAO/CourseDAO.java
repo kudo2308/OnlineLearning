@@ -30,15 +30,7 @@ public class CourseDAO extends DBContext {
         courses = new ArrayList<>();
     }
 
-    public static void main(String[] args) {
-        CourseDAO courseDAO = new CourseDAO();
-
-        List<Course> list = courseDAO.getRecentCourses(9);
-        for (Course course : list) {
-            System.out.println(course.getRegister());
-        }
-
-    }
+    
 
     public Course findCourseById(int id) {
         String sql = "select * from Course co\n"
@@ -772,13 +764,14 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-    public List<Course> searchCourse(String query, int offset, int limit) {
+    public List<Course> searchCourse(String query, int offset, int limit ) {
         List<Course> searchResults = new ArrayList<>();
-        String sql = "SELECT * FROM Course WHERE Title LIKE ? OR Description LIKE ? "
+        String sql = "SELECT * FROM Course WHERE   Title LIKE ? OR Description LIKE ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
+           
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
@@ -989,62 +982,5 @@ public class CourseDAO extends DBContext {
             System.out.println(e);
         }
         return userCourses;
-    }
-
-    public List<Course> findCouseByExpert(int userId) {
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM Course co ")
-                .append("JOIN Account a ON co.ExpertID = a.UserID ")
-                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
-                .append("WHERE co.ExpertID = ? ")
-                .append("ORDER BY co.CourseID ");
-
-        try (Connection connection = new DBContext().getConnection()) {
-            ps = connection.prepareStatement(sql.toString());
-
-            ps.setInt(1, userId);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                int courseId = rs.getInt("CourseID");
-                String title = rs.getString("Title");
-                Course course = new Course();
-                course.setCourseID(courseId);
-                course.setTitle(title);
-                courses.add(course);
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return courses;
-    }
-
-    public boolean checkSellCourse(int courseId) {
-        boolean check = false;
-        StringBuilder sql = new StringBuilder();
-        sql.append("select * from Course c\n"
-                + "join Packages p on c.CourseID = p.CourseID\n"
-                + "join Lesson l on l.PackageID = p.PackageID\n"
-                + "where c.CourseID = ?");
-
-        try (Connection connection = new DBContext().getConnection()) {
-            ps = connection.prepareStatement(sql.toString());
-
-            ps.setInt(1, courseId);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                check = true;
-                break;
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return check;
     }
 }

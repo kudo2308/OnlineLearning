@@ -11,13 +11,14 @@
 #cart,
 #bell, #my-course, .avt .login .register{
     padding: 0 15px;
+
 }
 
-#bell span,
-#cart span {
+#bell span{
     position: relative;
     top: 3px;
 }
+
 
 nav {
     height: 30px;
@@ -45,7 +46,9 @@ nav a:hover {
     width: 30%;
     display: flex;
     justify-content: end;
-    align-items: center
+    align-items: center;
+    margin-left: 10px;
+
 }
 
 .right-header a{
@@ -151,14 +154,13 @@ nav a:hover {
 
 /* header */
 header {
-    display: block;
-    max-width: 90%;
-    width: 100%;
+    width: 90%;
     margin: auto;
     display: flex;
     height: 100px;
     align-items: center;
 }
+
 
 /*search*/
 
@@ -391,11 +393,6 @@ header {
     text-align: left;
 }
 
-.dropdown-content a:hover {
-    background-color: #949393;
-    border-radius: 10px;
-}
-
 #categories-dropdown:hover .dropdown-content {
     display: block;
 }
@@ -406,6 +403,7 @@ header {
 
 .logo-body {
     height: 70px;
+    width: 90%;
 }
 
 #logo img {
@@ -494,14 +492,48 @@ hr {
 .widget a{
     color: white;
 }
-#categories-dropdown {
+
+/* ================= HEADER - GIỎ HÀNG ================= */
+.cart-icon{
     position: relative;
-    z-index: 10; /* Đảm bảo rằng dropdown category không bị ẩn dưới các thành phần khác */
-    padding: 5px 10px;
-    font-size: 16px;
+    top: 3px;
+    padding-top: 0px;
+    margin-top: 0px;
+    margin-right: 15px;
 }
 
-.popover-container {
-    position: relative;
-    z-index: 5; /* Đảm bảo rằng dropdown account không che khuất dropdown category */
+/* Badge số lượng giỏ hàng */
+.cart-count {
+    position: absolute;
+    top: -7px;  /* Đẩy lên trên */
+    right: -1px; /* Đẩy sang phải */
+    background-color: #8e44ad; /* Màu tím */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 3px;
+    border-radius: 50%;
+    min-width: 22px;
+    text-align: center;
+    line-height: 1.2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+/* Giảm kích thước trên màn hình nhỏ */
+@media (max-width: 768px) {
+    .cart-count {
+        font-size: 10px;
+        padding: 3px 5px;
+        min-width: 18px;
+    }
+}
+
+/* Khi hover vào icon giỏ hàng */
+.cart-icon:hover .cart-count {
+    background-color: #732d91; /* Màu tím đậm hơn */
+}
+

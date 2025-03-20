@@ -26,5 +26,23 @@ public class Security {
         }     
         return code;
     }
+    
+       public static String decode1(String encodedInput) {
+        if (encodedInput == null || encodedInput.isEmpty()) {
+            throw new IllegalArgumentException("Encoded input cannot be null or empty");
+        }
+
+        // Giải mã Base64
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedInput);
+        String decodedString = new String(decodedBytes);
+
+        // Kiểm tra xem chuỗi giải mã có chứa SECRET_KEY ở đầu không
+        if (!decodedString.startsWith(SECRET_KEY)) {
+            throw new IllegalArgumentException("Invalid encoded input: SECRET_KEY mismatch");
+        }
+
+        // Trả về phần input gốc (loại bỏ SECRET_KEY)
+        return decodedString.substring(SECRET_KEY.length());
+    }
 
 }

@@ -24,6 +24,16 @@ public class CourseController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String error = request.getParameter("error");
+        String success = request.getParameter("success");
+
+        if (success != null) {
+            request.setAttribute("success", success);
+        }
+        if (error != null) {
+            request.setAttribute("error", error);
+        }
+
         try {
             PageControl pageControl = new PageControl();
             CategoryDAO categoryDAO = new CategoryDAO();
@@ -94,13 +104,14 @@ public class CourseController extends HttpServlet {
         totalRecord = courseDAO.findByPageFilterCategoryAndStatus(null,
                 categoryId, status, userId, name).size();
 
-<<<<<<< HEAD
-                pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
+        pageControl.setUrlPattern("courses?category=" + categoryId + "&status=" + status + "&");
 
-                request.setAttribute("categoryId", categoryId);
-                request.setAttribute("status", status);
-                break;
-            case "searchByName":
+        request.setAttribute("categoryId", categoryId);
+        request.setAttribute("status", status);
+        break;
+    
+
+    case "searchByName":
 
                 String name = request.getParameter("name");
                 listCourse = courseDAO.searchCourseByName(page, name, userId);
@@ -120,26 +131,36 @@ public class CourseController extends HttpServlet {
                 pageControl.setUrlPattern("courses?");
 
         }
-=======
-        pageControl.setUrlPattern("courses?categoryId=" + categoryId + "&status=" + status + "&");
+    pageControl.setUrlPattern (
 
-        request.setAttribute("categoryId", categoryId);
-        request.setAttribute("status", status);
-        request.setAttribute("name", name);
->>>>>>> 7adf8f03749f1b4abf7ad6d0ae557ce372b6528b
+    "courses?categoryId=" + categoryId + "&status=" + status + "&");
 
-        request.setAttribute("currentPage", page);
+    request.setAttribute (
+
+    "categoryId", categoryId);
+    request.setAttribute (
+
+    "status", status);
+    request.setAttribute (
+
+    "name", name);
+
+    request.setAttribute (
+    "currentPage", page);
 
         //tìm kiếm xem tổng có bao nhiêu page
         int totalPage = (totalRecord % RECORD_PER_PAGE) == 0
-                ? (totalRecord / RECORD_PER_PAGE)
-                : (totalRecord / RECORD_PER_PAGE) + 1;
+            ? (totalRecord / RECORD_PER_PAGE)
+            : (totalRecord / RECORD_PER_PAGE) + 1;
 
-        pageControl.setPage(page);
-        pageControl.setTotalPage(totalPage);
-        pageControl.setTotalRecord(totalRecord);
+    pageControl.setPage (page);
 
-        return listCourse;
-    }
+    pageControl.setTotalPage (totalPage);
+
+    pageControl.setTotalRecord (totalRecord);
+
+    return listCourse ;
+
+}
 
 }

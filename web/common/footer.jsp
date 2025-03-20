@@ -5,16 +5,11 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<title>Online Learning</title>
+<!DOCTYPE html>
 <html>
 <!--    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
-
     </head>
     <div class="footer-top">
         <div class="pt-exebar">
@@ -106,5 +101,5 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 text-center"><a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
             </div>
         </div>
-    </div>-->
+    </div>
 </html>

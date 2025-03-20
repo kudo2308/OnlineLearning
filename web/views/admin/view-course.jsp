@@ -48,6 +48,41 @@
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/style.css">
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/dashboard.css">
         <link class="skin" rel="stylesheet" type="text/css" href="assets/admin/assets/css/color/color-1.css">
+        <style>
+            .error-message {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top: 120px;
+                left: 0;
+                right: 0;
+                background-color: rgba(208, 22, 39, 0.8);
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+
+            .success {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top:120px;
+                left: 0;
+                right: 0;
+                background-color: #00CC00;
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+        </style>
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
 
@@ -120,7 +155,7 @@
                                     </thead>
                                     <tbody id="courseTableBody">
                                         <c:forEach items="${courses}" var="courses">
-
+                                            
                                             <tr>
                                                 <td>${courses.courseID}</td>
                                                 <td><img src=".${courses.imageUrl}" width="50"></td>
@@ -151,6 +186,18 @@
                 </div>
             </div>
         </main>
+        <c:set var="error" value="${requestScope.error}" />
+        <c:if test="${not empty error}">
+            <div id="error-message" class="error-message">
+                <i class="bx bxs-error"></i> ${error}
+            </div>
+        </c:if>
+        <c:set var="success" value="${requestScope.success}" />
+        <c:if test="${not empty success}">
+            <div id="success" class="success">
+                <i class="bx bxs-error"></i> ${success}
+            </div>
+        </c:if>
         <jsp:include page="../../common/pagination.jsp"></jsp:include>
             <div class="ttr-overlay"></div>
 
@@ -184,6 +231,51 @@
                 toastr.error(`${errorMessage}`, 'Error', {timeOut: 2000});
             </script>
         </c:if>
+        <div class="ttr-overlay"></div>
+    <script>
+        function showMessage() {
+            var errorMessage = document.getElementById("error-message");
+            var successMessage = document.getElementById("success");
+
+            // Hiển thị thông báo lỗi nếu có
+            if (errorMessage) {
+                errorMessage.style.display = "block";
+                setTimeout(function () {
+                    errorMessage.style.display = "none";
+                }, 3000);
+            }
+
+            // Hiển thị thông báo thành công nếu có
+            if (successMessage) {
+                successMessage.style.display = "block";
+                setTimeout(function () {
+                    successMessage.style.display = "none";
+                }, 3000);
+            }
+        }
+
+        // Gọi hàm khi trang đã tải xong
+        window.onload = function () {
+            showMessage();
+        };
+    </script>
+        <!-- External JavaScripts -->
+        <script src="assets/admin/assets/js/jquery.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+        <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+        <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
+        <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
+        <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+        <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
+        <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
+        <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+        <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+        <script src="assets/admin/assets/js/functions.js"></script>
+        <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
+        <script src="assets/admin/assets/js/admin.js"></script>
     </body>
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->

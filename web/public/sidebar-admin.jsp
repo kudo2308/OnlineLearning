@@ -36,7 +36,7 @@
                 <li>
                     <a href="${pageContext.request.contextPath}/dashboard.jsp" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
-                        <span class="ttr-label">Registration List</span>
+                        <span class="ttr-label"> Withdrawal Request </span>
                     </a>
                 </li>  
 

@@ -186,7 +186,45 @@ public class LoginDAO extends DBContext {
         System.out.println(dao.getSocialLink(3));
     }
 
-//lỗi
+//New 
+    public List<Account> getAllAccounts() {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT * FROM Account WHERE Status = 1";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Account account = mapAccount(rs);
+                accounts.add(account);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return accounts;
+    }
+
+    public List<Account> getAccountsByRole(int roleID) {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT * FROM Account WHERE RoleID = ? AND Status = 1";
+
+        try ( PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, roleID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Account account = mapAccount(rs);
+                    accounts.add(account);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return accounts;
+    }
+//Done
+
     public Account getAccountByUserIDPass(String userId) {
         String query = "SELECT a.UserID, a.Description, a.FullName, a.Password , a.Email, a.Phone, a.Address, "
                 + "a.Image, a.GenderID , a.DOB, r.RoleName, a.SubScriptionType "
@@ -368,7 +406,7 @@ public class LoginDAO extends DBContext {
         List<Course> courses = new ArrayList<>();
         String sql = "SELECT c.CourseID, c.Title,c.Description,c.Price,c.CategoryID, c.ImageUrl, c.TotalLesson,c.Status,c.CreatedAt, c.UpdatedAt "
                 + "FROM Course c "
-                + "WHERE c.ExpertID = ?";
+                + "WHERE c.ExpertID = ? and c.Status = 1";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
@@ -438,5 +476,23 @@ public class LoginDAO extends DBContext {
         } catch (Exception e) {
             e.getMessage();
         }
+    }
+
+    private Account mapAccount(ResultSet rs) throws SQLException {
+        Account account = new Account();
+        account.setUserID(rs.getInt("UserID"));
+        account.setFullName(rs.getString("FullName"));
+        account.setEmail(rs.getString("Email"));
+        account.setPhone(rs.getString("Phone"));
+        account.setImage(rs.getString("Image"));
+        account.setAddress(rs.getString("Address"));
+        account.setGenderID(rs.getString("GenderID"));
+        account.setDob(rs.getDate("DOB"));
+        Role role = new Role();
+        role.setRoleName(rs.getString("RoleName"));
+        account.setRole(role);
+        account.setStatus(rs.getBoolean("Status"));
+
+        return account;
     }
 }

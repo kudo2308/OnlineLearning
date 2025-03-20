@@ -41,6 +41,9 @@ body {
 
 .right {
     text-align: right;
+    display: flex;
+    align-content: center;
+    justify-content: end;
 }
 
 li .right {

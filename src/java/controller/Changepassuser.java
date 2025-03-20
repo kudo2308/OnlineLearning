@@ -58,12 +58,17 @@ public class Changepassuser extends HttpServlet {
             return;
         }
         String passDB = acc.getPassword();
-        if (Security.decode(passDB).equals(oldpass)) {
+        if (!Security.decode(passDB).equals(oldpass)) {
             request.setAttribute("errorchange", "You entered the old password incorrectly");
             request.getRequestDispatcher("userchangepass.jsp").forward(request, response);
             return;
         }
         request.setAttribute("oldpass", oldpass);
+        if (Security.decode(passDB).equals(newpass)) {
+            request.setAttribute("errorchange", "You entered the new password like old passwword");
+            request.getRequestDispatcher("userchangepass.jsp").forward(request, response);
+            return;
+        }
         request.setAttribute("newpass", newpass);
         if (newpass.length() < 8) {
             request.setAttribute("errorchangepass", "Password must be at least 8 character ");
