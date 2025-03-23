@@ -44,7 +44,6 @@
         <jsp:include page="../common/header.jsp"></jsp:include>
 
             <div id="nav-categories">
-                <a href="#">Explore (New!)</a>
             <c:if test="${not empty categories}">
                 <c:forEach var="category" items="${categories}">
                     <a href="${pageContext.request.contextPath}/CourseSearch?categoryId=${category.categoryID}">${category.name}</a>
@@ -92,8 +91,8 @@
                         <c:forEach var="recentCourses" items="${recentCourses}">
                             <li>
                                 <a href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}"><img
-                                    class="image-product"
-                                    src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}"></a>
+                                        class="image-product"
+                                        src="${pageContext.request.contextPath}${recentCourses.imageUrl}"  alt="${recentCourses.title}"></a>
                                 <a style="color: black; text-decoration: none" href="${pageContext.request.contextPath}/coursedetail?courseId=${recentCourses.courseID}">
                                     ${recentCourses.title}
                                 </a>
@@ -172,7 +171,6 @@
             </div>
             <!-- Recent News End -->
         </main>
-        <jsp:include page="../common/footer.jsp"></jsp:include> 
         <script src="${pageContext.request.contextPath}/assets/js/js.js"></script>
         <!-- Swiper JS -->
         <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
@@ -197,8 +195,6 @@
                             }
                         });
         </script>
-
-
 
     </body>
 </html>

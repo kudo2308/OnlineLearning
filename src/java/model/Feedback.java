@@ -6,6 +6,7 @@ public class Feedback {
     private int feedbackID;
     private int userID;
     private int courseID;
+    private int blogId;
     private String content;
     private int rating;
     private boolean status;
@@ -14,9 +15,51 @@ public class Feedback {
     // Navigation properties
     private Account user;
     private Course course;
+    private Blog blog;
+    private Role role;
     
     public Feedback() {
     }
+
+    public Feedback(int feedbackID, int userID, int courseID, int blogId, String content, int rating, boolean status, Timestamp createdAt, Account user, Course course, Blog blog) {
+        this.feedbackID = feedbackID;
+        this.userID = userID;
+        this.courseID = courseID;
+        this.blogId = blogId;
+        this.content = content;
+        this.rating = rating;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.course = course;
+        this.blog = blog;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public int getBlogId() {
+        return blogId;
+    }
+
+    public void setBlogId(int blogId) {
+        this.blogId = blogId;
+    }
+
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public void setBlog(Blog blog) {
+        this.blog = blog;
+    }
+    
+    
     
     public int getFeedbackID() {
         return feedbackID;
@@ -89,4 +132,11 @@ public class Feedback {
     public void setCourse(Course course) {
         this.course = course;
     }
+
+    @Override
+    public String toString() {
+        return "Feedback{" + "feedbackID=" + feedbackID + ", userID=" + userID + ", courseID=" + courseID + ", blogId=" + blogId + ", content=" + content + ", rating=" + rating + ", status=" + status + ", createdAt=" + createdAt + ", user=" + user + ", course=" + course + ", blog=" + blog + ", role=" + role + '}';
+    }
+    
+    
 }
