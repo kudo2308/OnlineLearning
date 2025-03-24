@@ -469,7 +469,7 @@
                 <div class="lesson-header">
                     <h1 class="lesson-title">${currentLesson.title}</h1>
                 </div>
-                
+
                 <!-- Video Section -->
                 <c:if test="${not empty currentLesson.videoUrl}">
                     <div class="video-container">
@@ -505,15 +505,13 @@
 
                 <!-- Lesson Content -->
                 <div class="lesson-text-content">
-<<<<<<< HEAD
+
                     <a href="${currentLesson.documentUrl}"/>${currentLesson.documentUrl}</a>
-=======
                     <a href="${currentLesson.documentUrl}" class="document-link">
                         <i class="fas fa-file-alt"></i>
                         <span>Tài liệu tham khảo</span>
                         <i class="fas fa-external-link-alt"></i>
                     </a>
->>>>>>> 7adf8f03749f1b4abf7ad6d0ae557ce372b6528b
                 </div>
 
                 <!-- Navigation Buttons -->
@@ -584,6 +582,6 @@
             </div>
         </div>
 
-      
+
     </body>
 </html>
