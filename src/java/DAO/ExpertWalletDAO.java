@@ -1,6 +1,7 @@
 package DAO;
 
 import DBContext.DBContext;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.ExpertBankInfo;
 import model.ExpertPayout;
+import model.PayoutWithName;
 
 public class ExpertWalletDAO extends DBContext {
 
@@ -55,6 +57,7 @@ public class ExpertWalletDAO extends DBContext {
             return false;
         }
     }
+
     public boolean createExpertBankInfo(int expertId) {
         String sql = "INSERT INTO ExpertBankInfo (ExpertID, BankAccountNumber, BankName, WalletBalance) "
                 + "VALUES (?, ?, ?, ?)";
@@ -72,6 +75,7 @@ public class ExpertWalletDAO extends DBContext {
             return false;
         }
     }
+
     public boolean updateExpertBankInfo(ExpertBankInfo bankInfo) {
         String sql = "UPDATE ExpertBankInfo SET BankAccountNumber = ?, BankName = ?, UpdatedAt = GETDATE() WHERE ExpertID = ?";
 
@@ -104,17 +108,17 @@ public class ExpertWalletDAO extends DBContext {
         }
     }
 
-     // Create payout system 
-    public boolean createPayoutSysyem(int expertId , double  amount) {
-        String sql = "INSERT INTO ExpertPayout (ExpertID, Amount, BankAccountNumber, BankName) "
-                + "VALUES (?, ?, ?, ?)";
+    // Create payout system 
+    public boolean createPayoutSysyem(int expertId, double amount) {
+        String sql = "INSERT INTO ExpertPayout (ExpertID, Amount, BankAccountNumber, BankName,Status) "
+                + "VALUES (?, ?, ?, ? , ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, expertId);
             ps.setDouble(2, amount);
             ps.setString(3, "xx.xx.xx");
             ps.setString(4, "System");
-
+            ps.setString(5, "successful");
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -122,7 +126,7 @@ public class ExpertWalletDAO extends DBContext {
             return false;
         }
     }
-    
+
     // Create new payout request
     public boolean createPayoutRequest(ExpertPayout payout) {
         String sql = "INSERT INTO ExpertPayout (ExpertID, Amount, BankAccountNumber, BankName) "
@@ -180,7 +184,7 @@ public class ExpertWalletDAO extends DBContext {
         return payoutList;
     }
 
-     public boolean addToWalletBalance(int expertId, double additionalAmount) {
+    public boolean addToWalletBalance(int expertId, double additionalAmount) {
         // Kiểm tra số tiền thêm vào phải lớn hơn 0
         if (additionalAmount <= 0) {
             return false;
@@ -205,7 +209,7 @@ public class ExpertWalletDAO extends DBContext {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
-                createPayoutSysyem(expertId , additionalAmount);
+                createPayoutSysyem(expertId, additionalAmount);
             }
             return rowsAffected > 0;
         } catch (SQLException e) {

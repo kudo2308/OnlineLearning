@@ -195,7 +195,7 @@ public class PaymentDAO extends DBContext {
 
      public List<Integer> getCourseId(int orderId) {
         List<Integer> orderNames = new ArrayList<>();
-        String sql = "SELECT CourseID"
+        String sql = "SELECT CourseID "
                 + "FROM OrderItem "
                 + "WHERE OrderID = ?";
 
@@ -260,7 +260,9 @@ public class PaymentDAO extends DBContext {
 
         return moneyPay;
     }
-
+    
+    
+    
     public boolean hasRegisteredBankAccount(int expertId) {
         String sql = "SELECT COUNT(*) FROM ExpertBankInfo WHERE ExpertID = ? AND BankAccountNumber IS NOT NULL AND BankName IS NOT NULL";
 

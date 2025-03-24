@@ -66,7 +66,10 @@ public class VNPayReturnServlet extends HttpServlet {
         PaymentDAO dao = new PaymentDAO();
         if (vnp_Params.get("vnp_TransactionStatus").equalsIgnoreCase("00")) {
             dao.updateOrder(maxorder, "paid", vnp_TransactionNo);
-            dao.createRegistration(Integer.parseInt(userID), maxorder, BigDecimal.valueOf(total));
+           List<Integer> ListCourseId = dao.getCourseId(maxorder);
+            for (Integer integer : ListCourseId) {
+                 dao.createRegistration(Integer.parseInt(userID), integer, BigDecimal.valueOf(total));
+            }
             // tạo thông báo expert gửi user tại đây 
             NotificationDAO notificationDAO = new NotificationDAO();
             LoginDAO accountDAO = new LoginDAO();
