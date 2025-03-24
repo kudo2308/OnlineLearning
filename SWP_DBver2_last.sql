@@ -54,7 +54,7 @@ CREATE TABLE [dbo].[Course](
 	[CategoryID] [int] NULL,
 	[ImageUrl] [nvarchar](255) NULL,
 	[TotalLesson] [int] NULL,
-	[Status] [bit] NULL,
+	[Status] [nvarchar](255) NULL,
     [UserId] [int] NULL,        
 	CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE(),
@@ -65,6 +65,8 @@ PRIMARY KEY CLUSTERED
 	[CourseID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+ALTER TABLE dbo.Course
+ADD CONSTRAINT CHK_Status_Values CHECK (Status IN ('Draft', 'Pending', 'Public', 'Rejected', 'Blocked'))
 GO
 CREATE TABLE Cart (
     CartID INT IDENTITY(1,1) PRIMARY KEY,
@@ -180,17 +182,32 @@ CREATE TABLE Answer (
 );
 
 
+CREATE TABLE Blog (
+    BlogID INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(255) NOT NULL,
+    Content NTEXT NOT NULL,
+	ImageUrl NVARCHAR(255),
+	CategoryID INT,
+    AuthorID INT,  -- ID of the author (referencing Account table)
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    Status VARCHAR(10) NOT NULL DEFAULT 'Pending' CHECK (Status IN ('Private', 'Public', 'Pending')),
+    FOREIGN KEY (AuthorID) REFERENCES Account(UserID),
+	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
+);
 -- Feedback table
 CREATE TABLE Feedback (
     FeedbackID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT,
     CourseID INT,
-    Content NTEXT,
+	BlogID INT,
+    Content NVARCHAR(MAX),
     Rating INT CHECK (Rating >= 1 AND Rating <= 5),
     Status BIT DEFAULT 1,
     CreatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (UserID) REFERENCES Account(UserID),
-    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID),
+	FOREIGN KEY (BlogID) REFERENCES Blog(BlogID)
 );
 
 CREATE TABLE Settings (
@@ -202,26 +219,13 @@ CREATE TABLE Settings (
     UpdatedAt DATETIME DEFAULT GETDATE()    
 );
 
-CREATE TABLE Blog (
-    BlogID INT IDENTITY(1,1) PRIMARY KEY,
-    Title NVARCHAR(255) NOT NULL,
-    Content NTEXT NOT NULL,
-	ImageUrl NVARCHAR(255),
-	CategoryID INT,
-    AuthorID INT,  -- ID of the author (referencing Account table)
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE(),
-    Status BIT DEFAULT 1, -- 1 for active, 0 for inactive
-    FOREIGN KEY (AuthorID) REFERENCES Account(UserID),
-	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
-);
 CREATE TABLE SocialLink (
     UserID INT PRIMARY KEY,
     Xspace NVARCHAR(255) NULL,
     Youtube NVARCHAR(255) NULL,
     Facebook NVARCHAR(255) NULL,
     Linkedin NVARCHAR(255) NULL,
-	Private NVARCHAR(20) DEFAULT 'public' CHECK (Private IN ('public', 'block-course', 'block-inscrits', 'block-view')),
+	Private NVARCHAR(20) DEFAULT 'public' CHECK (Private IN ('public', 'block-course', 'block-inscrits', 'block-view','view-profile-only')),
     FOREIGN KEY (UserID) REFERENCES Account(UserID)
 );
 
@@ -324,6 +328,66 @@ CREATE TABLE MessageRead (
     FOREIGN KEY (UserID) REFERENCES Account(UserID),
     CONSTRAINT UQ_MessageUser UNIQUE (MessageID, UserID)
 );
+
+CREATE TABLE AdminWallet (
+    WalletID INT IDENTITY(1,1) PRIMARY KEY,
+    AdminID INT NOT NULL,
+    Balance DECIMAL(18, 2) DEFAULT 0.00,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (AdminID) REFERENCES Account(UserID)
+);
+
+-- Bảng lưu trữ lịch sử giao dịch ví
+CREATE TABLE WalletTransaction (
+    TransactionID INT IDENTITY(1,1) PRIMARY KEY,
+    Amount DECIMAL(18, 2) NOT NULL,
+    TransactionType NVARCHAR(50) CHECK (TransactionType IN ('deposit', 'withdraw', 'commission', 'payout', 'refund', 'other')) NOT NULL,
+    Description NVARCHAR(255),
+    SenderID INT,
+    ReceiverID INT,
+    RelatedOrderID INT NULL,
+    RelatedPayoutID INT NULL,
+    Status NVARCHAR(20) DEFAULT 'completed' CHECK (Status IN ('pending', 'completed', 'failed', 'cancelled')),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    ProcessedAt DATETIME NULL,
+    ProcessedBy INT NULL,
+    FOREIGN KEY (SenderID) REFERENCES Account(UserID),
+    FOREIGN KEY (ReceiverID) REFERENCES Account(UserID),
+    FOREIGN KEY (RelatedOrderID) REFERENCES [Order](OrderID),
+    FOREIGN KEY (RelatedPayoutID) REFERENCES ExpertPayout(PayoutID),
+    FOREIGN KEY (ProcessedBy) REFERENCES Account(UserID)
+);
+
+-- Bảng cấu hình hoa hồng cho admin
+CREATE TABLE CommissionSetting (
+    SettingID INT IDENTITY(1,1) PRIMARY KEY,
+    CommissionRate DECIMAL(5, 2) DEFAULT 0.20, -- Tỷ lệ mặc định là 20%
+    CourseType NVARCHAR(50) DEFAULT 'all', -- Loại khóa học áp dụng (hoặc 'all' cho tất cả)
+    EffectiveFrom DATETIME DEFAULT GETDATE(),
+    EffectiveTo DATETIME NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    Status BIT DEFAULT 1,
+    FOREIGN KEY (CreatedBy) REFERENCES Account(UserID)
+);
+
+-- Bảng báo cáo tài chính theo tháng/năm
+CREATE TABLE FinancialReport (
+    ReportID INT IDENTITY(1,1) PRIMARY KEY,
+    ReportMonth INT NOT NULL,
+    ReportYear INT NOT NULL,
+    TotalIncome DECIMAL(18, 2) DEFAULT 0.00,
+    TotalPayout DECIMAL(18, 2) DEFAULT 0.00,
+    TotalProfit DECIMAL(18, 2) DEFAULT 0.00,
+    TotalActiveCourses INT DEFAULT 0,
+    TotalNewUsers INT DEFAULT 0,
+    GeneratedAt DATETIME DEFAULT GETDATE(),
+    GeneratedBy INT NOT NULL,
+    FOREIGN KEY (GeneratedBy) REFERENCES Account(UserID),
+    CONSTRAINT UQ_MonthYearReport UNIQUE (ReportMonth, ReportYear)
+);
 -- Insert roles
 INSERT INTO Role (RoleName) VALUES
 ('Admin'),
@@ -396,6 +460,7 @@ VALUES
 
 -- Insert sample course with Status set to 1
 -- Insert sample courses with improved titles
+-- First half to 'Public'
 INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, Status) VALUES
 ('Java Programming & SQL Database Mastery', 
  'Master Java programming and SQL database fundamentals. Learn core Java concepts, JDBC connectivity, and essential SQL queries for database operations. Perfect for beginners wanting to build database-driven applications.',
@@ -404,7 +469,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic1.jpg',
  10,
  280000,
- 1),
+ 'Public'),
 
 ('Comprehensive Data Structures & Algorithms', 
  'Comprehensive guide to data structures and algorithms. Cover essential topics like arrays, linked lists, trees, sorting algorithms, and complexity analysis. Includes practical coding exercises and problem-solving techniques.',
@@ -413,7 +478,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  10,
  200000,
- 1),
+ 'Public'),
 
 ('Complete C++ Programming: From Beginner to Advanced', 
  'Complete C++ programming course from basics to advanced concepts. Learn object-oriented programming, memory management, STL library, and modern C++ features. Includes hands-on projects and coding exercises.',
@@ -422,7 +487,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  10,
  275000,
- 1),
+ 'Public'),
 
 ('Modern Frontend Development with React.js', 
  'Master modern React development. Learn components, hooks, state management, routing, and best practices. Build responsive user interfaces and single-page applications using the latest React features.',
@@ -431,7 +496,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic4.jpg',
  10,
  640000,
- 1),
+ 'Public'),
 
 ('Frontend Web Development with HTML & CSS', 
  'Learn web development fundamentals with HTML5 and CSS3. Master responsive design, flexbox, grid layouts, and modern CSS frameworks. Create beautiful, mobile-friendly websites from scratch.',
@@ -440,7 +505,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic5.jpg',
  10,
  600000,
- 1),
+ 'Public'),
 
 ('Advanced JavaScript & Frontend Development', 
  'Comprehensive JavaScript course covering ES6+ features, DOM manipulation, async programming, and modern JS frameworks. Learn to create interactive web applications and dynamic user interfaces.',
@@ -449,7 +514,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic6.jpg',
  10,
  300000,
- 1),
+ 'Public'),
 
 ('Backend Web Development with Node.js & Express', 
  'Build scalable server-side applications with Node.js. Learn Express.js, RESTful APIs, database integration, authentication, and deployment. Includes real-world projects and best practices.',
@@ -458,7 +523,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic1.jpg',
  10,
  700000,
- 1),
+ 'Public'),
 
 ('Java Backend Development with Spring Boot', 
  'Master backend development with Java. Cover Spring Boot, REST APIs, microservices, JPA/Hibernate, and security. Learn to build and deploy enterprise-grade applications using modern Java frameworks.',
@@ -467,9 +532,8 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  10,
  750000,
- 1);
+ 'Public'),
 
- INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, Status) VALUES
 ('Java Programming Fundamentals', 
  'Learn the basics of Java programming language including syntax, OOP concepts, and practical applications',
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
@@ -477,7 +541,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  10,
  120000,
- 1),
+ 'Public'),
 
 ('Advanced Java Programming', 
  'This course will take you beyond the basics of Java, exploring advanced topics such as multithreading, concurrency, design patterns, and Java s ecosystem for building scalable applications.',
@@ -486,7 +550,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  15,
  150000,
- 1),
+ 'Public'),
 
 ('Full Stack Web Development', 
  'Master both front-end and back-end web development. This course covers HTML, CSS, JavaScript, React, Node.js, and database integration. You will also learn how to deploy your full-stack applications.',
@@ -495,7 +559,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  20,
  200000,
- 1),
+ 'Public'),
 
 ('Introduction to Databases and SQL', 
  'In this course, you will learn the fundamentals of relational databases, SQL syntax, and how to work with databases. It covers topics such as database normalization, indexing, and optimization.',
@@ -504,7 +568,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic4.jpg',
  10,
  100000,
- 1),
+ 'Public'),
 
 ('Networking Fundamentals', 
  'This course provides an in-depth understanding of networking concepts including IP addressing, subnetting, TCP/IP protocols, routing, and network security.',
@@ -513,7 +577,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic5.jpg',
  12,
  120000,
- 1),
+ 'Public'),
 
 ('Mobile App Development with Flutter', 
  'Learn how to build mobile applications for both iOS and Android using Flutter. This course will guide you through the entire process from setting up the environment to deploying your first app.',
@@ -522,8 +586,8 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic6.jpg',
  18,
  180000,
- 1),
-
+ 'Public');
+INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, Status) VALUES
 ('Data Science with Python', 
  'This course teaches you the essentials of Data Science, focusing on Python programming. Topics covered include data cleaning, visualization, and machine learning algorithms using libraries like Pandas, NumPy, and Scikit-Learn.',
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
@@ -531,7 +595,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic7.jpg',
  22,
  220000,
- 1),
+ 'Public'),
 
 ('Introduction to Cybersecurity', 
  'Learn the basics of cybersecurity, including network security, cryptography, and threat analysis. This course provides essential knowledge to protect systems and data from potential cyber threats.',
@@ -540,7 +604,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic8.jpg',
  14,
  140000,
- 1),
+ 'Public'),
 
 ('Building Modern DevOps Pipelines', 
  'This course introduces DevOps concepts, including continuous integration, continuous delivery, and the use of tools like Docker, Kubernetes, and Jenkins to automate software development and deployment.',
@@ -549,7 +613,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic9.jpg',
  16,
  160000,
- 1),
+ 'Public'),
 
 ('Python for Data Analysis', 
  'Learn how to use Python for data analysis. This course covers libraries such as Pandas, NumPy, and Matplotlib for data manipulation and visualization. You will also learn how to clean and prepare data for analysis.',
@@ -558,7 +622,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic1.jpg',
  18,
  180000,
- 1),
+ 'Public'),
 
 ('React Native for Mobile Apps', 
  'This course covers the basics of React Native, an open-source framework for building mobile apps. You will learn how to create cross-platform mobile applications for both iOS and Android using JavaScript and React.',
@@ -567,7 +631,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  20,
  200000,
- 1),
+ 'Public'),
 
 ('Deep Learning with TensorFlow', 
  'In this course, you will learn the basics of deep learning and how to implement neural networks using TensorFlow. Topics include supervised learning, CNNs, RNNs, and reinforcement learning.',
@@ -576,7 +640,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  25,
  250000,
- 1),
+ 'Public'),
 
 ('Introduction to Cloud Computing', 
  'Cloud computing is transforming the way businesses operate. In this course, you will learn the fundamentals of cloud computing, the different cloud service models, and the leading cloud platforms such as AWS, Azure, and Google Cloud.',
@@ -585,7 +649,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic4.jpg',
  12,
  120000,
- 1),
+ 'Public'),
 
 ('Advanced Cybersecurity Practices', 
  'This course is designed for those who already have a basic understanding of cybersecurity. You will learn about advanced topics such as penetration testing, incident response, advanced threat protection, and ethical hacking.',
@@ -594,7 +658,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic5.jpg',
  20,
  200000,
- 1),
+ 'Public'),
 
 ('Agile Project Management', 
  'Agile is a popular project management methodology used in software development and other industries. In this course, you will learn about Agile principles, Scrum framework, and how to manage projects using Agile techniques.',
@@ -603,7 +667,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic6.jpg',
  15,
  150000,
- 1),
+ 'Public'),
 
 ('Introduction to Internet of Things (IoT)', 
  'The Internet of Things (IoT) is a rapidly growing technology that connects devices to the internet. This course will introduce you to IoT concepts, including sensors, actuators, and cloud computing for managing IoT devices.',
@@ -612,7 +676,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic7.jpg',
  18,
  180000,
- 1),
+ 'Public'),
 
 ('Building Scalable Web Applications', 
  'This course will teach you how to build scalable web applications using modern technologies such as microservices, containers, and cloud platforms. You will also learn about API design, load balancing, and database scaling.',
@@ -621,8 +685,11 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic8.jpg',
  22,
  220000,
- 1);
+ 'Public');
+
  -- Insert multiple blog posts with longer content
+-- Insert multiple blog posts with longer content
+-- Insert multiple blog posts with longer content
 INSERT INTO Blog (Title, Content, ImageUrl, CategoryID, AuthorID, Status) 
 VALUES
 ('Understanding SQL Joins', 
@@ -630,55 +697,55 @@ VALUES
  '/assets/images/courses/pic2.jpg',
  1,
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
- 1),
+ 'Public'),
 
 ('Introduction to Data Science', 
  'Data Science is one of the fastest-growing fields today, revolutionizing how industries analyze and interpret data. At its core, Data Science is about using scientific methods, algorithms, and systems to extract knowledge and insights from structured and unstructured data. The field includes a variety of techniques such as machine learning, data mining, and statistical analysis. One of the key aspects of data science is the ability to work with large datasets, often referred to as Big Data. Data scientists need proficiency in various programming languages such as Python and R, as well as familiarity with tools like Hadoop, Spark, and SQL. Additionally, they must possess a strong foundation in mathematics and statistics to interpret data accurately and create meaningful predictions.',
  '/assets/images/courses/pic3.jpg',
  2,
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
- 1),
+ 'Public'),
 
 ('Tips for Efficient Web Development', 
  'Web development is a constantly evolving field, and staying up to date with best practices is essential for building modern, efficient websites. One of the first tips for efficient web development is to ensure that your website is responsive. A responsive design adjusts the layout of the website to look great on any device, whether it s a desktop, tablet, or mobile phone. Another important practice is code optimization. Minimizing CSS and JavaScript files, reducing image sizes, and utilizing techniques like lazy loading can significantly improve website performance. Additionally, a clean and well-organized codebase is crucial for long-term maintainability. Developers should use version control systems like Git, follow naming conventions, and ensure that they write modular and reusable code.',
  '/assets/images/courses/pic4.jpg',
  3,
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
- 1),
+ 'Public'),
 
 ('Mobile App Development for Beginners', 
  'Mobile app development is a rapidly growing area in the tech world, with millions of apps being developed for platforms like iOS and Android every year. For beginners, it is essential to start by understanding the basics of mobile app development. Both iOS and Android apps are typically built using specific programming languages: Swift or Objective-C for iOS, and Java or Kotlin for Android. Additionally, developers should learn about integrated development environments (IDEs) like Xcode for iOS and Android Studio for Android. Building a simple app, such as a calculator or a to-do list, is a great way to get started. After that, you can progress to more complex projects, such as social media apps or e-commerce platforms. Understanding UI/UX design principles is also important for creating user-friendly mobile applications.',
  '/assets/images/courses/pic5.jpg',
  4,
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
- 1),
+ 'Public'),
 
 ('Best Practices in Cybersecurity', 
  'In today s digital age, cybersecurity is more important than ever. As more businesses and individuals rely on the internet for daily activities, the risk of cyberattacks continues to rise. Best practices in cybersecurity include ensuring strong password management, using multi-factor authentication (MFA), and regularly updating software to protect against vulnerabilities. Additionally, organizations should conduct regular security audits, implement firewalls, and use encryption to secure sensitive data. Employees should also be trained on recognizing phishing attempts and suspicious activities. Cybersecurity is not just about preventing attacks but also about preparing for potential breaches and having a robust recovery plan in place.',
  '/assets/images/courses/pic6.jpg',
  5,
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
- 1),
+ 'Public'),
 
 ('How to Learn Programming Effectively', 
  'Learning to code can seem like a daunting task, especially for beginners, but with the right strategies, anyone can become proficient in programming. The first step is to choose the right programming language. Popular languages for beginners include Python, JavaScript, and Ruby, as they are versatile and widely used. Once a language is chosen, beginners should focus on understanding the basic concepts such as variables, loops, functions, and conditionals. Practicing regularly by building small projects is key to solidifying concepts. Additionally, online tutorials, coding bootcamps, and community forums can provide valuable resources and support. The key to success is consistency setting aside time every day to practice and solve coding challenges will lead to steady improvement.',
  '/assets/images/courses/pic7.jpg',
  6,
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'), 
- 1),
+ 'Public'),
 ('Backend Node.js', 
  'Node.js has matured into a robust platform for building scalable backend applications. The event-driven, non-blocking I/O model makes Node.js particularly well-suited for handling concurrent connections efficiently. Express.js remains the most popular framework, providing a minimal yet powerful foundation for building web applications and APIs. Modern Node.js development emphasizes architectural patterns like Clean Architecture and Domain-Driven Design for building maintainable applications. Authentication and authorization implementations have evolved, with JSON Web Tokens (JWT) and OAuth becoming standard practices. Database integration options have expanded, with ORMs like Prisma and TypeORM offering type-safe database access. Error handling strategies have matured, incorporating proper logging, monitoring, and error reporting practices. Performance optimization includes clustering, caching strategies, and proper memory management. Security best practices encompass input validation, rate limiting, and protection against common vulnerabilities. Microservices architecture in Node.js often utilizes message queues and service discovery mechanisms. Testing strategies incorporate unit tests, integration tests, and end-to-end testing using frameworks like Jest and Supertest.',
- '/assets/images/courses/pic4.jsp',
+ '/assets/images/courses/pic4.jpg',
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
  (SELECT UserID FROM Account WHERE Email = 'expert4@onlinelearning.com'),
- 1),
+ 'Public'),
 
 ('backend Java', 
  'Enterprise Java development has evolved significantly with Spring Boot and modern Java features leading the way. Microservices architecture has become the standard for building scalable enterprise applications, with Spring Cloud providing essential distributed system patterns. Modern Java backend development emphasizes reactive programming for building responsive and resilient systems. Security implementations have become more sophisticated, incorporating OAuth2, OpenID Connect, and fine-grained authorization. Database access patterns have evolved with Spring Data JPA, R2DBC for reactive database access, and advanced caching strategies. API design focuses on REST best practices, GraphQL integration, and proper documentation using OpenAPI/Swagger. Monitoring and observability are crucial, with tools like Micrometer, Prometheus, and ELK stack becoming standard. Testing strategies incorporate unit tests, integration tests, and contract tests for microservices. Deployment practices emphasize containerization with Docker and orchestration with Kubernetes. Performance optimization includes proper connection pooling, caching strategies, and efficient resource utilization. Understanding transaction management, message queuing, and distributed tracing is essential for building robust enterprise applications.',
- '/assets/images/courses/pic6.jsp',
+ '/assets/images/courses/pic6.jpg',
  (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
  (SELECT UserID FROM Account WHERE Email = 'expert5@onlinelearning.com'),
- 1);
+ 'Private');
 
   -- Insert Package data
 

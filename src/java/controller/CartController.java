@@ -33,7 +33,15 @@ public class CartController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
-
+        
+         String error = request.getParameter("error");
+        String success = request.getParameter("success");
+        if (success != null) {
+            request.setAttribute("success", success);
+        }
+        if (error != null) {
+            request.setAttribute("error", error);
+        }
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login?redirect=Cart");
             return;
@@ -52,8 +60,6 @@ public class CartController extends HttpServlet {
         itemDAO.removePurchasedCoursesFromCart(acc.getUserID());
         int totalCourse = itemDAO.countItemsByCartId(acc.getUserID());
         Cart cart = cartDAO.get(acc.getUserID());
-        System.out.println("CartController: doGet() is running");
-        System.out.println("User ID: " + acc.getUserID());
         if (cart == null) {
             cartDAO.create(acc.getUserID());
             cart = new Cart();
@@ -94,6 +100,7 @@ public class CartController extends HttpServlet {
 
         int courseId = Integer.parseInt(request.getParameter("courseId"));
         String action = request.getParameter("action");
+
         CourseDAO courseDAO = new CourseDAO();
         CartDAO cartDAO = new CartDAO();
         Cart cart = cartDAO.get(acc.getUserID());
@@ -101,7 +108,6 @@ public class CartController extends HttpServlet {
             cartDAO.create(acc.getUserID());
             cart = new Cart();
         }
-
         switch (action) {
             case "add" -> {
                 CartItemDAO itemDAO = new CartItemDAO();

@@ -96,7 +96,6 @@
                                        data-price="${item.course.price}" 
                                        data-course-id="${item.course.courseID}" 
                                        data-expert-id="${item.course.expertID}">
-                                <div class="checkmark"></div>
                             </label>
                         </div>
                     </c:forEach>
@@ -116,10 +115,21 @@
                         </div>
                     </div>
                 </div>
-
+                    
             </div>
         </div>
-
+        <c:set var="error" value="${requestScope.error}" />
+        <c:if test="${not empty error}">
+            <div id="error-message" class="error-message">
+                <i class="bx bxs-error"></i> ${error}
+            </div>
+        </c:if>
+        <c:set var="success" value="${requestScope.success}" />
+        <c:if test="${not empty success}">
+            <div id="success" class="success">
+                <i class="bx bxs-error"></i> ${success}
+            </div>
+        </c:if>
 
         <script src="${pageContext.request.contextPath}/assets/js/CartJs.js"></script>
         <script>

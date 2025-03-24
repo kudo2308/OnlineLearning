@@ -193,6 +193,28 @@ public class PaymentDAO extends DBContext {
         return orderNames;
     }
 
+     public List<Integer> getCourseId(int orderId) {
+        List<Integer> orderNames = new ArrayList<>();
+        String sql = "SELECT CourseID"
+                + "FROM OrderItem "
+                + "WHERE OrderID = ?";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, orderId);
+
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    int courseId = rs.getInt("CourseID");
+                    orderNames.add(courseId);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the error
+        }
+
+        return orderNames;
+    }  
+        
     public List<Integer> getOrderItemExpertId(int orderId) {
         List<Integer> expertId = new ArrayList<>();
         String sql = "SELECT c.ExpertID "

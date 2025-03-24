@@ -161,14 +161,14 @@ public class CourseDAO extends DBContext {
     }
 
     public List<Course> findByPageFilterCategoryAndStatus(Integer page, int categoryIdRequest,
-            String statusRequest, int expertId, String nameRequest) {
+            String statusRequest, Integer expertId, String nameRequest) {
         List<Course> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
                 .append("JOIN Account a ON co.ExpertID = a.UserID ")
                 .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
                 .append("WHERE co.[Status] LIKE ? and co.Title LIKE ? ")
-                .append("AND co.ExpertID = ? ");
+                .append("AND (? is null or co.ExpertID = ?) ");
 
         if (categoryIdRequest != 0) {
             sql.append("AND co.CategoryID = ? ");
@@ -183,18 +183,19 @@ public class CourseDAO extends DBContext {
             ps = connection.prepareStatement(sql.toString());
             ps.setString(1, "%" + statusRequest + "%");
             ps.setString(2, "%" + nameRequest + "%");
-            ps.setInt(3, expertId);
+            ps.setObject(3, expertId);
+            ps.setObject(4, expertId);
 
             if (categoryIdRequest == 0) {
                 if (page != null) {
-                    ps.setInt(4, (page - 1) * RECORD_PER_PAGE);
-                    ps.setInt(5, RECORD_PER_PAGE);
-                }
-            } else {
-                ps.setInt(4, categoryIdRequest);
-                if (page != null) {
                     ps.setInt(5, (page - 1) * RECORD_PER_PAGE);
                     ps.setInt(6, RECORD_PER_PAGE);
+                }
+            } else {
+                ps.setInt(5, categoryIdRequest);
+                if (page != null) {
+                    ps.setInt(6, (page - 1) * RECORD_PER_PAGE);
+                    ps.setInt(7, RECORD_PER_PAGE);
                 }
             }
 

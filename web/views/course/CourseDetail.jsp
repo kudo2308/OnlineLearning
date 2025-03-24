@@ -43,6 +43,7 @@
         <!-- All PLUGINS CSS ============================================= -->
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/courseDetailStyle.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/assets.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <!-- TYPOGRAPHY ============================================= -->
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/typography.css">
@@ -148,6 +149,8 @@
                                     <ul class="navbar">
                                         <li><a class="nav-link" href="#overview"><i class="ti-zip"></i>Overview</a></li>
                                         <li><a class="nav-link" href="#curriculum"><i class="ti-bookmark-alt"></i>Curriculum</a></li>
+                                        <li><a class="nav-link" href="#instructor"><i class="ti-user"></i>Instructor</a></li>
+                                        <li><a class="nav-link" href="#reviews"><i class="ti-comments"></i>Reviews</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -215,6 +218,99 @@
                                     </div>
                                 </c:forEach>
                             </div>
+                            <div class="" id="instructor">
+                                <h4>Instructor</h4>
+                                <!-- FORM VIẾT COMMENT -->
+                                <div class="review-form" style="margin-top: 40px;">
+                                    <h5>Viết nhận xét của bạn</h5>
+
+                                    <form action="${pageContext.request.contextPath}/coursedetail" method="post">
+                                        <input type="hidden" name="courseId" value="${course.courseID}" />
+                                        <div class="form-group">
+                                            <label for="rating">Chọn đánh giá:</label>
+                                            <select class="form-control" name="rating" required>
+                                                <option value="5">⭐⭐⭐⭐⭐ - Tuyệt vời</option>
+                                                <option value="4">⭐⭐⭐⭐ - Tốt</option>
+                                                <option value="3">⭐⭐⭐ - Trung bình</option>
+                                                <option value="2">⭐⭐ - Kém</option>
+                                                <option value="1">⭐ - Rất tệ</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="content">Nội dung bình luận:</label>
+                                            <textarea class="form-control" name="content" rows="4" placeholder="Viết bình luận của bạn..." required></textarea>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+                                    </form>
+                                </div>
+
+                                <c:forEach var="feedList" items="${feedList}">
+                                    <div class="instructor-bx">
+                                        <div class="instructor-author">
+                                            <img src="${pageContext.request.contextPath}${feedList.user.image}" alt="">
+                                        </div>
+                                        <div class="instructor-info">
+                                            <h6>${feedList.user.fullName}</h6>
+                                            <span>${feedList.role.roleName}</span>
+                                            <ul class="list-inline m-tb10">
+                                                <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
+                                                <li><a href="#" class="btn sharp-sm twitter"><i class="fa fa-twitter"></i></a></li>
+                                                <li><a href="#" class="btn sharp-sm linkedin"><i class="fa fa-linkedin"></i></a></li>
+                                                <li><a href="#" class="btn sharp-sm google-plus"><i class="fa fa-google-plus"></i></a></li>
+                                            </ul>
+                                            <p class="m-b0">${feedList.content}</p>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+
+
+                            </div>
+                            <div class="" id="reviews">
+                                <h4>Reviews</h4>
+
+                                <div class="review-bx" style="display: flex; gap: 20px; border: 1px solid #ddd; padding: 20px;">
+                                    <!-- Hiển thị điểm trung bình -->
+                                    <div style="width: 120px; text-align: center; border: 1px solid #eee; padding: 10px;">
+                                        <h2 style="font-size: 36px; margin: 0;">${fn:substringBefore(averageRating, ".")}</h2>
+                                        <ul class="cours-star" style="list-style: none; padding: 0; display: flex; justify-content: center; margin: 5px 0;">
+                                            <c:forEach var="i" begin="1" end="5">
+                                                <li style="margin: 0 2px;">
+                                                    <i class="fa fa-star" style="color: ${i <= averageRating ? '#4B0082' : '#ccc'};"></i>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                        <span style="font-size: 14px;">${totalRatings} Rating</span>
+                                    </div>
+
+                                    <!-- Biểu đồ đánh giá -->
+                                    <div style="flex: 1;">
+                                        <c:forEach var="i" begin="5" end="1" step="-1">
+                                            <c:set var="count" value="${ratingDistribution[i]}" />
+                                            <c:set var="percentage" value="${totalRatings > 0 ? (count * 100) / totalRatings : 0}" />
+
+                                            <div class="bar-bx" style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                <div class="side" style="width: 50px;">${i} star</div>
+                                                <div class="middle" style="flex: 1;">
+                                                    <div class="bar-container" style="background-color: #eee; height: 8px; border-radius: 4px;">
+                                                        <div class="bar" style="width: ${percentage}%; height: 8px; background-color: #4B0082; border-radius: 4px;"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="side right" style="width: 40px; text-align: right;">${count}</div>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>Rating Map: ${ratingDistribution}</p>
+                            <p>Total Ratings: ${totalRatings}</p>
+                            <p>Average Rating: ${averageRating}</p>
+
+
+
+
                         </div>
 
                     </div>
@@ -224,11 +320,20 @@
         <!-- contact area END -->
 
     </div>
-    <!-- Content END-->
-    <!-- Footer ==== -->
+</div>
 
-    <!-- Footer END ==== -->
-    <button class="back-to-top fa fa-chevron-up" ></button>
+</div>
+</div>
+</div>
+</div>
+<!-- contact area END -->
+
+</div>
+<!-- Content END-->
+<!-- Footer ==== -->
+
+<!-- Footer END ==== -->
+<button class="back-to-top fa fa-chevron-up" ></button>
 </div>
 <!-- External JavaScripts -->
 <script src="assets/js/jquery.min.js"></script>
