@@ -305,8 +305,8 @@
             <!-- Footer END ==== -->
             <button class="back-to-top fa fa-chevron-up" ></button>
         </div>
-        <!-- External JavaScripts -->
-<!--        <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+         External JavaScripts 
+        <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
@@ -320,7 +320,7 @@
         <script src="${pageContext.request.contextPath}/assets/vendors/owl-carousel/owl.carousel.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/functions.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/contact.js"></script>
-        <script src='${pageContext.request.contextPath}/assets/vendors/switcher/switcher.js'></script>-->
+        <script src='${pageContext.request.contextPath}/assets/vendors/switcher/switcher.js'></script>
     </body>
 
 </html>

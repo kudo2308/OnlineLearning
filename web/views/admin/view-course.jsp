@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -100,21 +100,21 @@
                         <h4 class="breadcrumb-title">Courses</h4>
                         <ul class="db-breadcrumb-list">
                             <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i>Home</a></li>
-                            <li>Courses</li>
-                        </ul>
-                    </div>	
-                    <div class="row">
-                        <div class="col-lg-12 m-b30">
-                            <div class="widget-box">
-                                <div class="wc-title">
-                                    <h4>Course List</h4>
-                                </div>
-                                <div class="widget-inner">
-                                    <div class="mb-3 d-flex align-items-center gap-3">
-                                        <a id="addCourse" href="addCourse" class="btn btn-primary">Add Course</a>
+                        <li>Courses</li>
+                    </ul>
+                </div>	
+                <div class="row">
+                    <div class="col-lg-12 m-b30">
+                        <div class="widget-box">
+                            <div class="wc-title">
+                                <h4>Course List</h4>
+                            </div>
+                            <div class="widget-inner">
+                                <div class="mb-3 d-flex align-items-center gap-3">
+                                    <a id="addCourse" href="addCourse" class="btn btn-primary">Add Course</a>
 
-                                        <form action="courses" class="d-flex align-items-center mx-3">
-                                            <input type="text" id="searchName" name="name" placeholder="Search by name" value="${name}" class="form-control me-2">
+                                    <form action="courses" class="d-flex align-items-center mx-3">
+                                        <input type="text" id="searchName" name="name" placeholder="Search by name" value="${name}" class="form-control me-2">
                                         <button id="searchButton" name="action" value="searchByName" class="btn btn-secondary">Search</button>
                                     </form>
 
@@ -155,7 +155,7 @@
                                     </thead>
                                     <tbody id="courseTableBody">
                                         <c:forEach items="${courses}" var="courses">
-                                            
+
                                             <tr>
                                                 <td>${courses.courseID}</td>
                                                 <td><img src=".${courses.imageUrl}" width="50"></td>
@@ -232,7 +232,7 @@
             </script>
         </c:if>
         <div class="ttr-overlay"></div>
-    <script>
+        <script>
         function showMessage() {
             var errorMessage = document.getElementById("error-message");
             var successMessage = document.getElementById("success");
@@ -258,25 +258,8 @@
         window.onload = function () {
             showMessage();
         };
-    </script>
-        <!-- External JavaScripts -->
-        <script src="assets/admin/assets/js/jquery.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-        <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
-        <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
-        <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
-        <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
-        <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
-        <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
-        <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
-        <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
-        <script src="assets/admin/assets/js/functions.js"></script>
-        <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
-        <script src="assets/admin/assets/js/admin.js"></script>
-    </body>
 
-    <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
+        </body>
+
+                <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
 </html>
