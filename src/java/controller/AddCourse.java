@@ -50,7 +50,7 @@ public class AddCourse extends HttpServlet {
         CategoryDAO categoryDAO = new CategoryDAO();
 
         List<Category> categories = categoryDAO.findAll();
-
+     
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
     }
@@ -70,8 +70,7 @@ public class AddCourse extends HttpServlet {
             CategoryDAO categoryDAO = new CategoryDAO();
             List<Category> categories = categoryDAO.findAll();
             request.setAttribute("categories", categories);
-            
-            
+
             // lay userid tu sesson
             HttpSession session = request.getSession();
 

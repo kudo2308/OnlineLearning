@@ -233,39 +233,37 @@
         </c:if>
         <div class="ttr-overlay"></div>
         <script>
-        function showMessage() {
-            var errorMessage = document.getElementById("error-message");
-            var successMessage = document.getElementById("success");
+            function showMessage() {
+                var errorMessage = document.getElementById("error-message");
+                var successMessage = document.getElementById("success");
 
-            // Hiển thị thông báo lỗi nếu có
-            if (errorMessage) {
-                errorMessage.style.display = "block";
-                setTimeout(function () {
-                    errorMessage.style.display = "none";
-                }, 3000);
+                // Hiển thị thông báo lỗi nếu có
+                if (errorMessage) {
+                    errorMessage.style.display = "block";
+                    setTimeout(function () {
+                        errorMessage.style.display = "none";
+                    }, 3000);
+                }
+
+                // Hiển thị thông báo thành công nếu có
+                if (successMessage) {
+                    successMessage.style.display = "block";
+                    setTimeout(function () {
+                        successMessage.style.display = "none";
+                    }, 3000);
+                }
             }
 
-            // Hiển thị thông báo thành công nếu có
-            if (successMessage) {
-                successMessage.style.display = "block";
-                setTimeout(function () {
-                    successMessage.style.display = "none";
-                }, 3000);
-            }
-        }
+            // Gọi hàm khi trang đã tải xong
+            window.onload = function () {
+                showMessage();
+            };
 
-        // Gọi hàm khi trang đã tải xong
-        window.onload = function () {
-            showMessage();
-        };
-<<<<<<< HEAD
-=======
-    </script>
-        
+        </script>
+
     </body>
->>>>>>> ce3fcaf96198d4785a68d11363e6f37e26a121e1
 
-        </body>
+</body>
 
-                <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
+
 </html>

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAO;
 
 import DBContext.DBContext;
@@ -68,11 +64,9 @@ public class MyCourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                // Set registration-related information
-                Registration registration = new Registration();
-                registration.setProgress(rs.getInt("Progress"));
-                registration.setStatus(rs.getString("RegistrationStatus"));
-
+                // Store progress in the register field
+                course.setRegister(rs.getInt("Progress"));
+            
                 // Set expert and category information
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
@@ -136,11 +130,9 @@ public class MyCourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                // Set registration-related information
-                Registration registration = new Registration();
-                registration.setProgress(rs.getInt("Progress"));
-                registration.setStatus(rs.getString("RegistrationStatus"));
-
+                // Store progress in the register field
+                course.setRegister(rs.getInt("Progress"));
+            
                 // Set expert and category information
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
@@ -223,10 +215,8 @@ public class MyCourseDAO extends DBContext {
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
 
-                // Set registration-related information
-                Registration registration = new Registration();
-                registration.setProgress(rs.getInt("Progress"));
-                registration.setStatus(rs.getString("RegistrationStatus"));
+                // Store progress in the register field
+                course.setRegister(rs.getInt("Progress"));
 
                 // Set expert and category information
                 Account expert = new Account();
@@ -290,7 +280,9 @@ public class MyCourseDAO extends DBContext {
                 course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-
+                
+                // Store progress in the register field
+                course.setRegister(rs.getInt("Progress"));
 
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
@@ -306,5 +298,71 @@ public class MyCourseDAO extends DBContext {
             System.out.println("Error in getCoursesByStudent: " + ex.getMessage());
         }
         return courseList;
+    }
+    
+    public int getTotalEnrolledCourses(int studentId) {
+        int count = 0;
+        String sql = """
+                SELECT COUNT(*) as total
+                FROM [dbo].[Course] c
+                JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
+                WHERE r.[UserID] = ? AND c.[Status] = 1
+                """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, studentId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error in getTotalEnrolledCourses: " + ex.getMessage());
+        }
+        return count;
+    }
+    
+    public int getTotalEnrolledSearchResults(String query, int studentId) {
+        int count = 0;
+        String sql = """
+                SELECT COUNT(*) as total
+                FROM [dbo].[Course] c
+                JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
+                WHERE r.[UserID] = ? AND (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status] = 1
+                """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, studentId);
+            st.setString(2, "%" + query + "%");
+            st.setString(3, "%" + query + "%");
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error in getTotalEnrolledSearchResults: " + ex.getMessage());
+        }
+        return count;
+    }
+    
+    public int getTotalEnrolledCoursesByCategories(int categoryId, int studentId) {
+        int count = 0;
+        String sql = """
+                SELECT COUNT(*) as total
+                FROM [dbo].[Course] c
+                JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
+                WHERE c.[CategoryID] = ? AND r.[UserID] = ? AND c.[Status] = 1
+                """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, categoryId);
+            st.setInt(2, studentId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error in getTotalEnrolledCoursesByCategories: " + ex.getMessage());
+        }
+        return count;
     }
 }
