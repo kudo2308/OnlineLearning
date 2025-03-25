@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +15,7 @@ import model.Answer;
 import model.Question;
 import model.Quiz;
 
-@WebServlet(name = "TestController", urlPatterns = {"/Test"})
+// Xóa annotation WebServlet vì đã cấu hình trong web.xml
 public class TestController extends HttpServlet {
     
     private QuizDAO quizDAO;
@@ -40,7 +39,7 @@ public class TestController extends HttpServlet {
             // Display quiz list
             List<Quiz> quizList = quizDAO.getAllQuizzes();
             request.setAttribute("quizList", quizList);
-            request.getRequestDispatcher("/views/test/testQuiz.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/test/Quiz.jsp").forward(request, response);
         } else if (action.equals("take")) {
             // Start taking a quiz
             int quizId = Integer.parseInt(request.getParameter("id"));
@@ -83,7 +82,7 @@ public class TestController extends HttpServlet {
             request.setAttribute("totalQuestions", questions.size());
             request.setAttribute("currentQuestion", firstQuestion);
             
-            request.getRequestDispatcher("/views/test/Test.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/test/TakeQuiz.jsp").forward(request, response);
         } else if (action.equals("question")) {
             // Handle navigation between questions
             int quizId = Integer.parseInt(request.getParameter("quizId"));
@@ -103,7 +102,7 @@ public class TestController extends HttpServlet {
             request.setAttribute("totalQuestions", questions.size());
             request.setAttribute("currentQuestion", currentQuestion);
             
-            request.getRequestDispatcher("/views/test/Test.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/test/TakeQuiz.jsp").forward(request, response);
         }
     }
     
