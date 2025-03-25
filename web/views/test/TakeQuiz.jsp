@@ -488,12 +488,14 @@
                                                     </div>
                                                     <ul class="options-list">
                                                         <c:forEach var="answer" items="${question.answers}">
-                                                            <li class="option-item">
-                                                                <label class="option-label">
-                                                                    <input type="radio" name="question${question.questionID}" value="${answer.answerID}" class="option-radio">
-                                                                    <span class="option-text">${answer.content}</span>
-                                                                </label>
-                                                            </li>
+                                                            <c:if test="${not empty answer.content}">
+                                                                <li class="option-item">
+                                                                    <label class="option-label">
+                                                                        <input type="radio" name="question${question.questionID}" value="${answer.answerID}" class="option-radio">
+                                                                        <span class="option-text">${answer.content}</span>
+                                                                    </label>
+                                                                </li>
+                                                            </c:if>
                                                         </c:forEach>
                                                     </ul>
                                                     
