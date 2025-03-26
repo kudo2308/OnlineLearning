@@ -124,6 +124,7 @@ html, body {
 /* Content */
 .container-right {
     width: 100%;
+    min-height: 700px; 
     padding: 20px;
     background: white;
     border-radius: 10px;
@@ -373,4 +374,17 @@ textarea {
     width: 178px;
     border: #ced4da 1px solid;
     border-radius: 5px;
+}
+
+#editDiscountType{
+    width: 100%;
+    height: 46px;
+    border: 1px solid #ccc;
+}
+
+#editStatus{
+    width: 100%;
+    height: 46px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
 }

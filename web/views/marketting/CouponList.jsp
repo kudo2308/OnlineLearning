@@ -80,9 +80,9 @@
                     <c:if test="${not empty message}">
                         <div class="alert2 alert-success" id="alert-box">
                             <c:choose>
-                                <c:when test="${message eq 'created'}">Coupon đã được tạo thành công!</c:when>
-                                <c:when test="${message eq 'updated'}">Coupon đã được cập nhật thành công!</c:when>
-                                <c:when test="${message eq 'deleted'}">Coupon đã được xóa thành công!</c:when>
+                                <c:when test="${message eq 'created'}">Coupon add successfully!</c:when>
+                                <c:when test="${message eq 'updated'}">Coupon update successfully!</c:when>
+                                <c:when test="${message eq 'deleted'}">Coupon remove successfully!</c:when>
                             </c:choose>
                             <button class="close-btn" onclick="closeAlert()">×</button>
                         </div>
@@ -91,13 +91,27 @@
                     <c:if test="${not empty error}">
                         <div class="alert2 alert-danger" id="alert-box">
                             <c:choose>
-                                <c:when test="${error eq 'deleteFailed'}">Không thể xóa coupon, thử lại sau!</c:when>
+                                <c:when test="${error eq 'deleteFailed'}">Can not remove coupon, please try again!</c:when>
                                 <c:when test="${error eq 'missingCouponCode'}">Mã coupon không được để trống!</c:when>
                             </c:choose>
                             <button class="close-btn" onclick="closeAlert()">×</button>
                         </div>
                     </c:if>
-
+                    <form id="filter-form" action="myblog" method="get">
+                        <select name="categoryId" class="form-control2" onchange="document.getElementById('filter-form').submit();">
+                            <option value="0" ${selectedCategory == 0 ? 'selected' : ''}>All Categories</option>
+                            <c:forEach var="category" items="${categories}">
+                                <option value="${category.categoryID}" ${selectedCategory == category.categoryID ? 'selected' : ''}>
+                                    ${category.name}
+                                </option>
+                            </c:forEach>
+                        </select>
+                        <div class="filter-search">
+                            <div class="input-group">
+                                <input name="search" type="text" class="form-control" placeholder="Search blogs" value="${searchKeyword}">
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-container">
                         <table>
                             <thead>
@@ -189,15 +203,17 @@
                     <input type="text" id="editCouponCode" name="couponCode" required>
 
                     <label>Discount Type:</label>
+                    <br>
                     <select id="editDiscountType" name="discountType">
                         <option value="percentage">Percentage</option>
                         <option value="fixed">Fixed</option>
                     </select>
-
+                    <br>
                     <label>Discount Value:</label>
                     <input type="number" id="editDiscountValue" name="discountValue" required>
 
                     <label>Status:</label>
+                    <br>
                     <select id="editStatus" name="status">
                         <option value="1">Active</option>
                         <option value="0">Inactive</option>
