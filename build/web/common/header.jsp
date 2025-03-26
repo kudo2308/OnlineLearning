@@ -201,7 +201,8 @@
 
         <c:choose>
             <c:when test="${not empty sessionScope.account}">
-                <a id="my-course" href="${pageContext.request.contextPath}/course">My Course</a>
+               
+                <a id="my-course" href="${pageContext.request.contextPath}/my-courses">My Courses</a>
                 <div class="notification-dropdown">
                     <a id="bell" href="#" class="notification-icon">
                         <span class="material-icons md-18">notifications_none</span>

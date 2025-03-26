@@ -111,7 +111,7 @@
                     <c:otherwise>
                         <!-- New Bank Account Form -->
                         <p>You haven't set up your bank account information yet. Please add your details to withdraw funds.</p>
-                        <form action="${pageContext.request.contextPath}/wallet?action=createBankInfo" method="post">
+                        <form action="${pageContext.request.contextPath}/wallet?action=updateBankInfo" method="post">
                             <div class="form-group">
                                 <label for="bankName">Bank Name</label>
                                 <input type="text" id="bankName" name="bankName" class="form-control" required>

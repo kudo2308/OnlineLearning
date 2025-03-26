@@ -16,17 +16,15 @@ import java.util.Map;
 import model.Category;
 import model.Course;
 import model.CourseWithCategory;
-import model.Lesson;
 
-@WebServlet(name = "CourseServlet", urlPatterns = {"/course"})
-public class CourseServlet extends HttpServlet {
+@WebServlet(name = "MyCourseController", urlPatterns = {"/my-courses"})
+public class MyCourseController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            CourseDAO dao = new CourseDAO();
-            MyCourseDAO d = new MyCourseDAO();
+            MyCourseDAO myCourseDAO = new MyCourseDAO();
             CategoryDAO categoryDAO = new CategoryDAO();
             
             // Get search and filter parameters
@@ -47,7 +45,7 @@ public class CourseServlet extends HttpServlet {
             }
 
             // Calculate offset
-            int recordsPerPage = 4;
+            int recordsPerPage = 8;
             int offset = (page - 1) * recordsPerPage;
 
             // Get user information from session
@@ -59,22 +57,22 @@ public class CourseServlet extends HttpServlet {
             }
             String userID = null;
             if (accountObj instanceof Map) {
+                @SuppressWarnings("unchecked")
                 Map<String, String> accountData = (Map<String, String>) accountObj;
                 userID = accountData.get("userId");
             }
             int userId = Integer.parseInt(userID);
 
             // Get student's enrolled courses
-            // Get courses with categories for main display
             List<Course> courseLst;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-                courseLst = d.searchCourse(searchQuery,userId, offset, recordsPerPage);
+                courseLst = myCourseDAO.searchCourse(searchQuery, userId, offset, recordsPerPage);
             } else if (categoryFilter != null && !categoryFilter.trim().isEmpty()) {
-                courseLst = d.getCoursesByCategories(Integer.parseInt(categoryFilter),userId, offset, recordsPerPage);
+                courseLst = myCourseDAO.getCoursesByCategories(Integer.parseInt(categoryFilter), userId, offset, recordsPerPage);
             } else if (sortBy != null) {
-                courseLst = d.getSortedCourses(sortBy, userId ,offset, recordsPerPage);
+                courseLst = myCourseDAO.getSortedCourses(sortBy, userId, offset, recordsPerPage);
             } else {
-                courseLst = d.getCoursesByStudent(userId ,offset, recordsPerPage);
+                courseLst = myCourseDAO.getCoursesByStudent(userId, offset, recordsPerPage);
             }
         
             List<CourseWithCategory> lst = new ArrayList<>();
@@ -86,31 +84,32 @@ public class CourseServlet extends HttpServlet {
             // Get total records for pagination based on filters
             int totalRecords;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-                totalRecords = dao.getTotalSearchResults(searchQuery);
+                totalRecords = myCourseDAO.getTotalEnrolledSearchResults(searchQuery, userId);
             } else if (categoryFilter != null && !categoryFilter.trim().isEmpty()) {
-                totalRecords = dao.getTotalCoursesByCategories(Integer.parseInt(categoryFilter));
+                totalRecords = myCourseDAO.getTotalEnrolledCoursesByCategories(Integer.parseInt(categoryFilter), userId);
             } else {
-                totalRecords = dao.getTotalCourses();
+                totalRecords = myCourseDAO.getTotalEnrolledCourses(userId);
             }
 
             // Calculate total pages
             int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
 
             // Set attributes
-            request.setAttribute("listcourse", lst);
+            request.setAttribute("enrolledCourses", lst);
             request.setAttribute("listallcategory", categoryDAO.findAll());
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("searchQuery", searchQuery);
             request.setAttribute("categoryFilter", categoryFilter);
             request.setAttribute("sortBy", sortBy);
+            request.setAttribute("pageTitle", "My Courses");
 
-            request.getRequestDispatcher("/views/course/courseList.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/course/myCourseList.jsp").forward(request, response);
         } catch (Exception e) {
-            System.out.println("Error in CourseServlet: " + e.getMessage());
+            System.out.println("Error in MyCourseController: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "An error occurred while loading courses. Please try again later.");
-            request.getRequestDispatcher("/views/course/courseList.jsp").forward(request, response);
+            request.setAttribute("error", "An error occurred while loading your courses. Please try again later.");
+            request.getRequestDispatcher("/views/course/myCourseList.jsp").forward(request, response);
         }
     }
 
@@ -128,6 +127,6 @@ public class CourseServlet extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Course listing servlet";
+        return "My Course listing servlet";
     }
 }

@@ -64,6 +64,7 @@ public class QuizDAO extends DBContext{
                 quiz.setQuizID(rs.getInt("quizID"));
                 quiz.setName(rs.getString("name"));
                 quiz.setDescription(rs.getString("description"));
+                quiz.setDuration(rs.getInt("duration")); 
                 quiz.setTimeLimit(rs.getInt("duration")); 
                 quiz.setPassRate(rs.getDouble("passRate"));
                 quiz.setTotalQuestion(rs.getInt("totalQuestion"));

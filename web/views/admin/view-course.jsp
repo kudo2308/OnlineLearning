@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -100,21 +100,21 @@
                         <h4 class="breadcrumb-title">Courses</h4>
                         <ul class="db-breadcrumb-list">
                             <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i>Home</a></li>
-                            <li>Courses</li>
-                        </ul>
-                    </div>	
-                    <div class="row">
-                        <div class="col-lg-12 m-b30">
-                            <div class="widget-box">
-                                <div class="wc-title">
-                                    <h4>Course List</h4>
-                                </div>
-                                <div class="widget-inner">
-                                    <div class="mb-3 d-flex align-items-center gap-3">
-                                        <a id="addCourse" href="addCourse" class="btn btn-primary">Add Course</a>
+                        <li>Courses</li>
+                    </ul>
+                </div>	
+                <div class="row">
+                    <div class="col-lg-12 m-b30">
+                        <div class="widget-box">
+                            <div class="wc-title">
+                                <h4>Course List</h4>
+                            </div>
+                            <div class="widget-inner">
+                                <div class="mb-3 d-flex align-items-center gap-3">
+                                    <a id="addCourse" href="addCourse" class="btn btn-primary">Add Course</a>
 
-                                        <form action="courses" class="d-flex align-items-center mx-3">
-                                            <input type="text" id="searchName" name="name" placeholder="Search by name" value="${name}" class="form-control me-2">
+                                    <form action="courses" class="d-flex align-items-center mx-3">
+                                        <input type="text" id="searchName" name="name" placeholder="Search by name" value="${name}" class="form-control me-2">
                                         <button id="searchButton" name="action" value="searchByName" class="btn btn-secondary">Search</button>
                                     </form>
 
@@ -155,7 +155,7 @@
                                     </thead>
                                     <tbody id="courseTableBody">
                                         <c:forEach items="${courses}" var="courses">
-                                            
+
                                             <tr>
                                                 <td>${courses.courseID}</td>
                                                 <td><img src=".${courses.imageUrl}" width="50"></td>
@@ -232,35 +232,38 @@
             </script>
         </c:if>
         <div class="ttr-overlay"></div>
-    <script>
-        function showMessage() {
-            var errorMessage = document.getElementById("error-message");
-            var successMessage = document.getElementById("success");
+        <script>
+            function showMessage() {
+                var errorMessage = document.getElementById("error-message");
+                var successMessage = document.getElementById("success");
 
-            // Hiển thị thông báo lỗi nếu có
-            if (errorMessage) {
-                errorMessage.style.display = "block";
-                setTimeout(function () {
-                    errorMessage.style.display = "none";
-                }, 3000);
+                // Hiển thị thông báo lỗi nếu có
+                if (errorMessage) {
+                    errorMessage.style.display = "block";
+                    setTimeout(function () {
+                        errorMessage.style.display = "none";
+                    }, 3000);
+                }
+
+                // Hiển thị thông báo thành công nếu có
+                if (successMessage) {
+                    successMessage.style.display = "block";
+                    setTimeout(function () {
+                        successMessage.style.display = "none";
+                    }, 3000);
+                }
             }
 
-            // Hiển thị thông báo thành công nếu có
-            if (successMessage) {
-                successMessage.style.display = "block";
-                setTimeout(function () {
-                    successMessage.style.display = "none";
-                }, 3000);
-            }
-        }
+            // Gọi hàm khi trang đã tải xong
+            window.onload = function () {
+                showMessage();
+            };
 
-        // Gọi hàm khi trang đã tải xong
-        window.onload = function () {
-            showMessage();
-        };
-    </script>
-        
+        </script>
+
     </body>
 
-    <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
+</body>
+
+
 </html>

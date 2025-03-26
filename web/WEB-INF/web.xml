@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <servlet-mapping>
+        <servlet-name>DashBoardController</servlet-name>
+        <url-pattern>/admin/dashboard</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
-
     <servlet>
         <servlet-name>HomeController</servlet-name>
         <servlet-class>controller.HomeController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DashBoardController</servlet-name>
+        <servlet-class>controller.DashBoardController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeController</servlet-name>
@@ -46,7 +53,7 @@
     </servlet>
     <servlet>
         <servlet-name>QuizController</servlet-name>
-        <servlet-class>controller.QuizController</servlet-class>
+        <servlet-class>controller.quiz.QuizController</servlet-class>
     </servlet>
     <!-- Servlet Mappings -->
     <servlet>
@@ -64,6 +71,10 @@
     <servlet>
         <servlet-name>LessonController</servlet-name>
         <servlet-class>controller.lesson.LessonController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TestController</servlet-name>
+        <servlet-class>controller.test.TestController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CourseDetailServlet</servlet-name>
@@ -113,14 +124,16 @@
         <servlet-name>LessonController</servlet-name>
         <url-pattern>/lesson</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestController</servlet-name>
+        <url-pattern>/Test</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>CartController</servlet-name>
         <servlet-class>controller.CartController</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>CartController</servlet-name>
         <url-pattern>/cart</url-pattern>
     </servlet-mapping>
-
 </web-app>

@@ -114,12 +114,7 @@ public class PaymentServlet extends HttpServlet {
                     ExpertBankInfo bankInfo = walletDAO.getExpertBankInfo(account.getUserID());
                     
                     if (bankInfo != null && amount >= 100000 && amount <= bankInfo.getWalletBalance()) {
-                        ExpertPayout payout = new ExpertPayout(
-                                account.getUserID(),
-                                amount,
-                                bankInfo.getBankAccountNumber(),
-                                bankInfo.getBankName()
-                        );
+                        ExpertPayout payout = new ExpertPayout( account.getUserID(), amount, bankInfo.getBankAccountNumber(), bankInfo.getBankName());
                         
                         boolean success = walletDAO.createPayoutRequest(payout);
                         

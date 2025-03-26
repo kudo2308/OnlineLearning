@@ -257,7 +257,7 @@ CREATE TABLE ExpertPayout (
     Amount DECIMAL(10,2) NOT NULL,
     BankAccountNumber NVARCHAR(255) NOT NULL,
     BankName NVARCHAR(255) NOT NULL,
-    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'processed', 'failed')),
+    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'sucessful','withdrawn', 'failed')),
     RequestedAt DATETIME DEFAULT GETDATE(),
     ProcessedAt DATETIME NULL
 );
@@ -278,6 +278,7 @@ CREATE TABLE Notification (
     Title NVARCHAR(255) NOT NULL,
     Content NVARCHAR(MAX) NOT NULL,
     Type NVARCHAR(50) CHECK (Type IN ('system', 'course', 'message', 'payment', 'other')),
+	RelatedLink NVARCHAR(255)  null,
     RelatedID INT NULL, -- ID của đối tượng liên quan (khóa học, tin nhắn...)
     IsRead BIT DEFAULT 0,
     CreatedAt DATETIME DEFAULT GETDATE(),
