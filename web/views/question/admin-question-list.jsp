@@ -230,7 +230,7 @@
                                                 <td>
                                                     <button class="btn btn-custom btn-show">Show</button>
                                                     <button class="btn btn-custom btn-hide">Hide</button>
-                                                    <button class="btn btn-custom btn-edit">Edit</button>
+                                                    <a href="${pageContext.request.contextPath}/updateQuestion?id=${questions.questionID}" class="btn btn-custom btn-edit">Edit</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>

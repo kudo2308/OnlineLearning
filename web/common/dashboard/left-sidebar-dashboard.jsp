@@ -36,6 +36,9 @@
                         <li>
                             <a href="addLesson" class="ttr-material-button"><span class="ttr-label">Add Lesson</span></a>
                         </li>-->
+                        <li>
+                            <a href="QuizList" class="ttr-material-button"><span class="ttr-label">Quiz List</span></a>
+                        </li>
 
                         <li>
                             <a href="AddQuiz" class="ttr-material-button"><span class="ttr-label">Add Quiz</span></a>

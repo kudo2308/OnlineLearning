@@ -86,6 +86,35 @@ public class QuestionDAO {
         }
         return null;
     }
+    
+    public boolean updateQuestion(Question question) {
+        String query = "UPDATE Question SET content = ?, pointPerQuestion = ?, quizID = ?, status = ?, updatedAt = ? WHERE questionID = ?";
+        try {
+            connection = new DBContext().getConnection();
+            // Kiểm tra kết nối
+            if (connection == null) {
+                System.out.println("Error: Unable to establish database connection");
+                return false;
+            }
+            
+            ps = connection.prepareStatement(query);
+            ps.setString(1, question.getContent());
+            ps.setInt(2, question.getPointPerQuestion());
+            ps.setInt(3, question.getQuizID());
+            ps.setBoolean(4, question.isStatus());
+            ps.setTimestamp(5, question.getUpdatedAt());
+            ps.setInt(6, question.getQuestionID());
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating question: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeResources();
+        }
+    }
 
     private void closeResources() {
         try {

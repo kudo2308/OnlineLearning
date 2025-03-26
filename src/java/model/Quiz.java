@@ -26,11 +26,13 @@ public class Quiz {
     private double passRate;
     private int totalQuestion;
     private int courseID;
+    private int packageID;
     private boolean status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     // Navigation property
     private Course course;
+    private Packages packages;
 
 }

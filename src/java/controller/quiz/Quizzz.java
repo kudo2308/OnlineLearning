@@ -34,6 +34,6 @@ public class Quizzz extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Handle any POST requests if needed
+       
     }
 }
