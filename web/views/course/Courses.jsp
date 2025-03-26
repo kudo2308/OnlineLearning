@@ -158,6 +158,7 @@
                                                             </ul>
                                                         </div>
                                                         <div class="price">
+                                                            <del>$190</del>
                                                             <h5>${course.price}đ</h5>
                                                         </div>
                                                     </div>

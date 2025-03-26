@@ -91,11 +91,12 @@
                                         </select>
 
                                         <select id="filterStatus" name="status" class="form-control me-2">
-                                            <!--<option value="">All Status</option>-->
+                                            
                                             <!--<option ${status eq 'Draft' ? 'selected' : ""} value="Draft">Draft</option>-->
                                             <option ${status eq 'Pending' ? 'selected' : ""} value="Pending">Pending</option>
+                                            <option value="" ${status eq '' ? 'selected' : ""}>All Status</option>
                                             <option ${status eq 'Public' ? 'selected' : ""} value="Public">Public</option>
-                                            <option ${status eq 'Rejected' ? 'selected' : ""} value="Rejected">Rejected</option>
+                                            <!--<option ${status eq 'Rejected' ? 'selected' : ""} value="Rejected">Rejected</option>-->
                                             <!--<option ${status eq 'Blocked' ? 'selected' : ""} value="Blocked">Blocked</option>-->
                                         </select>
 
@@ -132,8 +133,12 @@
                                                 <td>${courses.status}</td>
                                                 <td>
                                                     <c:if test="${courses.status eq 'Pending'}">
-                                                    <a href="confirm-request?courseId=${courses.courseID}&action=1" class="btn btn-success" style="background-color: green">Approve</a>
-                                                    <a href="confirm-request?courseId=${courses.courseID}&action=0" class="btn btn-danger" style="background-color: red">Reject</a></c:if>
+                                                    <a href="confirm-request?courseId=${courses.courseID}&action=1" class="btn btn-success" style="background-color: green;color: white">Approve</a>
+                                                    <a href="confirm-request?courseId=${courses.courseID}&action=0" class="btn btn-danger" style="background-color: red;color: white">Reject</a></c:if>
+                                                     <c:if test="${courses.status eq 'Public'}">
+                                                    <a href="confirm-request?courseId=${courses.courseID}&action=2" class="btn btn-danger" style="background-color: red;color: white">Delete</a>
+                                                     </c:if> 
+                                                    <a href="lesson?courseId=${courses.courseID}" class="btn btn-primary" style="background-color: blue;color: white">View</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>

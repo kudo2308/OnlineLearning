@@ -37,6 +37,27 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+    
+    public List<User> getAllExpert() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM Account a JOIN Role r ON a.RoleID = r.RoleID Where r.RoleName = 'Expert' ORDER BY a.roleID ASC";
+        try (PreparedStatement st = connection.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                list.add(new User(
+                        rs.getInt("userID"),
+                        rs.getInt("roleID"),
+                        rs.getInt("status"),
+                        rs.getString("fullName"),
+                        rs.getString("userName"),
+                        rs.getString("password"),
+                        rs.getString("email")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching users: " + e.getMessage());
+        }
+        return list;
+    }
 
     // Lấy thông tin một user theo username
     public User getUserByUserName(String userName) {

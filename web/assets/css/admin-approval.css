@@ -1,0 +1,212 @@
+/* Main Layout Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Container styling */
+.container.mt-5 {
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 80px !important;
+    margin-bottom: 40px;
+    max-width: 1200px;
+}
+
+/* Page title */
+h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* Alerts styling */
+.alert {
+    border-radius: 5px;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-left: 5px solid;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-left-color: #28a745;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-left-color: #dc3545;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    color: #856404;
+}
+
+/* Table styling */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    background-color: transparent;
+    border-collapse: collapse;
+}
+
+.table-bordered {
+    border: 1px solid #e9ecef;
+}
+
+.table th, 
+.table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    transition: all 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Button styling */
+.btn {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s;
+    border: none;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+}
+
+/* Empty state styling */
+p {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px dashed #dee2e6;
+}
+
+/* Sidebar adjustment (assuming sidebar has fixed position) */
+@media (min-width: 992px) {
+    .container.mt-5 {
+        margin-left: 280px;
+        width: calc(100% - 310px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .container.mt-5 {
+        margin-top: 100px !important;
+        padding: 20px;
+    }
+    
+    .table th, 
+    .table td {
+        padding: 10px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .btn {
+        margin-bottom: 5px;
+        display: block;
+        width: 100%;
+    }
+    
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+/* Status styling */
+td:nth-child(3) {
+    font-weight: 600;
+}
+
+td:nth-child(3):contains("Pending") {
+    color: #fd7e14;
+}
+
+td:nth-child(3):contains("Approved") {
+    color: #28a745;
+}
+
+td:nth-child(3):contains("Rejected") {
+    color: #dc3545;
+}
+
+/* Date styling */
+td:nth-child(4) {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
