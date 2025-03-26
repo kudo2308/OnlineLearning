@@ -93,7 +93,7 @@ public class PostListController extends HttpServlet {
         }
 
         int page = 1; // Mặc định trang đầu tiên
-        int recordsPerPage = 7; // Số bài viết mỗi trang
+        int recordsPerPage = 4; // Số bài viết mỗi trang
 
         // Lấy tham số từ request
         String pageParam = request.getParameter("page");
