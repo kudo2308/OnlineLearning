@@ -1,15 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import DAO.CartDAO;
 import DAO.CartItemDAO;
+import DAO.CouponDAO;
 import DAO.CourseDAO;
 import DAO.LoginDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,12 +15,8 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import model.Account;
 import model.Cart;
-import model.CartItem;
+import model.Coupon;
 
-/**
- *
- * @author ASUS
- */
 @WebServlet(name = "CartController", urlPatterns = {"/cart"})
 public class CartController extends HttpServlet {
 
@@ -33,8 +25,8 @@ public class CartController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
-        
-         String error = request.getParameter("error");
+
+        String error = request.getParameter("error");
         String success = request.getParameter("success");
         if (success != null) {
             request.setAttribute("success", success);
@@ -64,6 +56,8 @@ public class CartController extends HttpServlet {
             cartDAO.create(acc.getUserID());
             cart = new Cart();
         }
+        
+        // Xử lý action=count riêng biệt
         if ("count".equals(request.getParameter("action"))) {
             Integer totalCourses = (Integer) session.getAttribute("totalCourse");
             totalCourses = (totalCourses != null) ? totalCourses : 0;
@@ -73,6 +67,33 @@ public class CartController extends HttpServlet {
             return;
         }
 
+        // Xử lý coupon riêng biệt
+        String couponCode = request.getParameter("couponCode");
+        if (couponCode != null && !couponCode.isEmpty()) {
+            double discount = 0;
+            String discountType = "percentage"; // Mặc định là giảm theo phần trăm
+            boolean successJs = false;
+
+            CouponDAO couponDAO = new CouponDAO();
+            Coupon coupon = couponDAO.getCouponByCode(couponCode);
+
+            if (coupon != null && coupon.getStatus()) {
+                // Mã coupon hợp lệ
+                discount = coupon.getDiscountValue();
+                discountType = coupon.getDiscountType();
+                successJs = true;
+            }
+
+            // Chỉ trả về JSON và không forward đến JSP
+            response.setContentType("application/json");
+            String jsonResponse = "{\"success\": " + successJs + 
+                                  ", \"discount\": " + discount + 
+                                  ", \"discountType\": \"" + discountType + "\"}";
+            response.getWriter().write(jsonResponse);
+            return; // Quan trọng: Dừng xử lý ở đây
+        }
+
+        // Nếu không phải request xử lý coupon hoặc count, hiển thị trang giỏ hàng
         session.setAttribute("totalCourse", totalCourse);
         request.setAttribute("cart", cart.getItems());
         request.getRequestDispatcher("views/user/Cart.jsp").forward(request, response);
@@ -108,6 +129,7 @@ public class CartController extends HttpServlet {
             cartDAO.create(acc.getUserID());
             cart = new Cart();
         }
+        
         switch (action) {
             case "add" -> {
                 CartItemDAO itemDAO = new CartItemDAO();
@@ -121,7 +143,6 @@ public class CartController extends HttpServlet {
                 } else {
                     cartDAO.add(courseDAO.getCourseById(courseId), cart);
                 }
-
             }
 
             case "delete" -> {

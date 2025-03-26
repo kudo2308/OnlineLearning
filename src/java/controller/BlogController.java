@@ -5,6 +5,7 @@
 package controller;
 
 import DAO.BlogDAO;
+import DAO.BlogRequestDAO;
 import DAO.CategoryDAO;
 import DAO.LoginDAO;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import model.Account;
 import model.Blog;
+import model.BlogRequest;
 import model.Category;
 
 /**
@@ -192,10 +194,8 @@ public class BlogController extends HttpServlet {
         if (projectRoot.contains("build")) {
             projectRoot = projectRoot.substring(0, projectRoot.indexOf("build"));
         }
-        System.out.println("Project root after removing 'build': " + projectRoot);
 
         String uploadPath = projectRoot + File.separator + UPLOAD_DIRECTORY;
-        System.out.println("Real Path: " + getServletContext().getRealPath("/assets/images/blog/recent-blog"));
 
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
@@ -213,20 +213,62 @@ public class BlogController extends HttpServlet {
         blog.setAuthorId(acc.getUserID());
         blog.setCategoryID(categoryId);
         blog.setImgUrl(imageUrl);
-        if (status.equals("true")) {
-            blog.setStatus("Public");
+
+        // Nếu chọn Public, set trạng thái Pending, nếu chọn Private thì set Private
+        if ("true".equals(status)) {
+            blog.setStatus("Pending"); // Nếu chọn Public, set trạng thái Pending
         } else {
-            blog.setStatus("Private");
+            blog.setStatus("Private"); // Nếu chọn Private, giữ nguyên Private
         }
 
         BlogDAO blogDAO = new BlogDAO();
         boolean isAdded = blogDAO.addBlog(blog);
 
         if (isAdded) {
-            response.sendRedirect(request.getContextPath() + "/Blog?success=true");
+            // Lấy BlogID sau khi blog được thêm vào thành công
+            int blogId = blog.getBlogId(); // Lấy ID của blog đã được thêm
+
+            if ("Pending".equals(blog.getStatus())) {
+                // Sau khi blog được thêm vào với trạng thái Pending, gửi yêu cầu phê duyệt
+                BlogRequest requestBlog = new BlogRequest();
+                requestBlog.setBlogId(blogId);  // Sử dụng BlogID đã lấy
+                requestBlog.setAdminId(acc.getUserID());  // ID admin của người đăng nhập
+                requestBlog.setStatus("Pending");
+
+                BlogRequestDAO blogRequestDAO = new BlogRequestDAO();
+                boolean requestSent = blogRequestDAO.sendApprovalRequest(requestBlog);
+
+                if (requestSent) {
+                    response.sendRedirect(request.getContextPath() + "/Blog?success=true");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/Blog?error=addFailed");
+                }
+            } else {
+                // Nếu trạng thái là Private, không cần gửi yêu cầu phê duyệt
+                response.sendRedirect(request.getContextPath() + "/Blog?success=true");
+            }
         } else {
             response.sendRedirect(request.getContextPath() + "/Blog?error=addFailed");
         }
+    }
+
+    public static void main(String[] args) {
+        Blog blog = new Blog();
+        blog.setTitle("title");
+        blog.setContent("content");
+        blog.setAuthorId(3);
+        blog.setCategoryID(1);
+        blog.setImgUrl("haha");
+        blog.setStatus("Public");
+        BlogDAO blogDAO = new BlogDAO();
+        boolean isAdded = blogDAO.addBlog(blog);
+        System.out.println(isAdded);
+        if (isAdded) {
+            // Lấy BlogID sau khi blog được thêm vào thành công
+            int blogId = blog.getBlogId(); // Lấy ID của blog đã được thêm
+            System.out.println(blogId);
+        }
+        
     }
 
 }

@@ -99,7 +99,7 @@
                                 <br>
                                 <a href="#" class="expert-name">${recentCourses.expert.fullName}</a>
                                 <p class="des-course">${recentCourses.description}$</p>
-                                <span>${recentCourses.price}đ (${recentCourses.register})</span>
+                                <span>${recentCourses.price}đ <del>190,000đ</del> (${recentCourses.register})</span>
 
                             </li>
                         </c:forEach>

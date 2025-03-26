@@ -222,27 +222,28 @@
                                 <h4>Instructor</h4>
                                 <!-- FORM VIẾT COMMENT -->
                                 <div class="review-form" style="margin-top: 40px;">
-                                    <h5>Viết nhận xét của bạn</h5>
+                                    <h5>Comment:</h5>
 
                                     <form action="${pageContext.request.contextPath}/coursedetail" method="post">
                                         <input type="hidden" name="courseId" value="${course.courseID}" />
                                         <div class="form-group">
-                                            <label for="rating">Chọn đánh giá:</label>
+                                            <label for="rating">Choose rating:</label>
                                             <select class="form-control" name="rating" required>
-                                                <option value="5">⭐⭐⭐⭐⭐ - Tuyệt vời</option>
-                                                <option value="4">⭐⭐⭐⭐ - Tốt</option>
-                                                <option value="3">⭐⭐⭐ - Trung bình</option>
-                                                <option value="2">⭐⭐ - Kém</option>
-                                                <option value="1">⭐ - Rất tệ</option>
+                                                <option value="5">⭐⭐⭐⭐⭐ - Excellent!</option>
+                                                <option value="4">⭐⭐⭐⭐ - Good</option>
+                                                <option value="3">⭐⭐⭐ - Medium</option>
+                                                <option value="2">⭐⭐ - Bad</option>
+                                                <option value="1">⭐ - So bad</option>
                                             </select>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="content">Nội dung bình luận:</label>
-                                            <textarea class="form-control" name="content" rows="4" placeholder="Viết bình luận của bạn..." required></textarea>
+                                        <div class="form-group" >
+                                            <label for="content">Comment:</label>
+                                            <textarea class="form-control" name="content" rows="4" placeholder="Write comment..." required></textarea>
+                                            <button style="margin-bottom: 10px; margin-top: 10px;" type="submit" class="btn btn-primary">Comment</button>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+
                                     </form>
                                 </div>
 
@@ -303,14 +304,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <p>Rating Map: ${ratingDistribution}</p>
-                            <p>Total Ratings: ${totalRatings}</p>
-                            <p>Average Rating: ${averageRating}</p>
-
-
-
-
                         </div>
 
                     </div>
