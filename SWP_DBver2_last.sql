@@ -257,7 +257,7 @@ CREATE TABLE ExpertPayout (
     Amount DECIMAL(10,2) NOT NULL,
     BankAccountNumber NVARCHAR(255) NOT NULL,
     BankName NVARCHAR(255) NOT NULL,
-    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'sucessful','withdrawn', 'failed')),
+    Status NVARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending','processed', 'successful','withdrawn', 'failed')),
     RequestedAt DATETIME DEFAULT GETDATE(),
     ProcessedAt DATETIME NULL
 );
@@ -271,6 +271,67 @@ CREATE TABLE ExpertBankInfo (
     FOREIGN KEY (ExpertID) REFERENCES Account(UserID)
 );
 
+
+CREATE TABLE AdminWallet (
+    WalletID INT IDENTITY(1,1) PRIMARY KEY,
+    AdminID INT NOT NULL,
+    Balance DECIMAL(18, 2) DEFAULT 0.00,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (AdminID) REFERENCES Account(UserID)
+);
+
+-- Bảng lưu trữ lịch sử giao dịch ví
+CREATE TABLE WalletTransaction (
+     TransactionID INT IDENTITY(1,1) PRIMARY KEY,
+    Amount DECIMAL(18, 2) NOT NULL,
+    TransactionType NVARCHAR(50) CHECK (TransactionType IN ('deposit', 'withdraw', 'commission', 'payout', 'refund', 'other')) NOT NULL,
+	BankTransactionID NVARCHAR(255) NULL,
+    Description NVARCHAR(255),
+    SenderID INT,
+    ReceiverID INT,
+    RelatedOrderID INT NULL,
+    RelatedPayoutID INT NULL,
+    Status NVARCHAR(20) DEFAULT 'completed' CHECK (Status IN ('pending', 'completed', 'failed', 'cancelled')),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    ProcessedAt DATETIME NULL,
+	ProcessedBy INT null,
+    FOREIGN KEY (SenderID) REFERENCES Account(UserID),
+    FOREIGN KEY (ReceiverID) REFERENCES Account(UserID),
+    FOREIGN KEY (RelatedOrderID) REFERENCES [Order](OrderID),
+    FOREIGN KEY (RelatedPayoutID) REFERENCES ExpertPayout(PayoutID),
+    FOREIGN KEY (ProcessedBy) REFERENCES Account(UserID)
+);
+
+-- Bảng cấu hình hoa hồng cho admin
+CREATE TABLE CommissionSetting (
+    SettingID INT IDENTITY(1,1) PRIMARY KEY,
+    CommissionRate DECIMAL(5, 2) DEFAULT 0.20, -- Tỷ lệ mặc định là 20%
+    CourseType NVARCHAR(50) DEFAULT 'all', -- Loại khóa học áp dụng (hoặc 'all' cho tất cả)
+    EffectiveFrom DATETIME DEFAULT GETDATE(),
+    EffectiveTo DATETIME NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    Status BIT DEFAULT 1,
+    FOREIGN KEY (CreatedBy) REFERENCES Account(UserID)
+);
+
+-- Bảng báo cáo tài chính theo tháng/năm
+CREATE TABLE FinancialReport (
+    ReportID INT IDENTITY(1,1) PRIMARY KEY,
+    ReportMonth INT NOT NULL,
+    ReportYear INT NOT NULL,
+    TotalIncome DECIMAL(18, 2) DEFAULT 0.00,
+    TotalPayout DECIMAL(18, 2) DEFAULT 0.00,
+    TotalProfit DECIMAL(18, 2) DEFAULT 0.00,
+    TotalActiveCourses INT DEFAULT 0,
+    TotalNewUsers INT DEFAULT 0,
+    GeneratedAt DATETIME DEFAULT GETDATE(),
+    GeneratedBy INT NOT NULL,
+    FOREIGN KEY (GeneratedBy) REFERENCES Account(UserID),
+    CONSTRAINT UQ_MonthYearReport UNIQUE (ReportMonth, ReportYear)
+);
 -- Bảng quản lý thông báo
 CREATE TABLE Notification (
     NotificationID INT IDENTITY(1,1) PRIMARY KEY,
@@ -330,64 +391,30 @@ CREATE TABLE MessageRead (
     CONSTRAINT UQ_MessageUser UNIQUE (MessageID, UserID)
 );
 
-CREATE TABLE AdminWallet (
-    WalletID INT IDENTITY(1,1) PRIMARY KEY,
-    AdminID INT NOT NULL,
-    Balance DECIMAL(18, 2) DEFAULT 0.00,
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (AdminID) REFERENCES Account(UserID)
+CREATE TABLE Promotion (
+    PromotionID INT IDENTITY(1,1) PRIMARY KEY,  -- ID của chương trình khuyến mãi
+    PromotionCode NVARCHAR(50) NOT NULL UNIQUE,  -- Mã khuyến mãi
+    DiscountType NVARCHAR(20) CHECK (DiscountType IN ('percentage', 'fixed')),  -- Loại giảm giá (phần trăm hoặc giá trị cố định)
+    DiscountValue DECIMAL(10, 2) NOT NULL,  -- Giá trị giảm giá
+    Status BIT DEFAULT 1,  -- Trạng thái (1: hoạt động, 0: không hoạt động)
+    CategoryID INT NULL,  -- Mã danh mục (nếu áp dụng giảm giá cho một danh mục)
+    ExpertID INT NULL,  -- Mã giảng viên (nếu áp dụng giảm giá cho một giảng viên)
+    CourseID INT NULL,  -- Mã khóa học (nếu áp dụng giảm giá cho một khóa học cụ thể)
+    CreatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian tạo chương trình khuyến mãi
+    UpdatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian cập nhật chương trình khuyến mãi
+    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),  -- Liên kết với bảng Category
+    FOREIGN KEY (ExpertID) REFERENCES Account(UserID),  -- Liên kết với bảng Account (Giảng viên)
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)  -- Liên kết với bảng Course
 );
 
--- Bảng lưu trữ lịch sử giao dịch ví
-CREATE TABLE WalletTransaction (
-    TransactionID INT IDENTITY(1,1) PRIMARY KEY,
-    Amount DECIMAL(18, 2) NOT NULL,
-    TransactionType NVARCHAR(50) CHECK (TransactionType IN ('deposit', 'withdraw', 'commission', 'payout', 'refund', 'other')) NOT NULL,
-    Description NVARCHAR(255),
-    SenderID INT,
-    ReceiverID INT,
-    RelatedOrderID INT NULL,
-    RelatedPayoutID INT NULL,
-    Status NVARCHAR(20) DEFAULT 'completed' CHECK (Status IN ('pending', 'completed', 'failed', 'cancelled')),
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    ProcessedAt DATETIME NULL,
-    ProcessedBy INT NULL,
-    FOREIGN KEY (SenderID) REFERENCES Account(UserID),
-    FOREIGN KEY (ReceiverID) REFERENCES Account(UserID),
-    FOREIGN KEY (RelatedOrderID) REFERENCES [Order](OrderID),
-    FOREIGN KEY (RelatedPayoutID) REFERENCES ExpertPayout(PayoutID),
-    FOREIGN KEY (ProcessedBy) REFERENCES Account(UserID)
-);
-
--- Bảng cấu hình hoa hồng cho admin
-CREATE TABLE CommissionSetting (
-    SettingID INT IDENTITY(1,1) PRIMARY KEY,
-    CommissionRate DECIMAL(5, 2) DEFAULT 0.20, -- Tỷ lệ mặc định là 20%
-    CourseType NVARCHAR(50) DEFAULT 'all', -- Loại khóa học áp dụng (hoặc 'all' cho tất cả)
-    EffectiveFrom DATETIME DEFAULT GETDATE(),
-    EffectiveTo DATETIME NULL,
-    CreatedBy INT NOT NULL,
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE(),
-    Status BIT DEFAULT 1,
-    FOREIGN KEY (CreatedBy) REFERENCES Account(UserID)
-);
-
--- Bảng báo cáo tài chính theo tháng/năm
-CREATE TABLE FinancialReport (
-    ReportID INT IDENTITY(1,1) PRIMARY KEY,
-    ReportMonth INT NOT NULL,
-    ReportYear INT NOT NULL,
-    TotalIncome DECIMAL(18, 2) DEFAULT 0.00,
-    TotalPayout DECIMAL(18, 2) DEFAULT 0.00,
-    TotalProfit DECIMAL(18, 2) DEFAULT 0.00,
-    TotalActiveCourses INT DEFAULT 0,
-    TotalNewUsers INT DEFAULT 0,
-    GeneratedAt DATETIME DEFAULT GETDATE(),
-    GeneratedBy INT NOT NULL,
-    FOREIGN KEY (GeneratedBy) REFERENCES Account(UserID),
-    CONSTRAINT UQ_MonthYearReport UNIQUE (ReportMonth, ReportYear)
+CREATE TABLE Coupon (
+    CouponID INT IDENTITY(1,1) PRIMARY KEY,
+    CouponCode NVARCHAR(50) NOT NULL UNIQUE,  -- Mã coupon
+    DiscountType NVARCHAR(20) CHECK (DiscountType IN ('percentage', 'fixed')), -- Loại giảm giá (phần trăm hoặc cố định)
+    DiscountValue DECIMAL(10, 2) NOT NULL,  -- Giá trị giảm giá
+    Status BIT DEFAULT 1,  -- Trạng thái (1: hoạt động, 0: không hoạt động)
+    CreatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian tạo coupon
+    UpdatedAt DATETIME DEFAULT GETDATE()  -- Thời gian cập nhật coupon
 );
 -- Insert roles
 INSERT INTO Role (RoleName) VALUES
@@ -412,6 +439,9 @@ INSERT INTO Category (Name, Description) VALUES
 INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image, Status) 
 VALUES
 ('System Admin', 'Administrator account', 'VmszaVktKzZlKmRlJHMuYWRtaW4xMjM=', 'admin@onlinelearning.com', 1, '1990-01-01', '/assets/images/avatar/pic1.jpg', 1);
+
+INSERT INTO AdminWallet (AdminID, Balance) 
+VALUES (1, 0.00);
 
 -- Insert a sample expert account (password: expert123)
 INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image, Status) 
@@ -1299,3 +1329,9 @@ VALUES
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student2@onlinelearning.com'), 
  (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Complete C++ Programming: From Beginner to Advanced'), 
  2750000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
+  INSERT INTO Coupon (CouponCode, DiscountType, DiscountValue, Status, CreatedAt, UpdatedAt)
+VALUES 
+    ('DISCOUNT10', 'percentage', 10.00, 1, GETDATE(), GETDATE()),  -- Coupon giảm 10% 
+    ('SAVE50', 'fixed', 50.00, 1, GETDATE(), GETDATE()),           -- Coupon giảm 50 đơn vị tiền tệ
+    ('SUMMER20', 'percentage', 20.00, 1, GETDATE(), GETDATE()),    -- Coupon giảm 20%
+    ('WELCOME100', 'fixed', 100.00, 1, GETDATE(), GETDATE());      -- Coupon giảm 100 đơn vị tiền tệ
