@@ -61,7 +61,10 @@ public class ConfirmRequestController extends HttpServlet {
                course.setStatus("Public");
            }else if(action.equals("0")){
                //reject
-                course.setStatus("Rejected");
+                course.setStatus("Draft");
+           }else if(action.equals("2")){
+               //blocked
+                course.setStatus("Blocked");
            }
 
             if (courseDAO.UpdateCourse(course)) {

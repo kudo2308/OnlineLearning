@@ -36,16 +36,20 @@
                         <li>
                             <a href="addLesson" class="ttr-material-button"><span class="ttr-label">Add Lesson</span></a>
                         </li>-->
+                        <li>
+                            <a href="QuizList" class="ttr-material-button"><span class="ttr-label">Quiz List</span></a>
+                        </li>
 
                         <li>
                             <a href="AddQuiz" class="ttr-material-button"><span class="ttr-label">Add Quiz</span></a>
                         </li>
+                         <li>
+                            <a href="manageQuestion" class="ttr-material-button"><span class="ttr-label">Question List</span></a>
+                        </li>
                         <li>
                             <a href="AddQuestion" class="ttr-material-button"><span class="ttr-label">Add Question</span></a>
                         </li>
-                        <li>
-                            <a href="manageQuestion" class="ttr-material-button"><span class="ttr-label">Question List</span></a>
-                        </li>
+                       
                     </ul>
                 </li>      
                 <li class="ttr-seperate"></li>

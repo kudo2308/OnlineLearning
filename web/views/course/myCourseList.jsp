@@ -404,6 +404,7 @@
             background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
             color: white;
             box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            
         }
 
         /* Responsive Design */
@@ -636,7 +637,7 @@
                 </form>
             </div>
 
-            <div class="search-box">
+<!--            <div class="search-box">
                 <div class="sidebar-title">
                     <i class="fas fa-sort"></i>
                     <span>Sort By</span>
@@ -672,7 +673,7 @@
                     <input type="hidden" name="search" value="${searchQuery}">
                     <input type="hidden" name="category" value="${categoryFilter}">
                 </form>
-            </div>
+            </div>-->
         </div>
 
         <!-- Main Content -->

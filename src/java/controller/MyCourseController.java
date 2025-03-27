@@ -3,6 +3,7 @@ package controller;
 import DAO.CategoryDAO;
 import DAO.CourseDAO;
 import DAO.MyCourseDAO;
+import DAO.RegistrationDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -26,8 +27,9 @@ public class MyCourseController extends HttpServlet {
         try {
             MyCourseDAO myCourseDAO = new MyCourseDAO();
             CategoryDAO categoryDAO = new CategoryDAO();
-            
+            RegistrationDAO registrationDAO = new RegistrationDAO();
             // Get search and filter parameters
+            
             String searchQuery = request.getParameter("search");
             String categoryFilter = request.getParameter("category");
             String sortBy = request.getParameter("sort"); // price, date, name
@@ -45,7 +47,7 @@ public class MyCourseController extends HttpServlet {
             }
 
             // Calculate offset
-            int recordsPerPage = 8;
+            int recordsPerPage = 2;
             int offset = (page - 1) * recordsPerPage;
 
             // Get user information from session
@@ -74,14 +76,13 @@ public class MyCourseController extends HttpServlet {
             } else {
                 courseLst = myCourseDAO.getCoursesByStudent(userId, offset, recordsPerPage);
             }
-        
+        // 1
             List<CourseWithCategory> lst = new ArrayList<>();
             for (Course course : courseLst) {
                 Category category = categoryDAO.findById(course.getCategoryID());
                 lst.add(new CourseWithCategory(course, category));
             }
 
-            // Get total records for pagination based on filters
             int totalRecords;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 totalRecords = myCourseDAO.getTotalEnrolledSearchResults(searchQuery, userId);
@@ -90,7 +91,6 @@ public class MyCourseController extends HttpServlet {
             } else {
                 totalRecords = myCourseDAO.getTotalEnrolledCourses(userId);
             }
-
             // Calculate total pages
             int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
 

@@ -99,9 +99,9 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Title</th>
                                             <th>Course</th>
                                             <th>Package</th>
-                                            <th>Title</th>
                                             <th>Lesson Type</th>
                                             <th>Content</th>
                                             <th>Status</th>
@@ -110,12 +110,11 @@
                                     </thead>
                                     <tbody id="courseTableBody">
                                         <c:forEach items="${lessons}" var="p">
-
                                             <tr>
                                                 <td>${p.lessonID}</td>
+                                                <td>${p.title}</td>
                                                 <td>${p.course.title}</td>
                                                 <td>${p.packages.name}</td>
-                                                <td>${p.title}</td>
                                                 <td>${p.lessonType}</td>
                                                 <td>${p.content}</td>
                                                 <td>${p.status == true ? "Active" : "Blocked"}</td>
