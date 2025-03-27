@@ -50,11 +50,11 @@
                 </li>  
 
                 <li class="ttr-seperate"></li>
-
+                
                 <li>
-                    <a href="${pageContext.request.contextPath}/admin/promotion" class="ttr-material-button">
+                    <a href="${pageContext.request.contextPath}/promotionList" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
-                        <span class="ttr-label"> Promotion </span>
+                        <span class="ttr-label">Promotion</span>
                     </a>
                 </li>  
 

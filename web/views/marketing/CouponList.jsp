@@ -26,7 +26,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
-        <title>My Blog</title>
+        <title>Coupon List</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/CouponStyle.css" />
         <link
             rel="stylesheet"
@@ -97,18 +97,29 @@
                             <button class="close-btn" onclick="closeAlert()">×</button>
                         </div>
                     </c:if>
-                    <form id="filter-form" action="myblog" method="get">
-                        <select name="categoryId" class="form-control2" onchange="document.getElementById('filter-form').submit();">
-                            <option value="0" ${selectedCategory == 0 ? 'selected' : ''}>All Categories</option>
-                            <c:forEach var="category" items="${categories}">
-                                <option value="${category.categoryID}" ${selectedCategory == category.categoryID ? 'selected' : ''}>
-                                    ${category.name}
-                                </option>
-                            </c:forEach>
-                        </select>
+                    <button class="add-coupon-btn" onclick="showAddForm()">
+                        <span class="icon">+</span> Add Coupon
+                    </button>
+                    <form id="filter-form" action="couponList" method="get">
+                        <div class="filter-list">
+                            <!-- Filter by Discount Type -->
+                            <select name="discountType" class="form-control2" onchange="document.getElementById('filter-form').submit();">
+                                <option value="">All Discount Types</option>
+                                <option value="percentage" ${discountType == 'percentage' ? 'selected' : ''}>Percentage</option>
+                                <option value="fixed" ${discountType == 'fixed' ? 'selected' : ''}>Fixed</option>
+                            </select>
+
+                            <!-- Filter by Status -->
+                            <select name="status" class="form-control2" onchange="document.getElementById('filter-form').submit();">
+                                <option value="">All Status</option>
+                                <option value="true" ${status == 'true' ? 'selected' : ''}>Active</option>
+                                <option value="false" ${status == 'false' ? 'selected' : ''}>Inactive</option>
+                            </select>
+                        </div>
+
                         <div class="filter-search">
                             <div class="input-group">
-                                <input name="search" type="text" class="form-control" placeholder="Search blogs" value="${searchKeyword}">
+                                <input name="search" type="text" class="form-control" placeholder="Search coupons" value="${searchKeyword}">
                             </div>
                         </div>
                     </form>
@@ -224,6 +235,45 @@
             </div>
         </div>
 
+        <!-- Modal for adding coupon -->
+        <div id="addForm" class="modal" style="display: none;">
+            <div class="container-post-blog">
+                <span class="close" onclick="closeAddForm()">&times;</span>
+                <h2>Add Coupon</h2>
+                <form action="couponList" method="POST">
+                    <input type="hidden" name="action" value="add">
+
+                    <!-- Coupon Code -->
+                    <label>Coupon Code:</label>
+                    <input type="text" name="couponCode" required>
+
+                    <!-- Discount Type -->
+                    <label>Discount Type:</label>
+                    <br>
+                    <select id="addDisCountType" name="discountType">
+                        <option value="percentage">Percentage</option>
+                        <option value="fixed">Fixed</option>
+                    </select>
+                    <br>
+
+                    <!-- Discount Value -->
+                    <label>Discount Value:</label>
+                    <input type="number" name="discountValue" required>
+
+                    <!-- Status -->
+                    <label> Status:</label>
+                        <br>
+                        <select id="addDisCountType" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+
+                        <!-- Submit Button -->
+                        <button class="submit-but" type="submit">Add Coupon</button>
+                </form>
+            </div>
+        </div>
+
         <script>
             function showEditForm(couponID, couponCode, discountType, discountValue, status) {
                 const modal = document.getElementById("editForm");
@@ -264,7 +314,27 @@
                 alertBox.classList.add("hide-alert");
                 setTimeout(() => alertBox.style.display = "none", 500);
             }
+
+            // Show Add Coupon modal
+            function showAddForm() {
+                const modal = document.getElementById("addForm");
+                modal.style.display = "flex"; // Show modal on button click
+            }
+
+            // Close Add Coupon modal
+            function closeAddForm() {
+                document.getElementById("addForm").style.display = "none"; // Close modal on close button click
+            }
+
+            // Close modal if clicked outside of the modal
+            window.onclick = function (event) {
+                const modal = document.getElementById("addForm");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
         </script>
+
 
     </body>
 

@@ -81,8 +81,8 @@
                         <c:if test="${not empty message}">
                             <div class="alert2 alert-success" id="alert-box">
                                 <c:choose>
-                                    <c:when test="${message eq 'deleted'}">Blog đã được xóa thành công!</c:when>
-                                    <c:when test="${message eq 'updated'}">Blog đã được cập nhật thành công!</c:when>
+                                    <c:when test="${message eq 'deleted'}">Blog deleted successfully!</c:when>
+                                    <c:when test="${message eq 'updated'}">Blog updated successfully!</c:when>
                                 </c:choose>
                                 <button class="close-btn" onclick="closeAlert()">×</button>
                             </div>
@@ -91,18 +91,19 @@
                         <c:if test="${not empty error}">
                             <div class="alert2 alert-danger" id="alert-box">
                                 <c:choose>
-                                    <c:when test="${error eq 'deleteFailed'}">Không thể xóa blog, thử lại sau!</c:when>
-                                    <c:when test="${error eq 'missingBlogId'}">Không tìm thấy blog ID!</c:when>
-                                    <c:when test="${error eq 'invalidAction'}">Hành động không hợp lệ!</c:when>
-                                    <c:when test="${error eq 'missingTitle'}">Tiêu đề không được để trống!</c:when>
-                                    <c:when test="${error eq 'missingContent'}">Nội dung không được để trống!</c:when>
+                                    <c:when test="${error eq 'updateFailed'}">Update Failed!</c:when>
+                                    <c:when test="${error eq 'deleteFailed'}">Can not delete blog, please try again</c:when>
+                                    <c:when test="${error eq 'missingBlogId'}">Not found blog ID</c:when>
+                                    <c:when test="${error eq 'invalidAction'}">Action is invalid </c:when>
+                                    <c:when test="${error eq 'missingTitle'}">Title have to filled</c:when>
+                                    <c:when test="${error eq 'missingContent'}">Please fill content</c:when>
                                 </c:choose>
                                 <button class="close-btn" onclick="closeAlert()">×</button>
                             </div>
                         </c:if>
 
 
-                        <form id="filter-form" action="myblog" method="get">
+                        <form id="filter-form" action="postList" method="get">
                             <select name="categoryId" class="form-control2" onchange="document.getElementById('filter-form').submit();">
                                 <option value="0" ${selectedCategory == 0 ? 'selected' : ''}>All Categories</option>
                                 <c:forEach var="category" items="${categories}">

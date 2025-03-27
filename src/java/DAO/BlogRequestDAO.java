@@ -142,6 +142,21 @@ public class BlogRequestDAO extends DBContext {
         return request;  // Trả về đối tượng BlogRequest duy nhất
     }
 
+    public boolean deleteBlogRequest(int requestId) {
+        String sql = "DELETE FROM BlogRequest WHERE ID = ?";
+
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, requestId);
+
+            int rowsDeleted = ps.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
         BlogRequestDAO dao = new BlogRequestDAO();
         BlogRequest que = dao.getBlogRequestById(10);

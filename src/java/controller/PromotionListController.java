@@ -24,8 +24,8 @@ import model.Course;
 import model.Promotion;
 import model.User;
 
-@WebServlet(name = "PromotionController", urlPatterns = {"/promotion"})
-public class PromotionController extends HttpServlet {
+@WebServlet(name = "PromotionListController", urlPatterns = {"/promotionList"})
+public class PromotionListController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -50,6 +50,9 @@ public class PromotionController extends HttpServlet {
                     break;
                 case "toggle":
                     togglePromotionStatus(request, response);
+                    break;
+                case "reset":
+                    resetPromotionPrices(request, response);
                     break;
                 case "export":
                     exportPromotionReport(request, response);
@@ -85,7 +88,7 @@ public class PromotionController extends HttpServlet {
         request.setAttribute("courses", courses);
 
         // Forward đến trang JSP
-        request.getRequestDispatcher("/views/marketing/AddPromotion.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/marketing/PromotionManagerment.jsp").forward(request, response);
     }
 
     // Cập nhật phương thức doPost để xử lý thêm mới khuyến mãi
@@ -126,6 +129,8 @@ public class PromotionController extends HttpServlet {
             createPromotion(request, response);
         } else if (action.equals("update")) {
             updatePromotion(request, response);
+        } else if (action.equals("reset")) {
+            resetPromotionPrices(request, response);
         }
     }
 
@@ -193,7 +198,7 @@ public class PromotionController extends HttpServlet {
         request.setAttribute("courseMap", courseMap);
 
         // Forward đến trang JSP
-        request.getRequestDispatcher("/views/marketing/AddPromotion.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/marketing/PromotionManagerment.jsp").forward(request, response);
     }
 
     private void showEditPromotion(HttpServletRequest request, HttpServletResponse response)
@@ -239,7 +244,7 @@ public class PromotionController extends HttpServlet {
         request.setAttribute("applyTo", applyTo);
 
         // Forward đến trang chỉnh sửa
-        request.getRequestDispatcher("/views/marketing/AddPromotion.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/marketing/PromotionManagerment.jsp").forward(request, response);
     }
 
     private void createPromotion(HttpServletRequest request, HttpServletResponse response)
@@ -261,7 +266,7 @@ public class PromotionController extends HttpServlet {
         switch (applyTo) {
             case "category":
                 int categoryID = Integer.parseInt(request.getParameter("categoryID"));
-                promotion.setCategoryID(categoryID);                
+                promotion.setCategoryID(categoryID);
                 break;
             case "expert":
                 int expertID = Integer.parseInt(request.getParameter("expertID"));
@@ -404,7 +409,7 @@ public class PromotionController extends HttpServlet {
         Promotion promotion = promotionDAO.getPromotionById(promotionId);
 
         if (promotion == null) {
-            request.setAttribute("message", "Khuyến mãi không tồn tại.");
+            request.setAttribute("message", "Promotion not exist.");
             request.setAttribute("messageType", "error");
             showPromotionManagement(request, response);
             return;
@@ -413,20 +418,20 @@ public class PromotionController extends HttpServlet {
         // Đảo trạng thái
         promotion.setStatus(!promotion.getStatus());
 
-        boolean success = promotionDAO.updatePromotion(promotion);
+        boolean success = promotionDAO.updateStatusPromotion(promotionId, promotion.getStatus());
 
         if (success) {
-            // Cập nhật giá đã giảm dựa trên trạng thái mới
-            if (promotion.getStatus()) {
-                // Nếu kích hoạt, áp dụng khuyến mãi
-                calculateAndUpdateDiscountedPrices(promotion);
-            } else {
+            // Luôn reset giá khi vô hiệu hóa
+            if (!promotion.getStatus()) {
                 // Nếu vô hiệu hóa, reset giá
                 resetDiscountedPrices(promotion);
+            } else {
+                // Nếu kích hoạt, tính lại giá đã giảm
+                calculateAndUpdateDiscountedPrices(promotion);
             }
 
             String statusMessage = promotion.getStatus() ? "kích hoạt" : "vô hiệu hóa";
-            request.setAttribute("message", "Đã " + statusMessage + " khuyến mãi thành công!");
+            request.setAttribute("message", "Đã " + statusMessage + " khuyến mãi và reset giá thành công!");
             request.setAttribute("messageType", "success");
         } else {
             request.setAttribute("message", "Thay đổi trạng thái khuyến mãi thất bại. Vui lòng thử lại.");
@@ -519,5 +524,29 @@ public class PromotionController extends HttpServlet {
         for (Course course : coursesToReset) {
             courseDAO.resetDiscountedPrice(course.getCourseID());
         }
+    }
+
+    private void resetPromotionPrices(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int promotionId = Integer.parseInt(request.getParameter("id"));
+
+        PromotionDAO promotionDAO = new PromotionDAO();
+        Promotion promotion = promotionDAO.getPromotionById(promotionId);
+
+        if (promotion == null) {
+            request.setAttribute("message", "Khuyến mãi không tồn tại.");
+            request.setAttribute("messageType", "error");
+            showPromotionManagement(request, response);
+            return;
+        }
+
+        // Reset giá các khóa học thuộc khuyến mãi này
+        resetDiscountedPrices(promotion);
+
+        request.setAttribute("message", "Đã reset giá các khóa học về giá ban đầu thành công!");
+        request.setAttribute("messageType", "success");
+
+        // Quay lại trang quản lý
+        showPromotionManagement(request, response);
     }
 }

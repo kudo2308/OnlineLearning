@@ -64,7 +64,7 @@ h2 {
     border: 1px solid #e9ecef;
 }
 
-.table th, 
+.table th,
 .table td {
     padding: 15px;
     vertical-align: middle;
@@ -143,12 +143,12 @@ p {
         margin-top: 100px !important;
         padding: 20px;
     }
-    
-    .table th, 
+
+    .table th,
     .table td {
         padding: 10px;
     }
-    
+
     .btn {
         padding: 6px 12px;
         font-size: 0.875rem;
@@ -161,7 +161,7 @@ p {
         display: block;
         width: 100%;
     }
-    
+
     .table-responsive {
         display: block;
         width: 100%;
@@ -209,4 +209,9 @@ td:nth-child(4) {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.db-breadcrumb{
+    margin-top: 70px;
+    margin-left: 320px;
 }

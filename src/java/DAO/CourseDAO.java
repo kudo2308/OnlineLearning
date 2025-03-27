@@ -30,8 +30,6 @@ public class CourseDAO extends DBContext {
         courses = new ArrayList<>();
     }
 
-    
-
     public Course findCourseById(int id) {
         String sql = "select * from Course co\n"
                 + "join Account a\n"
@@ -111,7 +109,7 @@ public class CourseDAO extends DBContext {
         return list;
     }
 
-   private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
+    private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
 
         int courseId = rs.getInt("CourseID");
         String title = rs.getString("Title");
@@ -122,7 +120,7 @@ public class CourseDAO extends DBContext {
         Timestamp createdAt = rs.getTimestamp("CreatedAt");
         Timestamp updatedAt = rs.getTimestamp("UpdatedAt");
         float price = rs.getFloat("Price");
-
+        double discountPrice = rs.getDouble("DiscountPrice");
         int userId = rs.getInt("UserID");
         String fullName = rs.getString("FullName");
         int roleId = rs.getInt("RoleID");
@@ -134,7 +132,7 @@ public class CourseDAO extends DBContext {
 
         Category category = new Category(categoryId, categoryName);
 
-        return new Course(courseId, title, description, userId, price, roleId, categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, roleId, expert, category);
+        return new Course(courseId, title, description, userId, price, roleId, categoryId, imageUrl, totalLesson, status, createdAt, updatedAt, discountPrice, roleId, expert, category);
     }
 
     public List<Course> findAll() {
@@ -305,6 +303,7 @@ public class CourseDAO extends DBContext {
                           ,c.[Title]
                           ,c.[Description]
                           ,c.[Price]
+                          ,c.[DiscountPrice]
                           ,c.[ExpertID]
                           ,c.[CategoryID]
                           ,c.[ImageUrl]
@@ -332,7 +331,8 @@ public class CourseDAO extends DBContext {
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
-                course.setPrice(rs.getInt("Price"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setDiscountPrice(rs.getDouble("DiscountPrice"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -357,7 +357,7 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-     public int getTotalCourses() {
+    public int getTotalCourses() {
         String sql = "SELECT COUNT(*) FROM Course WHERE Status = 1";
         try (Connection connection = new DBContext().getConnection()) {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -377,6 +377,7 @@ public class CourseDAO extends DBContext {
                           ,c.[Title]
                           ,c.[Description]
                           ,c.[Price]
+                          ,c.[DiscountPrice]
                           ,c.[ExpertID]
                           ,c.[CategoryID]
                           ,c.[ImageUrl]
@@ -402,6 +403,7 @@ public class CourseDAO extends DBContext {
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
                 course.setPrice(rs.getInt("Price"));
+                course.setDiscountPrice(rs.getDouble("DiscountPrice"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -426,7 +428,6 @@ public class CourseDAO extends DBContext {
         }
         return null;
     }
-
 
     public int getTotalCoursesByCategory(int categoryId) {
         String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [CategoryID] = ? AND [Status] = 1";
@@ -512,6 +513,7 @@ public class CourseDAO extends DBContext {
                         c.[Title],
                         c.[Description],
                         c.[Price],
+                        c.[DiscountPrice],
                         c.[ExpertID],
                         c.[CategoryID],
                         c.[ImageUrl],
@@ -528,7 +530,7 @@ public class CourseDAO extends DBContext {
                     LEFT JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
                     WHERE c.[Status] = 'Public'
                     GROUP BY 
-                        c.[CourseID], c.[Title], c.[Description], c.[Price], c.[ExpertID], 
+                        c.[CourseID], c.[Title], c.[Description], c.[Price],c.[DiscountPrice], c.[ExpertID], 
                         c.[CategoryID], c.[ImageUrl], c.[TotalLesson], c.[Status], 
                         c.[CreatedAt], c.[UpdatedAt], a.FullName, cat.Name
                     ORDER BY c.[CreatedAt] DESC;
@@ -542,7 +544,8 @@ public class CourseDAO extends DBContext {
                 course.setCourseID(rs.getInt("CourseID"));
                 course.setTitle(rs.getString("Title"));
                 course.setDescription(rs.getString("Description"));
-                course.setPrice(rs.getInt("Price"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setDiscountPrice(rs.getDouble("DiscountPrice"));
                 course.setExpertID(rs.getInt("ExpertID"));
                 course.setCategoryID(rs.getInt("CategoryID"));
                 course.setImageUrl(rs.getString("ImageUrl"));
@@ -628,7 +631,65 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-     public double getAverageRating(int courseId) {
+    public List<Course> getCoursesByExperts(int expertId) {
+        List<Course> courseList = new ArrayList<>();
+        String sql = """
+                    SELECT c.[CourseID]
+                          ,c.[Title]
+                          ,c.[Description]
+                          ,c.[Price]
+                          ,c.[DiscountPrice]
+                          ,c.[ExpertID]
+                          ,c.[CategoryID]
+                          ,c.[ImageUrl]
+                          ,c.[TotalLesson]
+                          ,c.[Status]
+                          ,c.[CreatedAt]
+                          ,c.[UpdatedAt]
+                          ,a.FullName as ExpertName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Course] c
+                    JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
+                    JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
+                    WHERE c.[ExpertID] = ? AND c.[Status] = 'Public'
+                    ORDER BY c.[CourseID]
+                    """;
+        try (Connection connection = new DBContext().getConnection()) {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, expertId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setPrice(rs.getInt("Price"));
+                course.setDiscountPrice(rs.getDouble("DiscountPrice"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getString("Status"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+
+                Account expert = new Account();
+                expert.setFullName(rs.getString("ExpertName"));
+                course.setExpert(expert);
+
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                course.setCategory(category);
+
+                courseList.add(course);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return courseList;
+    }
+
+    public double getAverageRating(int courseId) {
         String sql = """
                     SELECT AVG(CAST(Rating AS FLOAT)) as AvgRating
                     FROM [dbo].[Feedback]
@@ -766,14 +827,72 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-    public List<Course> searchCourse(String query, int offset, int limit ) {
+    public List<Course> getCoursesByCategories(int categoryId) {
+        List<Course> courseList = new ArrayList<>();
+        String sql = """
+                    SELECT c.[CourseID]
+                          ,c.[Title]
+                          ,c.[Description]
+                          ,c.[Price]
+                          ,c.[ExpertID]
+                          ,c.[DiscountPrice]
+                          ,c.[CategoryID]
+                          ,c.[ImageUrl]
+                          ,c.[TotalLesson]
+                          ,c.[Status]
+                          ,c.[CreatedAt]
+                          ,c.[UpdatedAt]
+                          ,a.FullName as ExpertName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Course] c
+                    JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
+                    JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
+                    WHERE c.[CategoryID] = ? AND c.[Status] = 'Public'
+                    ORDER BY c.[CourseID]
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, categoryId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setPricePackageID(rs.getInt("Price"));
+                course.setDiscountPrice(rs.getDouble("DiscountPrice"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getString("Status"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+
+                Account expert = new Account();
+                expert.setFullName(rs.getString("ExpertName"));
+                course.setExpert(expert);
+
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                course.setCategory(category);
+
+                courseList.add(course);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return courseList;
+    }
+
+    public List<Course> searchCourse(String query, int offset, int limit) {
         List<Course> searchResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE   Title LIKE ? OR Description LIKE ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
-           
+
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
@@ -815,7 +934,7 @@ public class CourseDAO extends DBContext {
         return 0;
     }
 
-      public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
+    public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
         List<Course> categoryResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE CategoryID = ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -934,9 +1053,10 @@ public class CourseDAO extends DBContext {
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Course course = new Course();
-                course.setCourseID(rs.getInt("courseID"));
-                course.setTitle(rs.getString("title"));
-                course.setPrice(rs.getFloat("price"));
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setDiscountPrice(rs.getDouble("DiscountPrice"));
                 courses.add(course);
             }
         } catch (SQLException e) {
@@ -985,6 +1105,7 @@ public class CourseDAO extends DBContext {
         }
         return userCourses;
     }
+
     public boolean checkSellCourse(int courseId) {
         boolean check = false;
         StringBuilder sql = new StringBuilder();
@@ -1010,7 +1131,8 @@ public class CourseDAO extends DBContext {
         }
         return check;
     }
-      public List<Course> findCouseByExpert(int userId) {
+
+    public List<Course> findCouseByExpert(int userId) {
 
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
@@ -1039,5 +1161,117 @@ public class CourseDAO extends DBContext {
             System.out.println(e);
         }
         return courses;
+    }
+
+    public boolean updateCoursePrice(int courseId, double originalPrice, double discountedPrice) {
+        boolean success = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = new DBContext().getConnection();
+            String sql = "UPDATE Course SET Price = ?, DiscountPrice = ? WHERE CourseID = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setDouble(1, originalPrice);
+            statement.setDouble(2, discountedPrice);
+            statement.setInt(3, courseId);
+
+            int rowsAffected = statement.executeUpdate();
+            success = rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in updateCoursePrice: " + e.getMessage());
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * Reset giá đã giảm của khóa học về NULL
+     *
+     * @param courseId ID của khóa học cần reset giá
+     * @return true nếu reset thành công, ngược lại là false
+     */
+    public boolean resetDiscountedPrice(int courseId) {
+        boolean success = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = new DBContext().getConnection();
+            String sql = "UPDATE Course SET DiscountPrice = Price WHERE CourseID = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, courseId);
+
+            int rowsAffected = statement.executeUpdate();
+            success = rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in resetDiscountedPrice: " + e.getMessage());
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * Reset giá đã giảm về bằng giá gốc
+     *
+     * @param courseId ID của khóa học cần reset giá
+     * @return true nếu reset thành công, ngược lại là false
+     */
+    public boolean resetDiscountedPriceToOriginal(int courseId) {
+        boolean success = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = new DBContext().getConnection();
+            String sql = "UPDATE Course SET discounted_price = price WHERE CourseID = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, courseId);
+
+            int rowsAffected = statement.executeUpdate();
+            success = rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in resetDiscountedPriceToOriginal: " + e.getMessage());
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
+        }
+
+        return success;
+    }
+
+    public static void main(String[] args) {
+        CourseDAO dao = new CourseDAO();
+        boolean update = dao.updateCoursePrice(1, 150000, 100000);
     }
 }

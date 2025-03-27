@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import model.Account;
 import model.Coupon;
 
@@ -68,7 +69,7 @@ public class CouponListController extends HttpServlet {
         Object accountObj = session.getAttribute("account");
 
         if (accountObj == null) {
-            response.sendRedirect(request.getContextPath() + "/login?redirect=MyBlog");
+            response.sendRedirect(request.getContextPath() + "/login?redirect=couponList");
             return;
         }
 
@@ -86,11 +87,15 @@ public class CouponListController extends HttpServlet {
             return;
         }
 
-        int page = 1; // Mặc định trang đầu tiên
-        int recordsPerPage = 7; // Số bài viết mỗi trang
+        int page = 1; // Default to the first page
+        int recordsPerPage = 7; // Number of coupons per page
 
-        // Lấy tham số từ request
+        // Get filter parameters from the request
         String pageParam = request.getParameter("page");
+        String discountType = request.getParameter("discountType");
+        String status = request.getParameter("status");
+        String searchKeyword = request.getParameter("search");
+
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
                 page = Integer.parseInt(pageParam);
@@ -98,29 +103,55 @@ public class CouponListController extends HttpServlet {
                 page = 1;
             }
         }
+
         int offset = (page - 1) * recordsPerPage;
 
-        // Lấy thông báo lỗi/thành công từ URL
-        String message = request.getParameter("message");
-        String error = request.getParameter("error");
+        // Retrieve all coupons first
         CouponDAO couponDAO = new CouponDAO();
         List<Coupon> couponList = couponDAO.getAllCoupons();
-        int totalBlogs = couponList.size();
-        int totalPages = (int) Math.ceil((double) totalBlogs / recordsPerPage);
 
-        int toIndex = Math.min(offset + recordsPerPage, totalBlogs);
-        if (offset < totalBlogs) {
+        // Filter based on discountType, status, and searchKeyword
+        if (discountType != null && !discountType.isEmpty()) {
+            couponList = couponList.stream()
+                    .filter(coupon -> coupon.getDiscountType().equalsIgnoreCase(discountType))
+                    .collect(Collectors.toList());
+        }
+
+        if (status != null && !status.isEmpty()) {
+            boolean isActive = Boolean.parseBoolean(status);
+            couponList = couponList.stream()
+                    .filter(coupon -> coupon.getStatus() == isActive)
+                    .collect(Collectors.toList());
+        }
+
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            couponList = couponList.stream()
+                    .filter(coupon -> coupon.getCouponCode().toLowerCase().contains(searchKeyword.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Pagination logic
+        int totalCoupons = couponList.size();
+        int totalPages = (int) Math.ceil((double) totalCoupons / recordsPerPage);
+
+        int toIndex = Math.min(offset + recordsPerPage, totalCoupons);
+        if (offset < totalCoupons) {
             couponList = couponList.subList(offset, toIndex);
         } else {
             couponList = List.of();
         }
 
-        request.setAttribute("message", message);
-        request.setAttribute("error", error);
+        // Set attributes to be used in JSP
+        request.setAttribute("message", request.getParameter("message"));
+        request.setAttribute("error", request.getParameter("error"));
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("currentPage", page);
         request.setAttribute("couponList", couponList);
-        request.getRequestDispatcher("/views/marketting/CouponList.jsp").forward(request, response);
+        request.setAttribute("discountType", discountType);  // Pass the discount type filter
+        request.setAttribute("status", status);              // Pass the status filter
+        request.setAttribute("searchKeyword", searchKeyword);
+
+        request.getRequestDispatcher("/views/marketing/CouponList.jsp").forward(request, response);
     }
 
     /**
@@ -187,6 +218,7 @@ public class CouponListController extends HttpServlet {
         }
     }
 
+    // Xử lý thêm coupon
     private void handleAddCoupon(HttpServletRequest request, HttpServletResponse response, CouponDAO couponDAO) throws IOException {
         String couponCode = request.getParameter("couponCode");
         String discountType = request.getParameter("discountType");

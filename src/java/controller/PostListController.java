@@ -159,7 +159,7 @@ public class PostListController extends HttpServlet {
         request.setAttribute("currentPage", page);
         request.setAttribute("selectedCategory", categoryId);
 
-        request.getRequestDispatcher("/views/marketting/PostList.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/marketing/PostList.jsp").forward(request, response);
     }
 
     @Override

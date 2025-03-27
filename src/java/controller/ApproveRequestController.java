@@ -62,6 +62,7 @@ public class ApproveRequestController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
@@ -108,7 +109,15 @@ public class ApproveRequestController extends HttpServlet {
                 } else if (action.equals("reject")) {
                     success = blogRequestDAO.updateRequestStatus(requestId, "Rejected", acc.getUserID());
 
-                    // Không cần thay đổi trạng thái của Blog nếu bị từ chối
+                    // Cập nhật trạng thái của Blog thành 'Private'
+                    if (success) {
+                        success = blogDAO.updateBlogStatus(blogRequest.getBlogId(), "Private");
+                    }
+                }
+
+                // Xóa yêu cầu BlogRequest sau khi xử lý
+                if (success) {
+                    success = blogRequestDAO.deleteBlogRequest(requestId); // Xóa BlogRequest
                 }
             }
 
@@ -130,7 +139,7 @@ public class ApproveRequestController extends HttpServlet {
         request.setAttribute("requests", list);
 
         // Forward request đến trang JSP để hiển thị kết quả
-        request.getRequestDispatcher("/views/admin/AdminApprovalPage.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/marketing/AdminApprovalPage.jsp").forward(request, response);
     }
 
     @Override

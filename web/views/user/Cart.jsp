@@ -77,8 +77,12 @@
                                 </form>
                             </div>
                             <div class="price">
-                                <p class="discounted">₫${item.course.price}</p>
-                                <p class="original">₫399,000</p>
+                                <p class="discounted">
+                                    <fmt:formatNumber value="${item.course.discountPrice}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                </p>
+                                <p class="original">
+                                    <fmt:formatNumber value="${item.course.price}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                </p>
                             </div>
                             <form class="action-box" action="cart?action=delete&courseId=${item.course.courseID}" method="post">
                                 <button  type="submit">Remove</button>
@@ -86,7 +90,7 @@
 
                             <label class="checkbox-container">
                                 <input type="checkbox" class="course-checkbox" 
-                                       data-price="${item.course.price}" 
+                                       data-price="${item.course.discountPrice}" 
                                        data-course-id="${item.course.courseID}" 
                                        data-expert-id="${item.course.expertID}">
                             </label>

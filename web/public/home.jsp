@@ -1,5 +1,7 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -99,7 +101,11 @@
                                 <br>
                                 <a href="#" class="expert-name">${recentCourses.expert.fullName}</a>
                                 <p class="des-course">${recentCourses.description}$</p>
-                                <span>${recentCourses.price}đ <del>190,000đ</del> (${recentCourses.register})</span>
+                                <span>
+                                    <fmt:formatNumber value="${recentCourses.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ
+                                    <del><fmt:formatNumber value="${recentCourses.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
+                                    (${recentCourses.register})
+                                </span>
 
                             </li>
                         </c:forEach>

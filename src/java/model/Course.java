@@ -31,6 +31,7 @@ public class Course {
     private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private double DiscountPrice;
     
     // Navigation properties
     private int register;

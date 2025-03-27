@@ -2,7 +2,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +28,8 @@
 
         <!-- FAVICONS ICON ============================================= -->
         <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="href="${pageContext.request.contextPath}/assets/images/favicon.png" />
+        <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/assets/images/favicon.png" />
+
 
         <!-- PAGE TITLE HERE ============================================= -->
         <title>EduChamp : Education HTML Template </title>
@@ -85,7 +87,8 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                             <div class="course-detail-bx">
                                 <div class="course-price">
-                                    <h4 class="price">${course.price}đ</h4>
+                                    <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
+                                    <h4 class="price"><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h4>
                                 </div>
                                 <c:choose>
                                     <c:when test="${isRegistered}">

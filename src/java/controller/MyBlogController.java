@@ -5,6 +5,7 @@
 package controller;
 
 import DAO.BlogDAO;
+import DAO.BlogRequestDAO;
 import DAO.CategoryDAO;
 import DAO.LoginDAO;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import model.Account;
 import model.Blog;
+import model.BlogRequest;
 import model.Category;
 
 /**
@@ -116,9 +118,9 @@ public class MyBlogController extends HttpServlet {
                 categoryId = 0;
             }
         }
-        
+
         int offset = (page - 1) * recordsPerPage;
-        
+
         // Lấy thông báo lỗi/thành công từ URL
         String message = request.getParameter("message");
         String error = request.getParameter("error");
@@ -292,12 +294,38 @@ public class MyBlogController extends HttpServlet {
                 blog.setTitle(title);
                 blog.setContent(content);
                 blog.setCategoryID(categoryId);
-                blog.setStatus(status);
+                if ("Public".equals(status)) {
+                    blog.setStatus("Pending"); // Nếu chọn Public, set trạng thái Pending
+                } else {
+                    blog.setStatus("Private"); // Nếu chọn Private, giữ nguyên Private
+                }
+
                 blog.setImgUrl(imageUrl);
 
-                blogDAO.updateBlog(blog);
-                response.sendRedirect(request.getContextPath() + "/myblog?message=updated");
+                boolean update = blogDAO.updateBlog(blog);
+                if (update) {
+                    if ("Pending".equals(blog.getStatus())) {
+                        // Sau khi blog được thêm vào với trạng thái Pending, gửi yêu cầu phê duyệt
+                        BlogRequest requestBlog = new BlogRequest();
+                        requestBlog.setBlogId(blogId);  // Sử dụng BlogID đã lấy
+                        requestBlog.setAdminId(acc.getUserID());  // ID admin của người đăng nhập
+                        requestBlog.setStatus("Pending");
+                        BlogRequestDAO blogRequestDAO = new BlogRequestDAO();
+                        boolean requestSent = blogRequestDAO.sendApprovalRequest(requestBlog);
+                        if (requestSent) {
+                            response.sendRedirect(request.getContextPath() + "/myblog?message=updated");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/myblog?error=updateFailed");
+                        }
+                    } else {
+                        // Nếu trạng thái là Private, không cần gửi yêu cầu phê duyệt
+                        response.sendRedirect(request.getContextPath() + "/myblog?message=updated");
+                    }
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/myblog?error=updateFailed");
+                }
             }
+
             case "delete" -> {
                 boolean deleted = blogDAO.deleteBlog(blogId);
                 if (deleted) {

@@ -69,7 +69,14 @@
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
         <jsp:include page="/public/header-admin.jsp"></jsp:include>
         <jsp:include page="/public/sidebar-admin.jsp"></jsp:include>
-            <div class="container mt-5">
+            <div class="db-breadcrumb">
+                <h4 class="breadcrumb-title">Courses</h4>
+                <ul class="db-breadcrumb-list">
+                    <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i>Home</a></li>
+                <li>Promotion List</li>
+            </ul>
+        </div>
+        <div class="container">
             <c:if test="${param.status == 'success'}">
                 <div class="alert alert-success">Request processed successfully!</div>
             </c:if>

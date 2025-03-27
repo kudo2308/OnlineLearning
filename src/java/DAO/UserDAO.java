@@ -27,7 +27,6 @@ public class UserDAO extends DBContext {
                         rs.getInt("roleID"),
                         rs.getInt("status"),
                         rs.getString("fullName"),
-                        rs.getString("userName"),
                         rs.getString("password"),
                         rs.getString("email")
                 ));
@@ -44,13 +43,12 @@ public class UserDAO extends DBContext {
         try (PreparedStatement st = connection.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 list.add(new User(
-                        rs.getInt("userID"),
-                        rs.getInt("roleID"),
-                        rs.getInt("status"),
-                        rs.getString("fullName"),
-                        rs.getString("userName"),
-                        rs.getString("password"),
-                        rs.getString("email")
+                        rs.getInt("UserID"),
+                        rs.getInt("RoleID"),
+                        rs.getInt("Status"),
+                        rs.getString("FullName"),
+                        rs.getString("Password"),
+                        rs.getString("Email")
                 ));
             }
         } catch (SQLException e) {
@@ -71,7 +69,6 @@ public class UserDAO extends DBContext {
                         rs.getInt("roleID"),
                         rs.getInt("status"),
                         rs.getString("fullName"),
-                        rs.getString("userName"),
                         rs.getString("password"),
                         rs.getString("email")
                 );
@@ -334,7 +331,10 @@ public class UserDAO extends DBContext {
 
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
-        dao.deleteUser("expert100@onlinelearning.com");
+        List<User> user = dao.getAllExpert();
+        for (User user1 : user) {
+            System.out.println(user1.getFullName());
+        }
 
     }
 }

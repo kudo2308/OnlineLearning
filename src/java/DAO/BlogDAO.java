@@ -418,7 +418,7 @@ public class BlogDAO extends DBContext {
         }
     }
 
-    public void updateBlog(Blog blog) {
+    public boolean updateBlog(Blog blog) {
         String sql = "UPDATE Blog SET Title = ?, Content = ?, ImageUrl = ?, CategoryID = ?, Status = ?, UpdatedAt = GETDATE() WHERE BlogID = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -432,14 +432,15 @@ public class BlogDAO extends DBContext {
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("Blog updated successfully.");
+                return true;
             } else {
-                System.out.println("No blog updated. Check permissions.");
+                return false;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false; // Trả về false nếu có lỗi xảy ra
     }
 
     public List<Blog> getAllBlogsAdmin() {
@@ -509,27 +510,24 @@ public class BlogDAO extends DBContext {
     }
 
     public static void main(String[] args) {
-        BlogDAO blogDAO = new BlogDAO();
+        BlogDAO dao = new BlogDAO();
+        Blog blog = new Blog();
+        blog.setTitle("Learning Java");
+        blog.setContent("This is a tutorial on how to learn Java.");
+        blog.setAuthorId(1); // Ví dụ, giả sử AuthorID là 1
+        blog.setCategoryID(2); // Ví dụ, giả sử CategoryID là 2
+        blog.setImgUrl("/images/java_tutorial.jpg");
+        blog.setStatus("Public");
 
-        // Chọn Blog ID để cập nhật
-        // Lấy blog từ database
-        Blog blog = blogDAO.getBlogByBlogId(9);
+        // Thêm blog vào cơ sở dữ liệu
+        boolean isAdded = dao.addBlog(blog);
 
-        System.out.println(blog);
-
-        if (blog != null) {
-            // Cập nhật thông tin mới cho blog
-            blog.setTitle("Updated Blog Title");
-            blog.setContent("This is the updated content of the blog.");
-            blog.setCategoryID(2); // Giả sử category ID mới là 2
-            blog.setStatus("public"); // Hoặc "private"
-
-            // Nếu cần cập nhật ảnh mới (giữ nguyên nếu không có ảnh mới)
-            String newImageUrl = "/assets/images/blog/new-image.jpg"; // Giả sử có ảnh mới
-            blog.setImgUrl(newImageUrl);
-
-            // Gọi phương thức update
-            blogDAO.updateBlog(blog);
+        // Kiểm tra kết quả
+        if (isAdded) {
+            System.out.println("Blog added successfully!");
+            System.out.println("Blog ID: " + blog.getBlogId());  // In ra BlogID của blog mới thêm
+        } else {
+            System.out.println("Failed to add the blog.");
         }
     }
 }

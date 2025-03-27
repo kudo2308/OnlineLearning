@@ -1,0 +1,201 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Mar 27, 2025, 11:56:21 AM
+    Author     : ASUS
+*/
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 70%;
+    margin-left: 450px;
+
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-primary {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #45a049;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+.status-active {
+    color: green;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: red;
+    font-weight: bold;
+}
+
+.notification {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+.action-button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.edit-btn {
+    background: #2196F3;
+    color: white;
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+}
+
+.reset-btn {
+    background: #ff9800;
+    color: white;
+}
+
+.toggle-btn {
+    background: #673ab7;
+    color: white;
+}
+
+.side-bar{
+    width: 30%
+}
+
+.material-icons {
+    vertical-align: middle;
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+.notification-container {
+    position: fixed;
+    top: 80px; /* Cách đầu trang 80px, có thể điều chỉnh nếu cần */
+    right: 20px;
+    z-index: 1000;
+    width: 300px;
+    max-width: 80vw;
+}
+
+.notification {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: relative;
+    animation: slideIn 0.5s ease-out;
+    opacity: 0;
+    transform: translateX(100%);
+    animation-fill-mode: forwards;
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border-left: 5px solid #5cb85c;
+}
+
+.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border-left: 5px solid #d9534f;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #666;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.db-breadcrumb{
+    margin-top: 70px;
+    margin-left: 320px;
+}

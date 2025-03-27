@@ -136,4 +136,12 @@
         <servlet-name>CartController</servlet-name>
         <url-pattern>/cart</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ApproveRequestController</servlet-name>
+        <servlet-class>controller.ApproveRequestController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ApproveRequestController</servlet-name>
+        <url-pattern>/approveRequest</url-pattern>
+    </servlet-mapping>
 </web-app>
