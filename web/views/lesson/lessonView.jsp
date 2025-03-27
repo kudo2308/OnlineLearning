@@ -648,7 +648,7 @@
                         <span>Courses</span>
                     </a>
                     <span class="breadcrumb-separator">/</span>
-                    <a href="${pageContext.request.contextPath}/coursedetail?courseId=${courseId}">
+                    <a href="${pageContext.request.contextPath}/coursedetail?courseId=${course.courseID}">
                         ${currentLesson.course.title}
                     </a>
                     <span class="breadcrumb-separator">/</span>

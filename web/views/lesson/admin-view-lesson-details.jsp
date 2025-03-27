@@ -121,13 +121,13 @@
                                         </div>
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Package</label>
-                                            <div>
-                                                <input required class="form-control" type="text" id="packagesInput" value="${lesson.packages.name}" list="packagesSuggestions">
+                                             <div>
+                                                <input required class="form-control" type="text" id="packagesInput" value="" list="packagesSuggestions">
                                                 <datalist id="packagesSuggestions">
                                                     <c:forEach items="${packages}" var="packages">
                                                         <option style="display: none" value="${packages.name}" data-id="${packages.packageID}"></option>
                                                     </c:forEach>
-                                                    <input type="hidden" name="packageId" id="packageId" value="${lesson.packages.packageID}">
+                                                    <input type="hidden" name="packageId" id="packageId" value="">
                                                 </datalist>
                                             </div>
                                         </div>

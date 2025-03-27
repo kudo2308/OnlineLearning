@@ -4,11 +4,9 @@ import DBContext.DBContext;
 import java.util.ArrayList;
 import java.util.List;
 import model.Course;
-import static constant.Constant.RECORD_PER_PAGE;
 import java.sql.*;
 import model.Account;
 import model.Category;
-import model.Registration;
 
 /**
  *
@@ -38,7 +36,7 @@ public class MyCourseDAO extends DBContext {
                 JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                 JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE r.[UserID] = ? AND (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status] = 1
+                WHERE r.[UserID] = ? AND (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status]  in ('public')
                 ORDER BY r.[CreatedAt] DESC
                 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
                 """;
@@ -66,7 +64,7 @@ public class MyCourseDAO extends DBContext {
 
                 // Store progress in the register field
                 course.setRegister(rs.getInt("Progress"));
-            
+
                 // Set expert and category information
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
@@ -82,7 +80,13 @@ public class MyCourseDAO extends DBContext {
         }
         return searchResults;
     }
-
+    public static void main(String[] args) {
+        MyCourseDAO dao = new MyCourseDAO();
+          List<Course> searchResults =  dao.searchCourse("a", 2, 0, 10);
+          for (Course searchResult : searchResults) {
+              System.out.println(searchResult);
+        }
+    }
     public List<Course> getCoursesByCategories(int categoryId, int userId, int offset, int limit) {
         List<Course> categoryResults = new ArrayList<>();
         String sql = """
@@ -105,7 +109,7 @@ public class MyCourseDAO extends DBContext {
                 JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                 JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE c.[CategoryID] = ? AND r.[UserID] = ? AND c.[Status] = 1
+                WHERE c.[CategoryID] = ? AND r.[UserID] = ? AND c.[Status] in ('public')
                 ORDER BY r.[CreatedAt] DESC
                 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
                 """;
@@ -132,7 +136,7 @@ public class MyCourseDAO extends DBContext {
 
                 // Store progress in the register field
                 course.setRegister(rs.getInt("Progress"));
-            
+
                 // Set expert and category information
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
@@ -190,7 +194,7 @@ public class MyCourseDAO extends DBContext {
                 JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                 JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE r.[UserID] = ? AND c.[Status] = 1
+                WHERE r.[UserID] = ? AND c.[Status] in ('public')
                 ORDER BY """ + orderBy + """
                 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
                 """;
@@ -256,7 +260,7 @@ public class MyCourseDAO extends DBContext {
                 JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                 JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE r.[UserID] = ? AND c.[Status] = 1
+                WHERE r.[UserID] = ? AND c.[Status] in ('public')
                 ORDER BY r.[CreatedAt] DESC
                 OFFSET ? ROWS
                 FETCH NEXT ? ROWS ONLY
@@ -280,7 +284,7 @@ public class MyCourseDAO extends DBContext {
                 course.setStatus(rs.getString("Status"));
                 course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                 course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
-                
+
                 // Store progress in the register field
                 course.setRegister(rs.getInt("Progress"));
 
@@ -299,14 +303,14 @@ public class MyCourseDAO extends DBContext {
         }
         return courseList;
     }
-    
+
     public int getTotalEnrolledCourses(int studentId) {
         int count = 0;
         String sql = """
                 SELECT COUNT(*) as total
                 FROM [dbo].[Course] c
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE r.[UserID] = ? AND c.[Status] = 1
+                WHERE r.[UserID] = ? AND c.[Status] in ('public')
                 """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -320,14 +324,14 @@ public class MyCourseDAO extends DBContext {
         }
         return count;
     }
-    
+
     public int getTotalEnrolledSearchResults(String query, int studentId) {
         int count = 0;
         String sql = """
                 SELECT COUNT(*) as total
                 FROM [dbo].[Course] c
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE r.[UserID] = ? AND (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status] = 1
+                WHERE r.[UserID] = ? AND (c.[Title] LIKE ? OR c.[Description] LIKE ?) AND c.[Status] in ('public')
                 """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -343,14 +347,14 @@ public class MyCourseDAO extends DBContext {
         }
         return count;
     }
-    
+
     public int getTotalEnrolledCoursesByCategories(int categoryId, int studentId) {
         int count = 0;
         String sql = """
                 SELECT COUNT(*) as total
                 FROM [dbo].[Course] c
                 JOIN [dbo].[Registration] r ON c.CourseID = r.CourseID
-                WHERE c.[CategoryID] = ? AND r.[UserID] = ? AND c.[Status] = 1
+                WHERE c.[CategoryID] = ? AND r.[UserID] = ? AND c.[Status] in ('public')
                 """;
         try {
             PreparedStatement st = connection.prepareStatement(sql);

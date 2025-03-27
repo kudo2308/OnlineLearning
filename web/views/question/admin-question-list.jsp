@@ -179,7 +179,7 @@
                                 </div>
                                 <div class="widget-inner">
                                     <div class="filter-section">
-                                        <a id="importQuestion" href="" class="btn btn-custom btn-import">Import Question</a>
+<!--                                        <a id="importQuestion" href="" class="btn btn-custom btn-import">Import Question</a>-->
                                         <form action="manageQuestion" class="filter-form">
                                             <input type="text" id="searchContent" name="content" placeholder="Search by content" value="${content}" class="form-control">         
                                         <select id="filterSubject" name="titleCourse" class="form-control">

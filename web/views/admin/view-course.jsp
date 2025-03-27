@@ -171,7 +171,7 @@
                                                     <c:if test="${courses.status ne 'Blocked'}">
                                                         <a href="deleteCourse?courseId=${courses.courseID}" class="btn btn-danger">Delete</a>
                                                     </c:if>
-                                                    <a href="packages?courseId=${courses.courseID}" class="btn btn-danger">Packages</a>
+                                                    <a href="packages?courseId=${courses.courseID}" class="btn btn-danger">View Package</a>
                                                     <c:if test="${courses.status ne 'Public' && courses.status ne 'Pending' && courses.status ne 'Blocked'}">
                                                         <a href="sellCourse?courseId=${courses.courseID}" class="btn btn-warning">Sell</a>
                                                     </c:if>

@@ -85,7 +85,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Course</label>
                                         <div class="col-sm-7">
-                                           <select required class="form-control" name="courseIdCreate">
+                                           <select required class="form-control" name="courseId">
                                                 <c:forEach items="${courses}" var="c">
                                                     <option value="${c.courseID}">${c.title}</option>
                                                 </c:forEach>

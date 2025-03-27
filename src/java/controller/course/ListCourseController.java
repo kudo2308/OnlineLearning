@@ -72,33 +72,23 @@ public class ListCourseController extends HttpServlet {
 
         int totalRecord = 0;
         List<Course> listCourse = null;
-
-//        String action = request.getParameter("action") == null
-//                ? "defaultFindAll"
-//                : request.getParameter("action");
-
-//        HttpSession session = request.getSession();
-//        Object accountObj = session.getAttribute("account");
-//
-//        if (accountObj == null) {
-//            throw new Exception("Sesson not found!");
-//        }
-//
-//        String userID = null;
-//        if (accountObj instanceof Map) {
-//            Map<String, String> accountData = (Map<String, String>) accountObj;
-//            userID = accountData.get("userId");
-//        }
-//        int userId = Integer.parseInt(userID);
-
         int categoryId = Integer.parseInt(request.getParameter("categoryId") == null ? "0" : request.getParameter("categoryId"));
         String status = request.getParameter("status") == null ? "Pending" : request.getParameter("status");
         String name = request.getParameter("name") == null ? "" : request.getParameter("name");
-        listCourse = courseDAO.findByPageFilterCategoryAndStatus(page,
-                categoryId, status, null, name);
 
-        totalRecord = courseDAO.findByPageFilterCategoryAndStatus(null,
-                categoryId, status, null, name).size();
+        if (status.equals("")) {
+            listCourse = courseDAO.findByPageFilterCategoryAndAllStatusToConfirm(page,
+                    categoryId, null, name);
+
+            totalRecord = courseDAO.findByPageFilterCategoryAndAllStatusToConfirm(null,
+                    categoryId, null, name).size();
+        } else {
+            listCourse = courseDAO.findByPageFilterCategoryAndStatus(page,
+                    categoryId, status, null, name);
+
+            totalRecord = courseDAO.findByPageFilterCategoryAndStatus(null,
+                    categoryId, status, null, name).size();
+        }
 
         pageControl.setUrlPattern("manager-courses?categoryId=" + categoryId + "&status=" + status + "&");
 

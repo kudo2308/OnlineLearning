@@ -173,7 +173,7 @@ public class CourseDAO extends DBContext {
         if (categoryIdRequest != 0) {
             sql.append("AND co.CategoryID = ? ");
         }
-        sql.append("ORDER BY co.CourseID ");
+        sql.append("ORDER BY co.CourseID desc ");
         if (page != null) {
             sql.append("OFFSET ? ROWS ")
                     .append("FETCH NEXT ? ROWS ONLY");
@@ -1039,5 +1039,53 @@ public class CourseDAO extends DBContext {
             System.out.println(e);
         }
         return courses;
+    }
+      public List<Course> findByPageFilterCategoryAndAllStatusToConfirm(Integer page, int categoryIdRequest,Integer expertId, String nameRequest) {
+        List<Course> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM Course co ")
+                .append("JOIN Account a ON co.ExpertID = a.UserID ")
+                .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
+                .append("WHERE (co.[Status] = 'Pending' or co.[Status] = 'Public') and co.Title LIKE ? ")
+                .append("AND (? is null or co.ExpertID = ?) ");
+
+        if (categoryIdRequest != 0) {
+            sql.append("AND co.CategoryID = ? ");
+        }
+        sql.append("ORDER BY co.CourseID ");
+        if (page != null) {
+            sql.append("OFFSET ? ROWS ")
+                    .append("FETCH NEXT ? ROWS ONLY");
+        }
+
+        try (Connection connection = new DBContext().getConnection()) {
+            ps = connection.prepareStatement(sql.toString());
+            ps.setString(1, "%" + nameRequest + "%");
+            ps.setObject(2, expertId);
+            ps.setObject(3, expertId);
+
+            if (categoryIdRequest == 0) {
+                if (page != null) {
+                    ps.setInt(4, (page - 1) * RECORD_PER_PAGE);
+                    ps.setInt(5, RECORD_PER_PAGE);
+                }
+            } else {
+                ps.setInt(4, categoryIdRequest);
+                if (page != null) {
+                    ps.setInt(5, (page - 1) * RECORD_PER_PAGE);
+                    ps.setInt(6, RECORD_PER_PAGE);
+                }
+            }
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Course course = extractCourseFromResultSet(rs);
+                list.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
     }
 }
