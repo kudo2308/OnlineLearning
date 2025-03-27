@@ -2,7 +2,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +28,8 @@
 
         <!-- FAVICONS ICON ============================================= -->
         <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/assets/images/favicon.png" />
+
 
         <!-- PAGE TITLE HERE ============================================= -->
         <title>EduChamp : Education HTML Template </title>
@@ -118,7 +121,8 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                             <div class="course-detail-bx">
                                 <div class="course-price">
-                                    <h4 class="price">${course.price}đ</h4>
+                                    <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
+                                    <h4 class="price"><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h4>
                                 </div>
                                 <c:choose>
                                     <c:when test="${isRegistered}">
@@ -264,27 +268,28 @@
                                 <h4>Instructor</h4>
                                 <!-- FORM VIẾT COMMENT -->
                                 <div class="review-form" style="margin-top: 40px;">
-                                    <h5>Viết nhận xét của bạn</h5>
+                                    <h5>Comment:</h5>
 
                                     <form action="${pageContext.request.contextPath}/coursedetail" method="post">
                                         <input type="hidden" name="courseId" value="${course.courseID}" />
                                         <div class="form-group">
-                                            <label for="rating">Chọn đánh giá:</label>
+                                            <label for="rating">Choose rating:</label>
                                             <select class="form-control" name="rating" required>
-                                                <option value="5">⭐⭐⭐⭐⭐ - Tuyệt vời</option>
-                                                <option value="4">⭐⭐⭐⭐ - Tốt</option>
-                                                <option value="3">⭐⭐⭐ - Trung bình</option>
-                                                <option value="2">⭐⭐ - Kém</option>
-                                                <option value="1">⭐ - Rất tệ</option>
+                                                <option value="5">⭐⭐⭐⭐⭐ - Excellent!</option>
+                                                <option value="4">⭐⭐⭐⭐ - Good</option>
+                                                <option value="3">⭐⭐⭐ - Medium</option>
+                                                <option value="2">⭐⭐ - Bad</option>
+                                                <option value="1">⭐ - So bad</option>
                                             </select>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="content">Nội dung bình luận:</label>
-                                            <textarea class="form-control" name="content" rows="4" placeholder="Viết bình luận của bạn..." required></textarea>
+                                        <div class="form-group" >
+                                            <label for="content">Comment:</label>
+                                            <textarea class="form-control" name="content" rows="4" placeholder="Write comment..." required></textarea>
+                                            <button style="margin-bottom: 10px; margin-top: 10px;" type="submit" class="btn btn-primary">Comment</button>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+
                                     </form>
                                 </div>
 
@@ -348,9 +353,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <p>Rating Map: ${ratingDistribution}</p>
-                            <p>Total Ratings: ${totalRatings}</p>
-                            <p>Average Rating: ${averageRating}</p>
                         </div>
 
                     </div>

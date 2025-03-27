@@ -5,20 +5,27 @@
 package controller.lesson;
 
 import DAO.LessonDAO;
+import DAO.LessonProgressDAO;
+import DAO.PackagesDAO;
+import DAO.QuizDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
+import model.Account;
 import model.Lesson;
+import model.Packages;
+import model.Quiz;
 import utils.YouTubeDurationFetcher;
 
 /**
  *
- * @author dohie
+ * @author ADMIN
  */
 public class LessonController extends HttpServlet {
 
@@ -62,9 +69,31 @@ public class LessonController extends HttpServlet {
             throws ServletException, IOException {
         try {
             LessonDAO lessonDAO = new LessonDAO();
+            PackagesDAO packagesDAO = new PackagesDAO();
 
-            // Get courseId from request
-            int courseId = 1;
+            // Get lessonId from request - support both new and old parameter formats
+            int lessonId = 0;
+            String lessonIdParam = request.getParameter("id");
+            if (lessonIdParam != null && !lessonIdParam.isEmpty()) {
+                try {
+                    lessonId = Integer.parseInt(lessonIdParam);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid lessonId parameter: " + lessonIdParam);
+                }
+            } else {
+                // Try the old parameter format (lessonId)
+                String oldLessonIdParam = request.getParameter("lessonId");
+                if (oldLessonIdParam != null && !oldLessonIdParam.isEmpty()) {
+                    try {
+                        lessonId = Integer.parseInt(oldLessonIdParam);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid old lessonId parameter: " + oldLessonIdParam);
+                    }
+                }
+            }
+
+            // Handle courseId parameter (old format)
+            int courseId = 0;
             String courseIdParam = request.getParameter("courseId");
             if (courseIdParam != null && !courseIdParam.isEmpty()) {
                 try {
@@ -74,67 +103,115 @@ public class LessonController extends HttpServlet {
                 }
             }
 
-            // Get all lessons for the course, ordered by OrderNumber
-            List<Lesson> lessonList = lessonDAO.getAllLessonByCourseId(courseId);
+            // If we have a courseId but no lessonId, get the first lesson of the course
+            if (courseId > 0 && lessonId == 0) {
+                List<Lesson> courseLessons = lessonDAO.getAllLessonByCourseId(courseId);
+                if (!courseLessons.isEmpty()) {
+                    lessonId = courseLessons.get(0).getLessonID();
+                }
+            }
+
+            // If no lesson ID provided, redirect to my-courses page
+            if (lessonId == 0) {
+                response.sendRedirect(request.getContextPath() + "/my-courses");
+                return;
+            }
+
+            // Get the current lesson
+            Lesson currentLesson = lessonDAO.findLessonById(lessonId);
+            if (currentLesson == null) {
+                request.setAttribute("errorMessage", "Lesson not found.");
+                request.getRequestDispatcher("/views/lesson/lessonView.jsp").forward(request, response);
+                return;
+            }
+
+            // Get the course ID from the current lesson
+            courseId = currentLesson.getCourseID();
+
+            // Get all lessons for the course with package information
+            List<Lesson> lessonList = lessonDAO.getLessonsByCourseIdNew(courseId);
             if (lessonList.isEmpty()) {
                 request.setAttribute("errorMessage", "No lessons found for this course.");
                 request.getRequestDispatcher("/views/lesson/lessonView.jsp").forward(request, response);
                 return;
             }
 
-            // Get current lesson ID from request
-            int lessonId = 0;
-            String lessonIdParam = request.getParameter("lessonId");
-            if (lessonIdParam != null && !lessonIdParam.isEmpty()) {
-                try {
-                    lessonId = Integer.parseInt(lessonIdParam);
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid lessonId parameter: " + lessonIdParam);
+            // Find previous and next lessons
+            Lesson prevLesson = null;
+            Lesson nextLesson = null;
+            
+            for (int i = 0; i < lessonList.size(); i++) {
+                if (lessonList.get(i).getLessonID() == lessonId) {
+                    // Set previous lesson
+                    if (i > 0) {
+                        prevLesson = lessonList.get(i - 1);
+                    }
+                    
+                    // Set next lesson
+                    if (i < lessonList.size() - 1) {
+                        nextLesson = lessonList.get(i + 1);
+                    }
+                    
+                    break;
                 }
             }
 
-            // Find the current lesson
-            Lesson currentLesson = null;
-            int currentIndex = 0;
-
-            // If no specific lesson requested, use the first lesson
-            if (lessonId == 0) {
-                currentLesson = lessonList.get(0);
-                currentIndex = 0;
-            } else {
-                // Find the lesson in the ordered list
+            // Calculate course progress
+            int totalLessons = lessonList.size();
+            int courseProgress = 0;
+            
+            if (totalLessons > 0) {
+                // For now, just calculate a simple percentage based on the current lesson's position
+                // In a real application, you would track completed lessons for each user
                 for (int i = 0; i < lessonList.size(); i++) {
                     if (lessonList.get(i).getLessonID() == lessonId) {
-                        currentLesson = lessonList.get(i);
-                        currentIndex = i;
+                        courseProgress = (int) Math.round((double) (i + 1) / totalLessons * 100);
                         break;
                     }
                 }
-                // If lesson not found in list, use first lesson
-                if (currentLesson == null) {
-                    currentLesson = lessonList.get(0);
-                    currentIndex = 0;
-                }
-            }
-
-            // Set previous and next lessons based on OrderNumber
-            Lesson previousLesson = null;
-            Lesson nextLesson = null;
-
-            if (currentIndex > 0) {
-                previousLesson = lessonList.get(currentIndex - 1);
-            }
-
-            if (currentIndex < lessonList.size() - 1) {
-                nextLesson = lessonList.get(currentIndex + 1);
             }
 
             // Set attributes for the view
-            request.setAttribute("courseId", courseId);
-            request.setAttribute("lessonList", lessonList);
             request.setAttribute("currentLesson", currentLesson);
-            request.setAttribute("previousLesson", previousLesson);
+            request.setAttribute("lessonList", lessonList);
+            request.setAttribute("prevLesson", prevLesson);
             request.setAttribute("nextLesson", nextLesson);
+            request.setAttribute("courseProgress", courseProgress);
+            
+            // Get all quizzes for the course to display in sidebar
+            QuizDAO quizDAO = new QuizDAO();
+            List<Quiz> quizList = quizDAO.getQuizzesByCourseId(courseId);
+            request.setAttribute("quizList", quizList);
+            
+            // Check if user is logged in
+            HttpSession session = request.getSession();
+            Account currentUser = (Account) session.getAttribute("account");
+            
+            if (currentUser != null) {
+                // Get the package ID of the current lesson
+                int packageId = 0;
+                if (currentLesson.getPackages() != null) {
+                    packageId = currentLesson.getPackages().getPackageID();
+                }
+                
+                // Check if all lessons in the package are completed
+                if (packageId > 0) {
+                    LessonProgressDAO progressDAO = new LessonProgressDAO();
+                    boolean packageCompleted = progressDAO.areAllLessonsInPackageCompleted(currentUser.getUserID(), packageId);
+                    
+                    if (packageCompleted) {
+                        // Check if there's a quiz for this package
+                        QuizDAO quizDAO2 = new QuizDAO();
+                        Quiz quiz = quizDAO2.getQuizByPackageId(packageId);
+                        
+                        if (quiz != null) {
+                            request.setAttribute("packageCompleted", true);
+                            request.setAttribute("hasQuiz", true);
+                            request.setAttribute("quizInfo", quiz);
+                        }
+                    }
+                }
+            }
 
             // Forward to the view
             request.getRequestDispatcher("/views/lesson/lessonView.jsp").forward(request, response);
@@ -178,7 +255,7 @@ public class LessonController extends HttpServlet {
 
         if (!isValidYouTubeUrl(videoUrl)) {
             session.setAttribute("error", "Invalid YouTube URL. Please provide a valid YouTube video URL.");
-            response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
+            response.sendRedirect(request.getContextPath() + "/lesson?id=" + lessonId);
             return;
         }
 
@@ -186,7 +263,7 @@ public class LessonController extends HttpServlet {
         int duration = YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl);
         if (duration <= 0) {
             session.setAttribute("error", "Failed to retrieve video duration.");
-            response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
+            response.sendRedirect(request.getContextPath() + "/lesson?id=" + lessonId);
             return;
         }
 
@@ -194,33 +271,37 @@ public class LessonController extends HttpServlet {
         LessonDAO lessonDAO = new LessonDAO();
         if (!lessonDAO.lessonExists(lessonId)) {
             session.setAttribute("error", "Invalid lesson: The specified lesson ID " + lessonId + " does not exist in the system.");
-            response.sendRedirect(request.getContextPath() + "/course-content");
+            response.sendRedirect(request.getContextPath() + "/my-courses");
             return;
         }
 
         // Update video
         boolean success = lessonDAO.updateLessonVideo(lessonId, videoUrl, duration);
-        if (!success) {
-            session.setAttribute("error", "Failed to update video URL.");
+        if (success) {
+            session.setAttribute("success", "Video updated successfully!");
+        } else {
+            session.setAttribute("error", "Failed to update video.");
         }
         
-        response.sendRedirect(request.getContextPath() + "/lesson?lessonId=" + lessonId);
+        // Redirect back to lesson page
+        response.sendRedirect(request.getContextPath() + "/lesson?id=" + lessonId);
         
     } catch (NumberFormatException e) {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid lesson ID");
+        session.setAttribute("error", "Invalid lesson ID format.");
+        response.sendRedirect(request.getContextPath() + "/my-courses");
     } catch (Exception e) {
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating video: " + e.getMessage());
+        session.setAttribute("error", "An error occurred: " + e.getMessage());
+        response.sendRedirect(request.getContextPath() + "/my-courses");
     }
 }
 
-    
     private boolean isValidYouTubeUrl(String url) {
-        if (url == null || url.isEmpty()) {
+        if (url == null || url.trim().isEmpty()) {
             return false;
         }
         
-        // Basic YouTube URL validation
-        return url.matches("^(https?://)?(www\\.)?(youtube\\.com/watch\\?v=|youtu\\.be/)[a-zA-Z0-9_-]{11}.*");
+        // Basic validation for YouTube URLs
+        return url.contains("youtube.com/watch?v=") || url.contains("youtu.be/");
     }
 
     /**
@@ -230,7 +311,7 @@ public class LessonController extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Lesson Controller";
     }// </editor-fold>
 
 }

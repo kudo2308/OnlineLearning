@@ -78,15 +78,16 @@ public class PackagesDAO {
     }
 
     public List<Packages> findPackagesByCourseId(int courseId) {
-        String sql = "select * from Packages p\n"
-                + "where p.CourseID = ?";
+        List<Packages> packageList = new ArrayList<>();
+        String sql = "SELECT * FROM Packages WHERE CourseID = ?";
 
         try {
-            ps = connection.prepareStatement(sql);
+            Connection conn = new DBContext().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, courseId);
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
+            
             while (rs.next()) {
-
                 Course course = new Course();
                 course.setCourseID(courseId);
 
@@ -99,13 +100,18 @@ public class PackagesDAO {
                         .updatedAt(rs.getTimestamp("updatedAt"))
                         .Status(rs.getBoolean("Status"))
                         .build();
-                packages.add(p);
-
+                packageList.add(p);
             }
+            
+            // Close resources
+            rs.close();
+            ps.close();
+            conn.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        return packages;
+        
+        return packageList;
     }
 
     public List<Packages> findAllPackages() {

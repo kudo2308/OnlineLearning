@@ -18,25 +18,61 @@
                         <span class="ttr-label">Dashboard</span>
                     </a>
                 </li>  
-                 <li class="ttr-seperate"></li>
+                <li class="ttr-seperate"></li>
                 <li>
                     <a href="${pageContext.request.contextPath}/manager-courses" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
                         <span class="ttr-label">Courses list</span>
                     </a>
                 </li>  
-                 <li class="ttr-seperate"></li>
+                <li class="ttr-seperate"></li>
                 <li>
                     <a href="${pageContext.request.contextPath}/UserList" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
                         <span class="ttr-label">Users List</span>
                     </a>
                 </li>  
-                 <li class="ttr-seperate"></li>
+                <li class="ttr-seperate"></li>
                 <li>
                     <a href="${pageContext.request.contextPath}/transaction-history" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
                         <span class="ttr-label"> Transaction List </span>
+                    </a>
+                </li>  
+
+                <li class="ttr-seperate"></li>
+
+                <li>
+                    <a href="${pageContext.request.contextPath}/postList" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-book"></i></span>
+                        <span class="ttr-label"> Post List </span>
+                    </a>
+                </li>  
+
+                <li class="ttr-seperate"></li>
+                
+                <li>
+                    <a href="${pageContext.request.contextPath}/promotionList" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-book"></i></span>
+                        <span class="ttr-label">Promotion</span>
+                    </a>
+                </li>  
+
+                <li class="ttr-seperate"></li>
+
+                <li>
+                    <a href="${pageContext.request.contextPath}/couponList" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-book"></i></span>
+                        <span class="ttr-label"> Coupon </span>
+                    </a>
+                </li>  
+
+                <li class="ttr-seperate"></li>
+
+                <li>
+                    <a href="${pageContext.request.contextPath}/approveRequest" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-book"></i></span>
+                        <span class="ttr-label"> Blog Request </span>
                     </a>
                 </li>  
 

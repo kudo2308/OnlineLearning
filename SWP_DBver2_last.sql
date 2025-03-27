@@ -391,6 +391,31 @@ CREATE TABLE MessageRead (
     CONSTRAINT UQ_MessageUser UNIQUE (MessageID, UserID)
 );
 
+CREATE TABLE Promotion (
+    PromotionID INT IDENTITY(1,1) PRIMARY KEY,  -- ID của chương trình khuyến mãi
+    PromotionCode NVARCHAR(50) NOT NULL UNIQUE,  -- Mã khuyến mãi
+    DiscountType NVARCHAR(20) CHECK (DiscountType IN ('percentage', 'fixed')),  -- Loại giảm giá (phần trăm hoặc giá trị cố định)
+    DiscountValue DECIMAL(10, 2) NOT NULL,  -- Giá trị giảm giá
+    Status BIT DEFAULT 1,  -- Trạng thái (1: hoạt động, 0: không hoạt động)
+    CategoryID INT NULL,  -- Mã danh mục (nếu áp dụng giảm giá cho một danh mục)
+    ExpertID INT NULL,  -- Mã giảng viên (nếu áp dụng giảm giá cho một giảng viên)
+    CourseID INT NULL,  -- Mã khóa học (nếu áp dụng giảm giá cho một khóa học cụ thể)
+    CreatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian tạo chương trình khuyến mãi
+    UpdatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian cập nhật chương trình khuyến mãi
+    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),  -- Liên kết với bảng Category
+    FOREIGN KEY (ExpertID) REFERENCES Account(UserID),  -- Liên kết với bảng Account (Giảng viên)
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)  -- Liên kết với bảng Course
+);
+
+CREATE TABLE Coupon (
+    CouponID INT IDENTITY(1,1) PRIMARY KEY,
+    CouponCode NVARCHAR(50) NOT NULL UNIQUE,  -- Mã coupon
+    DiscountType NVARCHAR(20) CHECK (DiscountType IN ('percentage', 'fixed')), -- Loại giảm giá (phần trăm hoặc cố định)
+    DiscountValue DECIMAL(10, 2) NOT NULL,  -- Giá trị giảm giá
+    Status BIT DEFAULT 1,  -- Trạng thái (1: hoạt động, 0: không hoạt động)
+    CreatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian tạo coupon
+    UpdatedAt DATETIME DEFAULT GETDATE()  -- Thời gian cập nhật coupon
+);
 -- Insert roles
 INSERT INTO Role (RoleName) VALUES
 ('Admin'),
@@ -1304,3 +1329,9 @@ VALUES
 ((SELECT TOP 1 UserID FROM Account WHERE Email = 'student2@onlinelearning.com'), 
  (SELECT TOP 1 CourseID FROM Course WHERE Title = 'Complete C++ Programming: From Beginner to Advanced'), 
  2750000, 'active', 0, GETDATE(), DATEADD(MONTH, 1, GETDATE()), GETDATE());
+  INSERT INTO Coupon (CouponCode, DiscountType, DiscountValue, Status, CreatedAt, UpdatedAt)
+VALUES 
+    ('DISCOUNT10', 'percentage', 10.00, 1, GETDATE(), GETDATE()),  -- Coupon giảm 10% 
+    ('SAVE50', 'fixed', 50.00, 1, GETDATE(), GETDATE()),           -- Coupon giảm 50 đơn vị tiền tệ
+    ('SUMMER20', 'percentage', 20.00, 1, GETDATE(), GETDATE()),    -- Coupon giảm 20%
+    ('WELCOME100', 'fixed', 100.00, 1, GETDATE(), GETDATE());      -- Coupon giảm 100 đơn vị tiền tệ

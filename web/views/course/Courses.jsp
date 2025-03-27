@@ -4,8 +4,9 @@
     Author     : ASUS
 --%>
 
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -74,7 +75,7 @@
                 <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner3.jpg);">
                     <div class="container">
                         <div class="page-banner-entry">
-                            <h1 class="text-white">Our Courses</h1>
+                            <h1 class="text-white">Courses</h1>
                         </div>
                     </div>
                 </div>
@@ -158,7 +159,8 @@
                                                             </ul>
                                                         </div>
                                                         <div class="price">
-                                                            <h5>${course.price}đ</h5>
+                                                            <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
+                                                            <h5><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -305,7 +307,7 @@
             <!-- Footer END ==== -->
             <button class="back-to-top fa fa-chevron-up" ></button>
         </div>
-         External JavaScripts 
+        External JavaScripts 
         <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/bootstrap.min.js"></script>

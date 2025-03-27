@@ -18,13 +18,21 @@ public class AnswerDAO {
     
     public List<Answer> getAnswersByQuestionId(int questionId) {
         List<Answer> answers = new ArrayList<>();
-        String sql = "SELECT answerID, content, isCorrect, Explanation, questionID FROM Answer WHERE questionID = ?";
+        String sql = "SELECT answerID, content, isCorrect, Explanation, questionID FROM Answer WHERE questionID = ? ORDER BY answerID";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         
         try {
-            Connection conn = db.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            conn = db.getConnection();
+            if (conn == null) {
+                System.out.println("Error: Unable to establish database connection");
+                return answers;
+            }
+            
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, questionId);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             
             System.out.println("Getting answers for question " + questionId);
             
@@ -34,7 +42,7 @@ public class AnswerDAO {
                 boolean isCorrect = rs.getBoolean("isCorrect");
                 String explanation = rs.getString("Explanation");
                 
-                System.out.println("Found answer: " + answerId + " - " + content);
+                System.out.println("Found answer: " + answerId + " - " + content + " - isCorrect: " + isCorrect);
                 
                 Answer answer = Answer.builder()
                         .answerID(answerId)
@@ -52,12 +60,17 @@ public class AnswerDAO {
                 System.out.println("Total answers found: " + answers.size());
             }
             
-            rs.close();
-            ps.close();
-            
         } catch (SQLException e) {
             System.out.println("Error getting answers for question " + questionId + ": " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
         }
         
         return answers;
@@ -218,5 +231,78 @@ public class AnswerDAO {
         }
         
         return success;
+    }
+
+    public boolean updateAnswers(List<Answer> answers) {
+        if (answers == null || answers.isEmpty()) {
+            System.out.println("Error: No answers provided for update");
+            return false;
+        }
+        
+        String query = "UPDATE Answer SET content = ?, isCorrect = ?, Explanation = ? WHERE answerID = ?";
+        boolean success = true;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        
+        try {
+            conn = db.getConnection();
+            if (conn == null) {
+                System.out.println("Error: Unable to establish database connection");
+                return false;
+            }
+            
+            conn.setAutoCommit(false);
+            ps = conn.prepareStatement(query);
+            
+            for (Answer answer : answers) {
+                ps.setString(1, answer.getContent());
+                ps.setBoolean(2, answer.isCorrect());
+                ps.setString(3, answer.getExplanation());
+                ps.setInt(4, answer.getAnswerID());
+                
+                ps.addBatch();
+            }
+            
+            int[] results = ps.executeBatch();
+            
+            // Kiểm tra xem tất cả các câu trả lời đã được cập nhật thành công chưa
+            for (int result : results) {
+                if (result <= 0) {
+                    success = false;
+                    break;
+                }
+            }
+            
+            if (success) {
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+            
+            return success;
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error during rollback: " + ex.getMessage());
+            }
+            System.out.println("Error updating answers: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
+        }
     }
 }

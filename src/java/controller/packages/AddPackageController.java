@@ -94,7 +94,7 @@ public class AddPackageController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            String courseId = request.getParameter("courseIdCreate");
+            String courseId = request.getParameter("courseId");
             String name = request.getParameter("name");
             String description = request.getParameter("description");
             PackagesDAO packDAO = new PackagesDAO();

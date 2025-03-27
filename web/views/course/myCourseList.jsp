@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Course List</title>
+    <title>My Courses</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="${pageContext.request.contextPath}/css/custom.css" rel="stylesheet">
@@ -404,6 +404,7 @@
             background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
             color: white;
             box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            
         }
 
         /* Responsive Design */
@@ -487,6 +488,7 @@
             margin-bottom: 15px;
             background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
@@ -498,13 +500,81 @@
             margin: 0 auto;
             line-height: 1.6;
         }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .empty-state-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
     <div class="course-header">
         <div class="course-header-content">
-            <h1 class="course-title-main">Our Courses</h1>
-            <p class="course-subtitle">Explore our wide range of courses designed to help you achieve your learning goals</p>
+            <h1 class="course-title-main">My Courses</h1>
+            <p class="course-subtitle">Continue learning with your enrolled courses</p>
         </div>
     </div>
 
@@ -514,12 +584,12 @@
             <div class="search-box">
                 <div class="sidebar-title">
                     <i class="fas fa-search"></i>
-                    <span>Search Courses</span>
+                    <span>Search My Courses</span>
                 </div>
                 <div class="search-container">
                     <input type="text" 
                            class="search-input" 
-                           placeholder="Search courses..."
+                           placeholder="Search my courses..."
                            value="${searchQuery}"
                            onkeyup="handleSearch(this.value)"
                            id="courseSearch">
@@ -540,9 +610,9 @@
             <div class="search-box">
                 <div class="sidebar-title">
                     <i class="fas fa-th-list"></i>
-                    <span>ALL COURSES</span>
+                    <span>Categories</span>
                 </div>
-                <form id="categoryForm" action="${pageContext.request.contextPath}/course" method="GET" class="category-list">
+                <form id="categoryForm" action="${pageContext.request.contextPath}/my-courses" method="GET" class="category-list">
                     <div class="category-item">
                         <input type="radio" 
                                id="all" 
@@ -567,41 +637,43 @@
                 </form>
             </div>
 
-            <div class="search-box">
-<!--                <div class="sidebar-title">
-                    <i class="fas fa-user"></i>
-                    <span>My Courses</span>
-                </div>-->
-                <div class="course-list">
-                    <c:forEach items="${userCourses}" var="course">
-                        <div class="course-item">
-                            <div class="course-image">
-                                <img src="${pageContext.request.contextPath}${course.imageUrl}" 
-                                     alt="${course.title}"
-                                     onerror="this.src='${pageContext.request.contextPath}/images/default-course.jpg'">
-                                <div class="course-category">${course.category.name}</div>
-                            </div>
-                            <div class="course-info">
-                                <div>
-                                    <h3 class="course-title">${course.title}</h3>
-                                    <p class="course-desc">${course.description}</p>
-                                </div>
-                                <div class="course-meta">
-                                    <span class="lesson-count">
-                                        <i class="fas fa-book-open"></i>
-                                        ${fn:length(lessonList)} lessons
-                                    </span>
-                                    <a href="${pageContext.request.contextPath}/lesson?courseId=${course.courseID}" 
-                                       class="view-btn">
-                                        <i class="fas fa-play-circle"></i>
-                                        Start Learning
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
+<!--            <div class="search-box">
+                <div class="sidebar-title">
+                    <i class="fas fa-sort"></i>
+                    <span>Sort By</span>
                 </div>
-            </div>
+                <form id="sortForm" action="${pageContext.request.contextPath}/my-courses" method="GET" class="category-list">
+                    <div class="category-item">
+                        <input type="radio" 
+                               id="sortDate" 
+                               name="sort" 
+                               value="date" 
+                               ${sortBy == 'date' ? 'checked' : ''}
+                               onchange="this.form.submit()">
+                        <label for="sortDate">Recently Enrolled</label>
+                    </div>
+                    <div class="category-item">
+                        <input type="radio" 
+                               id="sortTitle" 
+                               name="sort" 
+                               value="title" 
+                               ${sortBy == 'title' ? 'checked' : ''}
+                               onchange="this.form.submit()">
+                        <label for="sortTitle">Course Title</label>
+                    </div>
+                    <div class="category-item">
+                        <input type="radio" 
+                               id="sortLessons" 
+                               name="sort" 
+                               value="lessons" 
+                               ${sortBy == 'lessons' ? 'checked' : ''}
+                               onchange="this.form.submit()">
+                        <label for="sortLessons">Number of Lessons</label>
+                    </div>
+                    <input type="hidden" name="search" value="${searchQuery}">
+                    <input type="hidden" name="category" value="${categoryFilter}">
+                </form>
+            </div>-->
         </div>
 
         <!-- Main Content -->
@@ -610,59 +682,87 @@
                 <div class="alert alert-danger">${error}</div>
             </c:if>
 
-            <div class="course-list">
-                <c:forEach items="${listcourse}" var="course">
-                    <div class="course-item">
-                        <div class="course-image">
-                            <img src="${pageContext.request.contextPath}${course.course.imageUrl}" 
-                                 alt="${course.course.title}"
-                                 onerror="this.src='${pageContext.request.contextPath}${course.course.imageUrl}'">
-                            <div class="course-category">${course.category.name}</div>
+            <c:choose>
+                <c:when test="${empty enrolledCourses}">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-book"></i>
                         </div>
-                        <div class="course-info">
-                            <div>
-                                <h3 class="course-title">${course.course.title}</h3>
-                                <p class="course-desc">${course.course.description}</p>
-                            </div>
-                            <div class="course-meta">
-                                <span class="lesson-count">
-                                    <i class="fas fa-book-open"></i>
-                                    ${fn:length(lessonList)} lessons
-                                </span>
-                                <a href="${pageContext.request.contextPath}/lesson?courseId=${course.course.courseID}" 
-                                   class="view-btn">
-                                    <i class="fas fa-play-circle"></i>
-                                    Start Learning
-                                </a>
-                            </div>
-                        </div>
+                        <h2 class="empty-state-title">No courses found</h2>
+                        <p class="empty-state-text">
+                            You haven't enrolled in any courses yet. Browse our course catalog to find courses that interest you.
+                        </p>
+                        <a href="${pageContext.request.contextPath}/course" class="empty-state-btn">
+                            <i class="fas fa-search"></i> Browse Courses
+                        </a>
                     </div>
-                </c:forEach>
-            </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="course-list">
+                        <c:forEach items="${enrolledCourses}" var="course">
+                            <div class="course-item">
+                                <div class="course-image">
+                                    <img src="${pageContext.request.contextPath}${course.course.imageUrl}" 
+                                         alt="${course.course.title}"
+                                         onerror="this.src='${pageContext.request.contextPath}/images/default-course.jpg'">
+                                    <div class="course-category">${course.category.name}</div>
+                                </div>
+                                <div class="course-info">
+                                    <div>
+                                        <h3 class="course-title">${course.course.title}</h3>
+                                        <p class="course-desc">${course.course.description}</p>
+                                        
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="progress-${course.course.courseID}" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="progress-text">${course.course.register}% complete</div>
+                                        <script>
+                                            document.getElementById('progress-${course.course.courseID}').style.width = '${course.course.register}%';
+                                        </script>
+                                    </div>
+                                    <div class="course-meta">
+                                        <span class="lesson-count">
+                                            <i class="fas fa-book-open"></i>
+                                            ${course.course.totalLesson} lessons
+                                        </span>
+                                        <a href="${pageContext.request.contextPath}/lesson?courseId=${course.course.courseID}" 
+                                           class="view-btn">
+                                            <span>
+                                                <i class="fas fa-play-circle"></i>
+                                                Continue Learning
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
 
-            <div class="pagination">
-                <c:if test="${currentPage > 1}">
-                    <a href="${pageContext.request.contextPath}/course?page=${currentPage - 1}
-                           ${not empty searchQuery ? '&search=' : ''}${searchQuery}
-                           ${not empty categoryFilter ? '&category=' : ''}${categoryFilter}
-                           ${not empty sortBy ? '&sort=' : ''}${sortBy}">←</a>
-                </c:if>
-                
-                <c:forEach begin="1" end="${totalPages}" var="i">
-                    <a href="${pageContext.request.contextPath}/course?page=${i}
-                           ${not empty searchQuery ? '&search=' : ''}${searchQuery}
-                           ${not empty categoryFilter ? '&category=' : ''}${categoryFilter}
-                           ${not empty sortBy ? '&sort=' : ''}${sortBy}"
-                       class="${currentPage == i ? 'active' : ''}">${i}</a>
-                </c:forEach>
-                
-                <c:if test="${currentPage < totalPages}">
-                    <a href="${pageContext.request.contextPath}/course?page=${currentPage + 1}
-                           ${not empty searchQuery ? '&search=' : ''}${searchQuery}
-                           ${not empty categoryFilter ? '&category=' : ''}${categoryFilter}
-                           ${not empty sortBy ? '&sort=' : ''}${sortBy}">→</a>
-                </c:if>
-            </div>
+                    <div class="pagination">
+                        <c:if test="${currentPage > 1}">
+                            <a href="${pageContext.request.contextPath}/my-courses?page=${currentPage - 1}
+                                   ${not empty searchQuery ? '&search=' : ''}${searchQuery}
+                                   ${not empty categoryFilter ? '&category=' : ''}${categoryFilter}
+                                   ${not empty sortBy ? '&sort=' : ''}${sortBy}">←</a>
+                        </c:if>
+                        
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <a href="${pageContext.request.contextPath}/my-courses?page=${i}
+                                   ${not empty searchQuery ? '&search=' : ''}${searchQuery}
+                                   ${not empty categoryFilter ? '&category=' : ''}${categoryFilter}
+                                   ${not empty sortBy ? '&sort=' : ''}${sortBy}"
+                               class="${currentPage == i ? 'active' : ''}">${i}</a>
+                        </c:forEach>
+                        
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="${pageContext.request.contextPath}/my-courses?page=${currentPage + 1}
+                                   ${not empty searchQuery ? '&search=' : ''}${searchQuery}
+                                   ${not empty categoryFilter ? '&category=' : ''}${categoryFilter}
+                                   ${not empty sortBy ? '&sort=' : ''}${sortBy}">→</a>
+                        </c:if>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 

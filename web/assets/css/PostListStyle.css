@@ -1,0 +1,376 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Mar 15, 2025, 5:39:39 PM
+    Author     : ASUS
+*/
+
+html, body {
+    height: 100vh; /* Chiều cao 100% màn hình */
+    overflow: hidden; /* Ẩn thanh cuộn */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* Bố cục chính gồm sidebar (20%) và nội dung (80%) */
+.main-container {
+    display: flex;
+    height: calc(100vh - 60px); /* Trừ chiều cao navbar/header */
+    width: 100%;
+    position: relative; /* Giữ phân trang ở cuối */
+}
+
+/* Sidebar */
+.sidebar {
+    min-height: 100vh;
+}
+
+.profile-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card .profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile-card h3 {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+.profile-card p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.social-icons a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    color: #6a1b9a;
+}
+
+/* Sidebar Menu */
+.menu-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.menu-sidebar li {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu-sidebar li i {
+    margin-right: 10px;
+}
+
+.menu-sidebar li:hover,
+.menu-sidebar .active {
+    background-color: #ff9800;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Content */
+.container-right {
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.container-sidebar{
+    width: 20%;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+
+}
+
+/* Table */
+.table-container {
+    flex-grow: 1; /* Cho phép mở rộng khi có nhiều blog */
+    overflow-y: auto; /* Chỉ cuộn phần nội dung */
+    max-height: calc(100vh - 160px); /* Giữ khoảng trống cho phân trang */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #6a1b9a;
+    color: white;
+}
+
+/* Buttons */
+.action-buttons button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.action-buttons button.delete {
+    background-color: red;
+}
+
+/* Modal Pop-up */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form chỉnh sửa */
+.container-post-blog {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 500px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin: 10px 0 5px;
+    display: block;
+}
+
+input, textarea, .editCategoryId{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* Nút đóng */
+.close {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+/* Nút gửi */
+.submit-but {
+    width: 100%;
+    padding: 10px;
+    background-color: #6c3fb1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-but:hover {
+    background-color: #218838;
+}
+
+#filter-form{
+    display: flex;
+}
+
+#filter-form select{
+    margin-right: 20px;
+}
+
+.action-buttons{
+    display: flex;
+
+}
+
+.action-buttons button{
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+}
+
+.editStatus{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Alert Styles */
+.alert2 {
+    position: fixed;
+    top: 13%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Success Message */
+.alert-success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Error Message */
+.alert-danger {
+    background-color: #ff3b3b;
+    color: white;
+}
+
+/* Close Button */
+.alert2 .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: black;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Hide Alert */
+.hide-alert {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+}
+
+/* Giữ phân trang cố định ở cuối */
+.pagination-container {
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+/* Định dạng phân trang */
+.pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background: #6a1b9a;
+    color: white;
+    transition: 0.3s;
+}
+
+.pagination a:hover {
+    background: #ff9800;
+}
+
+/* Nút phân trang active */
+.pagination .active a {
+    background: #ff9800;
+}
+
+.form-control2{
+    width: 178px;
+    border: #ced4da 1px solid;
+    
+}

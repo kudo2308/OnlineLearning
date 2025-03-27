@@ -121,7 +121,7 @@
                                                     <c:if test="${p.status == true}">
                                                         <a href="deletePackage?packageId=${p.packageID}" class="btn btn-danger">Delete</a>
                                                     </c:if>
-                                                    <a href="lessons?packageId=${p.packageID}" class="btn btn-danger">Lessons</a>
+                                                    <a href="lessons?packageId=${p.packageID}" class="btn btn-danger">View Lesson</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>

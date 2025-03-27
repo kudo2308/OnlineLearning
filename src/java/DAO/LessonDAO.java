@@ -77,7 +77,7 @@ public class LessonDAO extends DBContext {
 
                 Lesson lesson = new Lesson(lessionID, title, content,
                         lesstionType, videoUrl, documentUrl,
-                        duration, orderNumber, courseId, status,
+                        duration, orderNumber, courseId, packageId, status,
                         createdAt, updatedAt, course, packages);
 
                 return lesson;
@@ -136,7 +136,7 @@ public class LessonDAO extends DBContext {
 
                 Lesson lesson = new Lesson(lessionID, title, content,
                         lesstionType, videoUrl, documentUrl,
-                        duration, orderNumber, courseId, status,
+                        duration, orderNumber, courseId, packageId, status,
                         createdAt, updatedAt, course, packages);
 
                 listLesson.add(lesson);
@@ -407,7 +407,7 @@ public class LessonDAO extends DBContext {
 
                 Lesson lesson = new Lesson(lessonID, title, content,
                         lessonType, videoUrl, documentUrl,
-                        duration, orderNumber, courseId, status,
+                        duration, orderNumber, courseId, packageId, status,
                         createdAt, updatedAt, course, packages);
 
                 lessons.add(lesson);
@@ -510,7 +510,7 @@ public class LessonDAO extends DBContext {
 
                 Lesson lesson = new Lesson(lessionID, title, content,
                         lesstionType, videoUrl, documentUrl,
-                        duration, orderNumber, courseId, status,
+                        duration, orderNumber, courseId, packageId, status,
                         createdAt, updatedAt, course, packages);
 
                 list.add(lesson);

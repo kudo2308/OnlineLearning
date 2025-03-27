@@ -68,23 +68,21 @@
                         <p class="course-count">${totalCourse} Courses in Cart</p>
                     <c:forEach var="item" items="${cart}">
                         <div class="cart-item">
-                            <img src="${pageContext.request.contextPath}${item.course.imageUrl}" alt="Adobe Illustrator Course">
+                            <img src="${pageContext.request.contextPath}${item.course.imageUrl}" alt="Course">
                             <div class="course-details">
                                 <a href="${pageContext.request.contextPath}/coursedetail?courseId=${item.course.courseID}">${item.course.title}</a>
-                                <p>
-                                    <c:if test="${not empty item.course.expert}">
-                                        ${item.course.expert.fullName}
-                                    </c:if>
-                                </p>
-                                <!--                                <p>4 total hours | 13 lectures | All Levels</p>-->
+                                <p>${item.course.expert.fullName}</p>
                                 <form class="action-box" action="cart?action=delete&courseId=${item.course.courseID}" method="post">
                                     <button type="submit">Remove</button>
                                 </form>
-
                             </div>
                             <div class="price">
-                                <p class="discounted">${item.course.price}</p>
-                                <p class="original">₫399,000</p>
+                                <p class="discounted">
+                                    <fmt:formatNumber value="${item.course.discountPrice}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                </p>
+                                <p class="original">
+                                    <fmt:formatNumber value="${item.course.price}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                </p>
                             </div>
                             <form class="action-box" action="cart?action=delete&courseId=${item.course.courseID}" method="post">
                                 <button  type="submit">Remove</button>
@@ -92,30 +90,34 @@
 
                             <label class="checkbox-container">
                                 <input type="checkbox" class="course-checkbox" 
-
-                                       data-price="${item.course.price}" 
+                                       data-price="${item.course.discountPrice}" 
                                        data-course-id="${item.course.courseID}" 
                                        data-expert-id="${item.course.expertID}">
                             </label>
                         </div>
                     </c:forEach>
-
                 </div>
 
                 <div class="checkout-out">
                     <div class="checkout">
-                        <p class="total">Total: <span id="total-price"></span></p>
+                        <p class="total">Total: <span id="total-price">₫0</span></p>
+                        <p class="discounted-price">Discounted Price: <span id="discounted-price">₫0</span></p>
+
                         <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
 
                         <!-- Coupon Section -->
+                        <!-- Coupon Section -->
                         <div class="coupon">
                             <p>Promotions</p>
-                            <input type="text" placeholder="Enter Coupon">
-                            <button class="apply-btn">Apply</button>
+                            <form id="couponForm" action="javascript:void(0);" method="GET">
+                                <input id="couponCode" type="text" name="couponCode" placeholder="Enter Coupon">
+                                <button class="apply-btn" type="button">Apply</button>
+                            </form>
                         </div>
+
                     </div>
                 </div>
-                    
+
             </div>
         </div>
         <c:set var="error" value="${requestScope.error}" />

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Account;
@@ -324,12 +325,12 @@ public class BlogDAO extends DBContext {
 
     public boolean addBlog(Blog blog) {
         String sql = """
-                    INSERT INTO [dbo].[Blog] 
-                    ([Title], [Content], [AuthorID], [CategoryID], [ImageUrl], [Status], [CreatedAt], [UpdatedAt])
-                    VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE());
-                    """;
+                INSERT INTO [dbo].[Blog] 
+                ([Title], [Content], [AuthorID], [CategoryID], [ImageUrl], [Status], [CreatedAt], [UpdatedAt])
+                VALUES (?, ?, ?, ?, ?, ?, GETDATE(), GETDATE());
+                """;
 
-        try (Connection conn = connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connection; PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, blog.getTitle());
             ps.setString(2, blog.getContent());
@@ -339,12 +340,20 @@ public class BlogDAO extends DBContext {
             ps.setString(6, blog.getStatus());
 
             int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0; // Trả về true nếu thêm thành công
 
+            if (rowsAffected > 0) {
+                // Lấy khóa tự động (BlogID) sau khi thêm bản ghi thành công
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        blog.setBlogId(generatedKeys.getInt(1));  // Lấy BlogID và gán cho đối tượng blog
+                        return true;  // Trả về true nếu thành công
+                    }
+                }
+            }
         } catch (SQLException ex) {
             System.out.println("Lỗi khi thêm blog: " + ex.getMessage());
         }
-        return false;
+        return false; // Trả về false nếu có lỗi xảy ra
     }
 
     public List<Blog> getBlogByUserId(int userId) {
@@ -409,7 +418,7 @@ public class BlogDAO extends DBContext {
         }
     }
 
-    public void updateBlog(Blog blog) {
+    public boolean updateBlog(Blog blog) {
         String sql = "UPDATE Blog SET Title = ?, Content = ?, ImageUrl = ?, CategoryID = ?, Status = ?, UpdatedAt = GETDATE() WHERE BlogID = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -423,39 +432,102 @@ public class BlogDAO extends DBContext {
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("Blog updated successfully.");
+                return true;
             } else {
-                System.out.println("No blog updated. Check permissions.");
+                return false;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false; // Trả về false nếu có lỗi xảy ra
+    }
+
+    public List<Blog> getAllBlogsAdmin() {
+        List<Blog> blogList = new ArrayList<>();
+        String sql = """
+                    SELECT b.[BlogID]
+                          ,b.[Title]
+                          ,b.[Content]
+                          ,b.[AuthorID]
+                          ,b.[CategoryID]
+                          ,b.[ImageUrl]
+                          ,b.[Status]
+                          ,b.[CreatedAt]
+                          ,b.[UpdatedAt]
+                          ,a.FullName as AuthorName
+                          ,cat.Name as CategoryName
+                    FROM [dbo].[Blog] b
+                    JOIN [dbo].[Account] a ON b.AuthorID = a.UserID
+                    JOIN [dbo].[Category] cat ON b.CategoryID = cat.CategoryID
+                    ORDER BY b.[BlogID]
+
+                    """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setBlogId(rs.getInt("BlogID"));
+                blog.setTitle(rs.getString("Title"));
+                blog.setContent(rs.getString("Content"));
+                blog.setAuthorId(rs.getInt("AuthorID"));
+                blog.setCategoryID(rs.getInt("CategoryID"));
+                blog.setImgUrl(rs.getString("ImageUrl"));
+                blog.setStatus(rs.getString("Status"));
+                blog.setCreateAt(rs.getDate("CreatedAt"));
+                blog.setUpdateAt(rs.getDate("UpdatedAt"));
+
+                Account author = new Account();
+                author.setFullName(rs.getString("AuthorName"));
+                blog.setAuthor(author);
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                blog.setCategory(category);
+
+                blogList.add(blog);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return blogList;
+    }
+
+    public boolean updateBlogStatus(int blogId, String status) {
+        String sql = "UPDATE [dbo].[Blog] SET [Status] = ? WHERE [BlogID] = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, blogId);
+
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;  // Nếu có dòng nào được cập nhật, trả về true
+        } catch (SQLException ex) {
+            System.out.println("Lỗi khi cập nhật trạng thái blog: " + ex.getMessage());
+            return false;
+        }
     }
 
     public static void main(String[] args) {
-        BlogDAO blogDAO = new BlogDAO();
+        BlogDAO dao = new BlogDAO();
+        Blog blog = new Blog();
+        blog.setTitle("Learning Java");
+        blog.setContent("This is a tutorial on how to learn Java.");
+        blog.setAuthorId(1); // Ví dụ, giả sử AuthorID là 1
+        blog.setCategoryID(2); // Ví dụ, giả sử CategoryID là 2
+        blog.setImgUrl("/images/java_tutorial.jpg");
+        blog.setStatus("Public");
 
-        // Chọn Blog ID để cập nhật
+        // Thêm blog vào cơ sở dữ liệu
+        boolean isAdded = dao.addBlog(blog);
 
-        // Lấy blog từ database
-        Blog blog = blogDAO.getBlogByBlogId(9);
-        
-        System.out.println(blog);
-        
-        if (blog != null) {
-            // Cập nhật thông tin mới cho blog
-            blog.setTitle("Updated Blog Title");
-            blog.setContent("This is the updated content of the blog.");
-            blog.setCategoryID(2); // Giả sử category ID mới là 2
-            blog.setStatus("public"); // Hoặc "private"
-
-            // Nếu cần cập nhật ảnh mới (giữ nguyên nếu không có ảnh mới)
-            String newImageUrl = "/assets/images/blog/new-image.jpg"; // Giả sử có ảnh mới
-            blog.setImgUrl(newImageUrl);
-
-            // Gọi phương thức update
-            blogDAO.updateBlog(blog);
+        // Kiểm tra kết quả
+        if (isAdded) {
+            System.out.println("Blog added successfully!");
+            System.out.println("Blog ID: " + blog.getBlogId());  // In ra BlogID của blog mới thêm
+        } else {
+            System.out.println("Failed to add the blog.");
         }
     }
 }
