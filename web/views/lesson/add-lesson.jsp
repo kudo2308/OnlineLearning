@@ -135,12 +135,12 @@
                                                 <input class="form-control" type="text" name="documentUrl">
                                             </div>
                                         </div>
-                                        <div class="form-group col-6">
+<!--                                        <div class="form-group col-6">
                                             <label class="col-form-label">Order Number</label>
                                             <div>
                                                 <input required class="form-control" type="number" name="orderNumber">
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Status</label>
                                             <div>

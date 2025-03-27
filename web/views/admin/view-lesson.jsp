@@ -135,26 +135,38 @@
             </div>
         </main>
         <jsp:include page="../../common/pagination.jsp"></jsp:include>
-        <div class="ttr-overlay"></div>
+            <div class="ttr-overlay"></div>
 
-        <!-- External JavaScripts -->
-        <script src="assets/admin/assets/js/jquery.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-        <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-        <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
-        <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
-        <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
-        <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
-        <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
-        <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
-        <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
-        <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
-        <script src="assets/admin/assets/js/functions.js"></script>
-        <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
-        <script src="assets/admin/assets/js/admin.js"></script>
-        <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
+            <!-- External JavaScripts -->
+            <script src="assets/admin/assets/js/jquery.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+            <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+            <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
+            <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
+            <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+            <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
+            <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
+            <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+            <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+            <script src="assets/admin/assets/js/functions.js"></script>
+            <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
+            <script src="assets/admin/assets/js/admin.js"></script>
+            <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
+            <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <c:if test="${message != null}">
+            <script type="text/javascript">
+                toastr.success(`${message}`, 'Success', {timeOut: 1000});
+            </script>
+        </c:if>
+        <c:if test="${errorMessage != null}">
+            <script type="text/javascript">
+                toastr.error(`${errorMessage}`, 'Error', {timeOut: 2000});
+            </script>
+        </c:if>
     </body>
 
     <!-- Mirrored from educhamp.themetrades.com/demo/admin/courses.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:11:35 GMT -->
