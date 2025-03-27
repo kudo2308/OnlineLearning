@@ -70,7 +70,7 @@ public class AddLesson extends HttpServlet {
 
             Lesson lesson = new Lesson(0, title, content, lessonType,
                     ConvertInput.convertToEmbedURL(videoUrl), documentUrl, YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl), orderNumber,
-                    courseIdOfPackages, status, null, null, course, pack);
+                    courseIdOfPackages, packageId, status, null, null, course, pack);
 
             if (lessonDAO.addLesson(lesson)) {
                 

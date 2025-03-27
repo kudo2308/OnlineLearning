@@ -78,6 +78,76 @@
                 font-size: 0.875rem;
             }
 
+            /* Package Styles */
+            .package-header {
+                padding: 1rem;
+                background-color: #f3f4f6;
+                border-left: 4px solid var(--primary-color);
+                margin-bottom: 0.5rem;
+                margin-top: 1.5rem;
+            }
+            
+            .package-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--text-color);
+                margin: 0;
+            }
+            
+            /* Lesson Styles */
+            .lesson-list {
+                list-style: none;
+                padding: 0;
+                margin: 0 0 0 1rem;
+            }
+            
+            .lesson-item {
+                margin-bottom: 0.5rem;
+            }
+            
+            .lesson-link {
+                display: block;
+                padding: 0.75rem 1rem;
+                border-radius: 0.5rem;
+                color: var(--text-color);
+                text-decoration: none;
+                transition: all 0.2s ease;
+                border: 1px solid transparent;
+            }
+            
+            .lesson-link:hover {
+                background: rgba(79, 70, 229, 0.05);
+                border-color: var(--primary-light);
+                transform: translateX(2px);
+            }
+            
+            .lesson-link.active {
+                background: var(--primary-color);
+                color: white;
+                transform: translateX(4px);
+                box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+            }
+            
+            .lesson-info {
+                flex: 1;
+            }
+            
+            .lesson-name {
+                font-weight: 500;
+                margin-bottom: 0.25rem;
+                line-height: 1.4;
+            }
+            
+            .lesson-duration {
+                font-size: 0.875rem;
+                color: var(--text-light);
+            }
+            
+            .active .lesson-duration {
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            /* Lesson List Styles */
             .lesson-list {
                 list-style: none;
                 padding: 0;
@@ -136,6 +206,12 @@
                 line-height: 1.4;
             }
 
+            .lesson-package {
+                font-size: 0.875rem;
+                color: var(--primary-color);
+                margin-bottom: 0.25rem;
+            }
+
             .lesson-duration {
                 font-size: 0.875rem;
                 color: var(--text-light);
@@ -158,18 +234,17 @@
                 line-height: 1.3;
             }
 
-            /* Video Container */
+            /* Video Container Styles */
             .video-container {
                 position: relative;
-                padding-bottom: 56.25%;
+                width: 100%;
                 height: 0;
-                overflow: hidden;
-                border-radius: 0.75rem;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                padding-bottom: 56.25%; /* 16:9 aspect ratio */
                 margin-bottom: 2rem;
-                background: #000;
+                background-color: #000;
+                overflow: hidden;
             }
-
+            
             .video-container iframe {
                 position: absolute;
                 top: 0;
@@ -177,6 +252,37 @@
                 width: 100%;
                 height: 100%;
                 border: none;
+            }
+            
+            .fullscreen-button {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 8px 12px;
+                cursor: pointer;
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            
+            .fullscreen-button:hover {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+            
+            /* When in fullscreen mode */
+            .video-container.fullscreen {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                padding-bottom: 0;
+                z-index: 9999;
             }
 
             /* Lesson Content */
@@ -199,68 +305,126 @@
             }
 
             .video-update-form h3 {
-                color: var(--text-color);
                 font-size: 1.25rem;
                 font-weight: 600;
                 margin-bottom: 1rem;
+                color: var(--text-color);
             }
 
-            .video-update-form form {
-                display: flex;
-                gap: 1rem;
-                align-items: flex-start;
+            .form-group {
+                margin-bottom: 1rem;
             }
 
-            .video-update-form input[type="text"] {
-                flex: 1;
+            .form-label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+                color: var(--text-color);
+            }
+
+            .form-control {
+                width: 100%;
                 padding: 0.75rem;
-                border: 1px solid var(--border-color);
                 border-radius: 0.5rem;
-                font-size: 0.875rem;
-                transition: border-color 0.2s;
+                border: 1px solid var(--border-color);
+                background-color: white;
+                font-size: 1rem;
+                transition: border-color 0.2s ease;
             }
 
-            .video-update-form input[type="text"]:focus {
+            .form-control:focus {
                 outline: none;
-                border-color: var(--primary-light);
-                box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
             }
 
-            .video-update-form button {
-                padding: 0.75rem 1.5rem;
-                background: var(--primary-color);
+            .btn-primary {
+                background-color: var(--primary-color);
                 color: white;
                 border: none;
+                padding: 0.75rem 1.5rem;
                 border-radius: 0.5rem;
                 font-weight: 500;
                 cursor: pointer;
-                transition: all 0.2s;
+                transition: background-color 0.2s ease;
             }
 
-            .video-update-form button:hover {
-                background: var(--primary-dark);
-                transform: translateY(-1px);
+            .btn-primary:hover {
+                background-color: var(--primary-dark);
             }
 
-            .video-update-form small {
-                display: block;
-                margin-top: 0.5rem;
-                color: var(--text-light);
-                font-size: 0.75rem;
+            /* Document Links */
+            .document-links {
+                margin-top: 2rem;
             }
 
-            .error-message {
-                color: #dc2626;
-                margin-top: 0.75rem;
+            .document-links h3 {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                color: var(--text-color);
+            }
+
+            .document-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 1rem 1.5rem;
+                background-color: white;
+                border: 1px solid var(--border-color);
+                border-radius: 0.5rem;
+                color: var(--text-color);
+                text-decoration: none;
+                margin-right: 1rem;
+                margin-bottom: 1rem;
+                transition: all 0.2s ease;
+            }
+
+            .document-link:hover {
+                border-color: var(--primary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .document-icon {
+                font-size: 1.5rem;
+                color: var(--primary-color);
+            }
+
+            /* Breadcrumb */
+            .breadcrumb {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1.5rem;
                 font-size: 0.875rem;
             }
 
-            /* Navigation */
+            .breadcrumb a {
+                color: var(--text-light);
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+            .breadcrumb a:hover {
+                color: var(--primary-color);
+            }
+
+            .breadcrumb-separator {
+                margin: 0 0.5rem;
+                color: var(--text-light);
+            }
+
+            .breadcrumb-current {
+                font-weight: 500;
+                color: var(--text-color);
+            }
+
+            /* Lesson Navigation */
             .lesson-navigation {
                 display: flex;
                 justify-content: space-between;
                 margin-top: 2rem;
-                padding-top: 2rem;
+                padding-top: 1.5rem;
                 border-top: 1px solid var(--border-color);
             }
 
@@ -268,157 +432,126 @@
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                padding: 0.75rem 1.5rem;
-                background: white;
+                padding: 0.75rem 1.25rem;
+                background-color: white;
                 border: 1px solid var(--border-color);
                 border-radius: 0.5rem;
                 color: var(--text-color);
                 text-decoration: none;
                 font-weight: 500;
-                transition: all 0.2s;
+                transition: all 0.2s ease;
             }
 
             .nav-button:hover {
-                background: var(--bg-light);
-                border-color: var(--primary-light);
-                transform: translateY(-1px);
+                border-color: var(--primary-color);
+                color: var(--primary-color);
             }
 
             .nav-button.disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
-                pointer-events: none;
             }
 
-            /* Responsive Design */
-            @media (max-width: 1024px) {
-                :root {
-                    --sidebar-width: 280px;
-                }
+            .nav-button.next {
+                background-color: var(--primary-color);
+                color: white;
             }
 
-            @media (max-width: 768px) {
-                .lesson-container {
-                    flex-direction: column;
-                }
-
-                .lesson-sidebar {
-                    position: fixed;
-                    width: 100%;
-                    height: auto;
-                    top: 0;
-                }
-
-                .lesson-content {
-                    margin-left: 0;
-                    max-width: 100%;
-                    padding: 1.5rem;
-                }
-
-                .video-update-form form {
-                    flex-direction: column;
-                }
-
-                .video-update-form button {
-                    width: 100%;
-                }
+            .nav-button.next:hover {
+                background-color: var(--primary-dark);
+            }
+            
+            .nav-button.quiz-button {
+                background-color: #28a745;
+                border-color: #28a745;
+            }
+            
+            .nav-button.quiz-button:hover {
+                background-color: #218838;
+                border-color: #1e7e34;
             }
 
-            /* Document Link Styles */
-            .document-link {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 1rem 1.5rem;
-                background-color: #f8fafc;
-                border: 1px solid #e2e8f0;
+            /* Video error styles */
+            .video-error {
+                padding: 2rem;
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
                 border-radius: 0.5rem;
-                color: var(--text-color);
-                text-decoration: none;
-                font-weight: 500;
-                transition: all 0.2s ease;
+                text-align: center;
+                margin: 1rem 0;
             }
-
-            .document-link:hover {
-                background-color: #f1f5f9;
-                border-color: var(--primary-light);
-                transform: translateY(-2px);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            
+            .video-error p {
+                margin-bottom: 0.5rem;
             }
-
-            .document-link i {
+            
+            .video-error a {
                 color: var(--primary-color);
-                font-size: 1.1rem;
+                text-decoration: underline;
             }
 
-            .document-link i.fa-external-link-alt {
-                font-size: 0.9rem;
-                opacity: 0.7;
-            }
-
-            /* Breadcrumb Styles */
-            .breadcrumb {
+            /* Modal Styles */
+            .modal {
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
-                padding: 1.25rem 1.75rem;
+                justify-content: center;
+            }
+            
+            .modal-content {
                 background-color: white;
-                border-radius: 0.75rem;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-                margin-bottom: 2rem;
-                font-size: 1rem;
+                padding: 2rem;
+                border-radius: 0.5rem;
+                max-width: 500px;
+                width: 90%;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                position: relative;
+                text-align: center;
             }
-
-            .breadcrumb a {
-                color: var(--primary-color);
+            
+            .close-button {
+                position: absolute;
+                top: 0.5rem;
+                right: 1rem;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+            
+            #quizInfo {
+                margin-top: 1.5rem;
+            }
+            
+            #startQuizButton {
+                display: inline-block;
+                margin-top: 1.5rem;
                 text-decoration: none;
-                font-weight: 500;
-                transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.25rem 0.5rem;
-                border-radius: 0.5rem;
+                border-radius: 0.25rem;
             }
-
-            .breadcrumb a:hover {
-                color: var(--primary-dark);
-                background-color: rgba(79, 70, 229, 0.1);
+            
+            .lesson-link.quiz-link {
+                background-color: #f8f9fa;
+                border-left: 3px solid #28a745;
             }
-
-            .breadcrumb span {
-                color: var(--text-light);
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
+            
+            .lesson-link.quiz-link:hover {
+                background-color: #e9ecef;
+                border-color: #218838;
             }
-
-            .breadcrumb .current-page {
-                color: var(--text-color);
+            
+            .lesson-link.quiz-link .lesson-name {
+                color: #28a745;
                 font-weight: 600;
-                font-size: 1.1rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.25rem 0.5rem;
-                background-color: #f8fafc;
-                border-radius: 0.5rem;
             }
-
-            .breadcrumb i {
-                font-size: 1.1rem;
-                color: var(--text-light);
-            }
-
-            .breadcrumb i.fa-home {
-                font-size: 1.25rem;
-                color: var(--primary-color);
-            }
-
-            .breadcrumb i.fa-chevron-right {
-                opacity: 0.5;
-                font-size: 0.9rem;
-                margin: 0 0.25rem;
+            
+            .lesson-item.quiz-item {
+                margin-top: 8px;
+                margin-bottom: 8px;
             }
         </style>
     </head>
@@ -428,41 +561,102 @@
             <div class="lesson-sidebar">
                 <div class="course-info">
                     <h2 class="course-title">${currentLesson.course.title}</h2>
-                    <p class="course-progress">${fn:length(lessonList)} lessons</p>
+                    <div class="course-progress">
+                        <span>${courseProgress}% completed</span>
+                    </div>
                 </div>
-                <ul class="lesson-list">
+                
+                <!-- Lessons grouped by package -->
+                <div class="package-lessons">
+                    <c:set var="currentPackageId" value="0" />
+                    
                     <c:forEach items="${lessonList}" var="lesson" varStatus="status">
+                        <c:if test="${currentPackageId != lesson.packages.packageID}">
+                            <c:if test="${currentPackageId != 0}">
+                                <!-- Check for quiz at the end of the package -->
+                                <c:set var="packageQuiz" value="${null}" />
+                                <c:forEach items="${quizList}" var="quiz">
+                                    <c:if test="${quiz.packageID == currentPackageId}">
+                                        <c:set var="packageQuiz" value="${quiz}" />
+                                    </c:if>
+                                </c:forEach>
+                                
+                                <c:if test="${packageQuiz != null}">
+                                    <li class="lesson-item quiz-item">
+                                        <a href="${pageContext.request.contextPath}/Test?action=take&id=${packageQuiz.quizID}" 
+                                           class="lesson-link quiz-link">
+                                            <div class="lesson-info">
+                                                <div class="lesson-name"><i class="fas fa-check-circle"></i> Quiz: ${packageQuiz.name}</div>
+                                                <div class="lesson-duration">${packageQuiz.duration} minutes</div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </c:if>
+                                </ul>
+                            </c:if>
+                            
+                            <div class="package-header">
+                                <h3 class="package-title">Package: ${lesson.packages.name}</h3>
+                            </div>
+                            
+                            <ul class="lesson-list">
+                            <c:set var="currentPackageId" value="${lesson.packages.packageID}" />
+                        </c:if>
+                        
                         <li class="lesson-item">
-                            <a href="${pageContext.request.contextPath}/lesson?courseId=${courseId}&lessonId=${lesson.lessonID}" 
+                            <a href="${pageContext.request.contextPath}/lesson?id=${lesson.lessonID}" 
                                class="lesson-link ${lesson.lessonID == currentLesson.lessonID ? 'active' : ''}">
-                                <span class="lesson-number">${status.index + 1}</span>
                                 <div class="lesson-info">
-                                    <div class="lesson-name">${lesson.title}</div>
-                                    <div class="lesson-duration">${lesson.duration} min</div>
+                                    <div class="lesson-name">Lesson: ${lesson.title}</div>
+                                    <div class="lesson-duration">${lesson.duration} minutes</div>
                                 </div>
                             </a>
                         </li>
+                        
+                        <c:if test="${status.last}">
+                            <!-- Check for quiz at the end of the last package -->
+                            <c:set var="packageQuiz" value="${null}" />
+                            <c:forEach items="${quizList}" var="quiz">
+                                <c:if test="${quiz.packageID == currentPackageId}">
+                                    <c:set var="packageQuiz" value="${quiz}" />
+                                </c:if>
+                            </c:forEach>
+                            
+                            <c:if test="${packageQuiz != null}">
+                                <li class="lesson-item quiz-item">
+                                    <a href="${pageContext.request.contextPath}/Test?action=take&id=${packageQuiz.quizID}" 
+                                       class="lesson-link quiz-link">
+                                        <div class="lesson-info">
+                                            <div class="lesson-name"><i class="fas fa-check-circle"></i> Quiz: ${packageQuiz.name}</div>
+                                            <div class="lesson-duration">${packageQuiz.duration} minutes</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </c:if>
+                            </ul>
+                        </c:if>
                     </c:forEach>
-                </ul>
+                </div>
             </div>
-
+            
             <!-- Main Content -->
             <div class="lesson-content">
                 <!-- Breadcrumb -->
                 <nav class="breadcrumb" aria-label="breadcrumb">
-                    <a href="${pageContext.request.contextPath}/course">
-                        <i class="fas fa-home"></i>
+                    <a href="${pageContext.request.contextPath}/my-courses">
+                        <i class="fas fa-home"></i> 
                         <span>Courses</span>
                     </a>
-                    <i class="fas fa-chevron-right"></i>
+                    <span class="breadcrumb-separator">/</span>
                     <a href="${pageContext.request.contextPath}/coursedetail?courseId=${courseId}">
                         ${currentLesson.course.title}
                     </a>
-                    <i class="fas fa-chevron-right"></i>
-                    <span class="current-page">
-                        <i class="fas fa-chevron-right"></i>
-                        ${currentLesson.title}
-                    </span>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="#">
+                        <i class="fas fa-folder"></i> ${currentLesson.packages.name}
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-current">${currentLesson.title}</span>
                 </nav>
 
                 <!-- Lesson Header -->
@@ -470,118 +664,319 @@
                     <h1 class="lesson-title">${currentLesson.title}</h1>
                 </div>
 
-                <!-- Video Section -->
+                <!-- Video Container (if video lesson) -->
                 <c:if test="${not empty currentLesson.videoUrl}">
                     <div class="video-container">
-                        <c:set var="videoUrl" value="${currentLesson.videoUrl}" />
                         <c:choose>
-                            <c:when test="${fn:contains(videoUrl, 'youtu.be/') || fn:contains(videoUrl, 'youtube.com/')}">
-                                <!-- Handle YouTube URLs -->
-                                <c:choose>
-                                    <c:when test="${fn:contains(videoUrl, 'youtu.be/')}">
-                                        <c:set var="videoId" value="${fn:substring(videoUrl, fn:indexOf(videoUrl, 'youtu.be/') + 9, fn:length(videoUrl))}" />
-                                    </c:when>
-                                    <c:when test="${fn:contains(videoUrl, 'watch?v=')}">
-                                        <c:set var="videoId" value="${fn:substring(videoUrl, fn:indexOf(videoUrl, 'watch?v=') + 8, fn:indexOf(videoUrl, '&') > 0 ? fn:indexOf(videoUrl, '&') : fn:length(videoUrl))}" />
-                                    </c:when>
-                                </c:choose>
+                            <c:when test="${fn:contains(currentLesson.videoUrl, 'youtube.com') || fn:contains(currentLesson.videoUrl, 'youtu.be')}">
+                                <!-- Extract video ID directly using simpler approach -->
+                                <c:set var="videoId" value="" />
+                                
+                                <c:if test="${fn:contains(currentLesson.videoUrl, 'watch?v=')}">
+                                    <c:set var="videoId" value="${fn:substringAfter(currentLesson.videoUrl, 'watch?v=')}" />
+                                    <c:if test="${fn:contains(videoId, '&')}">
+                                        <c:set var="videoId" value="${fn:substringBefore(videoId, '&')}" />
+                                    </c:if>
+                                </c:if>
+                                
+                                <c:if test="${fn:contains(currentLesson.videoUrl, 'youtu.be/')}">
+                                    <c:set var="videoId" value="${fn:substringAfter(currentLesson.videoUrl, 'youtu.be/')}" />
+                                    <c:if test="${fn:contains(videoId, '?')}">
+                                        <c:set var="videoId" value="${fn:substringBefore(videoId, '?')}" />
+                                    </c:if>
+                                </c:if>
+                                
                                 <iframe 
-                                    src="https://www.youtube.com/embed/${videoId}"
-                                    title="${currentLesson.title}"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen>
+                                    id="youtube-player"
+                                    src="https://www.youtube.com/embed/${videoId}" 
+                                    title="${currentLesson.title}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%;">
                                 </iframe>
                             </c:when>
                             <c:otherwise>
-                                <!-- Handle local video files -->
-                                <video controls width="100%">
-                                    <source src="${pageContext.request.contextPath}${videoUrl}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <!-- For non-YouTube videos -->
+                                <iframe 
+                                    src="${currentLesson.videoUrl}" 
+                                    title="${currentLesson.title}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%;">
+                                </iframe>
                             </c:otherwise>
                         </c:choose>
+                      
                     </div>
                 </c:if>
 
                 <!-- Lesson Content -->
                 <div class="lesson-text-content">
-
-                    <a href="${currentLesson.documentUrl}"/>${currentLesson.documentUrl}</a>
-                    <a href="${currentLesson.documentUrl}" class="document-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Tài liệu tham khảo</span>
-                        <i class="fas fa-external-link-alt"></i>
-                    </a>
+                    ${currentLesson.content}
                 </div>
 
-                <!-- Navigation Buttons -->
+                <!-- Document Links (if any) -->
+                <c:if test="${not empty currentLesson.documentUrl}">
+                    <div class="document-links">
+                        <h3>Tài liệu tham khảo</h3>
+                        <a href="${currentLesson.documentUrl}" class="document-link" target="_blank">
+                            <span class="document-icon"><i class="fas fa-file-pdf"></i></span>
+                            <span>Download Lesson PDF</span>
+                        </a>
+                    </div>
+                </c:if>
+
+                <!-- Lesson Navigation -->
                 <div class="lesson-navigation">
-                    <c:if test="${not empty previousLesson}">
-                        <a href="${pageContext.request.contextPath}/lesson?courseId=${courseId}&lessonId=${previousLesson.lessonID}" 
-                           class="nav-button prev-button">
+                    <c:if test="${not empty prevLesson}">
+                        <a href="${pageContext.request.contextPath}/lesson?id=${prevLesson.lessonID}" class="nav-button prev">
                             <i class="fas fa-arrow-left"></i>
-                            <span>Previous: ${previousLesson.title}</span>
+                            <span>Previous Lesson</span>
                         </a>
                     </c:if>
-                    <c:if test="${not empty nextLesson}">
-                        <a href="${pageContext.request.contextPath}/lesson?courseId=${courseId}&lessonId=${nextLesson.lessonID}" 
-                           class="nav-button next-button">
-                            <span>Next: ${nextLesson.title}</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </c:if>
+                    
+                    <!-- Debug info (hidden) -->
+                    <div style="display: none;">
+                        <p>packageCompleted: ${packageCompleted}</p>
+                        <p>hasQuiz: ${hasQuiz}</p>
+                        <p>nextLesson: ${not empty nextLesson}</p>
+                        <c:if test="${hasQuiz == true}">
+                            <p>quizInfo: ${quizInfo.quizID} - ${quizInfo.name}</p>
+                        </c:if>
+                    </div>
+                    
+                    <c:choose>
+                        <c:when test="${not empty nextLesson}">
+                            <a href="${pageContext.request.contextPath}/lesson?id=${nextLesson.lessonID}" class="nav-button next">
+                                <span>Next Lesson</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </c:when>
+                        <c:when test="${packageCompleted == true && hasQuiz == true}">
+                            <a href="${pageContext.request.contextPath}/Test?action=take&id=${quizInfo.quizID}" class="nav-button next quiz-button">
+                                <span>Test Quiz</span>
+                                <i class="fas fa-check-circle"></i>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/my-courses" class="nav-button next">
+                                <span>Finish Course</span>
+                                <i class="fas fa-check"></i>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
-                <style>
-                    .lesson-navigation {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-top: 2rem;
-                        gap: 1rem;
-                    }
-
-                    .nav-button {
-                        display: flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                        padding: 0.75rem 1.5rem;
-                        background-color: var(--primary-color);
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 0.5rem;
-                        transition: all 0.2s ease;
-                    }
-
-                    .nav-button:hover {
-                        background-color: var(--primary-dark);
-                        transform: translateY(-2px);
-                    }
-
-                    .prev-button {
-                        margin-right: auto;
-                    }
-
-                    .next-button {
-                        margin-left: auto;
-                    }
-
-                    .nav-button i {
-                        font-size: 1.1rem;
-                    }
-
-                    @media (max-width: 640px) {
-                        .lesson-navigation {
-                            flex-direction: column;
-                        }
-
-                        .nav-button {
-                            width: 100%;
-                            justify-content: center;
-                        }
-                    }
-                </style>
             </div>
         </div>
 
+        <!-- Quiz Modal -->
+        <div id="quizModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Congratulations!</h2>
+                <p>You have completed all lessons in this package.</p>
+                <div id="quizInfo">
+                    <h3>Ready for a Quiz?</h3>
+                    <p id="quizDescription"></p>
+                    <p><strong>Duration:</strong> <span id="quizDuration"></span> minutes</p>
+                    <a id="startQuizButton" href="#" class="btn-primary">Start Quiz</a>
+                </div>
+            </div>
+        </div>
 
+        <!-- Hidden quiz data if available -->
+        <c:if test="${packageCompleted == true && hasQuiz == true}">
+            <div id="quizData" 
+                 data-quiz-id="${quizInfo.quizID}" 
+                 data-quiz-name="${quizInfo.name}" 
+                 data-quiz-description="${quizInfo.description}" 
+                 data-quiz-duration="${quizInfo.duration}"
+                 style="display: none;">
+            </div>
+        </c:if>
+
+        <script>
+            const videoContainer = document.querySelector('.video-container');
+            const fullscreenButton = document.querySelector('.fullscreen-button');
+
+            if (fullscreenButton) {
+                fullscreenButton.addEventListener('click', () => {
+                    if (videoContainer.classList.contains('fullscreen')) {
+                        videoContainer.classList.remove('fullscreen');
+                        fullscreenButton.textContent = 'Enter Fullscreen';
+                    } else {
+                        videoContainer.classList.add('fullscreen');
+                        fullscreenButton.textContent = 'Exit Fullscreen';
+                    }
+                });
+            }
+            
+            // Check if package is completed and has quiz when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const quizDataElement = document.getElementById('quizData');
+                if (quizDataElement) {
+                    // Get quiz data from the hidden element
+                    const quizInfo = {
+                        quizId: quizDataElement.getAttribute('data-quiz-id'),
+                        name: quizDataElement.getAttribute('data-quiz-name'),
+                        description: quizDataElement.getAttribute('data-quiz-description'),
+                        duration: quizDataElement.getAttribute('data-quiz-duration')
+                    };
+                    showQuizModal(quizInfo);
+                }
+            });
+            
+            // YouTube API integration for tracking video progress
+            let player;
+            let videoCompleted = false;
+            let videoTotalTime = 0;
+            let progressCheckInterval;
+            let lessonId = "${currentLesson.lessonID}";
+            
+            // Load YouTube API
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            // Create YouTube player when API is ready
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('youtube-player', {
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+            
+            // When player is ready, get video duration
+            function onPlayerReady(event) {
+                videoTotalTime = player.getDuration();
+                console.log("Video duration: " + videoTotalTime + " seconds");
+            }
+            
+            // Track video state changes
+            function onPlayerStateChange(event) {
+                // When video starts playing
+                if (event.data == YT.PlayerState.PLAYING) {
+                    startProgressTracking();
+                }
+                
+                // When video is paused
+                if (event.data == YT.PlayerState.PAUSED) {
+                    stopProgressTracking();
+                    checkVideoProgress();
+                }
+                
+                // When video ends
+                if (event.data == YT.PlayerState.ENDED) {
+                    stopProgressTracking();
+                    markLessonAsComplete();
+                }
+            }
+            
+            // Start tracking progress
+            function startProgressTracking() {
+                if (!progressCheckInterval) {
+                    progressCheckInterval = setInterval(checkVideoProgress, 5000); // Check every 5 seconds
+                }
+            }
+            
+            // Stop tracking progress
+            function stopProgressTracking() {
+                if (progressCheckInterval) {
+                    clearInterval(progressCheckInterval);
+                    progressCheckInterval = null;
+                }
+            }
+            
+            // Check video progress and mark as complete if 80% watched
+            function checkVideoProgress() {
+                if (player && !videoCompleted) {
+                    const currentTime = player.getCurrentTime();
+                    const progressPercent = (currentTime / videoTotalTime) * 100;
+                    console.log("Video progress: " + progressPercent.toFixed(2) + "%");
+                    
+                    // Update progress bar
+                    updateProgressBar(progressPercent);
+                    
+                    // If watched 80% or more, mark as complete
+                    if (progressPercent >= 80) {
+                        markLessonAsComplete();
+                    }
+                }
+            }
+            
+            // Update progress bar
+            function updateProgressBar(percent) {
+                // You can implement a visual progress bar here if needed
+                console.log("Updating progress bar: " + percent.toFixed(2) + "%");
+            }
+            
+            // Mark lesson as complete
+            function markLessonAsComplete() {
+                if (!videoCompleted) {
+                    videoCompleted = true;
+                    console.log("Lesson marked as complete!");
+                    
+                    // Call API to update lesson progress
+                    fetch('${pageContext.request.contextPath}/lesson-progress', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `lessonId=${lessonId}&completed=true`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Progress updated:", data);
+                        
+                        // Update course progress display
+                        if (data.courseProgress) {
+                            document.querySelector('.progress-bar-fill').style.width = data.courseProgress + '%';
+                            document.querySelector('.progress-text').textContent = data.courseProgress + '%';
+                        }
+                        
+                        // Check if package is completed and quiz is available
+                        if (data.packageCompleted && data.hasQuiz) {
+                            showQuizModal(data.quizInfo);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error updating progress:", error);
+                    });
+                }
+            }
+            
+            // Show quiz modal
+            function showQuizModal(quizInfo) {
+                const modal = document.getElementById('quizModal');
+                const quizDescription = document.getElementById('quizDescription');
+                const quizDuration = document.getElementById('quizDuration');
+                const startQuizButton = document.getElementById('startQuizButton');
+                
+                // Set quiz information
+                quizDescription.textContent = quizInfo.description;
+                quizDuration.textContent = quizInfo.duration;
+                startQuizButton.href = '${pageContext.request.contextPath}/Test?action=take&id=' + quizInfo.quizId;
+                
+                // Show modal
+                modal.style.display = 'flex';
+                
+                // Close modal when clicking the close button
+                document.querySelector('.close-button').addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+                
+                // Close modal when clicking outside the modal content
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        </script>
     </body>
 </html>

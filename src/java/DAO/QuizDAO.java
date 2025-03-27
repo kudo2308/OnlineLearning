@@ -86,6 +86,76 @@ public class QuizDAO extends DBContext{
         return null;
     }
     
+    public Quiz getQuizByPackageId(int packageId) {
+        String query = "SELECT * FROM Quiz WHERE packageID = ? AND status = 1";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, packageId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                Quiz quiz = new Quiz();
+                quiz.setQuizID(rs.getInt("quizID"));
+                quiz.setName(rs.getString("name"));
+                quiz.setDescription(rs.getString("description"));
+                quiz.setDuration(rs.getInt("duration"));
+                quiz.setPassRate(rs.getDouble("passRate"));
+                quiz.setTotalQuestion(rs.getInt("totalQuestion"));
+                quiz.setCourseID(rs.getInt("courseID"));
+                quiz.setPackageID(rs.getInt("packageID"));
+                quiz.setStatus(rs.getBoolean("status"));
+                quiz.setCreatedAt(rs.getTimestamp("createdAt"));
+                quiz.setUpdatedAt(rs.getTimestamp("updatedAt"));
+                return quiz;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getQuizByPackageId: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
+    
+    /**
+     * Get all quizzes for a specific course
+     * 
+     * @param courseId The course ID
+     * @return List of quizzes for the course
+     */
+    public List<Quiz> getQuizzesByCourseId(int courseId) {
+        List<Quiz> quizList = new ArrayList<>();
+        String query = "SELECT * FROM Quiz WHERE courseID = ? AND status = 1";
+        
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, courseId);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Quiz quiz = new Quiz();
+                quiz.setQuizID(rs.getInt("quizID"));
+                quiz.setName(rs.getString("name"));
+                quiz.setDescription(rs.getString("description"));
+                quiz.setDuration(rs.getInt("duration"));
+                quiz.setPassRate(rs.getDouble("passRate"));
+                quiz.setTotalQuestion(rs.getInt("totalQuestion"));
+                quiz.setCourseID(rs.getInt("courseID"));
+                quiz.setPackageID(rs.getInt("packageID"));
+                quiz.setStatus(rs.getBoolean("status"));
+                quiz.setCreatedAt(rs.getTimestamp("createdAt"));
+                quiz.setUpdatedAt(rs.getTimestamp("updatedAt"));
+                quizList.add(quiz);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getQuizzesByCourseId: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        
+        return quizList;
+    }
+    
     private void closeResources() {
         try {
             if (rs != null) rs.close();

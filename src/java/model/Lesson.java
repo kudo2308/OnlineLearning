@@ -27,6 +27,7 @@ public class Lesson {
     private int duration;
     private int orderNumber;
     private int courseID;
+    private int packageID;
     private boolean status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
