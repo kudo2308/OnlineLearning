@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.ExpertBankInfo;
 import model.Order;
+import model.OrderItem;
 import model.Registration;
 
 /**
@@ -142,6 +142,28 @@ public class PaymentDAO extends DBContext {
 
         return registrations;
     }
+    
+    
+     public List<Registration> getRegistrationsByCourse(int courseID) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT * FROM Registration WHERE CourseID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setInt(1, courseID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Registration registration = mapRegistration(rs);
+                    registrations.add(registration);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return registrations;
+    }
 
     /**
      * Get all registrations for a specific user
@@ -193,9 +215,9 @@ public class PaymentDAO extends DBContext {
         return orderNames;
     }
 
-     public List<Integer> getCourseId(int orderId) {
-        List<Integer> orderNames = new ArrayList<>();
-        String sql = "SELECT CourseID "
+    public List<OrderItem> getCourseItem(int orderId) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        String sql = "SELECT OrderItemID, OrderID, CourseID, ExpertID, OriginalPrice, CommissionRate, FinalAmount, CreatedAt "
                 + "FROM OrderItem "
                 + "WHERE OrderID = ?";
 
@@ -204,17 +226,26 @@ public class PaymentDAO extends DBContext {
 
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
-                    int courseId = rs.getInt("CourseID");
-                    orderNames.add(courseId);
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setOrderItemId(rs.getInt("OrderItemID"));
+                    orderItem.setOrderId(rs.getInt("OrderID"));
+                    orderItem.setCourseId(rs.getInt("CourseID"));
+                    orderItem.setExpertId(rs.getInt("ExpertID"));
+                    orderItem.setOriginalPrice(rs.getBigDecimal("OriginalPrice"));
+                    orderItem.setCommissionRate(rs.getBigDecimal("CommissionRate"));
+                    orderItem.setFinalAmount(rs.getBigDecimal("FinalAmount"));
+                    orderItem.setCreatedAt(rs.getTimestamp("CreatedAt"));
+
+                    orderItems.add(orderItem);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace(); // Log the error
         }
 
-        return orderNames;
-    }  
-        
+        return orderItems;
+    }
+
     public List<Integer> getOrderItemExpertId(int orderId) {
         List<Integer> expertId = new ArrayList<>();
         String sql = "SELECT c.ExpertID "
@@ -260,9 +291,7 @@ public class PaymentDAO extends DBContext {
 
         return moneyPay;
     }
-    
-    
-    
+
     public boolean hasRegisteredBankAccount(int expertId) {
         String sql = "SELECT COUNT(*) FROM ExpertBankInfo WHERE ExpertID = ? AND BankAccountNumber IS NOT NULL AND BankName IS NOT NULL";
 
@@ -279,8 +308,6 @@ public class PaymentDAO extends DBContext {
 
         return false;
     }
-
-   
 
     private Registration mapRegistration(ResultSet rs) throws SQLException {
         Registration registration = new Registration();

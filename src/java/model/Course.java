@@ -31,10 +31,8 @@ public class Course {
     private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    
     // Navigation properties
     private int register;
     private Account expert;
     private Category category;
-    
 }

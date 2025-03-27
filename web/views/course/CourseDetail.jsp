@@ -27,7 +27,6 @@
 
         <!-- FAVICONS ICON ============================================= -->
         <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" type="image/x-icon" href="href="${pageContext.request.contextPath}/assets/images/favicon.png" />
 
         <!-- PAGE TITLE HERE ============================================= -->
         <title>EduChamp : Education HTML Template </title>
@@ -54,7 +53,41 @@
         <!-- STYLESHEETS ============================================= -->
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/style.css">
         <link class="skin" rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/color/color-1.css">
+        <style>
+            .error-message {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top: 120px;
+                left: 0;
+                right: 0;
+                background-color: rgba(208, 22, 39, 0.8);
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
 
+            .success {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top:120px;
+                left: 0;
+                right: 0;
+                background-color: #00CC00;
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+        </style>
     </head>
 
     <div class="page-content bg-white">
@@ -95,7 +128,12 @@
                                     </c:when>
                                     <c:otherwise>
                                         <div class="course-buy-now text-center">
-                                            <a href="#" class="btn radius-xl text-uppercase">Buy Now This Courses</a>
+                                            <form action="payment2" method="post">
+                                                <input type="hidden" name="amount" value="${course.price}">
+                                                <input type="hidden" name="course" value="${course.courseID}">
+                                                <input type="hidden" name="expertId" value="${course.expertID}">
+                                                <button type="submit" class="btn radius-xl text-uppercase">Buy Now This Course</button>
+                                            </form>
                                         </div>  
                                     </c:otherwise>
                                 </c:choose>                                   
@@ -110,7 +148,7 @@
                                         <div class="course-buy-now text-center">
                                             <form action="${pageContext.request.contextPath}/cart?action=add" method="post">
                                                 <input value="${course.courseID}" type="hidden" name="courseId">
-                                                <button class="btn radius-xl text-uppercase cart-add" type="submit">Add to cart</button>
+                                                <button class="btn radius-xl text-uppercase cart-add" type="submit" >Add to cart</button>
                                             </form>                                
                                         </div>
                                     </c:otherwise>
@@ -119,15 +157,19 @@
 
 
                                 <div class="teacher-bx">
-                                    <div class="teacher-info">
-                                        <div class="teacher-thumb">
-                                            <img src="${pageContext.request.contextPath}${course.expert.image}" alt=""/>
+                                    <a href="publicprofile?email=${course.expert.getEmail()}">
+                                        <div class="teacher-info">
+
+                                            <div class="teacher-thumb">
+                                                <img src="${pageContext.request.contextPath}${course.expert.image}" alt=""/>
+                                            </div>
+                                            <div class="teacher-name">
+                                                <h5>${course.expert.getFullName()}</h5>
+                                                <span>Science Teacher</span>
+                                            </div>
+
                                         </div>
-                                        <div class="teacher-name">
-                                            <h5>${course.expert.getFullName()}</h5>
-                                            <span>Science Teacher</span>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="cours-more-info">
                                     <div class="review">
@@ -285,8 +327,11 @@
                                     </div>
 
                                     <!-- Biểu đồ đánh giá -->
+                                    <c:set var="ratings" value="5,4,3,2,1" />
+                                    <c:set var="ratingList" value="${fn:split(ratings, ',')}" />
+
                                     <div style="flex: 1;">
-                                        <c:forEach var="i" begin="5" end="1" step="-1">
+                                        <c:forEach var="i" items="${ratingList}">
                                             <c:set var="count" value="${ratingDistribution[i]}" />
                                             <c:set var="percentage" value="${totalRatings > 0 ? (count * 100) / totalRatings : 0}" />
 
@@ -303,14 +348,9 @@
                                     </div>
                                 </div>
                             </div>
-
                             <p>Rating Map: ${ratingDistribution}</p>
                             <p>Total Ratings: ${totalRatings}</p>
                             <p>Average Rating: ${averageRating}</p>
-
-
-
-
                         </div>
 
                     </div>
@@ -320,38 +360,67 @@
         <!-- contact area END -->
 
     </div>
-</div>
+    <c:set var="error" value="${requestScope.error}" />
+    <c:if test="${not empty error}">
+        <div id="error-message" class="error-message">
+            <i class="bx bxs-error"></i> ${error}
+        </div>
+    </c:if>
+    <c:set var="success" value="${requestScope.success}" />
+    <c:if test="${not empty success}">
+        <div id="success" class="success">
+            <i class="bx bxs-error"></i> ${success}
+        </div>
+    </c:if>
 
-</div>
-</div>
-</div>
-</div>
-<!-- contact area END -->
+    <!-- Footer END ==== -->
+    <button class="back-to-top fa fa-chevron-up" ></button>
+    <!-- External JavaScripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/vendors/bootstrap/js/popper.min.js"></script>
+    <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+    <script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
+    <script src="assets/vendors/counter/waypoints-min.js"></script>
+    <script src="assets/vendors/counter/counterup.min.js"></script>
+    <script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
+    <script src="assets/vendors/masonry/masonry.js"></script>
+    <script src="assets/vendors/masonry/filter.js"></script>
+    <script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
+    <script src="assets/js/jquery.scroller.js"></script>
+    <script src="assets/js/functions.js"></script>
+    <script src="assets/js/contact.js"></script>
+    <script src="assets/vendors/switcher/switcher.js"></script>
+    <script>
 
-</div>
-<!-- Content END-->
-<!-- Footer ==== -->
+        function showMessage() {
+            var errorMessage = document.getElementById("error-message");
+            var successMessage = document.getElementById("success");
 
-<!-- Footer END ==== -->
-<button class="back-to-top fa fa-chevron-up" ></button>
-</div>
-<!-- External JavaScripts -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/vendors/bootstrap/js/popper.min.js"></script>
-<script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-<script src="assets/vendors/bootstrap-select/bootstrap-select.min.js"></script>
-<script src="assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-<script src="assets/vendors/magnific-popup/magnific-popup.js"></script>
-<script src="assets/vendors/counter/waypoints-min.js"></script>
-<script src="assets/vendors/counter/counterup.min.js"></script>
-<script src="assets/vendors/imagesloaded/imagesloaded.js"></script>
-<script src="assets/vendors/masonry/masonry.js"></script>
-<script src="assets/vendors/masonry/filter.js"></script>
-<script src="assets/vendors/owl-carousel/owl.carousel.js"></script>
-<script src="assets/js/jquery.scroller.js"></script>
-<script src="assets/js/functions.js"></script>
-<script src="assets/js/contact.js"></script>
-<script src="assets/vendors/switcher/switcher.js"></script>
+            // Hiển thị thông báo lỗi nếu có
+            if (errorMessage) {
+                errorMessage.style.display = "block";
+                setTimeout(function () {
+                    errorMessage.style.display = "none";
+                }, 3000);
+            }
+
+            // Hiển thị thông báo thành công nếu có
+            if (successMessage) {
+                successMessage.style.display = "block";
+                setTimeout(function () {
+                    successMessage.style.display = "none";
+                }, 3000);
+            }
+        }
+
+        // Gọi hàm khi trang đã tải xong
+        window.onload = function () {
+            showMessage();
+        };
+
+    </script>
 </body>
 
 </html>

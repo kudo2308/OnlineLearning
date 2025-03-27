@@ -83,7 +83,6 @@ public class CartItemDAO extends DBContext {
             stmt.setInt(1, userId);
             stmt.setInt(2, userId);
             int rowsDeleted = stmt.executeUpdate();
-            System.out.println("Deleted " + rowsDeleted + " items from cart.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

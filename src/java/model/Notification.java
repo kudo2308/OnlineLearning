@@ -10,10 +10,19 @@ public class Notification {
     private String content;
     private String type;
     private Integer relatedID;
+    private String relatedLink;
     private boolean isRead;
     private Timestamp createdAt;
 
     public Notification() {
+    }
+
+    public String getRelatedLink() {
+        return relatedLink;
+    }
+
+    public void setRelatedLink(String relatedLink) {
+        this.relatedLink = relatedLink;
     }
 
     // Getters and Setters

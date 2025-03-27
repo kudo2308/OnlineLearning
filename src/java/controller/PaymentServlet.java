@@ -2,6 +2,7 @@ package controller;
 
 import DAO.ExpertWalletDAO;
 import DAO.LoginDAO;
+import DAO.WalletTransactionDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,11 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import model.Account;
 import model.ExpertBankInfo;
 import model.ExpertPayout;
+import model.WalletTransaction;
 
 @WebServlet(name = "PaymentServlet", urlPatterns = {"/wallet"})
 public class PaymentServlet extends HttpServlet {
@@ -119,6 +122,9 @@ public class PaymentServlet extends HttpServlet {
                         boolean success = walletDAO.createPayoutRequest(payout);
                         
                         if (success) {
+                            WalletTransactionDAO d = new WalletTransactionDAO();
+                            d.createTransaction(BigDecimal.valueOf(amount), "withdraw", " ",bankInfo.getBankName()+" - "+ bankInfo.getBankAccountNumber(),account.getUserID()
+                                    ,1, null, null, "pending");
                             request.setAttribute("message", "Withdrawal request submitted successfully.");
                         } else {
                             request.setAttribute("error", "Failed to submit withdrawal request.");

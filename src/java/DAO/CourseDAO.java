@@ -30,8 +30,6 @@ public class CourseDAO extends DBContext {
         courses = new ArrayList<>();
     }
 
-    
-
     public Course findCourseById(int id) {
         String sql = "select * from Course co\n"
                 + "join Account a\n"
@@ -111,7 +109,7 @@ public class CourseDAO extends DBContext {
         return list;
     }
 
-   private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
+    private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
 
         int courseId = rs.getInt("CourseID");
         String title = rs.getString("Title");
@@ -357,7 +355,7 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-     public int getTotalCourses() {
+    public int getTotalCourses() {
         String sql = "SELECT COUNT(*) FROM Course WHERE Status = 1";
         try (Connection connection = new DBContext().getConnection()) {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -385,6 +383,7 @@ public class CourseDAO extends DBContext {
                           ,c.[CreatedAt]
                           ,c.[UpdatedAt]
                           ,a.FullName as ExpertName
+                          ,a.Email as ExpertEmail
                           ,a.Image as ExpertAvatar
                           ,cat.Name as CategoryName
                     FROM [dbo].[Course] c
@@ -413,6 +412,7 @@ public class CourseDAO extends DBContext {
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 expert.setImage(rs.getString("ExpertAvatar"));
+                expert.setEmail(rs.getString("ExpertEmail"));
                 course.setExpert(expert);
 
                 Category category = new Category();
@@ -426,7 +426,6 @@ public class CourseDAO extends DBContext {
         }
         return null;
     }
-
 
     public int getTotalCoursesByCategory(int categoryId) {
         String sql = "SELECT COUNT(*) FROM [dbo].[Course] WHERE [CategoryID] = ? AND [Status] = 1";
@@ -628,7 +627,7 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-     public double getAverageRating(int courseId) {
+    public double getAverageRating(int courseId) {
         String sql = """
                     SELECT AVG(CAST(Rating AS FLOAT)) as AvgRating
                     FROM [dbo].[Feedback]
@@ -766,14 +765,14 @@ public class CourseDAO extends DBContext {
         return courseList;
     }
 
-    public List<Course> searchCourse(String query, int offset, int limit ) {
+    public List<Course> searchCourse(String query, int offset, int limit) {
         List<Course> searchResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE   Title LIKE ? OR Description LIKE ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (Connection connection = new DBContext().getConnection()) {
             ps = connection.prepareStatement(sql);
-           
+
             ps.setString(1, "%" + query + "%");
             ps.setString(2, "%" + query + "%");
             ps.setInt(3, offset);
@@ -815,7 +814,7 @@ public class CourseDAO extends DBContext {
         return 0;
     }
 
-      public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
+    public List<Course> getCoursesByCategories(int categoryId, int offset, int limit) {
         List<Course> categoryResults = new ArrayList<>();
         String sql = "SELECT * FROM Course WHERE CategoryID = ? "
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -985,6 +984,7 @@ public class CourseDAO extends DBContext {
         }
         return userCourses;
     }
+
     public boolean checkSellCourse(int courseId) {
         boolean check = false;
         StringBuilder sql = new StringBuilder();
@@ -1010,7 +1010,8 @@ public class CourseDAO extends DBContext {
         }
         return check;
     }
-      public List<Course> findCouseByExpert(int userId) {
+
+    public List<Course> findCouseByExpert(int userId) {
 
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")

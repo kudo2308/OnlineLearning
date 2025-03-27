@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import model.ExpertBankInfo;
 import model.ExpertPayout;
@@ -217,6 +218,46 @@ public class ExpertWalletDAO extends DBContext {
             return false;
         }
     }
+
+    public boolean updatePayoutStatus(int payoutId, String newStatus) {
+        // Validate the status
+        List<String> validStatuses = Arrays.asList("pending", "processed", "successful", "withdrawn", "failed");
+        if (!validStatuses.contains(newStatus)) {
+            return false;
+        }
+
+        String sql = "UPDATE ExpertPayout SET Status = ?, ProcessedAt = GETDATE() WHERE PayoutID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, payoutId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("SQL Error updating payout status: " + e.getMessage());
+            return false;
+        }
+    }
+    
+   public int getPendingPayoutId(int expertId) {
+    String sql = "SELECT PayoutID FROM ExpertPayout WHERE ExpertID = ? AND Status = 'pending'";
+
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, expertId);
+        
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("PayoutID");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error retrieving pending payout ID: " + e.getMessage());
+    }
+    
+    return -1;
+}
+
     public boolean hasSufficientBalance(int expertId, double amount) {
         ExpertBankInfo bankInfo = getExpertBankInfo(expertId);
         if (bankInfo != null) {

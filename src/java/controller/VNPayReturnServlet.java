@@ -5,6 +5,7 @@ import DAO.ExpertWalletDAO;
 import DAO.LoginDAO;
 import DAO.NotificationDAO;
 import DAO.PaymentDAO;
+import DAO.WalletTransactionDAO;
 import config.VNPayConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import model.Account;
+import model.OrderItem;
 
 @WebServlet(name = "VNPayReturnServlet", urlPatterns = {"/vnpay_return"})
 public class VNPayReturnServlet extends HttpServlet {
@@ -63,13 +65,17 @@ public class VNPayReturnServlet extends HttpServlet {
         Account acc = dao1.getAccountByUserID(userID);
         int maxorder = (int) session.getAttribute("maxorder");
         int total = (int) session.getAttribute("total");
+        int courseId = (int) session.getAttribute("courseId");
         PaymentDAO dao = new PaymentDAO();
+        WalletTransactionDAO d = new WalletTransactionDAO();
         if (vnp_Params.get("vnp_TransactionStatus").equalsIgnoreCase("00")) {
             dao.updateOrder(maxorder, "paid", vnp_TransactionNo);
-           List<Integer> ListCourseId = dao.getCourseId(maxorder);
-            for (Integer integer : ListCourseId) {
-                 dao.createRegistration(Integer.parseInt(userID), integer, BigDecimal.valueOf(total));
+           List<OrderItem> ListCourseId = dao.getCourseItem(maxorder);
+            for (OrderItem list : ListCourseId) {
+                 dao.createRegistration(Integer.parseInt(userID), list.getCourseId(), list.getOriginalPrice());
             }
+            d.createTransaction(BigDecimal.valueOf(total), "deposit", vnp_TransactionNo, "User "+acc.getFullName()+" transfers into the system", Integer.parseInt(userID) ,1, maxorder, null, "completed");
+            d.updateBalance(BigDecimal.valueOf(total));
             // tạo thông báo expert gửi user tại đây 
             NotificationDAO notificationDAO = new NotificationDAO();
             LoginDAO accountDAO = new LoginDAO();
@@ -83,29 +89,34 @@ public class VNPayReturnServlet extends HttpServlet {
                 String title = "Course " + item + " Registration Successful";
                 String content = "Your payment has been processed successfully. You are now enrolled in the course(s). Please check your dashboard to start learning.";
                 String type = "payment";
-                notificationService.sendToUser(Integer.parseInt(userID), title, content, type, maxorder);
+                notificationService.sendToUser(Integer.parseInt(userID), title, content, type, maxorder , null);
             }
             for (int i = 0; i < expertId.size(); i++) {
                 String title = "User " + acc.getFullName() + " Register Course";
                 String content = "Your " + orderItem.get(i) + "was registered check or chat with new Student ";
                 String type = "payment";
-                notificationService.sendToUser(expertId.get(i), title, content, type, maxorder);
+                notificationService.sendToUser(expertId.get(i), title, content, type, maxorder, null);
                 if (dao.hasRegisteredBankAccount(expertId.get(i))) {
                     expertWalletDAO.addToWalletBalance(expertId.get(i), moneyPay.get(i).doubleValue());
                     String title1 = "Account balance fluctuations";
-                    String content1 = "You just received "+moneyPay.get(i) + "check your wallet";
+                    String content1 = "You just received "+moneyPay.get(i) + " check your wallet";
                     String type1 = "system";
-                    notificationService.sendToUser(expertId.get(i), title1, content1, type1, expertId.get(i)); // lịch sử nhận tiền 
+                    notificationService.sendToUser(expertId.get(i), title1, content1, type1, expertId.get(i), "wallet"); // lịch sử nhận tiền 
                 } else {
                     expertWalletDAO.createExpertBankInfo(expertId.get(i));
                     expertWalletDAO.addToWalletBalance(expertId.get(i), moneyPay.get(i).doubleValue());
                     String title1 = "Account balance fluctuations";
-                    String content1 = "You just received "+moneyPay.get(i) + "check your wallet";
+                    String content1 = "You just received "+moneyPay.get(i) + " check your wallet";
                     String type1 = "system";
-                    notificationService.sendToUser(expertId.get(i), title1, content1, type1, expertId.get(i)); // lịch sử nhận tiền 
+                    notificationService.sendToUser(expertId.get(i), title1, content1, type1, expertId.get(i), "wallet"); // lịch sử nhận tiền 
                 }
             }
+           if(orderItem != null){
+            String linkCourse = "coursedetail?courseId="+courseId+"&success=You registration course successfully !";
+            response.sendRedirect(linkCourse);
+           }else{
             response.sendRedirect("cart?success=You registration course successfully !");
+           }
         } else {
             dao.updateOrder(maxorder, "failed", vnp_TransactionNo);
             response.sendRedirect("cart?error=You registration course fail !");

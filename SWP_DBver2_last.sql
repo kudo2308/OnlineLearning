@@ -295,7 +295,7 @@ CREATE TABLE WalletTransaction (
     Status NVARCHAR(20) DEFAULT 'completed' CHECK (Status IN ('pending', 'completed', 'failed', 'cancelled')),
     CreatedAt DATETIME DEFAULT GETDATE(),
     ProcessedAt DATETIME NULL,
-    ProcessedBy INT NULL,
+	ProcessedBy INT null,
     FOREIGN KEY (SenderID) REFERENCES Account(UserID),
     FOREIGN KEY (ReceiverID) REFERENCES Account(UserID),
     FOREIGN KEY (RelatedOrderID) REFERENCES [Order](OrderID),

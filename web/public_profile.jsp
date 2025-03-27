@@ -30,7 +30,7 @@
         </nav>
         <br>
     <c:if test="${empty requestScope.privateUser}">
-        <div class="header-profile" style="padding-top:10px; margin-bottom:10px; background-color:#d4e2df">
+        <div class="header-profile" style="padding:10px 0 ; margin-bottom:10px; background-color:#d4e2df">
         <main class="profile-container">
             <section class="profile-intro">
                 <!-- Avatar or user image -->
