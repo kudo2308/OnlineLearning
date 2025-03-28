@@ -112,8 +112,8 @@ public class AddCourse extends HttpServlet {
             CourseDAO courseDAO = new CourseDAO();
             if (courseDAO.AddCourse(course)) {
                 request.setAttribute("courseRequest", courseRequest);
-                request.setAttribute("msg", "Add successfully!");
-                request.getRequestDispatcher("/views/admin/add-course.jsp").forward(request, response);
+                request.setAttribute("message", "Add successfully!");
+                request.getRequestDispatcher("courses").forward(request, response);
             } else {
                 throw new Exception("Add faild");
             }

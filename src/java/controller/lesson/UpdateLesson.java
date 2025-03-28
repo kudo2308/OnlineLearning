@@ -41,7 +41,7 @@ public class UpdateLesson extends HttpServlet {
             String videoUrl = request.getParameter("videoUrl");
             int packageId = Integer.parseInt(request.getParameter("packageId"));
             String documentUrl = request.getParameter("documentUrl");
-            int orderNumber = Integer.parseInt(request.getParameter("orderNumber"));
+//            int orderNumber = Integer.parseInt(request.getParameter("orderNumber"));
             boolean status = request.getParameter("status").equals("1");
 
             if (!ValidateInput.isYouTubeLinkActive(videoUrl)) {
@@ -57,13 +57,15 @@ public class UpdateLesson extends HttpServlet {
             lesson.setVideoUrl(convertToEmbedURL(videoUrl));
             lesson.setDuration(YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl));
             lesson.setDocumentUrl(documentUrl);
-            lesson.setOrderNumber(orderNumber);
+//            lesson.setOrderNumber(orderNumber);
             lesson.setStatus(status);
             lesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             lesson.getPackages().setPackageID(packageId);
 
             if (lessonDAO.updateLesson(lesson)) {
-                response.sendRedirect("viewLessonForAd?lessonId=" + lessonId);
+                 request.setAttribute("message", "Update Successfully");
+                
+                request.getRequestDispatcher("lessons").forward(request, response);
             } else {
                throw new EOFException("Update lesson failed!");
             }

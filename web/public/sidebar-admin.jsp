@@ -34,9 +34,9 @@
                 </li>  
                 <li class="ttr-seperate"></li>
                 <li>
-                    <a href="${pageContext.request.contextPath}/dashboard.jsp" class="ttr-material-button">
+                    <a href="${pageContext.request.contextPath}/transaction-history" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
-                        <span class="ttr-label"> Withdrawal Request </span>
+                        <span class="ttr-label"> Transaction List </span>
                     </a>
                 </li>  
 

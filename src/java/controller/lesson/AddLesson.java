@@ -12,7 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import model.Course;
 import model.Lesson;
 import model.Packages;
@@ -30,12 +32,30 @@ public class AddLesson extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PackagesDAO packDAO = new PackagesDAO();
-        List<Packages> packages = packDAO.findAllPackages();
+        try {
 
-        request.setAttribute("packages", packages);
+            PackagesDAO packDAO = new PackagesDAO();
+            HttpSession session = request.getSession();
+            Object accountObj = session.getAttribute("account");
 
-        request.getRequestDispatcher("views/lesson/add-lesson.jsp").forward(request, response);
+            if (accountObj == null) {
+                throw new Exception("Sesson not found!");
+            }
+
+            String userID = null;
+            if (accountObj instanceof Map) {
+                Map<String, String> accountData = (Map<String, String>) accountObj;
+                userID = accountData.get("userId");
+            }
+            int userId = Integer.parseInt(userID);
+            List<Packages> packages = packDAO.findPackageByExpert(userId);
+
+            request.setAttribute("packages", packages);
+
+            request.getRequestDispatcher("views/lesson/add-lesson.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -49,12 +69,12 @@ public class AddLesson extends HttpServlet {
             String videoUrl = request.getParameter("videoUrl");
             int packageId = Integer.parseInt(request.getParameter("packageId"));
             String documentUrl = request.getParameter("documentUrl");
-            int orderNumber = Integer.parseInt(request.getParameter("orderNumber"));
+//            int orderNumber = Integer.parseInt(request.getParameter("orderNumber"));
             boolean status = request.getParameter("status").equals("1");
-            
-           if( !ValidateInput.isYouTubeLinkActive(videoUrl) ){
-               throw new Exception("Link youtube not active!");
-           }
+
+            if (!ValidateInput.isYouTubeLinkActive(videoUrl)) {
+                throw new Exception("Link youtube not active!");
+            }
 
             LessonDAO lessonDAO = new LessonDAO();
             PackagesDAO packDAO = new PackagesDAO();
@@ -69,16 +89,16 @@ public class AddLesson extends HttpServlet {
                     .build();
 
             Lesson lesson = new Lesson(0, title, content, lessonType,
-                    ConvertInput.convertToEmbedURL(videoUrl), documentUrl, YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl), orderNumber,
+                    ConvertInput.convertToEmbedURL(videoUrl), documentUrl, YouTubeDurationFetcher.getVideoDurationInMinutesFromUrl(videoUrl), 0,
                     courseIdOfPackages, packageId, status, null, null, course, pack);
 
             if (lessonDAO.addLesson(lesson)) {
-                
+
                 List<Packages> packages = packDAO.findAllPackages();
                 request.setAttribute("packages", packages);
-                request.setAttribute("msg", "Add Successfully");
-                
-                request.getRequestDispatcher("views/lesson/add-lesson.jsp").forward(request, response);
+                request.setAttribute("message", "Add Successfully");
+
+                request.getRequestDispatcher("lessons").forward(request, response);
             } else {
                 throw new Exception("Add failed!");
             }

@@ -30,6 +30,8 @@ public class CourseDAO extends DBContext {
         courses = new ArrayList<>();
     }
 
+    
+
     public Course findCourseById(int id) {
         String sql = "select * from Course co\n"
                 + "join Account a\n"
@@ -386,6 +388,7 @@ public class CourseDAO extends DBContext {
                           ,c.[CreatedAt]
                           ,c.[UpdatedAt]
                           ,a.FullName as ExpertName
+                          ,a.Email as ExpertEmail
                           ,a.Image as ExpertAvatar
                           ,cat.Name as CategoryName
                     FROM [dbo].[Course] c
@@ -415,6 +418,7 @@ public class CourseDAO extends DBContext {
                 Account expert = new Account();
                 expert.setFullName(rs.getString("ExpertName"));
                 expert.setImage(rs.getString("ExpertAvatar"));
+                expert.setEmail(rs.getString("ExpertEmail"));
                 course.setExpert(expert);
 
                 Category category = new Category();

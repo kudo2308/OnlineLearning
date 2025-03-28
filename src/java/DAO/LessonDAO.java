@@ -158,13 +158,13 @@ public class LessonDAO extends DBContext {
                 + "           ,[VideoUrl]\n"
                 + "           ,[DocumentUrl]\n"
                 + "           ,[Duration]\n"
-                + "           ,[OrderNumber]\n"
+//                + "           ,[OrderNumber]\n"
                 + "           ,[CourseID]\n"
                 + "           ,[Status]\n"
                 + "           ,[UpdatedAt]\n"
                 + "           ,[PackageID])\n"
                 + "     VALUES\n"
-                + "           (?,?,?,?,?,?,?,?,?,?,?)";
+                + "           (?,?,?,?,?,?,?,?,?,?)";
         try {
             ps = connection.prepareStatement(sql);
             ps.setString(1, lesson.getTitle());
@@ -173,11 +173,11 @@ public class LessonDAO extends DBContext {
             ps.setString(4, lesson.getVideoUrl());
             ps.setString(5, lesson.getDocumentUrl());
             ps.setInt(6, lesson.getDuration());
-            ps.setInt(7, lesson.getOrderNumber());
-            ps.setInt(8, lesson.getCourseID());
-            ps.setBoolean(9, lesson.isStatus());
-            ps.setTimestamp(10, lesson.getUpdatedAt());
-            ps.setInt(11, lesson.getPackages().getPackageID());
+//            ps.setInt(7, lesson.getOrderNumber());
+            ps.setInt(7, lesson.getCourseID());
+            ps.setBoolean(8, lesson.isStatus());
+            ps.setTimestamp(9, lesson.getUpdatedAt());
+            ps.setInt(10, lesson.getPackages().getPackageID());
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;
         } catch (SQLException e) {
@@ -195,7 +195,7 @@ public class LessonDAO extends DBContext {
                 + "      ,[VideoUrl] = ?\n"
                 + "      ,[DocumentUrl] = ?\n"
                 + "      ,[Duration] = ?\n"
-                + "      ,[OrderNumber] = ?\n"
+//                + "      ,[OrderNumber] = ?\n"
                 + "      ,[CourseID] = ?\n"
                 + "      ,[Status] = ?\n"
                 + "      ,[CreatedAt] = ?\n"
@@ -210,13 +210,13 @@ public class LessonDAO extends DBContext {
             ps.setString(4, lesson.getVideoUrl());
             ps.setString(5, lesson.getDocumentUrl());
             ps.setInt(6, lesson.getDuration());
-            ps.setInt(7, lesson.getOrderNumber());
-            ps.setInt(8, lesson.getCourseID());
-            ps.setBoolean(9, lesson.isStatus());
-            ps.setTimestamp(10, lesson.getCreatedAt());
-            ps.setTimestamp(11, lesson.getUpdatedAt());
-            ps.setInt(12, lesson.getPackages().getPackageID());
-            ps.setInt(13, lesson.getLessonID());
+//            ps.setInt(7, lesson.getOrderNumber());
+            ps.setInt(7, lesson.getCourseID());
+            ps.setBoolean(8, lesson.isStatus());
+            ps.setTimestamp(9, lesson.getCreatedAt());
+            ps.setTimestamp(10, lesson.getUpdatedAt());
+            ps.setInt(11, lesson.getPackages().getPackageID());
+            ps.setInt(12, lesson.getLessonID());
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException e) {

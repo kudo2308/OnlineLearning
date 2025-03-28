@@ -37,5 +37,4 @@ public class Course {
     private int register;
     private Account expert;
     private Category category;
-    
 }

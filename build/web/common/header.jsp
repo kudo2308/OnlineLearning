@@ -1,161 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/homecss.css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <title>Online Learning</title>
-<style>
-    .notification-dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .notification-icon {
-        display: inline-block;
-    }
-
-    .notification-badge {
-        position: absolute;
-        top: 9px;
-        right: 9px;
-        background-color: rgba(241, 105, 106, 1);
-        color: white;
-        border-radius: 50%;
-        padding: 2px 5px;
-        font-size: 10px;
-        min-width: 15px;
-        text-align: center;
-        z-index: 9999;
-    }
-
-
-    .notification-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        background-color: #fff;
-        min-width: 350px;
-        max-width: 400px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        z-index: 1000;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-
-    .notification-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .notification-header h3 {
-        margin: 0;
-        font-size: 16px;
-    }
-
-    .notification-list {
-        max-height: 350px;
-        overflow-y: auto;
-    }
-
-    .notification-item {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f1f1f1;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    .notification-item:hover {
-        background-color: #f9f9f9;
-    }
-
-    .notification-item.unread {
-        background-color: #f0f7ff;
-    }
-
-    .notification-item.unread:hover {
-        background-color: #e5f0ff;
-    }
-
-    .notification-title {
-        font-weight: bold;
-        margin-bottom: 5px;
-        font-size: 14px;
-    }
-
-    .notification-content {
-        margin: 5px 0;
-        font-size: 13px;
-        color: #666;
-    }
-
-    .notification-meta {
-        font-size: 12px;
-        color: #999;
-        margin-top: 5px;
-    }
-
-    .notification-time {
-        margin-right: 10px;
-    }
-
-    .notification-type {
-        text-transform: capitalize;
-    }
-
-    .notification-footer {
-        padding: 10px 15px;
-        text-align: center;
-        border-top: 1px solid #eee;
-    }
-
-    .notification-footer a {
-        text-decoration: none;
-        color: #1e88e5;
-        font-size: 14px;
-    }
-
-    .loading {
-        text-align: center;
-        padding: 20px;
-        color: #999;
-    }
-
-    .notification-type-system {
-        border-left: 3px solid #2196F3;
-    }
-
-    .notification-type-course {
-        border-left: 3px solid #4CAF50;
-    }
-
-    .notification-type-message {
-        border-left: 3px solid #FFC107;
-    }
-
-    .notification-type-payment {
-        border-left: 3px solid #9C27B0;
-    }
-
-    .notification-type-other {
-        border-left: 3px solid #607D8B;
-    }
-    #categories-dropdown {
-        position: relative;
-        z-index: 10; /* Đảm bảo rằng dropdown category không bị ẩn dưới các thành phần khác */
-        padding: 5px 10px;
-        font-size: 16px;
-    }
-
-    .popover-container {
-        position: relative;
-        z-index: 5; /* Đảm bảo rằng dropdown account không che khuất dropdown category */
-    }
-</style>
 <nav></nav>
-
 <header class="logo-body">
     <div id="logo">
         <a href="${pageContext.request.contextPath}/home">
@@ -206,7 +56,7 @@
                 <div class="notification-dropdown">
                     <a id="bell" href="#" class="notification-icon">
                         <span class="material-icons md-18">notifications_none</span>
-                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                        <span class="notification-bad" id="notification-bad" style="display: none;">0</span>
                     </a>
                     <div class="notification-content" id="notification-content">
                         <div class="notification-header">
@@ -292,7 +142,7 @@
 <script>
     var contextPath = '${pageContext.request.contextPath}';
     document.addEventListener('DOMContentLoaded', function () {
-        if (document.getElementById('notification-badge')) {
+        if (document.getElementById('notification-bad')) {
             fetchNotificationCount();
             setInterval(fetchNotificationCount, 30000);
             document.getElementById('bell').addEventListener('click', function (e) {
@@ -325,7 +175,7 @@
         })
                 .then(response => response.json())
                 .then(data => {
-                    var badge = document.getElementById('notification-badge');
+                    var badge = document.getElementById('notification-bad');
                     if (data.count > 0) {
                         badge.textContent = data.count > 99 ? '99+' : data.count;
                         badge.style.display = 'block';
@@ -417,13 +267,17 @@
                 }
                 break;
             case 'message':
-                window.location.href = contextPath + '/messages';
+                window.location.href = contextPath + '/notifications';
                 break;
             case 'payment':
-                window.location.href = contextPath + '/order-details?id=';
+                 window.location.href = contextPath + '/notifications';
                 break;
             case 'system':
+             window.location.href = contextPath + '/notifications';
+                break;
             case 'other':
+             window.location.href = contextPath + '/notifications';
+                break;
             default:
                 window.location.href = contextPath + '/notifications';
                 break;

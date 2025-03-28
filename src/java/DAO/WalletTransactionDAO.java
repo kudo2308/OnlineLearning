@@ -5,12 +5,14 @@
 package DAO;
 
 import DBContext.DBContext;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.*;
+
 /**
  *
  * @author VICTUS
@@ -131,7 +133,7 @@ public class WalletTransactionDAO extends DBContext {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } 
+        }
         return count;
     }
 
@@ -158,7 +160,7 @@ public class WalletTransactionDAO extends DBContext {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } 
+        }
         return transaction;
     }
 
@@ -180,12 +182,13 @@ public class WalletTransactionDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        } 
+        }
     }
 
     /**
      * Get all unique senders for dropdown
-     * @return 
+     *
+     * @return
      */
     public List<Account> getAllSenders() {
         List<Account> senders = new ArrayList<>();
@@ -207,13 +210,14 @@ public class WalletTransactionDAO extends DBContext {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } 
+        }
         return senders;
     }
 
     /**
      * Get all unique receivers for dropdown
-     * @return 
+     *
+     * @return
      */
     public List<Account> getAllReceivers() {
         List<Account> receivers = new ArrayList<>();
@@ -239,9 +243,136 @@ public class WalletTransactionDAO extends DBContext {
         return receivers;
     }
 
-    /**
-     * Map ResultSet to WalletTransaction object
-     */
+    public int createTransaction(BigDecimal amount, String transactionType, String bankTransactionID,
+            String description, Integer senderID, Integer receiverID,
+            Integer relatedOrderID, Integer relatedPayoutID, String status) {
+        int generatedId = -1;
+        try {
+            String sql = "INSERT INTO WalletTransaction "
+                    + "(Amount, TransactionType, BankTransactionID, Description, "
+                    + "SenderID, ReceiverID, RelatedOrderID, RelatedPayoutID, Status, "
+                    + "CreatedAt) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())";
+
+            ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+
+            // Set parameters
+            ps.setBigDecimal(1, amount);
+            ps.setString(2, transactionType);
+            ps.setString(3, bankTransactionID);
+            ps.setString(4, description);
+
+            // Sender
+            if (senderID != null) {
+                ps.setInt(5, senderID);
+            } else {
+                ps.setNull(5, java.sql.Types.INTEGER);
+            }
+
+            // Receiver
+            if (receiverID != null) {
+                ps.setInt(6, receiverID);
+            } else {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            }
+
+            // Related Order ID
+            if (relatedOrderID != null) {
+                ps.setInt(7, relatedOrderID);
+            } else {
+                ps.setNull(7, java.sql.Types.INTEGER);
+            }
+
+            // Related Payout ID
+            if (relatedPayoutID != null) {
+                ps.setInt(8, relatedPayoutID);
+            } else {
+                ps.setNull(8, java.sql.Types.INTEGER);
+            }
+
+            // Status
+            ps.setString(9, status != null ? status : "completed");
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                // Retrieve the generated transaction ID
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedId = generatedKeys.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return generatedId;
+    }
+
+    public boolean updateBalance(BigDecimal amount) {
+        String sql = "UPDATE AdminWallet SET Balance = Balance + ?, UpdatedAt = GETDATE() WHERE AdminID = 1";
+
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setBigDecimal(1, amount);
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateTransactionDetails(int transactionId,
+            String bankTransactionId,
+            String description,
+            String status,
+            int processedBy,
+            Integer senderID,
+            Integer receiverID) {
+        try {
+            String sql = "UPDATE WalletTransaction SET "
+                    + "BankTransactionID = ?, "
+                    + "Description = ?, "
+                    + "Status = ?, "
+                    + "ProcessedAt = GETDATE(), "
+                    + "ProcessedBy = ?, "
+                    + "SenderID = ?, "
+                    + "ReceiverID = ? "
+                    + "WHERE TransactionID = ?";
+
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, bankTransactionId);
+            ps.setString(2, description);
+            ps.setString(3, status);
+            ps.setInt(4, processedBy);
+
+            // Handle potential null values for senderID and receiverID
+            if (senderID != null) {
+                ps.setInt(5, senderID);
+            } else {
+                ps.setNull(5, java.sql.Types.INTEGER);
+            }
+
+            if (receiverID != null) {
+                ps.setInt(6, receiverID);
+            } else {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            }
+
+            ps.setInt(7, transactionId);
+
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+        /**
+         * Map ResultSet to WalletTransaction object
+         */
     private WalletTransaction mapTransaction(ResultSet rs) throws SQLException {
         WalletTransaction transaction = new WalletTransaction();
         transaction.setTransactionID(rs.getInt("TransactionID"));

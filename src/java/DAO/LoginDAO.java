@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Account;
 import model.Course;
+import model.Registration;
 import model.Role;
 import model.SocialLink;
 
@@ -182,8 +183,10 @@ public class LoginDAO extends DBContext {
 
     public static void main(String[] args) {
         LoginDAO dao = new LoginDAO();
-
-        System.out.println(dao.getSocialLink(3));
+        List<Account> courses = dao.getRegisteredUsersForExpert(2);
+        for (Account course : courses) {
+            System.out.println(course);
+        }
     }
 
 //New 
@@ -209,7 +212,7 @@ public class LoginDAO extends DBContext {
         List<Account> accounts = new ArrayList<>();
         String sql = "SELECT * FROM Account WHERE RoleID = ? AND Status = 1";
 
-        try ( PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, roleID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -402,14 +405,44 @@ public class LoginDAO extends DBContext {
         return null;
     }
 
+    public List<Account> getRegisteredUsersForExpert(int expertId) {
+        List<Account> registeredUsers = new ArrayList<>();
+        String sql = "SELECT DISTINCT a.UserID, a.FullName, a.Email, a.Image, a.Phone "
+                + "FROM Account a "
+                + "INNER JOIN Registration r ON a.UserID = r.UserID "
+                + "INNER JOIN Course c ON r.CourseID = c.CourseID "
+                + "WHERE c.ExpertID = ? And a.UserID != ? "
+                + "GROUP BY a.UserID, a.FullName, a.Email, a.Image, a.Phone";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, expertId);
+            pstmt.setInt(2, expertId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Account account = new Account();
+                    account.setUserID(rs.getInt("UserID"));
+                    account.setFullName(rs.getString("FullName"));
+                    account.setEmail(rs.getString("Email"));
+                    account.setImage(rs.getString("Image"));
+                    account.setPhone(rs.getString("Phone"));
+                    registeredUsers.add(account);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Ghi log lỗi
+        }
+
+        return registeredUsers;
+    }
+
     public List<Course> getCoursesByExpert(int userId) {
         List<Course> courses = new ArrayList<>();
-        String sql = "SELECT c.CourseID, c.Title,c.Description,c.Price,c.CategoryID, c.ImageUrl, c.TotalLesson,c.Status,c.CreatedAt, c.UpdatedAt "
-                + "FROM Course c "
-                + "WHERE c.ExpertID = ? and c.Status = 1";
+        String sql = "SELECT CourseID, Title, Description, Price, CategoryID, ImageUrl, TotalLesson, Status, CreatedAt, UpdatedAt "
+                + "FROM Course "
+                + "WHERE ExpertID = ? AND Status IN ('Public')";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Course course = new Course();
@@ -423,13 +456,15 @@ public class LoginDAO extends DBContext {
                     course.setStatus(rs.getString("Status"));
                     course.setCreatedAt(rs.getTimestamp("CreatedAt"));
                     course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+
                     courses.add(course);
                 }
             }
-            return courses;
         } catch (SQLException e) {
+            // Properly log the exception
             e.getMessage();
         }
+
         return courses;
     }
 

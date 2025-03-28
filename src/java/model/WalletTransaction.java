@@ -20,7 +20,6 @@ public class WalletTransaction {
     private String status;
     private Timestamp createdAt;
     private Timestamp processedAt;
-    private int processedBy;
 
     public WalletTransaction() {
     }
@@ -130,14 +129,6 @@ public class WalletTransaction {
 
     public void setProcessedAt(Timestamp processedAt) {
         this.processedAt = processedAt;
-    }
-
-    public int getProcessedBy() {
-        return processedBy;
-    }
-
-    public void setProcessedBy(int processedBy) {
-        this.processedBy = processedBy;
     }
 
     @Override

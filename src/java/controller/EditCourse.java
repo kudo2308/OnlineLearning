@@ -137,7 +137,9 @@ public class EditCourse extends HttpServlet {
             course.setExpertID(userId);
 
             if (courseDAO.UpdateCourse(course)) {
-                response.sendRedirect("editCourse?courseId=" + courseId);
+//                response.sendRedirect("editCourse?courseId=" + courseId);
+                request.setAttribute("message", "Update successfully!");
+                request.getRequestDispatcher("courses").forward(request, response);
             } else {
                 throw new Exception("Update faild");
             }

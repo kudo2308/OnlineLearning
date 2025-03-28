@@ -93,8 +93,8 @@ public class NotificationDAO extends DBContext {
     }
 
     public boolean insertNotification(Notification notification) {
-        String sql = "INSERT INTO Notification (UserID, Title, Content, Type, RelatedID, IsRead, CreatedAt) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Notification (UserID, Title, Content, Type, RelatedID,RelatedLink, IsRead, CreatedAt) "
+                + "VALUES (?, ?, ?, ?, ?, ? , ?, ?)";
         
         try ( PreparedStatement pstmt = connection.prepareStatement(sql)) {
             
@@ -108,9 +108,9 @@ public class NotificationDAO extends DBContext {
             } else {
                 pstmt.setNull(5, java.sql.Types.INTEGER);
             }
-            
-            pstmt.setBoolean(6, notification.isIsRead());
-            pstmt.setTimestamp(7, notification.getCreatedAt());
+            pstmt.setString(6, notification.getRelatedLink());
+            pstmt.setBoolean(7, notification.isIsRead());
+            pstmt.setTimestamp(8, notification.getCreatedAt());
             
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -130,6 +130,7 @@ public class NotificationDAO extends DBContext {
         notification.setContent(rs.getString("Content"));
         notification.setType(rs.getString("Type"));
         notification.setRelatedID(rs.getInt("RelatedID"));
+        notification.setRelatedLink(rs.getString("RelatedLink"));
         notification.setIsRead(rs.getBoolean("IsRead"));
         notification.setCreatedAt(rs.getTimestamp("CreatedAt"));
         return notification;

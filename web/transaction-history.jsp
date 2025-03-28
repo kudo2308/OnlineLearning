@@ -50,18 +50,53 @@
         <link rel="stylesheet" type="text/css" href="assets/css/userlist.css">
         <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/dashboard.css">
         <link class="skin" rel="stylesheet" type="text/css" href="assets/admin/assets/css/color/color-1.css">
+        <style>
+            .error-message {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top: 120px;
+                left: 0;
+                right: 0;
+                background-color: rgba(208, 22, 39, 0.8);
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+
+            .success {
+                width: 25%;
+                z-index: 1000;
+                margin: auto;
+                display: none;
+                position: fixed;
+                top:120px;
+                left: 0;
+                right: 0;
+                background-color: #00CC00;
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 40px;
+            }
+        </style>
     </head>
     <body class="ttr-opened-sidebar ttr-pinned-sidebar">
         <jsp:include page="./public/header-admin.jsp"></jsp:include>
         <jsp:include page="./public/sidebar-admin.jsp"></jsp:include>
 
-        <!--Main container start -->
-        <main class="ttr-wrapper">
-            <div class="container-fluid">
-                <div class="db-breadcrumb">
-                    <h4 class="breadcrumb-title">Transaction History</h4>
-                    <ul class="db-breadcrumb-list">
-                        <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i>Home</a></li>
+            <!--Main container start -->
+            <main class="ttr-wrapper">
+                <div class="container-fluid">
+                    <div class="db-breadcrumb">
+                        <h4 class="breadcrumb-title">Transaction History</h4>
+                        <ul class="db-breadcrumb-list">
+                            <li><a href="${pageContext.request.contextPath}/home"><i class="fa fa-home"></i>Home</a></li>
                         <li>Transaction History</li>
                     </ul>
                 </div>	
@@ -100,7 +135,7 @@
                                         </select>
                                         <button id="filterReceiverButton" name="action" value="filterByReceiver" class="btn btn-secondary">Filter</button>
                                     </form>
-                                    
+
                                     <!-- Filter by Transaction Type -->
                                     <form action="transaction-history" class="d-flex align-items-center mx-3">
                                         <select id="filterType" name="trxType" class="form-control me-2">
@@ -114,7 +149,7 @@
                                         </select>
                                         <button id="filterTypeButton" name="action" value="filterByType" class="btn btn-secondary">Filter</button>
                                     </form>
-                                    
+
                                     <!-- Combined Filter Form -->
                                     <form action="transaction-history" class="d-flex align-items-center mx-3">
                                         <button id="clearFiltersButton" name="action" value="clearFilters" class="btn btn-warning">Clear Filters</button>
@@ -148,72 +183,100 @@
                                                 <td>${transaction.description}</td>
                                                 <td>
                                                     <span class="badge ${transaction.status eq 'completed' ? 'bg-success' : 
-                                                                      transaction.status eq 'pending' ? 'bg-warning' : 
-                                                                      transaction.status eq 'failed' ? 'bg-danger' : 'bg-secondary'}">
-                                                        ${transaction.status}
-                                                    </span>
-                                                </td>
-                                                <td>${transaction.createdAt}</td>
-                                                <td>
-                                                    <a href="transaction-details?id=${transaction.transactionID}" class="btn btn-info btn-sm">View</a>
-                                                    <c:if test="${transaction.status eq 'pending'}">
-                                                        <a href="approve-transaction?id=${transaction.transactionID}" class="btn btn-success btn-sm">Approve</a>
-                                                        <a href="reject-transaction?id=${transaction.transactionID}" class="btn btn-danger btn-sm">Reject</a>
-                                                    </c:if>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
+                                                                         transaction.status eq 'pending' ? 'bg-warning' : 
+                                                                         transaction.status eq 'failed' ? 'bg-danger' : 'bg-secondary'}">
+                                                              ${transaction.status}
+                                                          </span>
+                                                    </td>
+                                                    <td>${transaction.createdAt}</td>
+                                                    <td>
+                                                        <a href="transaction-details?id=${transaction.transactionID}" class="btn btn-info btn-sm">View</a>
+                                                        <c:if test="${transaction.status eq 'pending'}">
+                                                            <a href="approve-transaction?id=${transaction.transactionID}" class="btn btn-success btn-sm">Approve</a>
+                                                            <a href="reject-transaction?id=${transaction.transactionID}" class="btn btn-danger btn-sm" style="margin-top:5px;">Reject</a>
+                                                        </c:if>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
-        <jsp:include page="common/pagination.jsp"></jsp:include>
-        <div class="ttr-overlay"></div>      
-    </body>
-    <script src="assets/admin/assets/js/jquery.min.js"></script>
-    <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
-    <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
-    <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
-    <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
-    <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
-    <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
-    <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
-    <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
-    <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
-    <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
-    <script src="assets/admin/assets/js/functions.js"></script>
-    <script src="assets/admin/assets/js/admin.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Format timestamps to relative time
-            const timeElements = document.querySelectorAll(".timeago");
-            timeElements.forEach(el => {
-                const timeString = el.getAttribute("data-time");
-                if (timeString) {
-                    const formattedTime = timeago.format(new Date(timeString));
-                    el.textContent = formattedTime;
+            </main>
+            <c:set var="error" value="${requestScope.error}" />
+            <c:if test="${not empty error}">
+                <div id="error-message" class="error-message">
+                    <i class="bx bxs-error"></i> ${error}
+                </div>
+            </c:if>
+            <c:set var="success" value="${requestScope.success}" />
+            <c:if test="${not empty success}">
+                <div id="success" class="success">
+                    <i class="bx bxs-error"></i> ${success}
+                </div>
+            </c:if>
+            <jsp:include page="common/pagination.jsp"></jsp:include>
+                <div class="ttr-overlay"></div>      
+            </body>
+            <script src="assets/admin/assets/js/jquery.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+            <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+            <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+            <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
+            <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
+            <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+            <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
+            <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
+            <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+            <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+            <script src="assets/admin/assets/js/functions.js"></script>
+            <script src="assets/admin/assets/js/admin.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Format timestamps to relative time
+                    const timeElements = document.querySelectorAll(".timeago");
+                    timeElements.forEach(el => {
+                        const timeString = el.getAttribute("data-time");
+                        if (timeString) {
+                            const formattedTime = timeago.format(new Date(timeString));
+                            el.textContent = formattedTime;
+                        }
+                    });
+
+                    // Add event listeners for combined filter form
+                    const combineFilters = () => {
+                        const bankTrxId = document.getElementById('searchBankTransaction').value;
+                        const senderId = document.getElementById('filterSender').value;
+                        const receiverId = document.getElementById('filterReceiver').value;
+                        const trxType = document.getElementById('filterType').value;
+
+                        window.location.href = `transaction-history?action=filterCombined&bankTrxId=${bankTrxId}&senderId=${senderId}&receiverId=${receiverId}&trxType=${trxType}`;
+                        return false;
+                    };
+
+                    // Optional: Add a combined filter button
+                    document.getElementById('combineFiltersButton')?.addEventListener('click', combineFilters);
+                });
+        </script>
+        <script>
+            function showMessage() {
+                var errorMessage = document.getElementById("error-message");
+                if (errorMessage) {
+                    errorMessage.style.display = "block";
+                    setTimeout(function () {
+                        errorMessage.style.display = "none";
+                    }, 3000);
                 }
-            });
-            
-            // Add event listeners for combined filter form
-            const combineFilters = () => {
-                const bankTrxId = document.getElementById('searchBankTransaction').value;
-                const senderId = document.getElementById('filterSender').value;
-                const receiverId = document.getElementById('filterReceiver').value;
-                const trxType = document.getElementById('filterType').value;
-                
-                window.location.href = `transaction-history?action=filterCombined&bankTrxId=${bankTrxId}&senderId=${senderId}&receiverId=${receiverId}&trxType=${trxType}`;
-                return false;
+            }
+
+            // Gọi hàm khi trang đã tải xong
+            window.onload = function () {
+                showMessage();
             };
-            
-            // Optional: Add a combined filter button
-            document.getElementById('combineFiltersButton')?.addEventListener('click', combineFilters);
-        });
-    </script>
-</html>
+        </script>
+    </html>

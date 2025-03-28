@@ -122,13 +122,11 @@
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Package</label>
                                              <div>
-                                                <input required class="form-control" type="text" id="packagesInput" value="" list="packagesSuggestions">
-                                                <datalist id="packagesSuggestions">
-                                                    <c:forEach items="${packages}" var="packages">
-                                                        <option style="display: none" value="${packages.name}" data-id="${packages.packageID}"></option>
+                                                 <select class="form-control" name="packageId">
+                                                     <c:forEach items="${packages}" var="p">
+                                                        <option value="${p.packageID}" ${lesson.packages.packageID == p.packageID ? 'selected' : ''}>${p.name}</option>
                                                     </c:forEach>
-                                                    <input type="hidden" name="packageId" id="packageId" value="">
-                                                </datalist>
+                                                 </select>
                                             </div>
                                         </div>
 
@@ -144,12 +142,12 @@
                                                 <input readonly class="form-control" type="number" name="duration" value="${lesson.duration}">
                                             </div>
                                         </div>
-                                        <div class="form-group col-6">
+<!--                                        <div class="form-group col-6">
                                             <label class="col-form-label">Order Number</label>
                                             <div>
                                                 <input required class="form-control" type="number" name="orderNumber" value="${lesson.orderNumber}">
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="form-group col-6">
                                             <label class="col-form-label">Status</label>
                                             <div>
@@ -206,18 +204,18 @@
         <script src='assets/admin/assets/vendors/switcher/switcher.js'></script>
 
         <script>
-            document.getElementById("packagesInput").addEventListener("input", function () {
-                let input = this.value;
-                let datalist = document.getElementById("packagesSuggestions").options;
-                let hiddenInput = document.getElementById("packageId");
-
-                for (let option of datalist) {
-                    if (option.value === input) {
-                        hiddenInput.value = option.getAttribute("data-id");
-                        break;
-                    }
-                }
-            });
+//            document.getElementById("packagesInput").addEventListener("input", function () {
+//                let input = this.value;
+//                let datalist = document.getElementById("packagesSuggestions").options;
+//                let hiddenInput = document.getElementById("packageId");
+//
+//                for (let option of datalist) {
+//                    if (option.value === input) {
+//                        hiddenInput.value = option.getAttribute("data-id");
+//                        break;
+//                    }
+//                }
+//            });
 
         </script>
     </body>

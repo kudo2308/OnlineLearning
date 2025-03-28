@@ -51,6 +51,7 @@ CREATE TABLE [dbo].[Course](
 	[Description] NVARCHAR(MAX) NULL,
 	[ExpertID] [int] NULL, 
 	[Price] [float] NULL,
+	DiscountPrice float NUll,
 	[CategoryID] [int] NULL,
 	[ImageUrl] [nvarchar](255) NULL,
 	[TotalLesson] [int] NULL,
@@ -391,6 +392,25 @@ CREATE TABLE MessageRead (
     CONSTRAINT UQ_MessageUser UNIQUE (MessageID, UserID)
 );
 
+CREATE TABLE BlogRequest (
+    ID INT IDENTITY(1,1) PRIMARY KEY,  -- ID tự động tăng
+    BlogID INT NOT NULL,  -- Khóa ngoại tham chiếu đến BlogID từ bảng Blog
+    Status NVARCHAR(50) NOT NULL DEFAULT 'Pending',  -- Trạng thái yêu cầu với giá trị mặc định là 'Pending'
+    CreatedAt DATETIME DEFAULT GETDATE(),  -- Ngày tạo yêu cầu, mặc định là ngày hiện tại
+    UpdatedAt DATETIME DEFAULT GETDATE(),  -- Ngày cập nhật yêu cầu, mặc định là ngày hiện tại
+    AdminID INT NOT NULL,  -- Khóa ngoại tham chiếu đến UserID từ bảng Account (Admin)
+    
+    -- Khóa ngoại cho BlogID
+    FOREIGN KEY (BlogID) REFERENCES Blog(BlogID),  
+
+    -- Khóa ngoại cho AdminID
+    FOREIGN KEY (AdminID) REFERENCES Account(UserID),
+    
+    -- CHECK constraint để đảm bảo trạng thái hợp lệ
+    CONSTRAINT CK_Status CHECK (Status IN ('Pending', 'Approved', 'Rejected'))
+);
+
+
 CREATE TABLE Promotion (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,  -- ID của chương trình khuyến mãi
     PromotionCode NVARCHAR(50) NOT NULL UNIQUE,  -- Mã khuyến mãi
@@ -402,9 +422,9 @@ CREATE TABLE Promotion (
     CourseID INT NULL,  -- Mã khóa học (nếu áp dụng giảm giá cho một khóa học cụ thể)
     CreatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian tạo chương trình khuyến mãi
     UpdatedAt DATETIME DEFAULT GETDATE(),  -- Thời gian cập nhật chương trình khuyến mãi
-    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),  -- Liên kết với bảng Category
-    FOREIGN KEY (ExpertID) REFERENCES Account(UserID),  -- Liên kết với bảng Account (Giảng viên)
-    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)  -- Liên kết với bảng Course
+    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID) ON DELETE SET NULL,  -- Liên kết với bảng Category, cho phép NULL khi xóa
+    FOREIGN KEY (ExpertID) REFERENCES Account(UserID) ON DELETE SET NULL,  -- Liên kết với bảng Account (Giảng viên), cho phép NULL khi xóa
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE SET NULL  -- Liên kết với bảng Course, cho phép NULL khi xóa
 );
 
 CREATE TABLE Coupon (
@@ -492,7 +512,7 @@ VALUES
 -- Insert sample course with Status set to 1
 -- Insert sample courses with improved titles
 -- First half to 'Public'
-INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, Status) VALUES
+INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, DiscountPrice, Status) VALUES
 ('Java Programming & SQL Database Mastery', 
  'Master Java programming and SQL database fundamentals. Learn core Java concepts, JDBC connectivity, and essential SQL queries for database operations. Perfect for beginners wanting to build database-driven applications.',
  2,
@@ -500,6 +520,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic1.jpg',
  10,
  280000,
+ 252000,  -- 10% discount, set DiscountPrice to 252000
  'Public'),
 
 ('Comprehensive Data Structures & Algorithms', 
@@ -509,6 +530,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  10,
  200000,
+ 180000,  -- 10% discount, set DiscountPrice to 180000
  'Public'),
 
 ('Complete C++ Programming: From Beginner to Advanced', 
@@ -518,6 +540,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  10,
  275000,
+ 247500,  -- 10% discount, set DiscountPrice to 247500
  'Public'),
 
 ('Modern Frontend Development with React.js', 
@@ -527,6 +550,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic4.jpg',
  10,
  640000,
+ 576000,  -- 10% discount, set DiscountPrice to 576000
  'Public'),
 
 ('Frontend Web Development with HTML & CSS', 
@@ -536,6 +560,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic5.jpg',
  10,
  600000,
+ 540000,  -- 10% discount, set DiscountPrice to 540000
  'Public'),
 
 ('Advanced JavaScript & Frontend Development', 
@@ -545,6 +570,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic6.jpg',
  10,
  300000,
+ 270000,  -- 10% discount, set DiscountPrice to 270000
  'Public'),
 
 ('Backend Web Development with Node.js & Express', 
@@ -554,6 +580,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic1.jpg',
  10,
  700000,
+ 630000,  -- 10% discount, set DiscountPrice to 630000
  'Public'),
 
 ('Java Backend Development with Spring Boot', 
@@ -563,6 +590,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  10,
  750000,
+ 675000,  -- 10% discount, set DiscountPrice to 675000
  'Public'),
 
 ('Java Programming Fundamentals', 
@@ -572,6 +600,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  10,
  120000,
+ 108000,  -- 10% discount, set DiscountPrice to 108000
  'Public'),
 
 ('Advanced Java Programming', 
@@ -581,6 +610,29 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  15,
  150000,
+ 135000,  -- 10% discount, set DiscountPrice to 135000
+ 'Public');
+
+
+INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, DiscountPrice, Status) VALUES
+('Java Programming Fundamentals', 
+ 'Learn the basics of Java programming language including syntax, OOP concepts, and practical applications',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
+ '/assets/images/courses/pic3.jpg',
+ 10,
+ 120000,
+ 108000,  -- 10% discount, set DiscountPrice to 108000
+ 'Public'),
+
+('Advanced Java Programming', 
+ 'This course will take you beyond the basics of Java, exploring advanced topics such as multithreading, concurrency, design patterns, and Java s ecosystem for building scalable applications.',
+ (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
+ (SELECT CategoryID FROM Category WHERE Name = 'Programming'),
+ '/assets/images/courses/pic2.jpg',
+ 15,
+ 150000,
+ 135000,  -- 10% discount, set DiscountPrice to 135000
  'Public'),
 
 ('Full Stack Web Development', 
@@ -590,6 +642,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  20,
  200000,
+ 180000,  -- 10% discount, set DiscountPrice to 180000
  'Public'),
 
 ('Introduction to Databases and SQL', 
@@ -599,6 +652,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic4.jpg',
  10,
  100000,
+ 90000,  -- 10% discount, set DiscountPrice to 90000
  'Public'),
 
 ('Networking Fundamentals', 
@@ -608,6 +662,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic5.jpg',
  12,
  120000,
+ 108000,  -- 10% discount, set DiscountPrice to 108000
  'Public'),
 
 ('Mobile App Development with Flutter', 
@@ -617,8 +672,9 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic6.jpg',
  18,
  180000,
- 'Public');
-INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLesson, Price, Status) VALUES
+ 162000,  -- 10% discount, set DiscountPrice to 162000
+ 'Public'),
+
 ('Data Science with Python', 
  'This course teaches you the essentials of Data Science, focusing on Python programming. Topics covered include data cleaning, visualization, and machine learning algorithms using libraries like Pandas, NumPy, and Scikit-Learn.',
  (SELECT UserID FROM Account WHERE Email = 'expert1@onlinelearning.com'),
@@ -626,6 +682,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic7.jpg',
  22,
  220000,
+ 198000,  -- 10% discount, set DiscountPrice to 198000
  'Public'),
 
 ('Introduction to Cybersecurity', 
@@ -635,6 +692,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic8.jpg',
  14,
  140000,
+ 126000,  -- 10% discount, set DiscountPrice to 126000
  'Public'),
 
 ('Building Modern DevOps Pipelines', 
@@ -644,6 +702,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic9.jpg',
  16,
  160000,
+ 144000,  -- 10% discount, set DiscountPrice to 144000
  'Public'),
 
 ('Python for Data Analysis', 
@@ -653,6 +712,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic1.jpg',
  18,
  180000,
+ 162000,  -- 10% discount, set DiscountPrice to 162000
  'Public'),
 
 ('React Native for Mobile Apps', 
@@ -662,6 +722,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic2.jpg',
  20,
  200000,
+ 180000,  -- 10% discount, set DiscountPrice to 180000
  'Public'),
 
 ('Deep Learning with TensorFlow', 
@@ -671,6 +732,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic3.jpg',
  25,
  250000,
+ 225000,  -- 10% discount, set DiscountPrice to 225000
  'Public'),
 
 ('Introduction to Cloud Computing', 
@@ -680,6 +742,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic4.jpg',
  12,
  120000,
+ 108000,  -- 10% discount, set DiscountPrice to 108000
  'Public'),
 
 ('Advanced Cybersecurity Practices', 
@@ -689,6 +752,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic5.jpg',
  20,
  200000,
+ 180000,  -- 10% discount, set DiscountPrice to 180000
  'Public'),
 
 ('Agile Project Management', 
@@ -698,6 +762,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic6.jpg',
  15,
  150000,
+ 135000,  -- 10% discount, set DiscountPrice to 135000
  'Public'),
 
 ('Introduction to Internet of Things (IoT)', 
@@ -707,6 +772,7 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic7.jpg',
  18,
  180000,
+ 162000,  -- 10% discount, set DiscountPrice to 162000
  'Public'),
 
 ('Building Scalable Web Applications', 
@@ -716,7 +782,9 @@ INSERT INTO Course (Title, Description, ExpertID, CategoryID, ImageUrl, TotalLes
  '/assets/images/courses/pic8.jpg',
  22,
  220000,
+ 198000,  -- 10% discount, set DiscountPrice to 198000
  'Public');
+
 
  -- Insert multiple blog posts with longer content
 -- Insert multiple blog posts with longer content
