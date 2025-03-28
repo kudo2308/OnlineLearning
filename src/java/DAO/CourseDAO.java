@@ -12,13 +12,16 @@ import DBContext.DBContext;
 import static constant.Constant.RECORD_PER_PAGE;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Course;
 import model.Account;
 import model.Category;
 import model.Feedback;
 import model.Registration;
 import model.Role;
+import java.util.Date;
 
 public class CourseDAO extends DBContext {
 
@@ -898,8 +901,8 @@ public class CourseDAO extends DBContext {
                           ,c.[Title]
                           ,c.[Description]
                           ,c.[Price]
-                          ,c.[ExpertID]
                           ,c.[DiscountPrice]
+                          ,c.[ExpertID]
                           ,c.[CategoryID]
                           ,c.[ImageUrl]
                           ,c.[TotalLesson]
@@ -1382,5 +1385,45 @@ public class CourseDAO extends DBContext {
             System.out.println(e);
         }
         return list;
+    }
+
+    public int getNewCoursesCount(Date startDate, Date endDate) {
+        String sql = "SELECT COUNT(*) FROM Course WHERE createdAt BETWEEN ? AND ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setTimestamp(1, new java.sql.Timestamp(startDate.getTime()));
+            stmt.setTimestamp(2, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    
+    public Map<String, Integer> getMonthlyCourseCreationCounts() {
+        Map<String, Integer> monthlyData = new HashMap<>();
+        String sql = "SELECT FORMAT(createdAt, 'yyyy-MM') as month, COUNT(*) as count "
+                + "FROM Course "
+                + "WHERE createdAt >= DATEADD(MONTH, -11, GETDATE()) "
+                + "GROUP BY FORMAT(createdAt, 'yyyy-MM') "
+                + "ORDER BY month";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                String month = rs.getString("month");
+                int count = rs.getInt("count");
+                monthlyData.put(month, count);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return monthlyData;
     }
 }

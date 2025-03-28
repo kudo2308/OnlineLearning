@@ -16,6 +16,7 @@ public class Transaction {
     private String description;
     private String status;          // defaults to "pending"; allowed: "pending", "completed", "failed"
     private Date createdAt;
+    private User user; // Added for dashboard display
 
     public Transaction() {
     }
@@ -68,5 +69,11 @@ public class Transaction {
     }
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
 }

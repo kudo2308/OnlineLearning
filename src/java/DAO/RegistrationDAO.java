@@ -6,11 +6,14 @@ package DAO;
 
 import DBContext.DBContext;
 import java.util.List;
-import model.Registration;
-import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import model.Registration;
 import model.Course;
 import model.User;
+import java.sql.*;
+import java.util.Date;
 
 /**
  *
@@ -626,6 +629,46 @@ public class RegistrationDAO extends DBContext {
         }
         
         return registrations;
+    }
+
+    public int getNewRegistrationsCount(Date startDate, Date endDate) {
+        String sql = "SELECT COUNT(*) FROM Registration WHERE createdAt BETWEEN ? AND ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setTimestamp(1, new java.sql.Timestamp(startDate.getTime()));
+            stmt.setTimestamp(2, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    
+    public Map<String, Integer> getMonthlyRegistrationCounts() {
+        Map<String, Integer> monthlyData = new HashMap<>();
+        String sql = "SELECT FORMAT(createdAt, 'yyyy-MM') as month, COUNT(*) as count "
+                + "FROM Registration "
+                + "WHERE createdAt >= DATEADD(MONTH, -11, GETDATE()) "
+                + "GROUP BY FORMAT(createdAt, 'yyyy-MM') "
+                + "ORDER BY month";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                String month = rs.getString("month");
+                int count = rs.getInt("count");
+                monthlyData.put(month, count);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return monthlyData;
     }
 
     public static void main(String[] args) {

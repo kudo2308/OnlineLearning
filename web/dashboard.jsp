@@ -476,61 +476,49 @@
                             <div class="widget-card widget-bg3">					 
                                 <div class="wc-item">
                                     <h4 class="wc-title">
-                                        New Orders 
-                                        <span class="badge badge-light" style="font-size: 11px; vertical-align: middle;">This Month</span>
+                                        Total Students
                                     </h4>
                                     <span class="wc-des">
-                                        Recent Order Amount
+                                        All registered students
                                     </span>
-                                    <span class="wc-stats counter">
-                                        <c:choose>
-                                            <c:when test="${not empty totalOrders}">
-                                                ${totalOrders}
-                                            </c:when>
-                                            <c:otherwise>0</c:otherwise>
-                                        </c:choose>
-                                    </span>
+                                    <span class="wc-stats">
+                                        <span class="counter">${totalUsers}</span>
+                                    </span>		
                                     <div class="progress wc-progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="${growthPercentages.orderGrowth}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                     <span class="wc-progress-bx">
                                         <span class="wc-change">
-                                            Change
+                                            <i class="fa fa-user"></i> ${newUsers} new students
                                         </span>
                                         <span class="wc-number ml-auto">
-                                            ${growthPercentages.orderGrowth}%
+                                            in ${dateRange}
                                         </span>
                                     </span>
                                 </div>				      
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12">
-                            <div class="widget-card widget-bg4">					 
+                            <div class="widget-card widget-bg2">					 
                                 <div class="wc-item">
                                     <h4 class="wc-title">
-                                        New Users 
-                                        <span class="badge badge-light" style="font-size: 11px; vertical-align: middle;">This Month</span>
+                                        Total Courses
                                     </h4>
                                     <span class="wc-des">
-                                        Joined New User
+                                        Available courses
                                     </span>
-                                    <span class="wc-stats counter">
-                                        <c:choose>
-                                            <c:when test="${not empty totalUsers}">
-                                                ${totalUsers}
-                                            </c:when>
-                                            <c:otherwise>0</c:otherwise>
-                                        </c:choose>
-                                    </span>
+                                    <span class="wc-stats">
+                                        <span class="counter">${totalCourses}</span>
+                                    </span>		
                                     <div class="progress wc-progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="${growthPercentages.userGrowth}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                     <span class="wc-progress-bx">
                                         <span class="wc-change">
-                                            Change
+                                            <i class="fa fa-book"></i> New courses
                                         </span>
                                         <span class="wc-number ml-auto">
-                                            ${growthPercentages.userGrowth}%
+                                            in ${dateRange}
                                         </span>
                                     </span>
                                 </div>				      
@@ -542,61 +530,49 @@
                             <div class="widget-card widget-bg1">					 
                                 <div class="wc-item">
                                     <h4 class="wc-title">
-                                        Total Courses
-                                        <span class="badge badge-light" style="font-size: 11px; vertical-align: middle;">This Month</span>
+                                        Total Registrations
                                     </h4>
                                     <span class="wc-des">
-                                        Available Courses
+                                        Course registrations
                                     </span>
-                                    <span class="wc-stats counter">
-                                        <c:choose>
-                                            <c:when test="${not empty totalCourses}">
-                                                ${totalCourses}
-                                            </c:when>
-                                            <c:otherwise>0</c:otherwise>
-                                        </c:choose>
-                                    </span>
+                                    <span class="wc-stats">
+                                        <span class="counter">${totalRegistrations}</span>
+                                    </span>		
                                     <div class="progress wc-progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="${growthPercentages.courseGrowth}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                     <span class="wc-progress-bx">
                                         <span class="wc-change">
-                                            Change
+                                            <i class="fa fa-clipboard-list"></i> ${newRegistrations} new registrations
                                         </span>
                                         <span class="wc-number ml-auto">
-                                            ${growthPercentages.courseGrowth}%
+                                            in ${dateRange}
                                         </span>
                                     </span>
                                 </div>				      
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12">
-                            <div class="widget-card widget-bg2">					 
+                            <div class="widget-card widget-bg4">					 
                                 <div class="wc-item">
                                     <h4 class="wc-title">
-                                        Total Blogs
-                                        <span class="badge badge-light" style="font-size: 11px; vertical-align: middle;">This Month</span>
+                                        Total Revenue
                                     </h4>
                                     <span class="wc-des">
-                                        Published Articles
+                                        Course sales
                                     </span>
-                                    <span class="wc-stats counter">
-                                        <c:choose>
-                                            <c:when test="${not empty totalBlogs}">
-                                                ${totalBlogs}
-                                            </c:when>
-                                            <c:otherwise>0</c:otherwise>
-                                        </c:choose>
-                                    </span>
+                                    <span class="wc-stats">
+                                        <span class="counter"><fmt:formatNumber value="${totalRevenue}" pattern="#,##0.00" /></span> đ
+                                    </span>		
                                     <div class="progress wc-progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="${growthPercentages.blogGrowth}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                     <span class="wc-progress-bx">
                                         <span class="wc-change">
-                                            Change
+                                            <i class="fa fa-dollar-sign"></i> $<fmt:formatNumber value="${periodRevenue}" pattern="#,##0.00" /> revenue
                                         </span>
                                         <span class="wc-number ml-auto">
-                                            ${growthPercentages.blogGrowth}%
+                                            in ${dateRange}
                                         </span>
                                     </span>
                                 </div>				      
@@ -662,141 +638,111 @@
                         </div>
                     </div>
                     
-                    <!-- Financial Summary Card -->
+                    <!-- Registration Status Statistics -->
                     <div class="row mt-4">
-                        <div class="col-12">
+                        <div class="col-lg-8 col-md-12">
+                            <div class="chart-container">
+                                <h4 class="chart-title">Monthly Registrations</h4>
+                                <div style="height: 300px;">
+                                    <canvas id="registrationChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
                             <div class="widget-card widget-bg4">
                                 <div class="wc-item">
-                                    <h4 class="wc-title mb-4">
-                                        Financial Summary
-                                    </h4>
-                                    <div class="financial-summary">
-                                        <div class="financial-item">
-                                            <p class="financial-label">Admin Wallet</p>
-                                            <h3 class="financial-value">$
-                                                <c:choose>
-                                                    <c:when test="${not empty financialSummary.adminWalletBalance}">
-                                                        <fmt:formatNumber value="${financialSummary.adminWalletBalance}" maxFractionDigits="0" />
-                                                    </c:when>
-                                                    <c:otherwise>0</c:otherwise>
-                                                </c:choose>
-                                            </h3>
+                                    <h4 class="wc-title mb-4">Registration Status</h4>
+                                    <div class="status-chart">
+                                        <div class="status-item">
+                                            <span class="status-label">Pending</span>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: ${(pendingRegistrations / totalRegistrations) * 100}%"></div>
+                                            </div>
+                                            <span class="status-count">${pendingRegistrations}</span>
                                         </div>
-                                        <div class="financial-item">
-                                            <p class="financial-label">Expert Wallets</p>
-                                            <h3 class="financial-value">$
-                                                <c:choose>
-                                                    <c:when test="${not empty financialSummary.expertWalletBalance}">
-                                                        <fmt:formatNumber value="${financialSummary.expertWalletBalance}" maxFractionDigits="0" />
-                                                    </c:when>
-                                                    <c:otherwise>0</c:otherwise>
-                                                </c:choose>
-                                            </h3>
+                                        <div class="status-item mt-3">
+                                            <span class="status-label">Active</span>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: ${(activeRegistrations / totalRegistrations) * 100}%"></div>
+                                            </div>
+                                            <span class="status-count">${activeRegistrations}</span>
                                         </div>
-                                        <div class="financial-item">
-                                            <p class="financial-label">Pending Payouts</p>
-                                            <h3 class="financial-value">$
-                                                <c:choose>
-                                                    <c:when test="${not empty financialSummary.pendingPayouts}">
-                                                        <fmt:formatNumber value="${financialSummary.pendingPayouts}" maxFractionDigits="0" />
-                                                    </c:when>
-                                                    <c:otherwise>0</c:otherwise>
-                                                </c:choose>
-                                            </h3>
+                                        <div class="status-item mt-3">
+                                            <span class="status-label">Completed</span>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-info" role="progressbar" style="width: ${(completedRegistrations / totalRegistrations) * 100}%"></div>
+                                            </div>
+                                            <span class="status-count">${completedRegistrations}</span>
+                                        </div>
+                                        <div class="status-item mt-3">
+                                            <span class="status-label">Cancelled</span>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: ${(cancelledRegistrations / totalRegistrations) * 100}%"></div>
+                                            </div>
+                                            <span class="status-count">${cancelledRegistrations}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Card END -->	
                     
-                    <!-- New Users and Orders Section -->
+                    <!-- Recent Registrations and Transactions -->
                     <div class="row mt-4">
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <div class="table-container">
-                                <h4 class="table-header">New Users</h4>
+                                <h4 class="table-header">Recent Registrations</h4>
                                 <table class="modern-table">
                                     <thead>
                                         <tr>
-                                            <th>User</th>
-                                            <th>Email</th>
+                                            <th>Student</th>
+                                            <th>Course</th>
                                             <th>Date</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:choose>
-                                            <c:when test="${not empty recentUsers && recentUsers.size() > 0}">
-                                                <c:forEach var="user" items="${recentUsers}">
-                                                    <tr>
-                                                        <td>${user.username}</td>
-                                                        <td>${user.email}</td>
-                                                        <td>${user.createdDate}</td>
-                                                        <td>
-                                                            <span class="status-badge 
-                                                                <c:choose>
-                                                                    <c:when test="${user.status == 1}">status-active</c:when>
-                                                                    <c:otherwise>status-inactive</c:otherwise>
-                                                                </c:choose>">
-                                                                <c:choose>
-                                                                    <c:when test="${user.status == 1}">Active</c:when>
-                                                                    <c:otherwise>Inactive</c:otherwise>
-                                                                </c:choose>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <tr>
-                                                    <td colspan="4" class="text-center">No recent users found</td>
-                                                </tr>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <c:forEach items="${recentRegistrations}" var="registration">
+                                            <tr>
+                                                <td>${registration.user.fullName}</td>
+                                                <td>${registration.course.title}</td>
+                                                <td><fmt:formatDate value="${registration.createdAt}" pattern="MMM dd, yyyy" /></td>
+                                                <td>
+                                                    <span class="status-badge status-${registration.status}">
+                                                        ${registration.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <div class="table-container">
-                                <h4 class="table-header">Orders</h4>
+                                <h4 class="table-header">Recent Transactions</h4>
                                 <table class="modern-table">
                                     <thead>
                                         <tr>
-                                            <th>Order ID</th>
-                                            <th>Course</th>
+                                            <th>User</th>
                                             <th>Amount</th>
+                                            <th>Date</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:choose>
-                                            <c:when test="${not empty recentOrders && recentOrders.size() > 0}">
-                                                <c:forEach var="order" items="${recentOrders}">
-                                                    <tr>
-                                                        <td>${order.id}</td>
-                                                        <td>${order.courseName}</td>
-                                                        <td>$${order.amount}</td>
-                                                        <td>
-                                                            <span class="status-badge 
-                                                                <c:choose>
-                                                                    <c:when test="${order.status == 'Completed'}">status-active</c:when>
-                                                                    <c:when test="${order.status == 'Pending'}">status-pending</c:when>
-                                                                    <c:otherwise>status-inactive</c:otherwise>
-                                                                </c:choose>">
-                                                                ${order.status}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <tr>
-                                                    <td colspan="4" class="text-center">No recent orders found</td>
-                                                </tr>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <c:forEach items="${recentTransactions}" var="transaction">
+                                            <tr>
+                                                <td>${transaction.user.fullName}</td>
+                                                <td>$<fmt:formatNumber value="${transaction.amount}" pattern="#,##0.00" /></td>
+                                                <td><fmt:formatDate value="${transaction.createdAt}" pattern="MMM dd, yyyy" /></td>
+                                                <td>
+                                                    <span class="status-badge status-${transaction.status}">
+                                                        ${transaction.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
                                     </tbody>
                                 </table>
                             </div>
@@ -902,27 +848,64 @@
             const dateRangeSelect = document.getElementById('dateRangeSelect');
             const customDateRange = document.getElementById('customDateRange');
             
-            // Show/hide custom date inputs based on selection
-            dateRangeSelect.addEventListener('change', function() {
-                if (this.value === 'custom') {
-                    customDateRange.style.display = 'block';
-                } else {
-                    customDateRange.style.display = 'none';
+            if (dateRangeSelect) {
+                dateRangeSelect.addEventListener('change', function() {
+                    if (this.value === 'custom') {
+                        $('#dateFilterModal').modal('show');
+                    } else {
+                        window.location.href = 'admin-dashboard?dateRange=' + this.value;
+                    }
+                });
+            }
+            
+            // Initialize charts
+            initCharts();
+        });
+        
+        function initCharts() {
+            // Registration chart
+            const registrationCtx = document.getElementById('registrationChart').getContext('2d');
+            
+            // Parse monthly registration data from server
+            let monthlyRegistrations = {};
+            <c:forEach items="${monthlyRegistrations}" var="entry">
+                monthlyRegistrations['${entry.key}'] = ${entry.value};
+            </c:forEach>
+            
+            const months = Object.keys(monthlyRegistrations).sort();
+            const registrationCounts = months.map(month => monthlyRegistrations[month]);
+            
+            new Chart(registrationCtx, {
+                type: 'line',
+                data: {
+                    labels: months.map(month => {
+                        const [year, monthNum] = month.split('-');
+                        return new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    }),
+                    datasets: [{
+                        label: 'Registrations',
+                        data: registrationCounts,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
                 }
             });
-            
-            // Set default dates for custom range
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
-            
-            // Set default start date to first day of current month
-            const today = new Date();
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            startDateInput.valueAsDate = firstDayOfMonth;
-            
-            // Set default end date to today
-            endDateInput.valueAsDate = today;
-        });
+        }
     </script>
     <script>
         // Profile Views Chart

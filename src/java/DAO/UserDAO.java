@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import model.Account;
 import model.Role;
+import java.util.Date;
 
 public class UserDAO extends DBContext {
 
@@ -254,6 +255,22 @@ public class UserDAO extends DBContext {
         return totalUsers;
     }
 
+    public int getNewUsersCount(Date startDate, Date endDate) {
+        int newUsers = 0;
+        String query = "SELECT COUNT(*) FROM Account WHERE createdAt BETWEEN ? AND ?";
+        try (PreparedStatement st = connection.prepareStatement(query)) {
+            st.setTimestamp(1, new java.sql.Timestamp(startDate.getTime()));
+            st.setTimestamp(2, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                newUsers = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching new users: " + e.getMessage());
+        }
+        return newUsers;
+    }
+
     public int countAllAdmin() {
         int totalUser = 0;
         String sql = "SELECT COUNT(*) FROM Account WHERE RoleID = 1";
@@ -296,7 +313,7 @@ public class UserDAO extends DBContext {
     public List<Account> pagingAccount(int index, int pageSize) {
         List<Account> list = new ArrayList<>();
 
-        String sql = "SELECT a.UserID, a.FullName, a.Image, r.RoleName, a.Email, a.Password , a.Status, a.UpdatedAt"
+        String sql = "SELECT a.UserID, a.FullName, a.Image, r.RoleName, a.Email, a.Password ,a.Status, a.UpdatedAt"
                 + " FROM Account a "
                 + "JOIN Role r ON a.RoleID = r.RoleID "
                 + "ORDER BY a.RoleID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";

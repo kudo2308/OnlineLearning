@@ -13,7 +13,7 @@
         <nav class="ttr-sidebar-navi">
             <ul>
                 <li>
-                    <a href="${pageContext.request.contextPath}/dashboard.jsp" class="ttr-material-button">
+                    <a href="${pageContext.request.contextPath}/admin-dashboard" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
                         <span class="ttr-label">Dashboard</span>
                     </a>
