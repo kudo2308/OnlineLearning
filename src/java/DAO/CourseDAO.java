@@ -1270,10 +1270,8 @@ public class CourseDAO extends DBContext {
         return success;
     }
 
-    public static void main(String[] args) {
-        CourseDAO dao = new CourseDAO();
-        boolean update = dao.updateCoursePrice(1, 150000, 100000);
-      public List<Course> findByPageFilterCategoryAndAllStatusToConfirm(Integer page, int categoryIdRequest,Integer expertId, String nameRequest) {
+
+    public List<Course> findByPageFilterCategoryAndAllStatusToConfirm(Integer page, int categoryIdRequest, Integer expertId, String nameRequest) {
         List<Course> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
