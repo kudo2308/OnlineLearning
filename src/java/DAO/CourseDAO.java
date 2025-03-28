@@ -1553,4 +1553,68 @@ public class CourseDAO extends DBContext {
         
         return recentCourses;
     }
+
+    public List<Course> getCoursesByExpertID(int expertID) {
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT c.*, cat.CategoryName FROM Course c "
+                + "LEFT JOIN Category cat ON c.CategoryID = cat.CategoryID "
+                + "WHERE c.ExpertID = ? ORDER BY c.CreatedAt DESC";
+        try {
+            System.out.println("Executing query for expertID: " + expertID);
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, expertID);
+            ResultSet rs = st.executeQuery();
+            
+            boolean hasResults = false;
+            while (rs.next()) {
+                hasResults = true;
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setImageUrl(rs.getString("Image")); 
+                course.setPrice(rs.getFloat("Price"));
+                
+                // Xử lý trường Status có thể là số nguyên hoặc chuỗi
+                Object statusObj = rs.getObject("Status");
+                if (statusObj instanceof Integer) {
+                    course.setStatus(String.valueOf(statusObj));
+                } else {
+                    course.setStatus(rs.getString("Status"));
+                }
+                
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                // Set category if needed
+                Category category = new Category();
+                category.setCategoryID(rs.getInt("CategoryID"));
+                category.setName(rs.getString("CategoryName"));
+                course.setCategory(category);
+                
+                System.out.println("Found course: " + course.getTitle() + ", Status: " + course.getStatus());
+                list.add(course);
+            }
+            
+            if (!hasResults) {
+                System.out.println("No courses found for expertID: " + expertID);
+            } else {
+                System.out.println("Total courses found: " + list.size());
+            }
+            
+            // Lấy thông tin về cấu trúc bảng
+            java.sql.ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            System.out.println("Table structure - Column count: " + columnCount);
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.println("Column " + i + ": " + metaData.getColumnName(i) + " - Type: " + metaData.getColumnTypeName(i));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching courses by expert ID: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

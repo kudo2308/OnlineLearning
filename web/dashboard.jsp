@@ -249,6 +249,35 @@
                     </div>
                     
                     <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <i class="fas fa-cogs me-2"></i> Admin Actions
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <a href="UserList" class="btn btn-primary btn-block">
+                                                <i class="fas fa-users me-2"></i> User Management
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <a href="manager-courses" class="btn btn-success btn-block">
+                                                <i class="fas fa-book me-2"></i> Course Management
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <a href="admin-registrations" class="btn btn-info btn-block">
+                                                <i class="fas fa-clipboard-list me-2"></i> Registration Management
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-primary text-white">

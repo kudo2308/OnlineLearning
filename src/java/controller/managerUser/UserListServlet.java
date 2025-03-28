@@ -30,13 +30,17 @@ public class UserListServlet extends HttpServlet {
 
         String searchValue = request.getParameter("searchValue");
         String roleName = request.getParameter("roleName");
-
+        String status = request.getParameter("status");
 
         if (roleName != null && roleName.trim().isEmpty()) {
             roleName = null;
         }
+        
+        if (status != null && status.trim().isEmpty()) {
+            status = null;
+        }
 
-        List<Account> userList = dao.getUsersBySearchName(searchValue, roleName);
+        List<Account> userList = dao.getUsersBySearchCriteria(searchValue, roleName, status);
 
         int totalUsers = userList.size();
         int totalPages = (int) Math.ceil((double) totalUsers / 6);
@@ -50,6 +54,7 @@ public class UserListServlet extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("searchValue", searchValue);
         request.setAttribute("roleName", roleName);
+        request.setAttribute("status", status);
 
         request.getRequestDispatcher("listUser.jsp").forward(request, response);
     }

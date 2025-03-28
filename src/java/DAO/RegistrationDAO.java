@@ -839,6 +839,53 @@ public class RegistrationDAO extends DBContext {
         return monthlyRegistrations;
     }
 
+    public List<Registration> getRegistrationsByUserID(int userID) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT r.*, c.Title, c.Image, c.Price, c.Description, c.ExpertID, c.CategoryID, c.Status as CourseStatus "
+                + "FROM Registration r "
+                + "JOIN Course c ON r.CourseID = c.CourseID "
+                + "WHERE r.UserID = ? "
+                + "ORDER BY r.CreatedAt DESC";
+        
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userID);
+            ResultSet rs = st.executeQuery();
+            
+            while (rs.next()) {
+                Registration registration = new Registration();
+                registration.setRegistrationID(rs.getInt("RegistrationID"));
+                registration.setUserID(rs.getInt("UserID"));
+                registration.setCourseID(rs.getInt("CourseID"));
+                registration.setPrice(rs.getDouble("Price"));
+                registration.setStatus(rs.getString("Status"));
+                registration.setProgress(rs.getInt("Progress"));
+                registration.setValidFrom(rs.getTimestamp("ValidFrom"));
+                registration.setValidTo(rs.getTimestamp("ValidTo"));
+                registration.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                registration.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                // Set course information
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setImageUrl(rs.getString("Image"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setStatus(rs.getString("CourseStatus"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                
+                registration.setCourse(course);
+                registrations.add(registration);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching registrations by user ID: " + e.getMessage());
+        }
+        
+        return registrations;
+    }
+
     public static void main(String[] args) {
         RegistrationDAO regisDAO = new RegistrationDAO();
         boolean isRegistered = regisDAO.isCourseRegisteredByUser(2, 1);

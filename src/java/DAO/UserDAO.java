@@ -129,6 +129,44 @@ public class UserDAO extends DBContext {
             e.printStackTrace(); // Log lỗi để debug
         }
     }
+    
+    // Lấy thông tin người dùng theo ID
+    public User getUserByID(int userID) {
+        String sql = "SELECT * FROM Account WHERE UserID = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userID);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("UserID"),
+                    rs.getInt("RoleID"),
+                    rs.getInt("Status"),
+                    rs.getString("FullName"),
+                    rs.getString("Password"),
+                    rs.getString("Email")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching user by ID: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    // Cập nhật trạng thái người dùng theo ID
+    public boolean updateStatus(int userID, int newStatus) {
+        String sql = "UPDATE Account SET Status = ? WHERE UserID = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, newStatus);
+            st.setInt(2, userID);
+            int rowsAffected = st.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating user status: " + e.getMessage());
+            return false;
+        }
+    }
 
     // Xóa người dùng
     public void deleteUser(String email) {
@@ -242,6 +280,76 @@ public class UserDAO extends DBContext {
         return list;
     }
 
+    // Phương thức tìm kiếm người dùng với nhiều tiêu chí bao gồm status
+    public List<Account> getUsersBySearchCriteria(String searchValue, String roleName, String status) {
+        List<Account> list = new ArrayList<>();
+        String sql = "SELECT a.*, r.RoleName FROM Account a JOIN Role r ON a.RoleID = r.RoleID WHERE 1=1";
+        
+        if (searchValue != null && !searchValue.isEmpty()) {
+            sql += " AND a.FullName LIKE ?";
+        }
+        
+        if (roleName != null && !roleName.isEmpty()) {
+            sql += " AND r.RoleName = ?";
+        }
+        
+        if (status != null && !status.isEmpty()) {
+            sql += " AND a.Status = ?";
+        }
+        
+        sql += " ORDER BY a.UserID ASC";
+        
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            int paramIndex = 1;
+            
+            if (searchValue != null && !searchValue.isEmpty()) {
+                st.setString(paramIndex++, "%" + searchValue + "%");
+            }
+            
+            if (roleName != null && !roleName.isEmpty()) {
+                st.setString(paramIndex++, roleName);
+            }
+            
+            if (status != null && !status.isEmpty()) {
+                st.setInt(paramIndex++, Integer.parseInt(status));
+            }
+            
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setUserID(rs.getInt("UserID"));
+                
+                // Tạo đối tượng Role và thiết lập cho Account
+                Role role = new Role(rs.getInt("RoleID"), rs.getString("RoleName"));
+                account.setRole(role);
+                
+                // Thiết lập status dướidạng boolean
+                account.setStatus(rs.getInt("Status") == 1);
+                
+                account.setFullName(rs.getString("FullName"));
+                account.setPassword(rs.getString("Password"));
+                account.setEmail(rs.getString("Email"));
+                account.setPhone(rs.getString("Phone"));
+                account.setAddress(rs.getString("Address"));
+                account.setImage(rs.getString("Image"));
+                account.setDescription(rs.getString("Description"));
+                account.setDob(rs.getDate("DOB"));
+                account.setGenderID(rs.getString("GenderID"));
+                account.setSubScriptionType(rs.getString("SubScriptionType"));
+                account.setSubScriptionExpiry(rs.getTimestamp("SubScriptionExpiry"));
+                account.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                account.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                list.add(account);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching users by search criteria: " + e.getMessage());
+        }
+        
+        return list;
+    }
+
     public int getTotalUsers() {
         int totalUsers = 0;
         String query = "SELECT COUNT(*) FROM Account";
@@ -344,6 +452,47 @@ public class UserDAO extends DBContext {
             e.getMessage();
         }
         return list;
+    }
+
+    public Account getAccountByID(int userID) {
+        Account account = null;
+        String sql = "SELECT a.UserID, a.FullName, a.Image, a.Description, a.Phone, a.Address, a.GenderID, a.DOB, "
+                + "r.RoleID, r.RoleName, a.Email, a.Password, a.Status, a.CreatedAt, a.UpdatedAt "
+                + "FROM Account a "
+                + "JOIN Role r ON a.RoleID = r.RoleID "
+                + "WHERE a.UserID = ?";
+        
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, userID);
+            
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    account = new Account();
+                    account.setUserID(rs.getInt("UserID"));
+                    account.setFullName(rs.getString("FullName"));
+                    account.setImage(rs.getString("Image"));
+                    account.setDescription(rs.getString("Description"));
+                    account.setPhone(rs.getString("Phone"));
+                    account.setAddress(rs.getString("Address"));
+                    account.setGenderID(String.valueOf(rs.getInt("GenderID")));
+                    account.setDob(rs.getDate("DOB"));
+                    account.setEmail(rs.getString("Email"));
+                    account.setPassword(Security.decode(rs.getString("Password")));
+                    account.setStatus(rs.getBoolean("Status"));
+                    account.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    account.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    
+                    Role role = new Role();
+                    role.setRoleID(rs.getInt("RoleID"));
+                    role.setRoleName(rs.getString("RoleName"));
+                    account.setRole(role);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getAccountByID: " + e.getMessage());
+        }
+        
+        return account;
     }
 
     public static void main(String[] args) {
