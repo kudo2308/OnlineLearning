@@ -124,7 +124,7 @@
                                             <tr>
                                                 <td>${courses.courseID}</td>
                                                 <td><img src=".${courses.imageUrl}" width="50"></td>
-                                                <td>${courses.title}</td>
+                                                <td><a style="color: black" href="${pageContext.request.contextPath}/coursedetailadmin?courseId=${courses.courseID}">${courses.title}</a></td>
                                                 <td>${courses.expert.fullName}</td>
                                                 <td>${courses.price}</td>
                                                 <td>${courses.category.name}</td>
