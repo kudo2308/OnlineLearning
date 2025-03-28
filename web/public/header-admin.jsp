@@ -21,7 +21,7 @@
             <!-- header left menu start -->
             <ul class="ttr-header-navigation">
                 <li>
-                    <a href="${pageContext.request.contextPath}/dashboard.jsp" class="ttr-material-button ttr-submenu-toggle">DASHBOARD</a>
+                    <a href="${pageContext.request.contextPath}/admin-dashboard" class="ttr-material-button ttr-submenu-toggle">DASHBOARD</a>
                 </li>
                 <li>
                     <a href="#" class="ttr-material-button ttr-submenu-toggle">QUICK MENU <i class="fa fa-angle-down"></i></a>

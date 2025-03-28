@@ -22,7 +22,7 @@ import java.util.Map;
              "/addCourse", "/addLesson", "/updateLesson", "/viewLessonForAd", "/addQuestion", "/AddQuestion", "/manageQuestion",
             "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz",
             // URL cho Admin
-            "/dashboard.jsp", "/UserList"
+            "/admin-dashboard", "/UserList"
         },
         dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD}
 )
@@ -84,7 +84,7 @@ public class RoleFilter implements Filter {
             "/manageQuestion", "/updateQuestion", "/AddQuiz", "/quiz", "/Test", "/Review", "/Quiz"
         };
         String[] adminURLs = {
-            "/dashboard.jsp", "/UserList"
+            "/admin-dashboard", "/UserList"
         };
         boolean isExpertURL = false;
         for (String url : expertURLs) {

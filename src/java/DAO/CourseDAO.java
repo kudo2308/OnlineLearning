@@ -1426,4 +1426,131 @@ public class CourseDAO extends DBContext {
         
         return monthlyData;
     }
+
+    /**
+     * Get total number of courses created by an expert
+     * @param expertId The ID of the expert
+     * @return Number of courses
+     */
+    public int getTotalCoursesByExpert(int expertId) {
+        int totalCourses = 0;
+        String sql = "SELECT COUNT(*) AS TotalCourses FROM Course WHERE ExpertID = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalCourses = rs.getInt("TotalCourses");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total courses by expert: " + e.getMessage());
+        }
+        
+        return totalCourses;
+    }
+    
+    /**
+     * Get total number of lessons in all courses created by an expert
+     * @param expertId The ID of the expert
+     * @return Number of lessons
+     */
+    public int getTotalLessonsByExpert(int expertId) {
+        int totalLessons = 0;
+        String sql = "SELECT SUM(TotalLesson) AS TotalLessons FROM Course WHERE ExpertID = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalLessons = rs.getInt("TotalLessons");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total lessons by expert: " + e.getMessage());
+        }
+        
+        return totalLessons;
+    }
+    
+    /**
+     * Get number of new courses created by an expert within a date range
+     * @param expertId The ID of the expert
+     * @param startDate Start date
+     * @param endDate End date
+     * @return Number of new courses
+     */
+    public int getNewCoursesByExpert(int expertId, Date startDate, Date endDate) {
+        int newCourses = 0;
+        String sql = "SELECT COUNT(*) AS NewCourses FROM Course " +
+                     "WHERE ExpertID = ? AND CreatedAt BETWEEN ? AND ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ps.setTimestamp(2, new java.sql.Timestamp(startDate.getTime()));
+            ps.setTimestamp(3, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                newCourses = rs.getInt("NewCourses");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting new courses by expert: " + e.getMessage());
+        }
+        
+        return newCourses;
+    }
+    
+    /**
+     * Get recent courses created by an expert
+     * @param expertId The ID of the expert
+     * @param limit Number of courses to retrieve
+     * @return List of recent courses
+     */
+    public List<Course> getRecentCoursesByExpert(int expertId, int limit) {
+        List<Course> recentCourses = new ArrayList<>();
+        String sql = "SELECT TOP(?) c.CourseID, c.Title, c.Description, c.Price, c.ExpertID, " +
+                     "c.CategoryID, c.ImageUrl, c.TotalLesson, c.Status, c.CreatedAt, c.UpdatedAt, " +
+                     "cat.Name as CategoryName " +
+                     "FROM Course c " +
+                     "JOIN Category cat ON c.CategoryID = cat.CategoryID " +
+                     "WHERE c.ExpertID = ? " +
+                     "ORDER BY c.CreatedAt DESC";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, limit);
+            ps.setInt(2, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setTitle(rs.getString("Title"));
+                course.setDescription(rs.getString("Description"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setExpertID(rs.getInt("ExpertID"));
+                course.setCategoryID(rs.getInt("CategoryID"));
+                course.setImageUrl(rs.getString("ImageUrl"));
+                course.setTotalLesson(rs.getInt("TotalLesson"));
+                course.setStatus(rs.getString("Status"));
+                course.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                course.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                
+                // Set category information
+                Category category = new Category();
+                category.setName(rs.getString("CategoryName"));
+                course.setCategory(category);
+                
+                recentCourses.add(course);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting recent courses by expert: " + e.getMessage());
+        }
+        
+        return recentCourses;
+    }
 }

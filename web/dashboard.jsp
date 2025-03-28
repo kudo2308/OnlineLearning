@@ -398,7 +398,7 @@
                     <div class="db-breadcrumb">
                         <h4 class="breadcrumb-title">Dashboard</h4>
                         <ul class="db-breadcrumb-list">
-                            <li><a href="dashboard.jsp"><i class="fa fa-home"></i>Dashboard</a></li>
+                            <li><a href="admin-dashboard"><i class="fa fa-home"></i>Dashboard</a></li>
                         </ul>
                     </div>
                     

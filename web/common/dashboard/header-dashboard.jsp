@@ -12,9 +12,9 @@
         <!--logo start -->
         <div class="ttr-logo-box">
             <div>
-                <a href="home" class="ttr-logo">
-                    <img alt="" class="ttr-logo-mobile" src="assets/images/logo-mobile.png" width="30" height="30">
-                    <img alt="" class="ttr-logo-desktop" src="assets/images/logo-white.png" width="160" height="27">
+                <a href="${pageContext.request.contextPath}/home" class="ttr-logo">
+                    <img alt="" class="ttr-logo-mobile" src="${pageContext.request.contextPath}/assets/images/logo-mobile.png" width="30" height="30">
+                    <img alt="" class="ttr-logo-desktop" src="${pageContext.request.contextPath}/assets/images/logo-white.png" width="160" height="27">
                 </a>
             </div>
         </div>

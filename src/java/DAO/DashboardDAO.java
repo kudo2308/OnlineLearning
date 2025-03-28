@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import model.Account;
 import model.Role;
+import java.util.Date;
 
 /**
  * Data Access Object for the Admin Dashboard
@@ -709,33 +710,307 @@ public class DashboardDAO extends DBContext {
     }
     
     /**
-     * Helper method to calculate growth percentage
-     * @param previous Previous value
-     * @param current Current value
-     * @return Growth percentage
+     * Get course status distribution
+     * @return Map containing course status distribution data
      */
-    private int calculateGrowthPercentage(BigDecimal previous, BigDecimal current) {
-        if (previous == null || previous.compareTo(BigDecimal.ZERO) == 0) {
-            return current.compareTo(BigDecimal.ZERO) > 0 ? 100 : 0;
+    public Map<String, Integer> getCourseStatusDistribution() {
+        Map<String, Integer> distribution = new HashMap<>();
+        String sql = "SELECT Status, COUNT(*) AS Count FROM Course GROUP BY Status";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String status = rs.getString("Status");
+                int count = rs.getInt("Count");
+                distribution.put(status, count);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting course status distribution: " + e.getMessage());
         }
         
-        return previous.compareTo(BigDecimal.ZERO) == 0 ? 
-               100 : 
-               current.subtract(previous).multiply(new BigDecimal(100)).divide(previous, RoundingMode.HALF_UP).intValue();
+        return distribution;
+    }
+
+    /**
+     * Get course status distribution for a specific expert
+     * @param expertId The ID of the expert
+     * @return Map containing course status distribution data
+     */
+    public Map<String, Integer> getCourseStatusDistributionByExpert(int expertId) {
+        Map<String, Integer> distribution = new HashMap<>();
+        String sql = "SELECT Status, COUNT(*) AS Count FROM Course WHERE ExpertID = ? GROUP BY Status";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String status = rs.getString("Status");
+                int count = rs.getInt("Count");
+                distribution.put(status, count);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting course status distribution by expert: " + e.getMessage());
+        }
+        
+        return distribution;
     }
     
     /**
-     * Helper method to calculate growth percentage
-     * @param previous Previous value
-     * @param current Current value
-     * @return Growth percentage
+     * Get total number of students enrolled in an expert's courses
+     * @param expertId The ID of the expert
+     * @return Number of students
      */
-    private int calculateGrowthPercentage(int previous, int current) {
-        if (previous == 0) {
-            return current > 0 ? 100 : 0;
+    public int getTotalStudentsByExpert(int expertId) {
+        int totalStudents = 0;
+        String sql = "SELECT COUNT(DISTINCT r.UserID) AS TotalStudents " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalStudents = rs.getInt("TotalStudents");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total students by expert: " + e.getMessage());
         }
         
-        return (int) Math.round(((double) (current - previous) / previous) * 100);
+        return totalStudents;
+    }
+    
+    /**
+     * Get new students enrolled in an expert's courses within a date range
+     * @param expertId The ID of the expert
+     * @param startDate Start date
+     * @param endDate End date
+     * @return Number of new students
+     */
+    public int getNewStudentsByExpert(int expertId, Date startDate, Date endDate) {
+        int newStudents = 0;
+        String sql = "SELECT COUNT(DISTINCT r.UserID) AS NewStudents " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.CreatedAt BETWEEN ? AND ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ps.setTimestamp(2, new java.sql.Timestamp(startDate.getTime()));
+            ps.setTimestamp(3, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                newStudents = rs.getInt("NewStudents");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting new students by expert: " + e.getMessage());
+        }
+        
+        return newStudents;
+    }
+    
+    /**
+     * Get total revenue for an expert
+     * @param expertId The ID of the expert
+     * @return Total revenue
+     */
+    public BigDecimal getTotalRevenueByExpert(int expertId) {
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        String sql = "SELECT SUM(r.Price) AS TotalRevenue " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalRevenue = rs.getBigDecimal("TotalRevenue");
+                if (totalRevenue == null) {
+                    totalRevenue = BigDecimal.ZERO;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total revenue by expert: " + e.getMessage());
+        }
+        
+        return totalRevenue;
+    }
+    
+    /**
+     * Get revenue for an expert within a date range
+     * @param expertId The ID of the expert
+     * @param startDate Start date
+     * @param endDate End date
+     * @return Revenue in the period
+     */
+    public BigDecimal getRevenueByExpertInPeriod(int expertId, Date startDate, Date endDate) {
+        BigDecimal periodRevenue = BigDecimal.ZERO;
+        String sql = "SELECT SUM(r.Price) AS PeriodRevenue " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.CreatedAt BETWEEN ? AND ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ps.setTimestamp(2, new java.sql.Timestamp(startDate.getTime()));
+            ps.setTimestamp(3, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                periodRevenue = rs.getBigDecimal("PeriodRevenue");
+                if (periodRevenue == null) {
+                    periodRevenue = BigDecimal.ZERO;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting period revenue by expert: " + e.getMessage());
+        }
+        
+        return periodRevenue;
+    }
+    
+    /**
+     * Get monthly registration counts for an expert's courses
+     * @param expertId The ID of the expert
+     * @return Map of month to registration count
+     */
+    public Map<String, Integer> getMonthlyRegistrationCountsByExpert(int expertId) {
+        Map<String, Integer> monthlyRegistrations = new HashMap<>();
+        String sql = "SELECT FORMAT(r.CreatedAt, 'yyyy-MM') as Month, COUNT(*) AS RegistrationCount " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.CreatedAt >= DATEADD(MONTH, -11, GETDATE()) " +
+                     "GROUP BY FORMAT(r.CreatedAt, 'yyyy-MM') " +
+                     "ORDER BY Month";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String month = rs.getString("Month");
+                int count = rs.getInt("RegistrationCount");
+                monthlyRegistrations.put(month, count);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting monthly registration counts by expert: " + e.getMessage());
+        }
+        
+        return monthlyRegistrations;
+    }
+    
+    /**
+     * Get monthly revenue for an expert
+     * @param expertId The ID of the expert
+     * @return Map of month to revenue
+     */
+    public Map<String, Double> getMonthlyRevenueByExpert(int expertId) {
+        Map<String, Double> monthlyRevenue = new HashMap<>();
+        String sql = "SELECT FORMAT(r.CreatedAt, 'yyyy-MM') as Month, SUM(CAST(r.Price AS FLOAT)) as Revenue " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.CreatedAt >= DATEADD(MONTH, -11, GETDATE()) " +
+                     "GROUP BY FORMAT(r.CreatedAt, 'yyyy-MM') " +
+                     "ORDER BY Month";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String month = rs.getString("Month");
+                double revenue = rs.getDouble("Revenue");
+                monthlyRevenue.put(month, revenue);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting monthly revenue by expert: " + e.getMessage());
+        }
+        
+        return monthlyRevenue;
+    }
+    
+    /**
+     * Get recent registrations for an expert's courses
+     * @param expertId The ID of the expert
+     * @param limit Number of registrations to retrieve
+     * @return List of recent registrations
+     */
+    public List<Map<String, Object>> getRecentRegistrationsByExpert(int expertId, int limit) {
+        List<Map<String, Object>> recentRegistrations = new ArrayList<>();
+        String sql = "SELECT TOP(?) r.RegistrationID, r.UserID, r.CourseID, r.Status, r.Progress, r.CreatedAt, " +
+                     "a.FullName AS StudentName, c.Title AS CourseTitle " +
+                     "FROM Registration r " +
+                     "JOIN Account a ON r.UserID = a.UserID " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? " +
+                     "ORDER BY r.CreatedAt DESC";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, limit);
+            ps.setInt(2, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> registration = new HashMap<>();
+                registration.put("registrationId", rs.getInt("RegistrationID"));
+                registration.put("userId", rs.getInt("UserID"));
+                registration.put("courseId", rs.getInt("CourseID"));
+                registration.put("status", rs.getString("Status"));
+                registration.put("progress", rs.getInt("Progress"));
+                registration.put("createdAt", rs.getTimestamp("CreatedAt"));
+                registration.put("studentName", rs.getString("StudentName"));
+                registration.put("courseTitle", rs.getString("CourseTitle"));
+                recentRegistrations.add(registration);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting recent registrations by expert: " + e.getMessage());
+        }
+        
+        return recentRegistrations;
+    }
+    
+    /**
+     * Get total registrations by status for an expert's courses
+     * @param expertId The ID of the expert
+     * @param status The registration status
+     * @return Number of registrations with the specified status
+     */
+    public int getTotalRegistrationsByExpertAndStatus(int expertId, String status) {
+        int totalRegistrations = 0;
+        String sql = "SELECT COUNT(*) AS TotalRegistrations " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.Status = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ps.setString(2, status);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalRegistrations = rs.getInt("TotalRegistrations");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total registrations by expert and status: " + e.getMessage());
+        }
+        
+        return totalRegistrations;
     }
     
     /**
@@ -812,26 +1087,32 @@ public class DashboardDAO extends DBContext {
     }
     
     /**
-     * Get course status distribution
-     * @return Map containing course status distribution data
+     * Helper method to calculate growth percentage
+     * @param previous Previous value
+     * @param current Current value
+     * @return Growth percentage
      */
-    public Map<String, Integer> getCourseStatusDistribution() {
-        Map<String, Integer> distribution = new HashMap<>();
-        String sql = "SELECT Status, COUNT(*) AS Count FROM Course GROUP BY Status";
-        
-        try (Connection connection = new DBContext().getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String status = rs.getString("Status");
-                int count = rs.getInt("Count");
-                distribution.put(status, count);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error getting course status distribution: " + e.getMessage());
+    private int calculateGrowthPercentage(BigDecimal previous, BigDecimal current) {
+        if (previous == null || previous.compareTo(BigDecimal.ZERO) == 0) {
+            return current.compareTo(BigDecimal.ZERO) > 0 ? 100 : 0;
         }
         
-        return distribution;
+        return previous.compareTo(BigDecimal.ZERO) == 0 ? 
+               100 : 
+               current.subtract(previous).multiply(new BigDecimal(100)).divide(previous, RoundingMode.HALF_UP).intValue();
+    }
+    
+    /**
+     * Helper method to calculate growth percentage
+     * @param previous Previous value
+     * @param current Current value
+     * @return Growth percentage
+     */
+    private int calculateGrowthPercentage(int previous, int current) {
+        if (previous == 0) {
+            return current > 0 ? 100 : 0;
+        }
+        
+        return (int) Math.round(((double) (current - previous) / previous) * 100);
     }
 }

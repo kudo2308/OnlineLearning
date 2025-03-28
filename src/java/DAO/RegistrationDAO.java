@@ -12,6 +12,7 @@ import java.util.Map;
 import model.Registration;
 import model.Course;
 import model.User;
+import model.Account;
 import java.sql.*;
 import java.util.Date;
 
@@ -669,6 +670,173 @@ public class RegistrationDAO extends DBContext {
         }
         
         return monthlyData;
+    }
+
+    /**
+     * Get total number of students enrolled in an expert's courses
+     * @param expertId The ID of the expert
+     * @return Number of students
+     */
+    public int getTotalStudentsByExpert(int expertId) {
+        int totalStudents = 0;
+        String sql = "SELECT COUNT(DISTINCT r.UserID) AS TotalStudents " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalStudents = rs.getInt("TotalStudents");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total students by expert: " + e.getMessage());
+        }
+        
+        return totalStudents;
+    }
+    
+    /**
+     * Get number of new students enrolled in an expert's courses within a date range
+     * @param expertId The ID of the expert
+     * @param startDate Start date
+     * @param endDate End date
+     * @return Number of new students
+     */
+    public int getNewStudentsByExpert(int expertId, Date startDate, Date endDate) {
+        int newStudents = 0;
+        String sql = "SELECT COUNT(DISTINCT r.UserID) AS NewStudents " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.CreatedAt BETWEEN ? AND ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ps.setTimestamp(2, new java.sql.Timestamp(startDate.getTime()));
+            ps.setTimestamp(3, new java.sql.Timestamp(endDate.getTime()));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                newStudents = rs.getInt("NewStudents");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting new students by expert: " + e.getMessage());
+        }
+        
+        return newStudents;
+    }
+    
+    /**
+     * Get total registrations by status for an expert's courses
+     * @param expertId The ID of the expert
+     * @param status The registration status
+     * @return Number of registrations with the specified status
+     */
+    public int getTotalRegistrationsByExpertAndStatus(int expertId, String status) {
+        int totalRegistrations = 0;
+        String sql = "SELECT COUNT(*) AS TotalRegistrations " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.Status = ?";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ps.setString(2, status);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalRegistrations = rs.getInt("TotalRegistrations");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting total registrations by expert and status: " + e.getMessage());
+        }
+        
+        return totalRegistrations;
+    }
+    
+    /**
+     * Get recent registrations for an expert's courses
+     * @param expertId The ID of the expert
+     * @param limit Number of registrations to retrieve
+     * @return List of recent registrations
+     */
+    public List<Registration> getRecentRegistrationsByExpert(int expertId, int limit) {
+        List<Registration> recentRegistrations = new ArrayList<>();
+        String sql = "SELECT TOP(?) r.RegistrationID, r.UserID, r.CourseID, r.Status, r.Progress, r.CreatedAt, " +
+                     "a.FullName AS StudentName, c.Title AS CourseTitle " +
+                     "FROM Registration r " +
+                     "JOIN Account a ON r.UserID = a.UserID " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? " +
+                     "ORDER BY r.CreatedAt DESC";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, limit);
+            ps.setInt(2, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Registration registration = new Registration();
+                registration.setRegistrationID(rs.getInt("RegistrationID"));
+                registration.setUserID(rs.getInt("UserID"));
+                registration.setCourseID(rs.getInt("CourseID"));
+                registration.setStatus(rs.getString("Status"));
+                registration.setProgress(rs.getInt("Progress"));
+                registration.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                
+                // Set additional information
+                User student = new User();
+                student.setFullName(rs.getString("StudentName"));
+                registration.setUser(student);
+                
+                Course course = new Course();
+                course.setTitle(rs.getString("CourseTitle"));
+                registration.setCourse(course);
+                
+                recentRegistrations.add(registration);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting recent registrations by expert: " + e.getMessage());
+        }
+        
+        return recentRegistrations;
+    }
+    
+    /**
+     * Get monthly registration counts for an expert's courses
+     * @param expertId The ID of the expert
+     * @return Map of month to registration count
+     */
+    public Map<String, Integer> getMonthlyRegistrationCountsByExpert(int expertId) {
+        Map<String, Integer> monthlyRegistrations = new HashMap<>();
+        String sql = "SELECT FORMAT(r.CreatedAt, 'yyyy-MM') as Month, COUNT(*) AS RegistrationCount " +
+                     "FROM Registration r " +
+                     "JOIN Course c ON r.CourseID = c.CourseID " +
+                     "WHERE c.ExpertID = ? AND r.CreatedAt >= DATEADD(MONTH, -11, GETDATE()) " +
+                     "GROUP BY FORMAT(r.CreatedAt, 'yyyy-MM') " +
+                     "ORDER BY Month";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setInt(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String month = rs.getString("Month");
+                int count = rs.getInt("RegistrationCount");
+                monthlyRegistrations.put(month, count);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting monthly registration counts by expert: " + e.getMessage());
+        }
+        
+        return monthlyRegistrations;
     }
 
     public static void main(String[] args) {

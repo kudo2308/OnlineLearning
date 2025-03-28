@@ -50,7 +50,7 @@ public class FilterSession implements Filter {
             account = (Map<String, String>) session.getAttribute("account");
             String role = account.get("roles");
             if ("ADMIN".equalsIgnoreCase(role) && req.getRequestURI().endsWith("/home")) {
-                res.sendRedirect(req.getContextPath() + "/dashboard.jsp");
+                res.sendRedirect(req.getContextPath() + "/admin-dashboard");
                 return;
             }
         }
