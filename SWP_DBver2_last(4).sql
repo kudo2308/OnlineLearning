@@ -467,10 +467,10 @@ VALUES (1, 0.00);
 INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image, Status) 
 VALUES
 ('John Expert', 'Expert account', 'VmszaVktKzZlKmRlJHMuZXhwZXJ0MTIz', 'expert1@onlinelearning.com', 2, '1985-05-12', '/assets/images/avatar/pic2.jpg', 1),
-('Do Trung Hieu', 'Expert account', 'expert2', 'expert2@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 ),
-('Nguyen Vo Thai Bao', 'Expert account', 'expert3', 'expert3@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 ),
-('Vu Danh Hieu', 'Expert account', 'expert4', 'expert4@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 ),
-('Kieu Tuan Hung', 'Expert account', 'expert5', 'expert5@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 );
+('Do Trung Hieu', 'Expert account', 'VmszaVktKzZlKmRlJHMuZXhwZXJ0MTIz', 'expert2@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 ),
+('Nguyen Vo Thai Bao', 'Expert account', 'VmszaVktKzZlKmRlJHMuZXhwZXJ0MTIz', 'expert3@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 ),
+('Vu Danh Hieu', 'Expert account', 'VmszaVktKzZlKmRlJHMuZXhwZXJ0MTIz', 'expert4@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 ),
+('Kieu Tuan Hung', 'Expert account', 'VmszaVktKzZlKmRlJHMuZXhwZXJ0MTIz', 'expert5@onlinelearning.com', 2, '2004-08-23','/assets/images/avatar/pic2.jpg',1 );
 
 -- Insert a sample student account (password: student)
 INSERT INTO Account (FullName, Description, Password, Email, RoleID, DOB, Image, Status) 
