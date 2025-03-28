@@ -473,6 +473,161 @@ public class RegistrationDAO extends DBContext {
     return false;
 }
 
+    public List<Registration> getRegistrationsByStatus(String status) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT r.*, a.fullName, a.email, c.Title AS CourseTitle "
+                + "FROM Registration r "
+                + "JOIN Account a ON r.userID = a.userID "
+                + "JOIN Course c ON r.courseID = c.courseID "
+                + "WHERE r.status = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Registration registration = mapRegistrationFromResultSet(rs);
+                    registrations.add(registration);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registrations;
+    }
+
+    public int getTotalRegistrationsByStatus(String status) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) AS total FROM Registration WHERE status = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    public List<Registration> getRecentRegistrations(int limit) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT TOP(?) r.*, a.fullName, a.email, c.Title AS CourseTitle "
+                + "FROM Registration r "
+                + "JOIN Account a ON r.userID = a.userID "
+                + "JOIN Course c ON r.courseID = c.courseID "
+                + "ORDER BY r.createdAt DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, limit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Registration registration = mapRegistrationFromResultSet(rs);
+                    registrations.add(registration);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registrations;
+    }
+
+    public List<Registration> getNewRegistrations(int days, int page, int recordsPerPage) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT r.*, u.fullName, u.email, c.title FROM Registration r "
+                + "JOIN [User] u ON r.userID = u.userID "
+                + "JOIN Course c ON r.courseID = c.courseID "
+                + "WHERE r.createdAt >= DATEADD(day, ?, GETDATE()) "
+                + "ORDER BY r.createdAt DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.setInt(1, -days);
+            stmt.setInt(2, (page - 1) * recordsPerPage);
+            stmt.setInt(3, recordsPerPage);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Registration registration = mapRegistrationFromResultSet(rs);
+                registrations.add(registration);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return registrations;
+    }
+    
+    public int getTotalNewRegistrations(int days) {
+        String sql = "SELECT COUNT(*) FROM Registration WHERE createdAt >= DATEADD(day, ?, GETDATE())";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.setInt(1, -days);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    
+    public List<Registration> searchNewRegistrationsByEmail(String email, int days, String sortOrder) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT r.*, u.fullName, u.email, c.title FROM Registration r "
+                + "JOIN [User] u ON r.userID = u.userID "
+                + "JOIN Course c ON r.courseID = c.courseID "
+                + "WHERE u.email LIKE ? AND r.createdAt >= DATEADD(day, ?, GETDATE()) "
+                + "ORDER BY r.createdAt " + (sortOrder != null && sortOrder.equalsIgnoreCase("asc") ? "ASC" : "DESC");
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.setString(1, "%" + email + "%");
+            stmt.setInt(2, -days);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Registration registration = mapRegistrationFromResultSet(rs);
+                registrations.add(registration);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return registrations;
+    }
+    
+    public List<Registration> searchNewRegistrationsByFullName(String fullName, int days, String sortOrder) {
+        List<Registration> registrations = new ArrayList<>();
+        String sql = "SELECT r.*, u.fullName, u.email, c.title FROM Registration r "
+                + "JOIN [User] u ON r.userID = u.userID "
+                + "JOIN Course c ON r.courseID = c.courseID "
+                + "WHERE u.fullName LIKE ? AND r.createdAt >= DATEADD(day, ?, GETDATE()) "
+                + "ORDER BY r.createdAt " + (sortOrder != null && sortOrder.equalsIgnoreCase("asc") ? "ASC" : "DESC");
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            
+            stmt.setString(1, "%" + fullName + "%");
+            stmt.setInt(2, -days);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Registration registration = mapRegistrationFromResultSet(rs);
+                registrations.add(registration);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return registrations;
+    }
+
     public static void main(String[] args) {
         RegistrationDAO regisDAO = new RegistrationDAO();
         boolean isRegistered = regisDAO.isCourseRegisteredByUser(2, 1);

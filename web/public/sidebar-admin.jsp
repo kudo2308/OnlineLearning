@@ -32,6 +32,18 @@
                         <span class="ttr-label">Users List</span>
                     </a>
                 </li>  
+                <li>
+                    <a href="${pageContext.request.contextPath}/admin-registrations" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-book"></i></span>
+                        <span class="ttr-label">Registration List</span>
+                    </a>
+                </li>  
+                <li>
+                    <a href="${pageContext.request.contextPath}/admin-new-registrations" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-bell"></i></span>
+                        <span class="ttr-label">New Registrations</span>
+                    </a>
+                </li>  
                 <li class="ttr-seperate"></li>
                 <li>
                     <a href="${pageContext.request.contextPath}/transaction-history" class="ttr-material-button">
