@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import model.Account;
@@ -1084,6 +1086,91 @@ public class DashboardDAO extends DBContext {
         }
         
         return financialSummary;
+    }
+    
+    /**
+     * Get monthly revenue for the past 12 months
+     * @return Map of month to revenue
+     */
+    public Map<String, BigDecimal> getMonthlyRevenue() {
+        Map<String, BigDecimal> monthlyRevenue = new LinkedHashMap<>(); // Use LinkedHashMap to maintain order
+        
+        // First, create entries for the last 12 months to ensure chronological order
+        Calendar cal = Calendar.getInstance();
+        for (int i = 11; i >= 0; i--) {
+            cal.setTime(new Date()); // Reset to current date
+            cal.add(Calendar.MONTH, -i);
+            String monthKey = String.format("%d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
+            monthlyRevenue.put(monthKey, BigDecimal.ZERO);
+        }
+        
+        // Now query the database for actual revenue data
+        String sql = "SELECT FORMAT(o.CreatedAt, 'yyyy-MM') as Month, SUM(o.TotalAmount) as Revenue " +
+                     "FROM [Order] o " +
+                     "WHERE o.PaymentStatus = 'Completed' AND o.CreatedAt >= DATEADD(MONTH, -11, GETDATE()) " +
+                     "GROUP BY FORMAT(o.CreatedAt, 'yyyy-MM')";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String month = rs.getString("Month");
+                BigDecimal revenue = rs.getBigDecimal("Revenue");
+                if (revenue == null) {
+                    revenue = BigDecimal.ZERO;
+                }
+                // Update the existing entry
+                if (monthlyRevenue.containsKey(month)) {
+                    monthlyRevenue.put(month, revenue);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting monthly revenue: " + e.getMessage());
+        }
+        
+        return monthlyRevenue;
+    }
+    
+    /**
+     * Get monthly registration counts for all courses in the past 12 months
+     * @return Map of month to registration count
+     */
+    public Map<String, Integer> getMonthlyRegistrationCounts() {
+        Map<String, Integer> monthlyRegistrations = new LinkedHashMap<>(); // Use LinkedHashMap to maintain order
+        
+        // First, create entries for the last 12 months to ensure chronological order
+        Calendar cal = Calendar.getInstance();
+        for (int i = 11; i >= 0; i--) {
+            cal.setTime(new Date()); // Reset to current date
+            cal.add(Calendar.MONTH, -i);
+            String monthKey = String.format("%d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
+            monthlyRegistrations.put(monthKey, 0);
+        }
+        
+        // Now query the database for actual registration data
+        String sql = "SELECT FORMAT(r.CreatedAt, 'yyyy-MM') as Month, COUNT(*) AS RegistrationCount " +
+                     "FROM Registration r " +
+                     "WHERE r.CreatedAt >= DATEADD(MONTH, -11, GETDATE()) " +
+                     "GROUP BY FORMAT(r.CreatedAt, 'yyyy-MM')";
+        
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String month = rs.getString("Month");
+                int count = rs.getInt("RegistrationCount");
+                // Update the existing entry
+                if (monthlyRegistrations.containsKey(month)) {
+                    monthlyRegistrations.put(month, count);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting monthly registration counts: " + e.getMessage());
+        }
+        
+        return monthlyRegistrations;
     }
     
     /**

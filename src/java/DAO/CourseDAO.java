@@ -363,7 +363,7 @@ public class CourseDAO extends DBContext {
     }
 
     public int getTotalCourses() {
-        String sql = "SELECT COUNT(*) FROM Course WHERE Status = 1";
+        String sql = "SELECT COUNT(*) FROM Course";
         try (Connection connection = new DBContext().getConnection()) {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();

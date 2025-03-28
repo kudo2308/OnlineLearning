@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.CourseDAO;
+import DAO.DashboardDAO;
 import DAO.LoginDAO;
 import DAO.RegistrationDAO;
 import DAO.TransactionDAO;
@@ -22,6 +23,7 @@ import model.Account;
 import model.Registration;
 import model.Transaction;
 import model.User;
+import java.math.BigDecimal;
 
 @WebServlet(name = "AdminDashboardController", urlPatterns = {"/admin-dashboard"})
 public class AdminDashboardController extends HttpServlet {
@@ -111,6 +113,7 @@ public class AdminDashboardController extends HttpServlet {
         CourseDAO courseDAO = new CourseDAO();
         RegistrationDAO registrationDAO = new RegistrationDAO();
         TransactionDAO transactionDAO = new TransactionDAO();
+        DashboardDAO dashboardDAO = new DashboardDAO();
         
         // Get statistics
         int totalUsers = userDAO.getTotalUsers();
@@ -140,10 +143,10 @@ public class AdminDashboardController extends HttpServlet {
         List<Transaction> recentTransactions = transactionDAO.getRecentTransactions(10);
         
         // Get monthly registration data for chart
-        Map<String, Integer> monthlyRegistrations = registrationDAO.getMonthlyRegistrationCounts();
+        Map<String, Integer> monthlyRegistrations = dashboardDAO.getMonthlyRegistrationCounts();
         
         // Get monthly revenue data for chart
-        Map<String, Double> monthlyRevenue = transactionDAO.getMonthlyRevenue();
+        Map<String, BigDecimal> monthlyRevenue = dashboardDAO.getMonthlyRevenue();
         
         // Set attributes for the view
         request.setAttribute("totalUsers", totalUsers);
