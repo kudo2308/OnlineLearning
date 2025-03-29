@@ -32,12 +32,18 @@
                         <span class="ttr-label">Users List</span>
                     </a>
                 </li>  
+
+                <li class="ttr-seperate"></li>
+
                 <li>
                     <a href="${pageContext.request.contextPath}/admin-registrations" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
                         <span class="ttr-label">Registration List</span>
                     </a>
-                </li>  
+                </li>
+
+                <li class="ttr-seperate"></li>
+
                 <li>
                     <a href="${pageContext.request.contextPath}/admin-new-registrations" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-bell"></i></span>
@@ -57,12 +63,21 @@
                 <li>
                     <a href="${pageContext.request.contextPath}/postList" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
-                        <span class="ttr-label"> Post List </span>
+                        <span class="ttr-label"> Blog List </span>
                     </a>
                 </li>  
 
                 <li class="ttr-seperate"></li>
-                
+
+                <li>
+                    <a href="${pageContext.request.contextPath}/approveRequest" class="ttr-material-button">
+                        <span class="ttr-icon"><i class="ti-book"></i></span>
+                        <span class="ttr-label"> Blog Request </span>
+                    </a>
+                </li>  
+
+                <li class="ttr-seperate"></li>
+
                 <li>
                     <a href="${pageContext.request.contextPath}/promotionList" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
@@ -82,9 +97,9 @@
                 <li class="ttr-seperate"></li>
 
                 <li>
-                    <a href="${pageContext.request.contextPath}/approveRequest" class="ttr-material-button">
+                    <a href="${pageContext.request.contextPath}/slider" class="ttr-material-button">
                         <span class="ttr-icon"><i class="ti-book"></i></span>
-                        <span class="ttr-label"> Blog Request </span>
+                        <span class="ttr-label"> Slider List </span>
                     </a>
                 </li>  
 

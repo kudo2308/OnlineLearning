@@ -68,10 +68,10 @@
             <main class="ttr-wrapper">
                 <div class="container-fluid">
                     <div class="db-breadcrumb">
-                        <h4 class="breadcrumb-title">Dashboard</h4>
+                        <h4 class="breadcrumb-title">Blog List</h4>
                         <ul class="db-breadcrumb-list">
                             <li><a href="dashboard.jsp"><i class="fa fa-home"></i>Dashboard</a></li>
-                            <li>User List</li>
+                            <li>Blog List</li>
                         </ul>
                     </div>	
 

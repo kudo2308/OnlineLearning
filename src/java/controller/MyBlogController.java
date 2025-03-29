@@ -167,6 +167,7 @@ public class MyBlogController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
         Object accountObj = session.getAttribute("account");
 
@@ -313,12 +314,15 @@ public class MyBlogController extends HttpServlet {
                         BlogRequestDAO blogRequestDAO = new BlogRequestDAO();
                         boolean requestSent = blogRequestDAO.sendApprovalRequest(requestBlog);
                         if (requestSent) {
+                            request.getRequestDispatcher("/views/user/UpdateTransitionPage.jsp").forward(request, response);
                             response.sendRedirect(request.getContextPath() + "/myblog?message=updated");
                         } else {
+                            request.getRequestDispatcher("/views/user/UpdateTransitionPage.jsp").forward(request, response);
                             response.sendRedirect(request.getContextPath() + "/myblog?error=updateFailed");
                         }
                     } else {
                         // Nếu trạng thái là Private, không cần gửi yêu cầu phê duyệt
+                        request.getRequestDispatcher("/views/user/UpdateTransitionPage.jsp").forward(request, response);
                         response.sendRedirect(request.getContextPath() + "/myblog?message=updated");
                     }
                 } else {
