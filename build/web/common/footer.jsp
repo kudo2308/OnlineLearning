@@ -5,25 +5,23 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<!--    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!-- Footer -->
+<footer>
     <div class="footer-top">
         <div class="pt-exebar">
             <div class="container">
                 <div class="d-flex align-items-stretch">
                     <div class="pt-logo mr-auto">
-                        <a href="index.html"><img src="assets/images/logo-white.png" alt=""/></a>
+                        <a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/assets/images/logo-white.png" alt="Online Learning Logo"/></a>
                     </div>
                     <div class="pt-social-link">
                         <ul class="list-inline m-a0">
                             <li><a href="#" class="btn-link"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#" class="btn-link"><i class="fa fa-twitter"></i></a></li>
                             <li><a href="#" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
-                            <li><a href="#" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#" class="btn-link"><i class="fa fa-instagram"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -34,9 +32,17 @@
                 <div class="col-lg-4 col-md-12 col-sm-12 footer-col-4">
                     <div class="widget">
                         <h5 class="footer-title">Sign Up For A Newsletter</h5>
-                        <p class="text-capitalize m-b20">Weekly Breaking news analysis and cutting edge advices on job searching.</p>
+                        <p class="text-capitalize m-b20">Weekly updates on new courses, learning tips, and educational resources.</p>
                         <div class="subscribe-form m-b20">
-
+                            <form class="subscription-form" action="${pageContext.request.contextPath}/subscribe" method="post">
+                                <div class="ajax-message"></div>
+                                <div class="input-group">
+                                    <input name="email" required="required" class="form-control" placeholder="Your Email Address" type="email">
+                                    <span class="input-group-btn">
+                                        <button name="submit" value="Submit" type="submit" class="btn"><i class="fa fa-arrow-right"></i></button>
+                                    </span> 
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -47,9 +53,7 @@
                                 <h5 class="footer-title">Company</h5>
                                 <ul>
                                     <li><a href="${pageContext.request.contextPath}/home">Home</a></li>
-                                    <li><a href="about-1.html">About</a></li>
-                                    <li><a href="faq-1.html">FAQs</a></li>
-                                    <li><a href="contact-1.html">Contact</a></li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -57,10 +61,9 @@
                             <div class="widget footer_widget">
                                 <h5 class="footer-title">Get In Touch</h5>
                                 <ul>
-                                    <li><a href="http://educhamp.themetrades.com/admin/index.html">Dashboard</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
                                     <li><a href="${pageContext.request.contextPath}/Blog">Blog</a></li>
-                                    <li><a href="#">Portfolio</a></li>
-                                    <li><a href="event.html">Event</a></li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -68,28 +71,29 @@
                             <div class="widget footer_widget">
                                 <h5 class="footer-title">Courses</h5>
                                 <ul>
-                                    <li><a href="${pageContext.request.contextPath}/CourseSearch">Courses</a></li>
-                                    <li><a href="courses-details.html">Details</a></li>
-                                    <li><a href="membership.html">Membership</a></li>
-                                    <li><a href="profile.html">Profile</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/CourseSearch">All Courses</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/my-courses">My Courses</a></li>
+                                   
+                                    <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-lg-3 col-md-5 col-sm-12 footer-col-4">
-                    <div class="widget widget_gallery gallery-grid-4">
-                        <h5 class="footer-title">Our Gallery</h5>
-                        <ul class="magnific-image">
-                            <li><a href="assets/images/gallery/pic1.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic1.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic2.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic2.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic3.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic3.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic4.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic4.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic5.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic5.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic6.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic6.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic7.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic7.jpg" alt=""></a></li>
-                            <li><a href="assets/images/gallery/pic8.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic8.jpg" alt=""></a></li>
+                    <div class="widget">
+                        <h5 class="footer-title">Contact Us</h5>
+                        <ul class="contact-info">
+                            <li><i class="fa fa-map-marker"></i> <a href="https://maps.google.com/?q=FPT+University+Hoa+Lac+High+Tech+Park+Hanoi+Vietnam" target="_blank">FPT University, Hoa Lac High Tech Park, Hanoi, Vietnam</a></li>
+                            <li><i class="fa fa-phone"></i> +84 936 751 968</li>
+                            <li><i class="fa fa-envelope"></i> <a href="mailto:hieudthe180516@fpt.edu.vn">hieudthe180516@fpt.edu.vn</a></li>
+                            <li><i class="fa fa-clock-o"></i> Monday - Friday: 9:00 - 17:00</li>
                         </ul>
+                        <!-- Google Maps Embed -->
+                        <div class="google-map-container" style="margin-top: 15px; width: 100%; height: 200px; border-radius: 8px; overflow: hidden;">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.482570608979!2d105.52510731476343!3d21.01324998600672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b32ca5086d%3A0xa3c62e29d8ab37e4!2sFPT%20University!5e0!3m2!1sen!2s!4v1648458193928!5m2!1sen!2s" 
+                                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,8 +102,20 @@
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 text-center"><a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                    <p class="m-b0"> <script>document.write(new Date().getFullYear())</script> Online Learning. All rights reserved.</p>
+                </div>
             </div>
         </div>
     </div>
-</html>
+</footer>
+<!-- Footer END -->
+
+<!-- External JavaScripts -->
+<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/popper.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendors/magnific-popup/magnific-popup.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendors/counter/waypoints-min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendors/counter/counterup.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/functions.js"></script>
