@@ -172,39 +172,6 @@
                 </div>
             </div>
         </main>
-
-        <!-- Modal -->
-        <div id="processingModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Process Withdrawal</h2>
-                <form id="processForm" action="CompleteWithdrawalServlet" method="post">
-                    <input type="hidden" id="payoutId" name="payoutId" value="">
-                    <input type="hidden" id="amount" name="amount" value="">
-
-                    <div class="form-group">
-                        <label for="bankTransaction">Bank Transaction Number:</label>
-                        <input type="text" class="form-control" id="bankTransaction" name="bankTransaction" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="displayAmount">Amount:</label>
-                        <input type="text" class="form-control" id="displayAmount" disabled>
-                    </div>
-
-                    <div class="modal-buttons mt-3">
-                        <button type="submit" name="action" value="save" class="btn btn-success">Complete Transfer</button>
-                        <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Transfer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <div class="ttr-overlay"></div>
 
         <script src="assets/admin/assets/js/jquery.min.js"></script>
@@ -221,27 +188,6 @@
         <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
         <script src="assets/admin/assets/js/functions.js"></script>
         <script src="assets/admin/assets/js/admin.js"></script>
-        <script>
-            // Modal functions
-            var modal = document.getElementById("processingModal");
-            var span = document.getElementsByClassName("close")[0];
-
-            function openModal(payoutId, amount) {
-                document.getElementById("payoutId").value = payoutId;
-                document.getElementById("amount").value = amount;
-                document.getElementById("displayAmount").value = "$" + amount;
-                modal.style.display = "block";
-            }
-
-            span.onclick = function () {
-                modal.style.display = "none";
-            }
-
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-        </script>
+        
     </body>
 </html>

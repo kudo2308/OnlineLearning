@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebFilter(
         filterName = "FilterExpired",
-        urlPatterns = {"/*"},
+        urlPatterns = {""},
         dispatcherTypes = {DispatcherType.REQUEST}
 )
 public class FilterExpired implements Filter {

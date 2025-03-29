@@ -1,17 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
-import DAO.CourseDAO;
-import DAO.LoginDAO;
+
 import DAO.PaymentDAO;
-import config.EmailSendOTP;
 import config.VNPayConfig;
 import static config.VNPayConfig.hmacSHA512;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,13 +22,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Account;
-import model.Course;
 
-/**
- *
- * @author VICTUS
- */
+
+
 @WebServlet(name = "Payment2", urlPatterns = {"/payment2"})
 public class Payment2 extends HttpServlet {
 

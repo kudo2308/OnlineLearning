@@ -162,7 +162,13 @@ public class CourseDAO extends DBContext {
         }
         return courses;
     }
-
+    public static void main(String[] args) {
+        CourseDAO dao = new CourseDAO();
+        List<Course> a = dao.findAll();
+        for (Course course : a) {
+            System.out.println(course);
+        }
+    }
     public List<Course> findByPageFilterCategoryAndStatus(Integer page, int categoryIdRequest,
             String statusRequest, Integer expertId, String nameRequest) {
         List<Course> list = new ArrayList<>();
@@ -789,10 +795,10 @@ public class CourseDAO extends DBContext {
                           ,a.Username
                     FROM [dbo].[Feedback] f
                     JOIN [dbo].[Account] a ON f.UserID = a.UserID
-                    WHERE f.[CourseID] = ? AND f.[Status] = 1
+                    WHERE f.[CourseID] = ? AND f.[Status] in 'public'
                     ORDER BY f.[CreatedAt] DESC;
                     """;
-        try (Connection connection = new DBContext().getConnection()) {
+        try  {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, courseId);
             ResultSet rs = st.executeQuery();
@@ -853,7 +859,7 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[CategoryID] = ? AND c.[Status] = 'Public'
+                    WHERE c.[CategoryID] = ? AND c.[Status] in 'Public'
                     ORDER BY c.[CourseID]
                     OFFSET ? ROWS
                     FETCH NEXT ? ROWS ONLY;
@@ -914,7 +920,7 @@ public class CourseDAO extends DBContext {
                     FROM [dbo].[Course] c
                     JOIN [dbo].[Account] a ON c.ExpertID = a.UserID
                     JOIN [dbo].[Category] cat ON c.CategoryID = cat.CategoryID
-                    WHERE c.[CategoryID] = ? AND c.[Status] = 'Public'
+                    WHERE c.[CategoryID] = ? AND c.[Status] in 'Public'
                     ORDER BY c.[CourseID]
                     """;
         try {
@@ -1092,7 +1098,7 @@ public class CourseDAO extends DBContext {
     public List<Course> getAllRecentCourses() {
         List<Course> courses = new ArrayList<>();
         try {
-            String query = "SELECT * FROM Course where status = 1 ORDER BY CreatedAt DESC";
+            String query = "SELECT * FROM Course where status in 'public' ORDER BY CreatedAt DESC";
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -1336,15 +1342,14 @@ public class CourseDAO extends DBContext {
 
         return success;
     }
-
-
-    public List<Course> findByPageFilterCategoryAndAllStatusToConfirm(Integer page, int categoryIdRequest, Integer expertId, String nameRequest) {
+    
+      public List<Course> findByPageFilterCategoryAndAllStatusToConfirm(Integer page, int categoryIdRequest,Integer expertId, String nameRequest) {
         List<Course> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM Course co ")
                 .append("JOIN Account a ON co.ExpertID = a.UserID ")
                 .append("JOIN Category ca ON co.CategoryID = ca.CategoryID ")
-                .append("WHERE (co.[Status] = 'Pending' or co.[Status] = 'Public') and co.Title LIKE ? ")
+                .append("WHERE (co.[Status] = 'Pending' or co.[Status] in 'Public') and co.Title LIKE ? ")
                 .append("AND (? is null or co.ExpertID = ?) ");
 
         if (categoryIdRequest != 0) {

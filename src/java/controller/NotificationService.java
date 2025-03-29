@@ -10,7 +10,6 @@ import model.Course;
 import model.Registration;
 import java.util.List;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -154,7 +153,7 @@ public class NotificationService {
         CourseDAO courseDAO = new CourseDAO();
         PaymentDAO paymentDAO = new PaymentDAO();
         NotificationService service = new NotificationService(notificationDAO, loginDAO, paymentDAO, courseDAO);
-        if (service.sendToUser(2, "sdfsdf", "ấdasd", "course", 0, "home")) {
+        if (service.sendToCourseEnrollees(1, "ákdhfbsdfsd", "ádfasdfasdfsdf", "course", 0, "notifications") != 0) {
             System.out.println("Successfully");
         } else {
             System.out.println("Faild");
