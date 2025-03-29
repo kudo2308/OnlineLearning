@@ -152,4 +152,13 @@
         <servlet-name>ApproveRequestController</servlet-name>
         <url-pattern>/approveRequest</url-pattern>
     </servlet-mapping>
+    <!-- Change Role Servlet -->
+    <servlet>
+        <servlet-name>ChangeRoleServlet</servlet-name>
+        <servlet-class>controller.managerUser.ChangeRoleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangeRoleServlet</servlet-name>
+        <url-pattern>/ChangeRoleServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

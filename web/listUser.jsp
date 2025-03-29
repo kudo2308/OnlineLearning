@@ -146,7 +146,7 @@
                                         </select>
                                         <button type="submit" class="btn btn-secondary">Filter</button>
                                     </form>
-                                    <a href="adduser.jsp" class="btn btn-success">Add New User</a>
+                                    <a href="addUser.jsp" class="btn btn-success">Add New User</a>
                                 </div>
                                 
                                 <!-- Users Table -->
@@ -214,6 +214,22 @@
                                                                 </form>
                                                             </c:otherwise>
                                                         </c:choose>
+                                                        
+                                                        <!-- Role Change Dropdown for all users -->
+                                                        <form method="post" action="ChangeRoleServlet" style="display: inline-block; margin-left: 5px;">
+                                                            <input type="hidden" name="userID" value="${account.userID}">
+                                                            <div class="input-group input-group-sm">
+                                                                <select name="newRole" class="form-select form-select-sm" style="max-width: 120px;">
+                                                                    <option value="">Change Role</option>
+                                                                    <option value="Admin" ${account.role.roleName == 'Admin' ? 'disabled' : ''}>Admin</option>
+                                                                    <option value="Expert" ${account.role.roleName == 'Expert' ? 'disabled' : ''}>Expert</option>
+                                                                    <option value="Student" ${account.role.roleName == 'Student' ? 'disabled' : ''}>Student</option>
+                                                                    <option value="Marketing" ${account.role.roleName == 'Marketing' ? 'disabled' : ''}>Marketing</option>
+                                                                    <option value="Sale" ${account.role.roleName == 'Sale' ? 'disabled' : ''}>Sale</option>
+                                                                </select>
+                                                                <button class="btn btn-outline-primary btn-sm" type="submit">Go</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>

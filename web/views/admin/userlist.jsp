@@ -108,7 +108,7 @@
                                         </select>
                                         <button type="submit" class="btn btn-secondary">Filter</button>
                                     </form>
-                                    <a href="adduser.jsp" class="btn btn-success">Add New User</a>
+                                    <a href="addUser.jsp" class="btn btn-success">Add New User</a>
                                 </div>
                                 
                                 <!-- Users Table -->
