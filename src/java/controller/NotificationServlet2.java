@@ -1,26 +1,34 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package controller;
 
+import DAO.CourseDAO;
 import DAO.LoginDAO;
 import DAO.NotificationDAO;
-import DAO.CourseDAO;
 import DAO.PaymentDAO;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.Notification;
-import model.Account;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import model.Account;
 import model.Course;
+import model.Notification;
 
-@WebServlet(name = "NotificationServlet", urlPatterns = {"/notifications"})
-public class NotificationServlet extends HttpServlet {
+/**
+ *
+ * @author VICTUS
+ */
+@WebServlet(name = "NotificationServlet2", urlPatterns = {"/adminNotify"})
+public class NotificationServlet2 extends HttpServlet {
 
     private NotificationService notificationService;
 
@@ -52,9 +60,10 @@ public class NotificationServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        List<Course> listcourses = dao.getCoursesByExpert(Integer.parseInt(userID));
+        CourseDAO d = new CourseDAO();
+        List<Course> listcourses = d.findAll();
         request.setAttribute("expertCourses", listcourses);
-        List<Account> listUser = dao.getRegisteredUsersForExpert(Integer.parseInt(userID));
+        List<Account> listUser = dao.getAllAccounts();
         request.setAttribute("courseUsers", listUser);
         String action = request.getParameter("action");
 
@@ -75,7 +84,7 @@ public class NotificationServlet extends HttpServlet {
             case "list":
                 List<Notification> allNotifications = notificationDAO.getAllNotifications(account.getUserID());
                 request.setAttribute("notifications", allNotifications);
-                request.getRequestDispatcher("/notifications.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin_notification.jsp").forward(request, response);
                 break;
 
             case "count":
@@ -108,9 +117,10 @@ public class NotificationServlet extends HttpServlet {
         }
         NotificationDAO notificationDAO = new NotificationDAO();
 
-        List<Course> listcourses = dao.getCoursesByExpert(Integer.parseInt(userID));
+        CourseDAO d = new CourseDAO();
+        List<Course> listcourses = d.findAll();
         request.setAttribute("expertCourses", listcourses);
-        List<Account> listUser = dao.getRegisteredUsersForExpert(Integer.parseInt(userID));
+        List<Account> listUser = dao.getAllAccounts();
         request.setAttribute("courseUsers", listUser);
         List<Notification> allNotifications = notificationDAO.getAllNotifications(account.getUserID());
         request.setAttribute("notifications", allNotifications);
@@ -144,36 +154,39 @@ public class NotificationServlet extends HttpServlet {
             String notificationScope = request.getParameter("notificationScope");
             String title = request.getParameter("title");
             String content = request.getParameter("content");
+            String link = request.getParameter("link");
 
             // Enhanced validation
-            if (notificationScope == null || title == null || content == null
-                    || title.trim().isEmpty() || content.trim().isEmpty()) {
+            if (notificationScope == null || title == null || content == null || link == null || link.trim().isEmpty() || title.trim().isEmpty() || content.trim().isEmpty()) {
                 response.sendRedirect("notifications?error=All fields are required. Please fill in all information.");
                 return;
             }
-
+            if (!link.startsWith("http://localhost:8080/SWP_OLSver1/")) {
+                response.sendRedirect("adminNotify?error=The notification link is not reasonable");
+                return;
+            }
+            String realLink = link.substring(0, 38);
             // Validate title and content length
-            if (title.length() > 100) {
-                response.sendRedirect("notifications?error=Title must be 100 characters or less.");
+            if (title.length() > 10) {
+                response.sendRedirect("adminNotify?error=Title must be 100 characters or less.");
                 return;
             }
 
             if (content.length() > 500) {
-                response.sendRedirect("notifications?error=Content must be 500 characters or less.");
+                response.sendRedirect("adminNotify?error=Content must be 500 characters or less.");
                 return;
             }
 
             int result = 0;
             try {
                 switch (notificationScope) {
-                    case "all-courses":
-                        result = notificationService.sendToAllExpertCourseUsers(
-                                sender.getUserID(),
+                    case "all-users":
+                        result = notificationService.sendToAllUsers(
                                 title,
                                 content,
                                 "course",
                                 0,
-                                "notifications"
+                                realLink
                         );
 
                         if (result > 0) {
@@ -183,11 +196,44 @@ public class NotificationServlet extends HttpServlet {
                         }
                         break;
 
+                    case "sales":
+                        result = notificationService.sendToUsersByRole(title, content, "system", 0, 5, realLink);
+                        if (result > 0) {
+                            request.setAttribute("success", "Notification sent successfully !");
+                        } else {
+                            request.setAttribute("error", "Failed to send notifications please try agian !");
+                        }
+                        break;
+
+                    case "marketing":
+                        result = notificationService.sendToUsersByRole(title, content, "system", 0, 4, realLink);
+                        if (result > 0) {
+                            request.setAttribute("success", "Notification sent successfully !");
+                        } else {
+                            request.setAttribute("error", "Failed to send notifications please try agian !");
+                        }
+                        break;
+                    case "experts":
+                        result = notificationService.sendToUsersByRole(title, content, "system", 0, 2, realLink);
+                        if (result > 0) {
+                            request.setAttribute("success", "Notification sent successfully !");
+                        } else {
+                            request.setAttribute("error", "Failed to send notifications please try agian !");
+                        }
+                        break;
+                    case "student":
+                        result = notificationService.sendToUsersByRole(title, content, "system", 0, 3, realLink);
+                        if (result > 0) {
+                            request.setAttribute("success", "Notification sent successfully !");
+                        } else {
+                            request.setAttribute("error", "Failed to send notifications please try agian !");
+                        }
+                        break;
                     case "specific-course":
                         String courseId = request.getParameter("courseId");
                         if (courseId == null || courseId.isEmpty()) {
                             request.setAttribute("error", "Please select a specific course.");
-                            request.getRequestDispatcher("notifications.jsp").forward(request, response);
+                            request.getRequestDispatcher("adminNotify").forward(request, response);
                             return;
                         }
 
@@ -211,7 +257,7 @@ public class NotificationServlet extends HttpServlet {
                         String userId = request.getParameter("specificUserId");
                         if (userId == null || userId.isEmpty()) {
                             request.setAttribute("error", "Please select a specific user.");
-                            request.getRequestDispatcher("notifications").forward(request, response);
+                            request.getRequestDispatcher("adminNotify").forward(request, response);
                             return;
                         }
 
@@ -233,7 +279,7 @@ public class NotificationServlet extends HttpServlet {
 
                     default:
                         request.setAttribute("error", "Invalid notification scope selected.");
-                        request.getRequestDispatcher("notifications.jsp").forward(request, response);
+                        request.getRequestDispatcher("admin_notification.jsp").forward(request, response);
                         return;
                 }
             } catch (NumberFormatException e) {
@@ -243,7 +289,7 @@ public class NotificationServlet extends HttpServlet {
                 e.printStackTrace();
                 request.setAttribute("error", "An unexpected error occurred: " + e.getMessage());
             }
-            request.getRequestDispatcher("notifications.jsp").forward(request, response);
+            request.getRequestDispatcher("admin_notification.jsp").forward(request, response);
         } catch (Exception e) {
             // Catch any unexpected exceptions
             e.printStackTrace();

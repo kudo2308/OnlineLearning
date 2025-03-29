@@ -180,19 +180,9 @@ public class LoginDAO extends DBContext {
         }
         return account;
     }
-
-    public static void main(String[] args) {
-        LoginDAO dao = new LoginDAO();
-        List<Account> courses = dao.getRegisteredUsersForExpert(2);
-        for (Account course : courses) {
-            System.out.println(course);
-        }
-    }
-
-//New 
     public List<Account> getAllAccounts() {
         List<Account> accounts = new ArrayList<>();
-        String sql = "SELECT * FROM Account WHERE Status = 1";
+        String sql = "SELECT a.*, r.RoleName FROM Account a JOIN Role r ON a.RoleID = r.RoleID WHERE a.Status = 1 and a.RoleID != 1";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
@@ -207,10 +197,16 @@ public class LoginDAO extends DBContext {
 
         return accounts;
     }
-
+    public static void main(String[] args) {
+        LoginDAO dao =new LoginDAO();
+         List<Account> accounts = dao.getAllAccounts();
+         for (Account account : accounts) {
+             System.out.println(account);
+        }
+    }
     public List<Account> getAccountsByRole(int roleID) {
         List<Account> accounts = new ArrayList<>();
-        String sql = "SELECT * FROM Account WHERE RoleID = ? AND Status = 1";
+        String sql = "SELECT a.*, r.RoleName FROM Account a JOIN Role r ON a.RoleID = r.RoleID WHERE a.RoleID = ? AND a.Status = 1";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, roleID);

@@ -41,7 +41,7 @@
 
         <c:choose>
             <c:when test="${not empty sessionScope.account}">
-               
+
                 <a id="my-course" href="${pageContext.request.contextPath}/my-courses">My Courses</a>
                 <div class="notification-dropdown">
                     <a id="bell" href="#" class="notification-icon">
@@ -259,14 +259,17 @@
             case 'message':
                 window.location.href = contextPath + '/notifications';
                 break;
-            case 'payment':
-                 window.location.href = contextPath + '/notifications';
+            case 'fee':
+                window.location.href = contextPath + '/notifications';
+                break;
+            case 'wallet':
+                window.location.href = contextPath + '/notifications';
                 break;
             case 'system':
-             window.location.href = contextPath + '/notifications';
+                window.location.href = contextPath + '/notifications';
                 break;
             case 'other':
-             window.location.href = contextPath + '/notifications';
+                window.location.href = contextPath + '/notifications';
                 break;
             default:
                 window.location.href = contextPath + '/notifications';

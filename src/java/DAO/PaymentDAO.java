@@ -124,7 +124,7 @@ public class PaymentDAO extends DBContext {
 
     public List<Registration> getRegistrationsByCourseID(int courseID) {
         List<Registration> registrations = new ArrayList<>();
-        String sql = "SELECT * FROM Registration WHERE CourseID = ? AND Status = 'active'";
+        String sql = "SELECT * FROM Registration WHERE CourseID = ? AND Status != 'cancelled' ";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
@@ -142,7 +142,13 @@ public class PaymentDAO extends DBContext {
 
         return registrations;
     }
-    
+    public static void main(String[] args) {
+        PaymentDAO dao = new PaymentDAO();
+        List<Registration> registrations = dao.getRegistrationsByCourseID(2);
+        for (Registration registration : registrations) {
+            System.out.println(registration);
+        }
+    }
     
      public List<Registration> getRegistrationsByCourse(int courseID) {
         List<Registration> registrations = new ArrayList<>();

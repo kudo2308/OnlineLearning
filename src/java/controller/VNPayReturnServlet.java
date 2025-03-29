@@ -87,27 +87,27 @@ public class VNPayReturnServlet extends HttpServlet {
             NotificationService notificationService = new NotificationService(notificationDAO, accountDAO, dao, courseDAO);
             for (String item : orderItem) {
                 String title = "Course " + item + " Registration Successful";
-                String content = "Your payment has been processed successfully. You are now enrolled in the course(s). Please check your dashboard to start learning.";
-                String type = "payment";
+                String content = "Your payment has been processed successfully. You are now enrolled in the courses. Please check your dashboard to start learning.";
+                String type = "fee";
                 notificationService.sendToUser(Integer.parseInt(userID), title, content, type, maxorder , null);
             }
             for (int i = 0; i < expertId.size(); i++) {
                 String title = "User " + acc.getFullName() + " Register Course";
-                String content = "Your " + orderItem.get(i) + "was registered check or chat with new Student ";
-                String type = "payment";
-                notificationService.sendToUser(expertId.get(i), title, content, type, maxorder, null);
+                String content = "Your " + orderItem.get(i) + " was registered check or notify with new Student ";
+                String type = "system";
+                notificationService.sendToUser(expertId.get(i), title, content, type, maxorder, "notifications");
                 if (dao.hasRegisteredBankAccount(expertId.get(i))) {
                     expertWalletDAO.addToWalletBalance(expertId.get(i), moneyPay.get(i).doubleValue());
                     String title1 = "Account balance fluctuations";
-                    String content1 = "You just received "+moneyPay.get(i) + " check your wallet";
-                    String type1 = "system";
+                    String content1 = "You just received "+ moneyPay.get(i) + " check your wallet";
+                    String type1 = "wallet";
                     notificationService.sendToUser(expertId.get(i), title1, content1, type1, expertId.get(i), "wallet"); // lịch sử nhận tiền 
                 } else {
                     expertWalletDAO.createExpertBankInfo(expertId.get(i));
                     expertWalletDAO.addToWalletBalance(expertId.get(i), moneyPay.get(i).doubleValue());
                     String title1 = "Account balance fluctuations";
                     String content1 = "You just received "+moneyPay.get(i) + " check your wallet";
-                    String type1 = "system";
+                    String type1 = "wallet";
                     notificationService.sendToUser(expertId.get(i), title1, content1, type1, expertId.get(i), "wallet"); // lịch sử nhận tiền 
                 }
             }

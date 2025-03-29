@@ -3,13 +3,55 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Notification | Online Learning</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/base.css" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="keywords" content="" />
+        <meta name="author" content="" />
+        <meta name="robots" content="" />
+
+        <!-- DESCRIPTION -->
+        <meta name="description" content="EduChamp : Education HTML Template" />
+
+        <!-- OG -->
+        <meta property="og:title" content="EduChamp : Education HTML Template" />
+        <meta property="og:description" content="EduChamp : Education HTML Template" />
+        <meta property="og:image" content="" />
+        <meta name="format-detection" content="telephone=no">
+
+        <!-- FAVICONS ICON ============================================= -->
+        <link rel="icon" href="../error-404.html" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+
+        <!-- PAGE TITLE HERE ============================================= -->
+        <title>EduChamp : Education HTML Template </title>
+
+        <!-- MOBILE SPECIFIC ============================================= -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--[if lt IE 9]>
+        <script src="assets/js/html5shiv.min.js"></script>
+        <script src="assets/js/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- All PLUGINS CSS ============================================= -->
+
+        <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/assets.css">
+        <link rel="stylesheet" type="text/css" href="assets/admin/assets/vendors/calendar/fullcalendar.css">
+
+        <!-- TYPOGRAPHY ============================================= -->
+        <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/typography.css">
+
+        <!-- SHORTCODES ============================================= -->
+        <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/shortcodes/shortcodes.css">
+
+        <!-- STYLESHEETS ============================================= -->
+        <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/style.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/userlist.css">
+        <link rel="stylesheet" type="text/css" href="assets/admin/assets/css/dashboard.css">
+        <link class="skin" rel="stylesheet" type="text/css" href="assets/admin/assets/css/color/color-1.css">
         <style>
             .notifications-container {
                 display: flex;
@@ -210,60 +252,70 @@
             }
         </style>
     </head>
-    <body>
-        <jsp:include page="common/header.jsp"></jsp:include>
-            <nav style="height: 0; border-bottom: 1px solid #ddd"></nav>
+    <body class="ttr-opened-sidebar ttr-pinned-sidebar">
+        <jsp:include page="./public/header-admin.jsp"></jsp:include>
+        <jsp:include page="./public/sidebar-admin.jsp"></jsp:include>
 
-            <div class="notifications-container">
-                <div class="notifications-list-section">
-                    <div class="notification-header">
-                        <h1>Notifications</h1>
-                        <button id="mark-all-read-btn" class="clear-all-btn">Read all</button>
-                    </div>
 
-                    <div class="notification-list1">
-                    <c:choose>
-                        <c:when test="${empty notifications}">
-                            <div class="no-notifications">
-                                <p>You have no notifications.</p>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="notification" items="${notifications}">
-                                <div class="notification-item ${notification.isRead ? '' : 'unread'}" 
-                                     data-id="${notification.notificationID}" 
-                                     data-type="${notification.type}" 
-                                     data-related-id="${notification.relatedID}"
-                                     data-related-link="${notification.relatedLink}">
-                                    <div class="notification-title">${notification.title}</div>
-                                    <div class="notification-content1">${notification.content}</div>
-                                    <div class="notification-meta">
-                                        <span class="notification-time">
-                                            <fmt:formatDate value="${notification.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                        </span>
-                                        <span class="notification-type type-${notification.type}">
-                                            ${notification.type}
-                                        </span>
-                                    </div>
+            <main class="ttr-wrapper">
+                <div class="container notifications-container" style=" height: 750px;">
+                    <div class="notifications-list-section">
+                        <div class="notification-header">
+                            <h1>Notifications</h1>
+                            <button id="mark-all-read-btn" class="clear-all-btn">Read all</button>
+                        </div>
+
+                        <div class="notification-list1">
+                        <c:choose>
+                            <c:when test="${empty notifications}">
+                                <div class="no-notifications">
+                                    <p>You have no notifications.</p>
                                 </div>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="notification" items="${notifications}">
+                                    <div class="notification-item ${notification.isRead ? '' : 'unread'}" 
+                                         data-id="${notification.notificationID}" 
+                                         data-type="${notification.type}" 
+                                         data-related-id="${notification.relatedID}"
+                                         data-related-link="${notification.relatedLink}">
+                                        <div class="notification-title">${notification.title}</div>
+                                        <div class="notification-content1">${notification.content}</div>
+                                        <div class="notification-meta">
+                                            <span class="notification-time">
+                                                <fmt:formatDate value="${notification.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                                            </span>
+                                            <span class="notification-type type-${notification.type}">
+                                                ${notification.type}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
-            </div>
 
-            <c:if test="${sessionScope.account.roles == 'Expert'}">
+
                 <div class="notifications-create-section">
                     <div class="expert-notification-section">
                         <h2>Create Notification</h2>
-                        <form id="expert-notification-form" action="notifications?action=createNotification" method="post">
+                        <form id="expert-notification-form" action="adminNotify?action=createNotification" method="post">
                             <input type="hidden" name="type" value="course">
 
                             <div class="form-group">
                                 <label for="notification-scope">Notification Scope:</label>
                                 <select id="notification-scope" name="notificationScope" required>
                                     <option value="">Select Notification Scope</option>
-                                    <option value="all-courses">All My Courses</option>
+                                    <option value="all-users">All Users</option>
+
+                                    <c:if test="${not empty sessionScope.account && sessionScope.account.roles == 'Admin'}">
+                                        <option value="sales">Sales</option>
+                                        <option value="marketing">Marketing</option>
+                                    </c:if>
+
+                                    <option value="experts">Experts</option>
+                                    <option value="student">Student</option>
                                     <option value="specific-course">Specific Course</option>
                                     <option value="specific-user">Specific User</option>
                                 </select>
@@ -300,12 +352,19 @@
                                           maxlength="500" placeholder="Enter notification content"></textarea>
                             </div>
 
+
+                            <div class="form-group">
+                                <label for="notification-content">Link:</label>
+                                <input type="text" id="notification-link" name="link" required 
+                                       maxlength="100" placeholder="Enter libk notification ">
+                            </div>
                             <button type="submit" class="send-notification-btn">Send Notification</button>
                         </form>
                     </div>
                 </div>
-            </c:if>
-        </div>
+
+            </div>
+        </main>
         <c:set var="error" value="${requestScope.error}" />
         <c:if test="${not empty error}">
             <div id="error-message" class="error-message">
@@ -393,7 +452,6 @@
                                 window.location.href = '${pageContext.request.contextPath}/order-details?id=' + relatedId;
                             }
 
-                            break;
                         case 'system':
                             if (relatedId !== null) {
                                 window.location.href = '${pageContext.request.contextPath}/' + relatedLinkId;
@@ -491,5 +549,19 @@
                 showMessage();
             };
         </script>
+        <script src="assets/admin/assets/js/jquery.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap/js/popper.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/admin/assets/vendors/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+        <script src="assets/admin/assets/vendors/magnific-popup/magnific-popup.js"></script>
+        <script src="assets/admin/assets/vendors/counter/waypoints-min.js"></script>
+        <script src="assets/admin/assets/vendors/counter/counterup.min.js"></script>
+        <script src="assets/admin/assets/vendors/imagesloaded/imagesloaded.js"></script>
+        <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
+        <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
+        <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
+        <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+        <script src="assets/admin/assets/js/functions.js"></script>
+        <script src="assets/admin/assets/js/admin.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
     </body>
 </html>

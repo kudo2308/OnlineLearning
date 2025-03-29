@@ -303,21 +303,6 @@ CREATE TABLE WalletTransaction (
     FOREIGN KEY (RelatedPayoutID) REFERENCES ExpertPayout(PayoutID),
     FOREIGN KEY (ProcessedBy) REFERENCES Account(UserID)
 );
-
--- Bảng cấu hình hoa hồng cho admin
-CREATE TABLE CommissionSetting (
-    SettingID INT IDENTITY(1,1) PRIMARY KEY,
-    CommissionRate DECIMAL(5, 2) DEFAULT 0.20, -- Tỷ lệ mặc định là 20%
-    CourseType NVARCHAR(50) DEFAULT 'all', -- Loại khóa học áp dụng (hoặc 'all' cho tất cả)
-    EffectiveFrom DATETIME DEFAULT GETDATE(),
-    EffectiveTo DATETIME NULL,
-    CreatedBy INT NOT NULL,
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE(),
-    Status BIT DEFAULT 1,
-    FOREIGN KEY (CreatedBy) REFERENCES Account(UserID)
-);
-
 -- Bảng báo cáo tài chính theo tháng/năm
 CREATE TABLE FinancialReport (
     ReportID INT IDENTITY(1,1) PRIMARY KEY,
@@ -339,7 +324,7 @@ CREATE TABLE Notification (
     UserID INT NOT NULL,
     Title NVARCHAR(255) NOT NULL,
     Content NVARCHAR(MAX) NOT NULL,
-    Type NVARCHAR(50) CHECK (Type IN ('system', 'course', 'message', 'payment', 'other')),
+    Type NVARCHAR(50) CHECK (Type IN ('system', 'course', 'message', 'fee' , 'wallet', 'other')),
 	RelatedLink NVARCHAR(255)  null,
     RelatedID INT NULL, -- ID của đối tượng liên quan (khóa học, tin nhắn...)
     IsRead BIT DEFAULT 0,

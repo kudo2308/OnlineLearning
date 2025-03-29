@@ -142,7 +142,7 @@
                                     <c:otherwise>
                                         <div class="course-buy-now text-center">
                                             <form action="payment2" method="post">
-                                                <input type="hidden" name="amount" value="${course.price}">
+                                                <input type="hidden" name="amount" value="${course.discountPrice}">
                                                 <input type="hidden" name="course" value="${course.courseID}">
                                                 <input type="hidden" name="expertId" value="${course.expertID}">
                                                 <button type="submit" class="btn radius-xl text-uppercase">Buy Now This Course</button>
@@ -157,14 +157,14 @@
                                             <a class="btn radius-xl text-uppercase go-cart" href="${pageContext.request.contextPath}/cart">Go to Cart</a>
                                         </div>
                                     </c:when>
-                                    <c:otherwise>
+                                    <c:when test="not ${isRegistered}">
                                         <div class="course-buy-now text-center">
                                             <form action="${pageContext.request.contextPath}/cart?action=add" method="post">
                                                 <input value="${course.courseID}" type="hidden" name="courseId">
                                                 <button class="btn radius-xl text-uppercase cart-add" type="submit" >Add to cart</button>
                                             </form>                                
                                         </div>
-                                    </c:otherwise>
+                                    </c:when>
                                 </c:choose>
 
 
