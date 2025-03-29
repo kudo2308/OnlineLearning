@@ -416,6 +416,87 @@
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
+=======
+            </form> 
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Promotion Code</th>
+                            <th>Discount Type</th>
+                            <th>Value</th>
+                            <th>Apply for</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="promotion" items="${promotions}" varStatus="status">
+                            <tr>
+                                <td>${status.index + 1}</td>
+                                <td>${promotion.promotionCode}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${promotion.discountType eq 'percentage'}">Percent (%)</c:when>
+                                        <c:when test="${promotion.discountType eq 'fixed'}">Fixed money (VNĐ)</c:when>
+                                        <c:otherwise>${promotion.discountType}</c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${promotion.discountType eq 'percentage'}">
+                                            ${promotion.discountValue}%
+                                        </c:when>
+                                        <c:otherwise>
+                                            <fmt:formatNumber value="${promotion.discountValue}" type="currency" currencySymbol="" maxFractionDigits="0"/> VNĐ
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${promotion.categoryID != 0}">
+                                            <span class="material-icons">category</span> ${categoryMap[promotion.categoryID]}
+                                        </c:when>
+                                        <c:when test="${promotion.expertID != 0}">
+                                            <span class="material-icons">person</span> ${expertMap[promotion.expertID]}
+                                        </c:when>
+                                        <c:when test="${promotion.courseID != 0}">
+                                            <span class="material-icons">school</span> ${courseMap[promotion.courseID]}
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="material-icons">public</span> All course
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <span class="${promotion.status ? 'status-active' : 'status-inactive'}">
+                                        ${promotion.status ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/promotion?action=edit&id=${promotion.promotionID}" class="action-button edit-btn">
+                                        <span class="material-icons">edit</span> Edit
+                                    </a>
+                                    <a href="${pageContext.request.contextPath}/promotionList?action=toggle&id=${promotion.promotionID}" class="action-button toggle-btn">
+                                        <span class="material-icons">toggle_on</span> ${promotion.status ? 'Inactive' : 'Active'}
+                                    </a>
+                                    <a href="javascript:void(0)" onclick="deletePromotion(${promotion.promotionID})" class="action-button delete-btn">
+                                        <span class="material-icons">delete</span> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+
+                <c:if test="${empty promotions}">
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        <p>Không có khuyến mãi nào. Hãy thêm khuyến mãi mới!</p>
+                    </div>
+                </c:if>
+>>>>>>> 178ddd458e36edbe02ea0e5f85fe89edae10594f
             </div>
         </main>
         <div class="ttr-overlay"></div>

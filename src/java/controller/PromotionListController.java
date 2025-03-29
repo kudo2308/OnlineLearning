@@ -244,7 +244,7 @@ public class PromotionListController extends HttpServlet {
         request.setAttribute("applyTo", applyTo);
 
         // Forward đến trang chỉnh sửa
-        request.getRequestDispatcher("/views/marketing/PromotionManagerment.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/marketing/AddPromotion.jsp").forward(request, response);
     }
 
     private void createPromotion(HttpServletRequest request, HttpServletResponse response)
