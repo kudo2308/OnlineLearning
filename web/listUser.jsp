@@ -215,21 +215,23 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                         
-                                                        <!-- Role Change Dropdown for all users -->
-                                                        <form method="post" action="ChangeRoleServlet" style="display: inline-block; margin-left: 5px;">
-                                                            <input type="hidden" name="userID" value="${account.userID}">
-                                                            <div class="input-group input-group-sm">
-                                                                <select name="newRole" class="form-select form-select-sm" style="max-width: 120px;">
-                                                                    <option value="">Change Role</option>
-                                                                    <option value="Admin" ${account.role.roleName == 'Admin' ? 'disabled' : ''}>Admin</option>
-                                                                    <option value="Expert" ${account.role.roleName == 'Expert' ? 'disabled' : ''}>Expert</option>
-                                                                    <option value="Student" ${account.role.roleName == 'Student' ? 'disabled' : ''}>Student</option>
-                                                                    <option value="Marketing" ${account.role.roleName == 'Marketing' ? 'disabled' : ''}>Marketing</option>
-                                                                    <option value="Sale" ${account.role.roleName == 'Sale' ? 'disabled' : ''}>Sale</option>
-                                                                </select>
-                                                                <button class="btn btn-outline-primary btn-sm" type="submit">Go</button>
-                                                            </div>
-                                                        </form>
+                                                        <!-- Role Change Dropdown for all users except admins -->
+                                                        <c:if test="${account.role.roleName != 'Admin'}">
+                                                            <form method="post" action="ChangeRoleServlet" style="display: inline-block; margin-left: 5px;">
+                                                                <input type="hidden" name="userID" value="${account.userID}">
+                                                                <div class="input-group input-group-sm">
+                                                                    <select name="newRole" class="form-select form-select-sm" style="max-width: 100px;">
+                                                                        <option value="">Change Role</option>
+                                                                        <option value="Admin">Admin</option>
+                                                                        <option value="Expert" ${account.role.roleName == 'Expert' ? 'disabled' : ''}>Expert</option>
+                                                                        <option value="Student" ${account.role.roleName == 'Student' ? 'disabled' : ''}>Student</option>
+                                                                        <option value="Sale" ${account.role.roleName == 'Sale' ? 'disabled' : ''}>Sale</option>
+                                                                        <option value="Marketing" ${account.role.roleName == 'Marketing' ? 'disabled' : ''}>Marketing</option>
+                                                                    </select>
+                                                                    <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                                                                </div>
+                                                            </form>
+                                                        </c:if>
                                                     </div>
                                                 </td>
                                             </tr>

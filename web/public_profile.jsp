@@ -175,7 +175,7 @@
         <h1 style="text-align: center">${requestScope.privateUser}</h1>
         <br>
     </c:if>
-    <jsp:include page="common/footer.jsp"></jsp:include> 
+ 
     <script src="assets/js/profile.js"></script>
     <script>
 
