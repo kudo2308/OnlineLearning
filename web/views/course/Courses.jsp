@@ -96,7 +96,7 @@
                     <div class="section-area section-sp1">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
+                                <div class="col-lg-4 col-md-4 col-sm-12 m-b30">
                                     <div class="widget courses-search-bx placeani">
                                         <div class="form-group">
                                             <form id="search" action="CourseSearch" method="get">
@@ -134,7 +134,7 @@
                                     </div>
                                     </form>
                                 </div>
-                                <div class="col-lg-9 col-md-8 col-sm-12">
+                                <div class="col-lg-8 col-md-8 col-sm-12">
                                     <div class="row">
                                         <c:forEach var="course" items="${courses}">
                                             <div class="col-md-6 col-lg-4 col-sm-6 m-b30 sync">
@@ -177,27 +177,28 @@
                                                 </div>
                                             </div>
                                         </c:forEach>
-                                        <!-- PHÂN TRANG - LUÔN HIỂN THỊ CUỐI TRANG -->
-                                        <div class="pagination-container">
-                                            <div class="pagination-bx rounded-sm gray clearfix">
-                                                <c:if test="${totalPages > 1}">
-                                                    <ul class="pagination">
-                                                        <c:if test="${currentPage > 1}">
-                                                            <li><a href="?page=${currentPage - 1}&search=${searchKeyword}"><i class="fa fa-chevron-left"></i></a></li>
-                                                                </c:if>
 
-                                                        <c:forEach var="i" begin="1" end="${totalPages}">
-                                                            <li class="${currentPage == i ? 'active' : ''}">
-                                                                <a href="?page=${i}&search=${searchKeyword}">${i}</a>
-                                                            </li>
-                                                        </c:forEach>
+                                    </div>
+                                    <!-- PHÂN TRANG - LUÔN HIỂN THỊ CUỐI TRANG -->
+                                    <div class="pagination-container">
+                                        <div class="pagination-bx rounded-sm gray clearfix">
+                                            <c:if test="${totalPages > 1}">
+                                                <ul class="pagination">
+                                                    <c:if test="${currentPage > 1}">
+                                                        <li><a href="?page=${currentPage - 1}&search=${searchKeyword}"><i class="fa fa-chevron-left"></i></a></li>
+                                                            </c:if>
 
-                                                        <c:if test="${currentPage < totalPages}">
-                                                            <li><a href="?page=${currentPage + 1}&search=${searchKeyword}"><i class="fa fa-chevron-right"></i></a></li>
-                                                                </c:if>
-                                                    </ul>
-                                                </c:if>
-                                            </div>
+                                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                                        <li class="${currentPage == i ? 'active' : ''}">
+                                                            <a href="?page=${i}&search=${searchKeyword}">${i}</a>
+                                                        </li>
+                                                    </c:forEach>
+
+                                                    <c:if test="${currentPage < totalPages}">
+                                                        <li><a href="?page=${currentPage + 1}&search=${searchKeyword}"><i class="fa fa-chevron-right"></i></a></li>
+                                                            </c:if>
+                                                </ul>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
