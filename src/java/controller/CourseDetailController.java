@@ -114,9 +114,11 @@ public class CourseDetailController extends HttpServlet {
         int countQuiz = quizDAO.countQuizByCourseId(courseId);
 
         boolean isRegistered = regisDAO.isCourseRegisteredByUser(acc.getUserID(), courseId); // Kiểm tra xem người dùng đã đăng ký khóa học chưa
+        // Tính toán phân phối rating
         Map<Integer, Integer> ratingDistribution = feedDAO.getRatingDistribution(courseId);
         int totalRatings = ratingDistribution.values().stream().mapToInt(Integer::intValue).sum();
 
+// Tính toán điểm trung bình (average rating)
         double averageRating = 0;
         if (totalRatings > 0) {
             int totalPoints = 0;

@@ -29,7 +29,12 @@ h2 {
     align-items: center;
     margin-bottom: 20px;
 }
-
+.form-control2{
+    width: 178px;
+    border: #ced4da 1px solid;
+    color: #495057;
+    font-size: 13px;
+}
 .btn {
     padding: 10px 15px;
     border: none;
@@ -44,6 +49,20 @@ h2 {
 .btn-primary {
     background: #4CAF50;
     color: white;
+}
+
+.filter-list{
+    display: flex;
+}
+
+#filter-form{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#filter-form select{
+    margin-right: 20px;
 }
 
 .btn-primary:hover {

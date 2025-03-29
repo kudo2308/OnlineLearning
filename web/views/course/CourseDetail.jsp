@@ -186,13 +186,13 @@
                                 </div>
                                 <div class="cours-more-info">
                                     <div class="review">
-                                        <span>3 Review</span>
-                                        <ul class="cours-star">
-                                            <li class="active"><i class="fa fa-star"></i></li>
-                                            <li class="active"><i class="fa fa-star"></i></li>
-                                            <li class="active"><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
+                                        <h5 style="font-weight: normal; font-size: small;">${totalRatings} Review</h5>
+                                        <ul class="cours-star" style="list-style: none; padding: 0; display: flex;">
+                                            <c:forEach var="i" begin="1" end="5">
+                                                <li style="margin: 0 2px;">
+                                                    <i class="fa fa-star" style="color: ${i <= averageRating ? '#4b0082' : '#ddd'};"></i>
+                                                </li>
+                                            </c:forEach>
                                         </ul>
                                     </div>
                                     <div class="price categories">
@@ -323,45 +323,42 @@
 
 
                             </div>
-                            <div class="" id="reviews">
-                                <h4>Reviews</h4>
-
-                                <div class="review-bx" style="display: flex; gap: 20px; border: 1px solid #ddd; padding: 20px;">
-                                    <!-- Hiển thị điểm trung bình -->
-                                    <div style="width: 120px; text-align: center; border: 1px solid #eee; padding: 10px;">
-                                        <h2 style="font-size: 36px; margin: 0;">${fn:substringBefore(averageRating, ".")}</h2>
-                                        <ul class="cours-star" style="list-style: none; padding: 0; display: flex; justify-content: center; margin: 5px 0;">
-                                            <c:forEach var="i" begin="1" end="5">
-                                                <li style="margin: 0 2px;">
-                                                    <i class="fa fa-star" style="color: ${i <= averageRating ? '#4B0082' : '#ccc'};"></i>
-                                                </li>
-                                            </c:forEach>
-                                        </ul>
-                                        <span style="font-size: 14px;">${totalRatings} Rating</span>
-                                    </div>
-
-                                    <!-- Biểu đồ đánh giá -->
-                                    <c:set var="ratings" value="5,4,3,2,1" />
-                                    <c:set var="ratingList" value="${fn:split(ratings, ',')}" />
-
-                                    <div style="flex: 1;">
-                                        <c:forEach var="i" items="${ratingList}">
-                                            <c:set var="count" value="${ratingDistribution[i]}" />
-                                            <c:set var="percentage" value="${totalRatings > 0 ? (count * 100) / totalRatings : 0}" />
-
-                                            <div class="bar-bx" style="display: flex; align-items: center; margin-bottom: 10px;">
-                                                <div class="side" style="width: 50px;">${i} star</div>
-                                                <div class="middle" style="flex: 1;">
-                                                    <div class="bar-container" style="background-color: #eee; height: 8px; border-radius: 4px;">
-                                                        <div class="bar" style="width: ${percentage}%; height: 8px; background-color: #4B0082; border-radius: 4px;"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="side right" style="width: 40px; text-align: right;">${count}</div>
-                                            </div>
+                            <div class="review-bx" style="display: flex; gap: 20px; border: 1px solid #ddd; padding: 20px;">
+                                <!-- Hiển thị điểm trung bình -->
+                                <div style="width: 120px; text-align: center; border: 1px solid #eee; padding: 10px;">
+                                    <h2 style="font-size: 36px; margin: 0;">${fn:substringBefore(averageRating, ".")}</h2>
+                                    <ul class="cours-star" style="list-style: none; padding: 0; display: flex; justify-content: center; margin: 5px 0;">
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <li style="margin: 0 2px;">
+                                                <i class="fa fa-star" style="color: ${i <= averageRating ? '#4B0082' : '#ccc'};"></i>
+                                            </li>
                                         </c:forEach>
-                                    </div>
+                                    </ul>
+                                    <span style="font-size: 14px;">${totalRatings} Rating</span>
+                                </div>
+
+                                <!-- Biểu đồ đánh giá -->
+                                <c:set var="ratings" value="5,4,3,2,1" />
+                                <c:set var="ratingList" value="${fn:split(ratings, ',')}" />
+
+                                <div style="flex: 1;">
+                                    <c:forEach var="i" items="${ratingList}">
+                                        <c:set var="count" value="${ratingDistribution[i]}" />
+                                        <c:set var="percentage" value="${totalRatings > 0 ? (count * 100) / totalRatings : 0}" />
+
+                                        <div class="bar-bx" style="display: flex; align-items: center; margin-bottom: 10px;">
+                                            <div class="side" style="width: 50px;">${i} star</div>
+                                            <div class="middle" style="flex: 1;">
+                                                <div class="bar-container" style="background-color: #eee; height: 8px; border-radius: 4px;">
+                                                    <div class="bar" style="width: ${percentage}%; height: 8px; background-color: #4B0082; border-radius: 4px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="side right" style="width: 40px; text-align: right;">${count}</div>
+                                        </div>
+                                    </c:forEach>
                                 </div>
                             </div>
+
                         </div>
 
                     </div>

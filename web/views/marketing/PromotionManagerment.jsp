@@ -92,7 +92,29 @@
                     <span class="material-icons">add</span> Add promotion
                 </a>
             </div>
+            <form id="filter-form" action="promotionList?action=" method="get">
+                <div class="filter-list">
+                    <!-- Filter by Discount Type -->
+                    <select name="discountType" class="form-control2" onchange="document.getElementById('filter-form').submit();">
+                        <option value="">All Discount Types</option>
+                        <option value="percentage" ${discountType == 'percentage' ? 'selected' : ''}>Percentage</option>
+                        <option value="fixed" ${discountType == 'fixed' ? 'selected' : ''}>Fixed</option>
+                    </select>
 
+                    <!-- Filter by Status -->
+                    <select name="status" class="form-control2" onchange="document.getElementById('filter-form').submit();">
+                        <option value="">All Status</option>
+                        <option value="true" ${status == 'true' ? 'selected' : ''}>Active</option>
+                        <option value="false" ${status == 'false' ? 'selected' : ''}>Inactive</option>
+                    </select>
+                </div>
+
+                <div class="filter-search">
+                    <div class="input-group">
+                        <input name="search" type="text" class="form-control" placeholder="Search coupons" value="${searchKeyword}">
+                    </div>
+                </div>
+            </form> 
             <div class="table-responsive">
                 <table>
                     <thead>

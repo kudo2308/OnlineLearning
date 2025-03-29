@@ -92,7 +92,7 @@
                         <div class="alert2 alert-danger2" id="alert-box">
                             <c:choose>
                                 <c:when test="${error eq 'deleteFailed'}">Can not remove coupon, please try again!</c:when>
-                                <c:when test="${error eq 'missingCouponCode'}">Mã coupon không được để trống!</c:when>
+                                <c:when test="${error eq 'missingCouponCode'}">Coupon do not blank!</c:when>
                             </c:choose>
                             <button class="close-btn" onclick="closeAlert()">×</button>
                         </div>
