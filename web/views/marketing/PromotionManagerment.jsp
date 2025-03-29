@@ -172,7 +172,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/promotionList?action=edit&id=${promotion.promotionID}" class="action-button edit-btn">
+                                    <a href="${pageContext.request.contextPath}/promotion?action=edit&id=${promotion.promotionID}" class="action-button edit-btn">
                                         <span class="material-icons">edit</span> Edit
                                     </a>
                                     <a href="${pageContext.request.contextPath}/promotionList?action=toggle&id=${promotion.promotionID}" class="action-button toggle-btn">
