@@ -495,6 +495,20 @@ public class UserDAO extends DBContext {
         return account;
     }
 
+    // Update user role by user ID
+    public boolean updateUserRole(int userID, String roleName) {
+        String sql = "UPDATE Account SET RoleID = (SELECT RoleID FROM Role WHERE RoleName = ?) WHERE UserID = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, roleName);
+            st.setInt(2, userID);
+            int rowsAffected = st.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating user role: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
         List<User> user = dao.getAllExpert();
