@@ -77,7 +77,7 @@
                                 </form>
                             </div>
                             <c:choose>
-                                <c:when test="${item.course.discountPrice != null}">
+                                <c:when test="${item.course.discountPrice > 0}">
                                     <div class="price">
                                         <p class="discounted">
                                             <fmt:formatNumber value="${item.course.discountPrice}" type="currency" currencySymbol="" pattern="#,###" />đ

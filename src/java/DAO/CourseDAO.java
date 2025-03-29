@@ -1282,7 +1282,7 @@ public class CourseDAO extends DBContext {
 
         try {
             connection = new DBContext().getConnection();
-            String sql = "UPDATE Course SET DiscountPrice = Price WHERE CourseID = ?";
+            String sql = "UPDATE Course SET DiscountPrice = null WHERE CourseID = ?";
             statement = connection.prepareStatement(sql);
             statement.setInt(1, courseId);
 

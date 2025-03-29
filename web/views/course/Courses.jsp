@@ -159,7 +159,7 @@
                                                             </ul>
                                                         </div>
                                                         <c:choose>
-                                                            <c:when test="${course.discountPrice != null}">
+                                                            <c:when test="${course.discountPrice > 0}">
                                                                 <div class="price">
                                                                     <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
                                                                     <h5><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h5>
@@ -168,7 +168,6 @@
                                                             <c:otherwise>
                                                                 <span>
                                                                     <h5><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h5>
-                                                                    (${course.register})
                                                                 </span>
                                                             </c:otherwise>
                                                         </c:choose>

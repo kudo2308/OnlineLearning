@@ -121,7 +121,7 @@
                         <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                             <div class="course-detail-bx">
                                 <c:choose>
-                                    <c:when test="${course.discountPrice != null}">
+                                    <c:when test="${course.discountPrice > 0}">
                                         <div class="course-price">
                                             <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
                                             <h4 class="price"><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h4>

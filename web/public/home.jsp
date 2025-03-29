@@ -106,7 +106,7 @@
                                 <a href="#" class="expert-name">${recentCourses.expert.fullName}</a>
                                 <p class="des-course">${recentCourses.description}$</p>
                                 <c:choose>
-                                    <c:when test="${recentCourses.discountPrice != null}">
+                                    <c:when test="${recentCourses.discountPrice > 0}">
                                         <span style="font-size: larger;">
                                             <fmt:formatNumber value="${recentCourses.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ
 
