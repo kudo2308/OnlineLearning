@@ -429,31 +429,11 @@ Kracher
 
 }
 
-/*---slide-show banner---**/
-.body-slide {
-    margin-top: 30px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-}
-
-
-
-.slide-show {
-    width: 80%;
-    overflow: hidden;
-    position: relative;
-    border-radius: inherit;
-}
-.list-images {
-    display: flex;
-    transition: 0.5s;
-}
-
-.list-images img{
-    width: 100%;
+/* Responsive */
+@media (max-width: 768px) {
+    .body-slide .slide-show {
+        height: 300px; /* Điều chỉnh chiều cao cho mobile */
+    }
 }
 
 .btn:hover {
@@ -618,3 +598,51 @@ Kracher
     margin-right: 30px;
 }
 
+.body-slide {
+    margin-top: 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.list-images {
+    display: flex;
+    transition: 0.5s;
+}
+
+.list-images img{
+    width: 100%;
+}
+
+/* Responsive adjustments for the slide show */
+.body-slide .slide-show {
+    height: auto;
+    position: relative;
+    overflow: hidden;
+}
+/* Image overflow and aspect ratio fixes */
+
+/* Banner images - maintain aspect ratio and hide overflow */
+.slide-show {
+    width: 80%;
+    overflow: hidden;
+    position: relative;
+    border-radius: inherit;
+    max-height: 600px; /* Control maximum height */
+}
+
+.list-images {
+    display: flex;
+    transition: 0.5s;
+    height: 600px;
+    overflow: hidden; /* Hide overflow */
+}
+
+.img-banners {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the container */
+    object-position: center; /* Center the image */
+}

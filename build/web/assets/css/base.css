@@ -185,7 +185,7 @@ header {
 }
 
 #search {
-    border-radius: 25px 0px 0px 25px;
+    border-radius: 25px ;
 }
 
 #search input {
@@ -467,7 +467,7 @@ hr {
 }
 .popover-content p{
     font-size: 17px;
-    opacity: 0.8;
+    /*opacity: 0.8;*/
 
 }
 /* Khi hover vào container => hiển thị popup */

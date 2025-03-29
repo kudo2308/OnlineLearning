@@ -17,17 +17,7 @@
         <div class="material-icons magnification-glass md-18">search</div>
         <input type="text" name="search" placeholder="Search for anything" />
     </form>
-
-    <!-- Category dropdown form -->
-    <select id="categories-dropdown" onchange="this.form.submit()">
-        <option value="${pageContext.request.contextPath}/CourseSearch">All categories</option>
-        <c:forEach var="category" items="${categories}">
-            <option value="${pageContext.request.contextPath}/CourseSearch?categoryId=${category.categoryID}">${category.name}</option>
-        </c:forEach>
-    </select>
-
-
-
+ 
     <div class="right-header">
         <c:choose>
             <c:when test="${not empty sessionScope.account && sessionScope.account.roles == 'Expert'}">

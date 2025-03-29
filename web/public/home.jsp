@@ -57,13 +57,13 @@
 
             <div class="body-slide">
                 <div class="slide-show">
-                    <div class="list-images">
+                    <div class="list-images" >
                         <c:forEach var="slider" items="${sliders}">
-                            <a href="${slider.linkUrl}">
+<!--                            <a href="${slider.linkUrl}">-->
                                 <img class="img-banners" 
                                      src="${pageContext.request.contextPath}${slider.imageUrl}" 
                                      alt="${slider.title}">
-                            </a>
+                            <!--</a>-->
                         </c:forEach>
                     </div>
                     <div class="btns">
@@ -81,12 +81,12 @@
                 <span
                     class="material-symbols-outlined arrow-left"
                     onclick="scrollb('wow', 'left')">
-                    arrow_back
+                     keyboard_arrow_left
                 </span>
                 <span
                     class="material-symbols-outlined arrow-right"
                     onclick="scrollb('wow', 'right')">
-                    arrow_forward
+                     keyboard_arrow_right
                 </span>
                 <div class="view-more">
                     <h1>Recent Course</h1>
@@ -140,7 +140,7 @@
 
                     <!-- Swiper Container -->
                     <div class="swiper blog-slider">
-                        <div class="swiper-wrapper">
+                        <div class="swiper-wrapper" style="margin-bottom:  20px" >
                             <c:if test="${not empty blogs}">
                                 <c:forEach var="blog" items="${blogs}">
                                     <div class="swiper-slide">
@@ -174,6 +174,7 @@
                         <!-- Swiper Navigation Buttons -->
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
+                        
                         <div class="swiper-pagination"></div>
                     </div>
 
