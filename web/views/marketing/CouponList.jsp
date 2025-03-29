@@ -78,7 +78,7 @@
                     <!-- Main content container -->
                     <div class="container-right">
                     <c:if test="${not empty message}">
-                        <div class="alert2 alert-success" id="alert-box">
+                        <div class="alert2 alert-success2" id="alert-box">
                             <c:choose>
                                 <c:when test="${message eq 'created'}">Coupon add successfully!</c:when>
                                 <c:when test="${message eq 'updated'}">Coupon update successfully!</c:when>
@@ -89,7 +89,7 @@
                     </c:if>
 
                     <c:if test="${not empty error}">
-                        <div class="alert2 alert-danger" id="alert-box">
+                        <div class="alert2 alert-danger2" id="alert-box">
                             <c:choose>
                                 <c:when test="${error eq 'deleteFailed'}">Can not remove coupon, please try again!</c:when>
                                 <c:when test="${error eq 'missingCouponCode'}">Mã coupon không được để trống!</c:when>
@@ -144,7 +144,11 @@
                                             <td>${coupon.couponCode}</td>
                                             <td>${coupon.discountType}</td>
                                             <td>${coupon.discountValue}</td>
-                                            <td>${coupon.status == true ? 'Active' : 'Inactive'}</td>
+                                            <td>
+                                                <span class="${coupon.status ? 'status-active' : 'status-inactive'}">
+                                                    ${coupon.status ? 'Active' : 'Inactive'}
+                                                </span>
+                                            </td>
                                             <td>${coupon.createdAt}</td>
                                             <td class="action-buttons">
                                                 <form action="couponList" method="POST" style="display:inline;">
@@ -262,14 +266,14 @@
 
                     <!-- Status -->
                     <label> Status:</label>
-                        <br>
-                        <select id="addDisCountType" name="status">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
+                    <br>
+                    <select id="addDisCountType" name="status">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
 
-                        <!-- Submit Button -->
-                        <button class="submit-but" type="submit">Add Coupon</button>
+                    <!-- Submit Button -->
+                    <button class="submit-but" type="submit">Add Coupon</button>
                 </form>
             </div>
         </div>
