@@ -24,8 +24,8 @@
         <servlet-class>controller.CourseServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CourseDetailServlet</servlet-name>
-        <servlet-class>controller.CourseDetailServlet</servlet-class>
+        <servlet-name>CourseDetailController</servlet-name>
+        <servlet-class>controller.CourseDetailController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CourseController</servlet-name>
@@ -77,8 +77,8 @@
         <servlet-class>controller.test.TestController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>CourseDetailServlet</servlet-name>
-        <url-pattern>/coursedetails</url-pattern>
+        <servlet-name>CourseDetailController</servlet-name>
+        <url-pattern>/coursedetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CourseController</servlet-name>

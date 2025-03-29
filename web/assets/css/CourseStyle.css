@@ -1,53 +1,465 @@
-
-.sync {
-    min-height: 107.5px;
+/* Modern styling for Courses.jsp */
+:root {
+    --primary-color: #f7b205;
+    --secondary-color: #4c1864;
+    --text-color: #333;
+    --light-bg: #f8f9fa;
+    --border-color: #e9ecef;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-shadow: rgba(0, 0, 0, 0.15);
+    --card-radius: 12px;
+    --btn-radius: 30px;
 }
 
-.sync h5{
-    min-height: 48px;
+/* Page Banner Styling */
+.page-banner {
+    position: relative;
+    padding: 80px 0;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
 }
 
-.cate-list li{
-    list-style: none;
-    margin-left: 30px;
+.page-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(76, 24, 100, 0.85), rgba(247, 178, 5, 0.85));
 }
 
-.cate-list label{
-    font-weight: 500;
-    margin-bottom: 5px;
-    padding-left: 5px;
+.page-banner-entry {
+    position: relative;
+    z-index: 1;
+    text-align: center;
 }
 
-.widget-title{
+.page-banner-entry h1 {
+    font-size: 48px;
+    font-weight: 700;
     margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.sub-but{
-    border: none;
-    background-color: white;
-    font-size: small;
+/* Breadcrumb Styling */
+.breadcrumb-row {
+    background-color: var(--light-bg);
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.sub-but:hover{
-    color: blue;
-    text-decoration: underline;
-}
-
-.price-range{
+.breadcrumb-row ul {
+    margin: 0;
+    padding: 0;
     display: flex;
-
+    align-items: center;
 }
 
-.range-control{
-    width: 40%;
+.breadcrumb-row li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-color);
 }
 
-.max-ui{
-    margin-left: 20px;
+.breadcrumb-row li:not(:last-child)::after {
+    content: '›';
+    margin: 0 10px;
+    color: #adb5bd;
 }
 
-label{
-    margin-bottom: 0px;
+.breadcrumb-row a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-row a:hover {
+    color: var(--secondary-color);
+}
+
+/* Course Card Styling */
+.cours-bx {
+    background-color: #fff;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cours-bx:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px var(--hover-shadow);
+}
+
+.action-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-box img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.cours-bx:hover .action-box img {
+    transform: scale(1.1);
+}
+
+.action-box .btn {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: var(--btn-radius);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.cours-bx:hover .action-box .btn {
+    bottom: 20px;
+    opacity: 1;
+}
+
+.action-box .btn:hover {
+    background: var(--secondary-color);
+}
+
+.info-bx {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-bx h5 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-bx h5 a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info-bx h5 a:hover {
+    color: var(--primary-color);
+}
+
+.info-bx span {
+    color: #6c757d;
+    font-size: 14px;
+    display: inline-block;
+    padding: 5px 12px;
+    background-color: var(--light-bg);
+    border-radius: 20px;
+    margin-top: 5px;
+}
+
+.cours-more-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+.review {
+    display: flex;
+    flex-direction: column;
+}
+
+.review span {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.cours-star {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.cours-star li {
+    margin-right: 2px;
+}
+
+.cours-star li.active i {
+    color: var(--primary-color);
+}
+
+.cours-star li i {
+    color: #dee2e6;
+}
+
+.price h5 {
+    margin: 0;
+    color: var(--secondary-color);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Category Filter Styling */
+.widget h5 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #4a1864;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.category-checkbox {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.category-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+}
+
+.category-checkbox input[type="checkbox"]:checked {
+    background-color: #4a1864;
+    border-color: #4a1864;
+}
+
+.category-checkbox input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.category-checkbox label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    margin: 0;
+}
+
+.sub-but {
+    background-color: #4a1864;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.sub-but:hover {
+    background: #5c2a77;
+}
+
+/* Filter Sidebar Styling */
+.widget {
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.widget-title.style-1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
+
+hr {
+    margin: 25px 0;
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-color), transparent);
+}
+
+/* Price Filter Styling */
+.widget-title.style-1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    color: #4a1864;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.price-range input{
+    width: 70%;
+}
+
+.range-control {
+    flex: 1;
+    height: 42px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #666;
+    background-color: white;
+    transition: border-color 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.range-control:focus {
+    border-color: #4a1864;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 24, 100, 0.1);
+}
+
+.range-control::placeholder {
+    color: #999;
+}
+
+.filter-icon-btn {
+    width: 42px;
+    height: 42px;
+    background: white;
+    color: #4a1864;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.filter-icon-btn:hover {
+    background-color: #4a1864;
+    color: white;
+    border-color: #4a1864;
+}
+
+.filter-icon-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .page-banner-entry h1 {
+        font-size: 36px;
+    }
+
+    .widget {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 767px) {
+    .page-banner {
+        padding: 60px 0;
+    }
+
+    .page-banner-entry h1 {
+        font-size: 30px;
+    }
+
+    .cours-bx {
+        margin-bottom: 30px;
+    }
+}
+
+/* Pagination Styling */
+.pagination-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-bx {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination li {
+    margin: 0 2px;
+}
+
+.pagination li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: white;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.pagination li.active a {
+    background-color: #4a1864;
+    color: white;
+    border-color: #4a1864;
+}
+
+.pagination li a:hover:not(.active) {
+    background-color: #f1f1f1;
+    color: #4a1864;
+    border-color: #4a1864;
 }
 
 .input-group input{
@@ -56,5 +468,18 @@ label{
     font-size: 13px;
     line-height: 20px;
     border: none;
-        border-bottom: #e0e0e0 solid 2px;
+    border-bottom: #e0e0e0 solid 2px;
+}
+
+.row{
+    width: 1000px;
+}
+
+.filter-courses{
+    width: 350px;
+}
+
+.container{
+    width: 1897px;
+    display: flex;
 }

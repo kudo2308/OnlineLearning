@@ -36,7 +36,7 @@ public class CourseDetailController extends HttpServlet {
         Object accountObj = session.getAttribute("account");
 
         if (accountObj == null) {
-            response.sendRedirect(request.getContextPath() + "/login?redirect=Cart");
+            response.sendRedirect(request.getContextPath() + "/login?redirect=coursedetail");
             return;
         }
 

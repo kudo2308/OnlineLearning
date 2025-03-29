@@ -120,10 +120,19 @@
                     <div class="row d-flex flex-row-reverse">
                         <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                             <div class="course-detail-bx">
-                                <div class="course-price">
-                                    <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
-                                    <h4 class="price"><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h4>
-                                </div>
+                                <c:choose>
+                                    <c:when test="${course.discountPrice != null}">
+                                        <div class="course-price">
+                                            <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
+                                            <h4 class="price"><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h4>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="course-price">
+                                            <h4 class="price"><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h4>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                                 <c:choose>
                                     <c:when test="${isRegistered}">
                                         <div class="course-buy-now text-center">

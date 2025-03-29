@@ -30,7 +30,7 @@ public class CourseSearchController extends HttpServlet {
             throws ServletException, IOException {
 
         int page = 1;
-        int recordsPerPage = 9;
+        int recordsPerPage = 6;
 
         String keyword = request.getParameter("search");
         String pageParam = request.getParameter("page");

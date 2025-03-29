@@ -25,6 +25,16 @@ h2 {
     color: #333;
 }
 
+#total-price{
+    font-size: larger;
+}
+
+.price-checkout{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .course-count {
     font-size: 18px;
     color: #777;

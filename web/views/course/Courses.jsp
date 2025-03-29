@@ -4,8 +4,8 @@
     Author     : ASUS
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -48,6 +48,7 @@
 
         <!-- All PLUGINS CSS ============================================= -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=filter_alt" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/assets.css">
 
         <!-- TYPOGRAPHY ============================================= -->
@@ -72,10 +73,10 @@
             <!-- Content -->
             <div class="page-content bg-white">
                 <!-- inner page banner -->
-                <div class="page-banner ovbl-dark" style="background-image:url(assets/images/banner/banner3.jpg);">
+                <div class="page-banner ovbl-dark" style="background-image:url(${pageContext.request.contextPath}/assets/images/banner/banner3.jpg);">
                     <div class="container">
                         <div class="page-banner-entry">
-                            <h1 class="text-white">Courses</h1>
+                            <h1 class="text-white">Our Courses</h1>
                         </div>
                     </div>
                 </div>
@@ -101,7 +102,7 @@
                                             <form id="search" action="CourseSearch" method="get">
                                                 <label>Search courses</label>
                                                 <div class="input-group">
-                                                    <input name="search" type="text" value="" >
+                                                    <input name="search" type="text" placeholder="What do you want to learn?" value="" >
                                                 </div>
                                         </div>
                                     </div>
@@ -118,17 +119,16 @@
                                                 <label for="cat-${category.categoryID}">${category.name}</label>
                                             </div>
                                         </c:forEach>
-                                        <button class="sub-but" type="submit">Apply Filter</button>
+                                        <button class="sub-but" type="submit">Search</button>
                                         <hr>
                                         <!-- Lọc theo giá -->
-                                        <h5 class="widget-title style-1">Price</h5>
+                                        <h5 class="widget-title style-1">PRICE</h5>
                                         <div class="price-range">
                                             <input type="number" name="minPrice" placeholder="Min Price" class="range-control min-ui" value="${minPrice != 0 ? minPrice : ''}">
                                             <input type="number" name="maxPrice" placeholder="Max Price" class="range-control max-ui" value="${maxPrice != Double.MAX_VALUE ? maxPrice : ''}">
-                                            <button class="sub-but" type="submit"><span class="material-symbols-outlined">
-                                                    filter_alt
-                                                </span></button>
-
+                                            <button class="filter-icon-btn" type="submit" title="Apply price filter">
+                                                <span class="material-symbols-outlined">filter_alt</span>
+                                            </button>
                                         </div>
 
                                     </div>
@@ -141,7 +141,7 @@
                                                 <div class="cours-bx">
                                                     <div class="action-box">
                                                         <img src="${pageContext.request.contextPath}${course.imageUrl}" alt="">
-                                                        <a href="#" class="btn">Register</a>
+                                                        <a href="${pageContext.request.contextPath}/coursedetail?courseId=${course.courseID}" class="btn">View Details</a>
                                                     </div>
                                                     <div class="info-bx text-center sync">
                                                         <h5><a href="${pageContext.request.contextPath}/coursedetail?courseId=${course.courseID}">${course.title}</a></h5>
@@ -158,10 +158,21 @@
                                                                 <li><i class="fa fa-star"></i></li>
                                                             </ul>
                                                         </div>
-                                                        <div class="price">
-                                                            <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
-                                                            <h5><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h5>
-                                                        </div>
+                                                        <c:choose>
+                                                            <c:when test="${course.discountPrice != null}">
+                                                                <div class="price">
+                                                                    <del><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
+                                                                    <h5><fmt:formatNumber value="${course.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h5>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span>
+                                                                    <h5><fmt:formatNumber value="${course.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</h5>
+                                                                    (${course.register})
+                                                                </span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -172,8 +183,8 @@
                                                 <c:if test="${totalPages > 1}">
                                                     <ul class="pagination">
                                                         <c:if test="${currentPage > 1}">
-                                                            <li><a href="?page=${currentPage - 1}&search=${searchKeyword}">Prev</a></li>
-                                                            </c:if>
+                                                            <li><a href="?page=${currentPage - 1}&search=${searchKeyword}"><i class="fa fa-chevron-left"></i></a></li>
+                                                                </c:if>
 
                                                         <c:forEach var="i" begin="1" end="${totalPages}">
                                                             <li class="${currentPage == i ? 'active' : ''}">
@@ -182,11 +193,10 @@
                                                         </c:forEach>
 
                                                         <c:if test="${currentPage < totalPages}">
-                                                            <li><a href="?page=${currentPage + 1}&search=${searchKeyword}">Next</a></li>
-                                                            </c:if>
+                                                            <li><a href="?page=${currentPage + 1}&search=${searchKeyword}"><i class="fa fa-chevron-right"></i></a></li>
+                                                                </c:if>
                                                     </ul>
                                                 </c:if>
-
                                             </div>
                                         </div>
                                     </div>
@@ -195,119 +205,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- contact area END -->
-
             </div>
-            <!-- Content END-->
-            <!-- Footer ==== -->
-            <footer>
-                <div class="footer-top">
-                    <div class="pt-exebar">
-                        <div class="container">
-                            <div class="d-flex align-items-stretch">
-                                <div class="pt-logo mr-auto">
-                                    <a href="index.html"><img src="assets/images/logo-white.png" alt=""/></a>
-                                </div>
-                                <div class="pt-social-link">
-                                    <ul class="list-inline m-a0">
-                                        <li><a href="#" class="btn-link"><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href="#" class="btn-link"><i class="fa fa-twitter"></i></a></li>
-                                        <li><a href="#" class="btn-link"><i class="fa fa-linkedin"></i></a></li>
-                                        <li><a href="#" class="btn-link"><i class="fa fa-google-plus"></i></a></li>
-                                    </ul>
-                                </div>
-                                <div class="pt-btn-join">
-                                    <a href="#" class="btn ">Join Now</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-12 col-sm-12 footer-col-4">
-                                <div class="widget">
-                                    <h5 class="footer-title">Sign Up For A Newsletter</h5>
-                                    <p class="text-capitalize m-b20">Weekly Breaking news analysis and cutting edge advices on job searching.</p>
-                                    <div class="subscribe-form m-b20">
-                                        <form class="subscription-form" action="http://educhamp.themetrades.com/demo/assets/script/mailchamp.php" method="post">
-                                            <div class="ajax-message"></div>
-                                            <div class="input-group">
-                                                <input name="email" required="required"  class="form-control" placeholder="Your Email Address" type="email">
-                                                <span class="input-group-btn">
-                                                    <button name="submit" value="Submit" type="submit" class="btn"><i class="fa fa-arrow-right"></i></button>
-                                                </span> 
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-5 col-md-7 col-sm-12">
-                                <div class="row">
-                                    <div class="col-4 col-lg-4 col-md-4 col-sm-4">
-                                        <div class="widget footer_widget">
-                                            <h5 class="footer-title">Company</h5>
-                                            <ul>
-                                                <li><a href="index.html">Home</a></li>
-                                                <li><a href="about-1.html">About</a></li>
-                                                <li><a href="faq-1.html">FAQs</a></li>
-                                                <li><a href="contact-1.html">Contact</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 col-lg-4 col-md-4 col-sm-4">
-                                        <div class="widget footer_widget">
-                                            <h5 class="footer-title">Get In Touch</h5>
-                                            <ul>
-                                                <li><a href="http://educhamp.themetrades.com/admin/index.html">Dashboard</a></li>
-                                                <li><a href="blog-classic-grid.html">Blog</a></li>
-                                                <li><a href="portfolio.html">Portfolio</a></li>
-                                                <li><a href="event.html">Event</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 col-lg-4 col-md-4 col-sm-4">
-                                        <div class="widget footer_widget">
-                                            <h5 class="footer-title">Courses</h5>
-                                            <ul>
-                                                <li><a href="courses.html">Courses</a></li>
-                                                <li><a href="courses-details.html">Details</a></li>
-                                                <li><a href="membership.html">Membership</a></li>
-                                                <li><a href="profile.html">Profile</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-3 col-md-5 col-sm-12 footer-col-4">
-                                <div class="widget widget_gallery gallery-grid-4">
-                                    <h5 class="footer-title">Our Gallery</h5>
-                                    <ul class="magnific-image">
-                                        <li><a href="assets/images/gallery/pic1.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic1.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic2.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic2.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic3.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic3.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic4.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic4.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic5.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic5.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic6.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic6.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic7.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic7.jpg" alt=""></a></li>
-                                        <li><a href="assets/images/gallery/pic8.jpg" class="magnific-anchor"><img src="assets/images/gallery/pic8.jpg" alt=""></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 text-center"> <a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!-- Footer END ==== -->
-            <button class="back-to-top fa fa-chevron-up" ></button>
         </div>
-        External JavaScripts 
+        <!-- External JavaScripts -->
         <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
@@ -322,8 +222,5 @@
         <script src="${pageContext.request.contextPath}/assets/vendors/owl-carousel/owl.carousel.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/functions.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/contact.js"></script>
-        <script src='${pageContext.request.contextPath}/assets/vendors/switcher/switcher.js'></script>
     </body>
-
 </html>
-

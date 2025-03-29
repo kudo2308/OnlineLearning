@@ -76,14 +76,25 @@
                                     <button type="submit">Remove</button>
                                 </form>
                             </div>
-                            <div class="price">
-                                <p class="discounted">
-                                    <fmt:formatNumber value="${item.course.discountPrice}" type="currency" currencySymbol="" pattern="#,###" />đ
-                                </p>
-                                <p class="original">
-                                    <fmt:formatNumber value="${item.course.price}" type="currency" currencySymbol="" pattern="#,###" />đ
-                                </p>
-                            </div>
+                            <c:choose>
+                                <c:when test="${item.course.discountPrice != null}">
+                                    <div class="price">
+                                        <p class="discounted">
+                                            <fmt:formatNumber value="${item.course.discountPrice}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                        </p>
+                                        <p class="original">
+                                            <fmt:formatNumber value="${item.course.price}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                        </p>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="price">
+                                        <p class="discounted">
+                                            <fmt:formatNumber value="${item.course.price}" type="currency" currencySymbol="" pattern="#,###" />đ
+                                        </p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                             <form class="action-box" action="cart?action=delete&courseId=${item.course.courseID}" method="post">
                                 <button  type="submit">Remove</button>
                             </form>
@@ -100,13 +111,15 @@
 
                 <div class="checkout-out">
                     <div class="checkout">
-                        <p class="total">Total: <span id="total-price">₫0</span></p>
-                        <p class="discounted-price">Discounted Price: <span id="discounted-price">₫0</span></p>
+                        <div class="price-checkout">
+                            <p class="total">Total:</p>
+                            <span id="total-price">0đ</span>
+                        </div>
+                        <div class="price-checkout">
+                            <p class="discounted-price">Discounted Price:</p>
+                            <span id="discounted-price">0đ</span>
+                        </div>
 
-                        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
-
-                        <!-- Coupon Section -->
-                        <!-- Coupon Section -->
                         <div class="coupon">
                             <p>Promotions</p>
                             <form id="couponForm" action="javascript:void(0);" method="GET">
@@ -114,6 +127,11 @@
                                 <button class="apply-btn" type="button">Apply</button>
                             </form>
                         </div>
+                        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+
+                        <!-- Coupon Section -->
+                        <!-- Coupon Section -->
+
 
                     </div>
                 </div>

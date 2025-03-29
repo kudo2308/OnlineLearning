@@ -60,9 +60,9 @@
                     <div class="list-images" >
                         <c:forEach var="slider" items="${sliders}">
 <!--                            <a href="${slider.linkUrl}">-->
-                                <img class="img-banners" 
-                                     src="${pageContext.request.contextPath}${slider.imageUrl}" 
-                                     alt="${slider.title}">
+                            <img class="img-banners" 
+                                 src="${pageContext.request.contextPath}${slider.imageUrl}" 
+                                 alt="${slider.title}">
                             <!--</a>-->
                         </c:forEach>
                     </div>
@@ -81,12 +81,12 @@
                 <span
                     class="material-symbols-outlined arrow-left"
                     onclick="scrollb('wow', 'left')">
-                     keyboard_arrow_left
+                    keyboard_arrow_left
                 </span>
                 <span
                     class="material-symbols-outlined arrow-right"
                     onclick="scrollb('wow', 'right')">
-                     keyboard_arrow_right
+                    keyboard_arrow_right
                 </span>
                 <div class="view-more">
                     <h1>Recent Course</h1>
@@ -105,11 +105,24 @@
                                 <br>
                                 <a href="#" class="expert-name">${recentCourses.expert.fullName}</a>
                                 <p class="des-course">${recentCourses.description}$</p>
-                                <span>
-                                    <fmt:formatNumber value="${recentCourses.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ
-                                    <del><fmt:formatNumber value="${recentCourses.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ</del>
-                                    (${recentCourses.register})
-                                </span>
+                                <c:choose>
+                                    <c:when test="${recentCourses.discountPrice != null}">
+                                        <span style="font-size: larger;">
+                                            <fmt:formatNumber value="${recentCourses.discountPrice}" type="currency" currencySymbol="đ" pattern="#,###" />đ
+
+                                        </span>
+                                            <del style="color: #555555">
+                                            <fmt:formatNumber value="${recentCourses.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ
+                                        </del>
+                                        (${recentCourses.register})
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span>
+                                            <fmt:formatNumber value="${recentCourses.price}" type="currency" currencySymbol="đ" pattern="#,###" />đ
+                                            (${recentCourses.register})
+                                        </span>
+                                    </c:otherwise>
+                                </c:choose>
 
                             </li>
                         </c:forEach>
@@ -174,7 +187,7 @@
                         <!-- Swiper Navigation Buttons -->
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
-                        
+
                         <div class="swiper-pagination"></div>
                     </div>
 
