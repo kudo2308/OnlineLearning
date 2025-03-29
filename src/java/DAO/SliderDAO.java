@@ -53,8 +53,7 @@ public class SliderDAO extends DBContext {
     // Xóa slider
     public boolean deleteSlider(int sliderId) {
         String sql = "DELETE FROM Sliders WHERE sliderId=?";
-        try (Connection conn = getConnection(); // Kiểm tra kết nối
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, sliderId);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;  // Nếu xóa thành công, trả về true
@@ -64,21 +63,23 @@ public class SliderDAO extends DBContext {
         }
     }
 
-    // Lấy tất cả slider
+    // Lấy tất cả slider - Tối ưu hóa truy vấn
     public List<Slider> getAllSliders() {
         List<Slider> sliders = new ArrayList<>();
         String sql = "SELECT * FROM Sliders ORDER BY sliderId";
-        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {  // Chú ý: executeQuery() để lấy ResultSet
-            while (rs.next()) {
-                Slider slider = new Slider(
-                        rs.getInt("sliderId"),
-                        rs.getString("title"),
-                        rs.getString("imageUrl"),
-                        rs.getString("linkUrl"),
-                        rs.getInt("status"),
-                        rs.getString("description")
-                );
-                sliders.add(slider);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Slider slider = new Slider(
+                            rs.getInt("sliderId"),
+                            rs.getString("title"),
+                            rs.getString("imageUrl"),
+                            rs.getString("linkUrl"),
+                            rs.getInt("status"),
+                            rs.getString("description")
+                    );
+                    sliders.add(slider);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,7 +87,7 @@ public class SliderDAO extends DBContext {
         return sliders;
     }
 
-    // Lấy slider theo ID
+    // Lấy slider theo ID - Tối ưu hóa
     public Slider getSliderById(int sliderId) {
         String sql = "SELECT * FROM Sliders WHERE sliderId=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -109,34 +110,27 @@ public class SliderDAO extends DBContext {
         return null;
     }
 
-    // Lấy các slider đang hoạt động
+    // Lấy các slider đang hoạt động - Tối ưu hóa
     public List<Slider> getActiveSliders() {
         List<Slider> activeSliders = new ArrayList<>();
         String sql = "SELECT * FROM Sliders WHERE status = 1 ORDER BY sliderId";
-        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {  // Chú ý: executeQuery() để lấy ResultSet
-            while (rs.next()) {
-                Slider slider = new Slider(
-                        rs.getInt("sliderId"),
-                        rs.getString("title"),
-                        rs.getString("imageUrl"),
-                        rs.getString("linkUrl"),
-                        rs.getInt("status"),
-                        rs.getString("description")
-                );
-                activeSliders.add(slider);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Slider slider = new Slider(
+                            rs.getInt("sliderId"),
+                            rs.getString("title"),
+                            rs.getString("imageUrl"),
+                            rs.getString("linkUrl"),
+                            rs.getInt("status"),
+                            rs.getString("description")
+                    );
+                    activeSliders.add(slider);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return activeSliders;
-    }
-
-    public static void main(String[] args) {
-        SliderDAO dao = new SliderDAO();
-        if (dao.deleteSlider(2)) {
-            System.out.println("true");
-        } else {
-            System.out.println("false");
-        }
     }
 }

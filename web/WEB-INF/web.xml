@@ -152,6 +152,15 @@
         <servlet-name>ApproveRequestController</servlet-name>
         <url-pattern>/approveRequest</url-pattern>
     </servlet-mapping>
+    <!-- Slider Management Controller -->
+    <servlet>
+        <servlet-name>SliderManagementController</servlet-name>
+        <servlet-class>controller.marketing.SliderManagementController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SliderManagementController</servlet-name>
+        <url-pattern>/slider</url-pattern>
+    </servlet-mapping>
     <!-- Change Role Servlet -->
     <servlet>
         <servlet-name>ChangeRoleServlet</servlet-name>

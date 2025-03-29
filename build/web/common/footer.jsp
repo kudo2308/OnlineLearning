@@ -37,7 +37,7 @@
                                 <h5 class="footer-title">Company</h5>
                                 <ul>
                                     <li><a href="${pageContext.request.contextPath}/home">Home</a></li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                                 <ul>
                                     <li><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
                                     <li><a href="${pageContext.request.contextPath}/Blog">Blog</a></li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                 <ul>
                                     <li><a href="${pageContext.request.contextPath}/CourseSearch">All Courses</a></li>
                                     <li><a href="${pageContext.request.contextPath}/my-courses">My Courses</a></li>
-                                   
+
                                     <li><a href="${pageContext.request.contextPath}/userprofile">Profile</a></li>
                                 </ul>
                             </div>
@@ -78,7 +78,6 @@
                             <li><i class="fa fa-clock-o"></i> Monday - Friday: 9:00 - 17:00</li>
                         </ul>
                         <!-- Google Maps Embed -->
-                        
                     </div>
                 </div>
             </div>

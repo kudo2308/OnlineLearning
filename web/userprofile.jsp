@@ -118,8 +118,7 @@
             </div>
         </c:if>
     </body>
-    <jsp:include page="common/footer.jsp"></jsp:include> 
-    <script src="${pageContext.request.contextPath}/assets/js/js.js"></script>
+    
     <script>
 
         function showMessage() {
