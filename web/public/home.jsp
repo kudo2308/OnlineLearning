@@ -58,9 +58,13 @@
             <div class="body-slide">
                 <div class="slide-show">
                     <div class="list-images">
-                        <img class="img-banners" src="${pageContext.request.contextPath}/assets/images/banner/banner1.jpg" alt="Banner 1">
-                        <img class="img-banners" src="${pageContext.request.contextPath}/assets/images/banner/banner2.jpg" alt="Banner 2">
-                        <img class="img-banners" src="${pageContext.request.contextPath}/assets/images/banner/banner3.jpg" alt="Banner 3">
+                        <c:forEach var="slider" items="${sliders}">
+                            <a href="${slider.linkUrl}">
+                                <img class="img-banners" 
+                                     src="${pageContext.request.contextPath}${slider.imageUrl}" 
+                                     alt="${slider.title}">
+                            </a>
+                        </c:forEach>
                     </div>
                     <div class="btns">
                         <span class="btn-left btn material-icons md-36">
