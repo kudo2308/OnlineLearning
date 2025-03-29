@@ -120,15 +120,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group row" id="packageContainer" style="display: none;">
+                                    <div class="form-group row" id="packageContainer">
                                         <label class="col-sm-2 col-form-label">Package</label>
                                         <div class="col-sm-7">
                                             <select class="form-control" id="packageID" name="packageID" required>
                                                 <option value="">Select a package</option>
                                             </select>
-                                            <c:forEach items="${packages}" var="pkg">
-                                                <option value="${pkg.packageID}">${pkg.name}</option>
-                                            </c:forEach>
                                         </div>
                                     </div>
 
@@ -159,54 +156,61 @@
         <script src="assets/admin/assets/vendors/masonry/masonry.js"></script>
         <script src="assets/admin/assets/vendors/masonry/filter.js"></script>
         <script src="assets/admin/assets/vendors/owl-carousel/owl.carousel.js"></script>
-        <script src='assets/admin/assets/vendors/scroll/scrollbar.min.js'></script>
+        <script src="assets/admin/assets/vendors/scroll/scrollbar.min.js"></script>
         <script src="assets/admin/assets/js/functions.js"></script>
         <script src="assets/admin/assets/vendors/chart/chart.min.js"></script>
         <script src="assets/admin/assets/js/admin.js"></script>
-
+        <script src="assets/admin/assets/vendors/calendar/moment.min.js"></script>
+        <script src="assets/admin/assets/vendors/calendar/fullcalendar.js"></script>
+        <script src="assets/admin/assets/vendors/switcher/switcher.js"></script>
         <script>
-                                                function loadPackages() {
-                                                    var courseId = document.getElementById("courseID").value;
-                                                    var packageContainer = document.getElementById("packageContainer");
-                                                    var packageSelect = document.getElementById("packageID");
-
-                                                    // Clear previous options
-                                                    packageSelect.innerHTML = '<option value="">Select a package</option>';
-
-                                                    if (courseId === "") {
-                                                        packageContainer.style.display = "none";
-                                                        return;
-                                                    }
-
-                                                    // Show the package container
-                                                    packageContainer.style.display = "flex";
-
-                                                    // Directly fetch packages via AJAX
-                                                    $.ajax({
-                                                        url: "${pageContext.request.contextPath}/AddQuiz",
-                                                        type: "GET",
-                                                        data: {
-                                                            action: "getPackages",
-                                                            courseID: courseId
-                                                        },
-                                                        dataType: "json",
-                                                        success: function (data) {
-                                                            if (data && data.length > 0) {
-                                                                for (var i = 0; i < data.length; i++) {
-                                                                    var option = document.createElement("option");
-                                                                    option.value = data[i].packageID;
-                                                                    option.text = data[i].name;
-                                                                    packageSelect.appendChild(option);
-                                                                }
-                                                            } else {
-                                                                packageSelect.innerHTML = '<option value="">No packages available</option>';
-                                                            }
-                                                        },
-                                                        error: function () {
-                                                            packageSelect.innerHTML = '<option value="">Error loading packages</option>';
-                                                        }
-                                                    });
-                                                }
+            function loadPackages() {
+                var courseId = $("#courseID").val();
+                if (courseId === "") {
+                    // Clear package dropdown if no course is selected
+                    $("#packageID").html('<option value="">Select a package</option>');
+                    return;
+                }
+                
+                // Show loading message
+                $("#packageID").html('<option value="">Loading packages...</option>');
+                
+                // Fetch packages via AJAX
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/AddQuiz",
+                    type: "POST",
+                    data: {
+                        action: "getPackages",
+                        courseID: courseId
+                    },
+                    success: function(data) {
+                        // Clear existing options
+                        var packageSelect = $("#packageID");
+                        packageSelect.empty();
+                        packageSelect.append('<option value="">Select a package</option>');
+                        
+                        // Add new options based on the response
+                        if (data && data.length > 0) {
+                            $.each(data, function(index, pkg) {
+                                packageSelect.append('<option value="' + pkg.packageID + '">' + pkg.name + '</option>');
+                            });
+                        } else {
+                            packageSelect.append('<option value="">No packages available for this course</option>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error loading packages:", error);
+                        $("#packageID").html('<option value="">Error loading packages</option>');
+                    }
+                });
+            }
+            
+            // Load packages if a course is already selected when the page loads
+            $(document).ready(function() {
+                if ($("#courseID").val() !== "") {
+                    loadPackages();
+                }
+            });
         </script>
     </body>
 </html>

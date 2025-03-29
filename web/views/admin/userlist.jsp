@@ -172,6 +172,24 @@
                                                                 </form>
                                                             </c:otherwise>
                                                         </c:choose>
+                                                        
+                                                        <!-- Role Change Dropdown - Only show for non-admin users -->
+                                                        <c:if test="${user.roleID != 1}">
+                                                            <form method="post" action="ChangeRoleServlet" style="display: inline-block; margin-left: 5px;">
+                                                                <input type="hidden" name="userID" value="${user.userID}">
+                                                                <div class="input-group input-group-sm">
+                                                                    <select name="newRole" class="form-select form-select-sm" style="max-width: 100px;">
+                                                                        <option value="">Change Role</option>
+                                                                        <option value="Admin">Admin</option>
+                                                                        <option value="Expert" ${user.roleID == 2 ? 'disabled' : ''}>Expert</option>
+                                                                        <option value="Student" ${user.roleID == 3 ? 'disabled' : ''}>Student</option>
+                                                                        <option value="Sale" ${user.roleID == 4 ? 'disabled' : ''}>Sale</option>
+                                                                        <option value="Marketing" ${user.roleID == 5 ? 'disabled' : ''}>Marketing</option>
+                                                                    </select>
+                                                                    <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                                                                </div>
+                                                            </form>
+                                                        </c:if>
                                                     </div>
                                                 </td>
                                             </tr>
