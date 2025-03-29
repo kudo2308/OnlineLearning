@@ -44,32 +44,7 @@ public class AddQuizController extends HttpServlet {
         String action = request.getParameter("action");
         
         if (action != null && action.equals("getPackages")) {
-            try {
-                // Handle AJAX request to get packages for a course
-                int courseID = Integer.parseInt(request.getParameter("courseID"));
-                List<Packages> packages = packagesDAO.findPackagesByCourseId(courseID);
-                
-                // Create a simplified list for JSON response to avoid serialization issues
-                List<Map<String, Object>> simplifiedPackages = new ArrayList<>();
-                for (Packages pkg : packages) {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("packageID", pkg.getPackageID());
-                    map.put("name", pkg.getName());
-                    map.put("description", pkg.getDescription());
-                    simplifiedPackages.add(map);
-                }
-                
-                // Return JSON response
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                PrintWriter out = response.getWriter();
-                out.print(gson.toJson(simplifiedPackages));
-                out.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.setStatus(500); // Internal Server Error
-                response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
-            }
+            handleGetPackages(request, response);
             return;
         }
         
@@ -79,6 +54,20 @@ public class AddQuizController extends HttpServlet {
         List<Course> courses = courseDAOInstance.findAll();
         request.setAttribute("courses", courses);
         
+        // Get the courseID parameter if it exists
+        String courseIdParam = request.getParameter("courseID");
+        if (courseIdParam != null && !courseIdParam.isEmpty()) {
+            try {
+                int courseId = Integer.parseInt(courseIdParam);
+                // Load packages for the selected course
+                List<Packages> packages = packagesDAO.findPackagesByCourseId(courseId);
+                request.setAttribute("packages", packages);
+                request.setAttribute("selectedCourseId", courseId);
+            } catch (NumberFormatException e) {
+                // Invalid courseID, ignore
+            }
+        }
+        
         // Forward to the add quiz form
         request.getRequestDispatcher("/views/test/AddQuiz.jsp").forward(request, response);
     }
@@ -86,6 +75,13 @@ public class AddQuizController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
+        
+        if (action != null && action.equals("getPackages")) {
+            handleGetPackages(request, response);
+            return;
+        }
+        
         try {
             // Get parameters from the form
             String name = request.getParameter("name");
@@ -132,6 +128,35 @@ public class AddQuizController extends HttpServlet {
         } catch (Exception e) {
             request.setAttribute("error", "An error occurred: " + e.getMessage());
             doGet(request, response);
+        }
+    }
+    
+    private void handleGetPackages(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            // Handle AJAX request to get packages for a course
+            int courseID = Integer.parseInt(request.getParameter("courseID"));
+            List<Packages> packages = packagesDAO.findPackagesByCourseId(courseID);
+            
+            // Create a simplified list for JSON response to avoid serialization issues
+            List<Map<String, Object>> simplifiedPackages = new ArrayList<>();
+            for (Packages pkg : packages) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("packageID", pkg.getPackageID());
+                map.put("name", pkg.getName());
+                map.put("description", pkg.getDescription());
+                simplifiedPackages.add(map);
+            }
+            
+            // Return JSON response
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print(gson.toJson(simplifiedPackages));
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(500); // Internal Server Error
+            response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 }
